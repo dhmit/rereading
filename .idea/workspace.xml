@@ -2,7 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="441af7e6-0342-4416-a6b7-42e0243d0860" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/baby_shoes/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/baby_shoes/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/baby_shoes/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/baby_shoes/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/baby_shoes/public/favicon.ico" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/public/favicon.ico" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/baby_shoes/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/public/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/baby_shoes/public/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/public/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/baby_shoes/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/src/App.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/baby_shoes/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/baby_shoes/src/App.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/src/App.test.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/baby_shoes/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/src/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/baby_shoes/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/baby_shoes/src/logo.svg" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/src/logo.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/baby_shoes/src/serviceWorker.js" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/src/serviceWorker.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -10,52 +25,13 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FUSProjectUsageTrigger">
-    <session id="-1304488806">
-      <usages-collector id="statistics.lifecycle.project">
-        <counts>
-          <entry key="project.open.time.1" value="1" />
-          <entry key="project.opened" value="1" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.open">
-        <counts>
-          <entry key="gitignore" value="2" />
-          <entry key="py" value="1" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.open">
-        <counts>
-          <entry key="PLAIN_TEXT" value="2" />
-          <entry key="Python" value="1" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.edit">
-        <counts>
-          <entry key="py" value="13" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.edit">
-        <counts>
-          <entry key="Python" value="13" />
-        </counts>
-      </usages-collector>
-    </session>
-  </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/.gitignore">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-68" />
-          </provider>
-        </entry>
-      </file>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes_api/settings.py">
+        <entry file="file://$PROJECT_DIR$/front_end/src/App.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="63">
-              <caret line="30" column="24" lean-forward="true" selection-start-line="30" selection-start-column="24" selection-end-line="30" selection-end-column="24" />
+            <state relative-caret-position="166">
+              <caret line="77" column="18" lean-forward="true" selection-start-line="77" selection-start-column="18" selection-end-line="77" selection-end-column="18" />
             </state>
           </provider>
         </entry>
@@ -72,19 +48,10 @@
         <option value="$PROJECT_DIR$/baby_shoes/src/App.css" />
         <option value="$PROJECT_DIR$/baby_shoes/src/App.js" />
         <option value="$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes_api/settings.py" />
+        <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/front_end/src/App.js" />
       </list>
     </option>
-  </component>
-  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsGulpfileManager">
-    <detection-done>true</detection-done>
-    <sorting>DEFINITION_ORDER</sorting>
-  </component>
-  <component name="NodePackageJsonFileManager">
-    <packageJsonPaths>
-      <path value="$PROJECT_DIR$/baby_shoes/package.json" />
-    </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="114" />
@@ -108,25 +75,13 @@
             <path>
               <item name="baby_shoes" type="b2602c69:ProjectViewProjectNode" />
               <item name="baby_shoes" type="462c0819:PsiDirectoryNode" />
-              <item name="baby_shoes" type="462c0819:PsiDirectoryNode" />
+              <item name="front_end" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="baby_shoes" type="b2602c69:ProjectViewProjectNode" />
               <item name="baby_shoes" type="462c0819:PsiDirectoryNode" />
-              <item name="backend" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="baby_shoes" type="b2602c69:ProjectViewProjectNode" />
-              <item name="baby_shoes" type="462c0819:PsiDirectoryNode" />
-              <item name="backend" type="462c0819:PsiDirectoryNode" />
-              <item name="baby_shoes_api" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="baby_shoes" type="b2602c69:ProjectViewProjectNode" />
-              <item name="baby_shoes" type="462c0819:PsiDirectoryNode" />
-              <item name="backend" type="462c0819:PsiDirectoryNode" />
-              <item name="baby_shoes_api" type="462c0819:PsiDirectoryNode" />
-              <item name="baby_shoes_api" type="462c0819:PsiDirectoryNode" />
+              <item name="front_end" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -166,17 +121,17 @@
       <option name="presentableId" value="Default" />
       <updated>1563463185156</updated>
       <workItem from="1563463186281" duration="7216000" />
+      <workItem from="1563489478323" duration="6342000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="7216000" />
+    <option name="totallyTimeSpent" value="13558000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="726" y="23" width="714" height="797" extended-state="0" />
-    <editor active="true" />
+    <frame x="114" y="28" width="1400" height="987" extended-state="0" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2533137" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -189,7 +144,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.32907802" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.32849163" />
       <window_info anchor="bottom" id="Python Console" order="11" />
       <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -202,49 +157,61 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
-  </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/baby_shoes/src/App.test.js">
+    <entry file="file://$PROJECT_DIR$/front_end/src/App.test.js">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/baby_shoes/src/logo.svg">
+    <entry file="file://$PROJECT_DIR$/front_end/src/logo.svg">
       <provider selected="true" editor-type-id="images" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/baby_shoes/src/index.css">
+    <entry file="file://$PROJECT_DIR$/front_end/src/index.css">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/baby_shoes/src/App.css">
+    <entry file="file://$PROJECT_DIR$/front_end/src/App.css">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <caret column="4" selection-start-column="1" selection-end-column="4" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/baby_shoes/src/index.js">
+    <entry file="file://$PROJECT_DIR$/front_end/src/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
           <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/baby_shoes/src/App.js">
+    <entry file="file://$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes_api/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="157">
-          <caret line="17" column="10" selection-start-line="17" selection-start-column="10" selection-end-line="17" selection-end-column="10" />
+        <state relative-caret-position="63">
+          <caret line="30" column="24" selection-start-line="30" selection-start-column="24" selection-end-line="30" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/front_end/package.json">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/models.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/front_end/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret selection-end-line="22" selection-end-column="15" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-68" />
+        <state relative-caret-position="1653">
+          <caret line="150" column="15" selection-start-line="150" selection-start-column="15" selection-end-line="150" selection-end-column="15" />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes_api/settings.py">
+    <entry file="file://$PROJECT_DIR$/front_end/src/App.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="63">
-          <caret line="30" column="24" lean-forward="true" selection-start-line="30" selection-start-column="24" selection-end-line="30" selection-end-column="24" />
+        <state relative-caret-position="166">
+          <caret line="77" column="18" lean-forward="true" selection-start-line="77" selection-start-column="18" selection-end-line="77" selection-end-column="18" />
         </state>
       </provider>
     </entry>

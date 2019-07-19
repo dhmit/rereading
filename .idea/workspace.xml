@@ -2,22 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="441af7e6-0342-4416-a6b7-42e0243d0860" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/public/favicon.ico" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/public/favicon.ico" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/public/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/public/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/public/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/src/App.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/src/App.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/src/App.test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/src/index.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/src/logo.svg" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/src/logo.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/src/serviceWorker.js" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/src/serviceWorker.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front_end/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/src/App.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -30,8 +15,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/front_end/src/App.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="166">
-              <caret line="77" column="18" lean-forward="true" selection-start-line="77" selection-start-column="18" selection-end-line="77" selection-end-column="18" />
+            <state relative-caret-position="425">
+              <caret line="108" column="37" selection-start-line="108" selection-start-column="37" selection-end-line="108" selection-end-column="37" />
             </state>
           </provider>
         </entry>
@@ -122,16 +107,17 @@
       <updated>1563463185156</updated>
       <workItem from="1563463186281" duration="7216000" />
       <workItem from="1563489478323" duration="6342000" />
+      <workItem from="1563544110919" duration="1525000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="13558000" />
+    <option name="totallyTimeSpent" value="15083000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="114" y="28" width="1400" height="987" extended-state="0" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2533137" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2569956" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -210,8 +196,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/front_end/src/App.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="166">
-          <caret line="77" column="18" lean-forward="true" selection-start-line="77" selection-start-column="18" selection-end-line="77" selection-end-column="18" />
+        <state relative-caret-position="425">
+          <caret line="108" column="37" selection-start-line="108" selection-start-column="37" selection-end-line="108" selection-end-column="37" />
         </state>
       </provider>
     </entry>

@@ -62,7 +62,7 @@ class Study extends React.Component {
         const question = this.state.question_number;
         const responses = this.state.answers.slice();
 
-        if (responses[context][question]) {
+        if (responses[context]) {
             responses[context][question] = e.target.value;
         } else {
             responses[context] = [e.target.value];
@@ -79,12 +79,12 @@ class Study extends React.Component {
         let answers = this.state.answers.slice();
         let finished = false;
         let response = answers[new_context][question_number];
-        let word_limit = this.state.questions.word_limit;
+        let word_limit = this.state.questions[question_number].word_limit;
         question_number += 1;
 
         const response_list = response.split(' ');
 
-        if (response_list.length > word_limit) {
+        if (response_list.length <= word_limit) {
             if (question_number === this.state.questions.length) {
                 new_context += 1;
                 question_number = 0;
@@ -102,6 +102,8 @@ class Study extends React.Component {
             answers: answers,
             finished: finished,
             });
+
+            e.target.reset();
 
         } else {
             alert('Make sure to respect word limits.')

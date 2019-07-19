@@ -80,6 +80,10 @@ class Study extends React.Component {
         let finished = false;
         let response = answers[new_context][question_number];
         let word_limit = this.state.questions[question_number].word_limit;
+        if (!response) {
+            alert('Please enter a response.');
+            return null;
+        }
         question_number += 1;
 
         const response_list = response.split(' ');

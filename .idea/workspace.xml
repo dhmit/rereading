@@ -2,22 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="441af7e6-0342-4416-a6b7-42e0243d0860" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/public/favicon.ico" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/public/favicon.ico" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/public/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/public/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/public/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/src/App.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/src/App.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/src/App.test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/src/index.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/src/logo.svg" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/src/logo.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/baby_shoes/src/serviceWorker.js" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/src/serviceWorker.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes_api/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes_api/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes_api/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes_api/urls.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -25,18 +14,108 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FUSProjectUsageTrigger">
+    <session id="-1304488806">
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="js" value="1" />
+          <entry key="py" value="3" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="JavaScript" value="1" />
+          <entry key="Python" value="3" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="py" value="860" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="Python" value="860" />
+        </counts>
+      </usages-collector>
+    </session>
+  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/models.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="165">
+              <caret line="11" column="15" selection-start-line="11" selection-start-column="15" selection-end-line="11" selection-end-column="15" />
+              <folding>
+                <marker date="1563547715538" expanded="true" signature="88:344" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/admin.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="75">
+              <caret line="5" selection-start-line="5" selection-end-line="5" />
+              <folding>
+                <element signature="e#0#32#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/front_end/src/App.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="166">
-              <caret line="77" column="18" lean-forward="true" selection-start-line="77" selection-start-column="18" selection-end-line="77" selection-end-column="18" />
+            <state relative-caret-position="255">
+              <caret line="18" column="5" selection-start-line="4" selection-start-column="4" selection-end-line="18" selection-end-column="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes_api/settings.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="381">
+              <caret line="125" column="46" selection-start-line="125" selection-start-column="46" selection-end-line="125" selection-end-column="46" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes_api/urls.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="240">
+              <caret line="16" column="37" selection-start-line="16" selection-start-column="37" selection-end-line="16" selection-end-column="37" />
+              <folding>
+                <element signature="e#638#670#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/urls.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="90">
+              <caret line="6" column="55" selection-start-line="6" selection-start-column="55" selection-end-line="6" selection-end-column="55" />
+              <folding>
+                <element signature="e#0#28#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
     </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -47,16 +126,26 @@
         <option value="$PROJECT_DIR$/baby_shoes/src/index.js" />
         <option value="$PROJECT_DIR$/baby_shoes/src/App.css" />
         <option value="$PROJECT_DIR$/baby_shoes/src/App.js" />
-        <option value="$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes_api/settings.py" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/front_end/src/App.js" />
+        <option value="$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/admin.py" />
+        <option value="$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/models.py" />
+        <option value="$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes_api/settings.py" />
+        <option value="$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes_api/urls.py" />
+        <option value="$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/urls.py" />
       </list>
     </option>
   </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="313" />
+    <option name="x" value="738" />
     <option name="y" value="23" />
-    <option name="width" value="1127" />
+    <option name="width" value="702" />
     <option name="height" value="797" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -71,6 +160,31 @@
             <path>
               <item name="baby_shoes" type="b2602c69:ProjectViewProjectNode" />
               <item name="baby_shoes" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="baby_shoes" type="b2602c69:ProjectViewProjectNode" />
+              <item name="baby_shoes" type="462c0819:PsiDirectoryNode" />
+              <item name="backend" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="baby_shoes" type="b2602c69:ProjectViewProjectNode" />
+              <item name="baby_shoes" type="462c0819:PsiDirectoryNode" />
+              <item name="backend" type="462c0819:PsiDirectoryNode" />
+              <item name="baby_shoes_api" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="baby_shoes" type="b2602c69:ProjectViewProjectNode" />
+              <item name="baby_shoes" type="462c0819:PsiDirectoryNode" />
+              <item name="backend" type="462c0819:PsiDirectoryNode" />
+              <item name="baby_shoes_api" type="462c0819:PsiDirectoryNode" />
+              <item name="baby_shoes" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="baby_shoes" type="b2602c69:ProjectViewProjectNode" />
+              <item name="baby_shoes" type="462c0819:PsiDirectoryNode" />
+              <item name="backend" type="462c0819:PsiDirectoryNode" />
+              <item name="baby_shoes_api" type="462c0819:PsiDirectoryNode" />
+              <item name="baby_shoes_api" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="baby_shoes" type="b2602c69:ProjectViewProjectNode" />
@@ -129,9 +243,10 @@
     <option name="totallyTimeSpent" value="13558000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="114" y="28" width="1400" height="987" extended-state="0" />
+    <frame x="738" y="23" width="702" height="797" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2533137" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2590909" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -144,7 +259,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.32849163" />
+      <window_info anchor="bottom" id="Terminal" order="10" visible="true" weight="0.32907802" />
       <window_info anchor="bottom" id="Python Console" order="11" />
       <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -181,17 +296,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes_api/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="63">
-          <caret line="30" column="24" selection-start-line="30" selection-start-column="24" selection-end-line="30" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/front_end/package.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/models.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/front_end/.gitignore">
@@ -203,20 +308,64 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1653">
-          <caret line="150" column="15" selection-start-line="150" selection-start-column="15" selection-end-line="150" selection-end-column="15" />
+        <state relative-caret-position="102">
+          <caret line="34" selection-start-line="34" selection-end-line="34" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/front_end/src/App.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="166">
-          <caret line="77" column="18" lean-forward="true" selection-start-line="77" selection-start-column="18" selection-end-line="77" selection-end-column="18" />
+        <state relative-caret-position="255">
+          <caret line="18" column="5" selection-start-line="4" selection-start-column="4" selection-end-line="18" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/admin.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" selection-start-line="5" selection-end-line="5" />
+          <folding>
+            <element signature="e#0#32#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/models.py">
-      <provider selected="true" editor-type-id="text-editor" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="15" selection-start-line="11" selection-start-column="15" selection-end-line="11" selection-end-column="15" />
+          <folding>
+            <marker date="1563547715538" expanded="true" signature="88:344" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes_api/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="381">
+          <caret line="125" column="46" selection-start-line="125" selection-start-column="46" selection-end-line="125" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes_api/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" column="37" selection-start-line="16" selection-start-column="37" selection-end-line="16" selection-end-column="37" />
+          <folding>
+            <element signature="e#638#670#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="55" selection-start-line="6" selection-start-column="55" selection-end-line="6" selection-end-column="55" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
     </entry>
   </component>
 </project>

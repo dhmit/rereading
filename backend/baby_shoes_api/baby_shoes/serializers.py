@@ -1,17 +1,26 @@
 from rest_framework import serializers
-from .models import BabyShoes
+from .models import BabyShoes, Question
+
+
+class QuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+
+        fields = (
+            'text',
+            'word_limit'
+        )
 
 
 class BabyShoesSerializer(serializers.ModelSerializer):
+    contexts = serializers.StringRelatedField(many=True, read_only=True)
+    questions = QuestionSerializer(many=True, read_only=True)
+
     class Meta:
+        model = BabyShoes
         fields = (
             'id',
             'story',
-            'context_1',
-            'question_1',
-            'word_limit_1',
-            'context_2',
-            'question_2',
-            'word_limit_2',
+            'contexts',
+            'questions',
         )
-        model = BabyShoes

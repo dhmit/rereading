@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="441af7e6-0342-4416-a6b7-42e0243d0860" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front_end/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/front_end/src/App.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -40,11 +40,13 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
+          <entry key="js" value="30" />
           <entry key="py" value="1422" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
+          <entry key="JavaScript" value="30" />
           <entry key="Python" value="1422" />
         </counts>
       </usages-collector>
@@ -59,11 +61,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/front_end/src/App.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="16" column="14" selection-start-line="16" selection-start-column="14" selection-end-line="16" selection-end-column="14" />
+            <state relative-caret-position="222">
+              <caret line="146" column="73" selection-start-line="146" selection-start-column="73" selection-end-line="146" selection-end-column="73" />
             </state>
           </provider>
         </entry>
@@ -90,14 +92,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="8" column="38" selection-start-line="8" selection-start-column="38" selection-end-line="8" selection-end-column="38" />
-              <folding>
-                <element signature="e#0#35#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="30">
+              <caret line="2" column="29" lean-forward="true" selection-start-line="2" selection-start-column="29" selection-end-line="2" selection-end-column="29" />
             </state>
           </provider>
         </entry>
@@ -121,7 +120,6 @@
         <option value="$PROJECT_DIR$/baby_shoes/src/App.css" />
         <option value="$PROJECT_DIR$/baby_shoes/src/App.js" />
         <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/front_end/src/App.js" />
         <option value="$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/admin.py" />
         <option value="$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/models.py" />
         <option value="$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes_api/settings.py" />
@@ -129,6 +127,7 @@
         <option value="$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/urls.py" />
         <option value="$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/serializers.py" />
         <option value="$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/views.py" />
+        <option value="$PROJECT_DIR$/front_end/src/App.js" />
       </list>
     </option>
   </component>
@@ -367,13 +366,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/front_end/src/App.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="16" column="14" selection-start-line="16" selection-start-column="14" selection-end-line="16" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/serializers.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -394,11 +386,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/backend/baby_shoes_api/baby_shoes/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="38" selection-start-line="8" selection-start-column="38" selection-end-line="8" selection-end-column="38" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="30">
+          <caret line="2" column="29" lean-forward="true" selection-start-line="2" selection-start-column="29" selection-end-line="2" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/front_end/src/App.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="222">
+          <caret line="146" column="73" selection-start-line="146" selection-start-column="73" selection-end-line="146" selection-end-column="73" />
         </state>
       </provider>
     </entry>

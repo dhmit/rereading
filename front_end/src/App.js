@@ -52,8 +52,17 @@ class Study extends React.Component {
 
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         // Load from server
+
+        // try {
+        //     const questions = await fetch('http://localhost:8000/api/');
+        //     const json = await questions.json();
+        //     this.setState(json[0]);
+        // } catch (e) {
+        //     console.log(e);
+        // }
+
         this.setState(list[0])
     }
 

@@ -17,10 +17,10 @@ class BabyShoesSerializer(serializers.ModelSerializer):
     questions = QuestionSerializer(many=True, read_only=True)
 
     class Meta:
+        model = BabyShoes
         fields = (
             'id',
             'story',
             'contexts',
             'questions',
         )
-        model = BabyShoes

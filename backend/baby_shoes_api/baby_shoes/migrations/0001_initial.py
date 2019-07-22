@@ -36,4 +36,21 @@ class Migration(migrations.Migration):
                 ('story', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='contexts', to='baby_shoes.BabyShoes')),
             ],
         ),
+        migrations.CreateModel(
+            name='Questions',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('text', models.TextField()),
+                ('word_limit', models.IntegerField()),
+                ('story', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='questions', to='baby_shoes.BabyShoes')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Contexts',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('text', models.TextField()),
+                ('story', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='contexts', to='baby_shoes.BabyShoes')),
+            ],
+        ),
     ]

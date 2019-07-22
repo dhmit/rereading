@@ -1,23 +1,23 @@
 import React from 'react';
 import './App.css';
 
-const list = [
-    {
-        id: 0,
-        story: 'Baby shoes. Never worn.',
-        contexts: ['This is an ad.', 'This is a story.'],
-        questions: [
-            {
-                text: 'In one word or less, how did this make you feel?',
-                word_limit: 1,
-            },
-            {
-                text: 'In three words or less, what is this story about?',
-                word_limit: 3,
-            },
-        ],
-    },
-];
+// const list = [
+//     {
+//         id: 0,
+//         story: 'Baby shoes. Never worn.',
+//         contexts: ['This is an ad.', 'This is a story.'],
+//         questions: [
+//             {
+//                 text: 'In one word or less, how did this make you feel?',
+//                 word_limit: 1,
+//             },
+//             {
+//                 text: 'In three words or less, what is this story about?',
+//                 word_limit: 3,
+//             },
+//         ],
+//     },
+// ];
 
 function Question(props) {
     return (
@@ -55,15 +55,15 @@ class Study extends React.Component {
     async componentDidMount() {
         // Load from server
 
-        // try {
-        //     const questions = await fetch('http://localhost:8000/api/');
-        //     const json = await questions.json();
-        //     this.setState(json[0]);
-        // } catch (e) {
-        //     console.log(e);
-        // }
+        try {
+            const questions = await fetch('http://localhost:8000/api/');
+            const json = await questions.json();
+            this.setState(json[0]);
+        } catch (e) {
+            console.log(e);
+        }
 
-        this.setState(list[0])
+        // this.setState(list[0])
     }
 
     handleFormChange(e) {

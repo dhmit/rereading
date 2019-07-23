@@ -66,6 +66,24 @@ class Study extends React.Component {
         // this.setState(list[0])
     }
 
+    postData() {
+        const url = 'http://localhost:8000/api/';
+        const data = {
+            answers: this.state.answers,
+        };
+        console.log(JSON.stringify(data));
+
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-type': 'application/json'
+            }
+
+        }).then(res => res.json()).then(response => console.log(JSON.stringify(response)))
+            .catch(err => console.log(err));
+    }
+
     handleFormChange(e) {
         const context = this.state.context_number;
         const question = this.state.question_number;
@@ -154,6 +172,7 @@ class Study extends React.Component {
                     answer={this.state.answers[this.state.context_number][this.state.question_number]}
                 />);
             } else {
+                this.postData();
                 response = <div className={'finished'}>
                     Thank you for your time!
                 </div>;

@@ -1,4 +1,4 @@
-"""baby_shoes_api URL Configuration
+"""prompted_readings URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.2/topics/http/urls/
@@ -18,5 +18,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('baby_shoes.urls')),
+    path('api/', include('apps.baby_shoes.urls')),
 ]

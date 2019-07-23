@@ -44,7 +44,6 @@ class Study extends React.Component {
             questions: [],
             context_number: 0,
             question_number: 0,
-            is_start: true,
             answers: [[]],
             finished: false,
             start: true,

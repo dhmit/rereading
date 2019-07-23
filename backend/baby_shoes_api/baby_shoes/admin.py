@@ -20,4 +20,5 @@ class BabyShoesAdmin(admin.ModelAdmin):
     model = BabyShoes
     inlines = [ContextInline, QuestionInline]
 
+
 admin.site.register(BabyShoes, BabyShoesAdmin)

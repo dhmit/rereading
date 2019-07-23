@@ -144,7 +144,7 @@ class Study extends React.Component {
 
                 );
 
-            } else if (!this.state.finished && this.state.question_number) {
+            } else if (!this.state.finished) {
                 response = (<Question
                     story={this.state.story}
                     context={this.state.contexts[this.state.context_number]}

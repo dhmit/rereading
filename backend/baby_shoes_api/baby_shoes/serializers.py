@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import BabyShoes, Question
+from .models import BabyShoes, Question, Context
 
 
 class QuestionSerializer(serializers.ModelSerializer):
@@ -9,6 +9,15 @@ class QuestionSerializer(serializers.ModelSerializer):
         fields = (
             'text',
             'word_limit'
+        )
+
+
+class ContextSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Context
+
+        fields = (
+            'text',
         )
 
 

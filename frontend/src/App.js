@@ -116,7 +116,13 @@ class Study extends React.Component {
         const isValid = this.validateSubmission(response, word_limit);
         if (!isValid) { return; }
 
-        answers[context_number][question_number] = response;
+        // answers[context_number][question_number] = response;
+        answers[context_number][question_number] = {
+            'story': this.state.story,
+            'context': this.state.contexts[context_number],
+            'question': this.state.questions[question_number],
+            'response': response
+        };
 
         if (question_number < this.state.questions.length - 1) {
             question_number += 1;

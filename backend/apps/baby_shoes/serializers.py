@@ -1,5 +1,28 @@
 from rest_framework import serializers
-from .models import BabyShoes, Question, Context
+from .models import BabyShoes, Question, Context, Student, StudentResponse
+
+
+class StudentResponseSerializer(serializers.ModelSerializer):
+    responses = serializers.StringRelatedField(many=True, read_only=True)
+
+    class Meta:
+        model = StudentResponse
+
+        fields = (
+            'response',
+            'views',
+        )
+
+
+class StudentSerializer(serializers.ModelSerializer):
+    answers = StudentResponseSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Student
+
+        fields = (
+            'answers',
+        )
 
 
 class QuestionSerializer(serializers.ModelSerializer):

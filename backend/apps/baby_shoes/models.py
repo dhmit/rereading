@@ -23,3 +23,17 @@ class Question(models.Model):
     text = models.TextField()
     word_limit = models.IntegerField()
     story = models.ForeignKey(BabyShoes, on_delete=models.CASCADE, related_name='questions')
+
+
+class Student(models.Model):
+
+    pass
+
+
+class StudentResponse(models.Model):
+
+    response = models.TextField()
+    views = models.IntegerField
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='responses')
+
+

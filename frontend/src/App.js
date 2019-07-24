@@ -67,7 +67,7 @@ class Study extends React.Component {
     }
 
     postData() {
-        const url = 'http://localhost:8000/api/';
+        const url = 'http://localhost:8000/api/add-response/';
         const data = {
             answers: this.state.answers,
         };

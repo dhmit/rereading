@@ -44,10 +44,11 @@ class Study extends React.Component {
             questions: [],
             context_number: 0,
             question_number: 0,
-            answers: [[]],
+            answers: [],
             finished: false,
             start: true,
             textInput: '',
+            views: 0,
         };
 
     }
@@ -69,8 +70,9 @@ class Study extends React.Component {
     postData() {
         const url = 'http://localhost:8000/api/add-response/';
         const data = {
-            answers: this.state.answers,
+            student_responses: this.state.answers,
         };
+
         console.log(JSON.stringify(data));
 
         fetch(url, {
@@ -110,22 +112,26 @@ class Study extends React.Component {
         let context_number = this.state.context_number;
         const answers = this.state.answers.slice();
         const response = this.state.textInput;
+        const views = this.state.views;
         const word_limit = this.state.questions[question_number].word_limit;
         let finished = this.state.finished;
 
         const isValid = this.validateSubmission(response, word_limit);
         if (!isValid) { return; }
 
-        answers[context_number][question_number] = response;
+        const answer = {
+            'response': response,
+            'views': views,
+        };
+        answers.push(answer);
 
         if (question_number < this.state.questions.length - 1) {
             question_number += 1;
-            answers[context_number].push('')
+
         } else { // we're at the last question
             if (context_number < this.state.contexts.length - 1) {
                 context_number += 1;
                 question_number = 0;
-                answers[context_number] = ['']
             } else { // we're at the last context
                 finished = true;
             }

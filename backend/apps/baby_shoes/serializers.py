@@ -13,7 +13,14 @@ class StudentResponseSerializer(serializers.ModelSerializer):
 
 
 class StudentSerializer(serializers.ModelSerializer):
-    student_responses = StudentResponseSerializer(many=True, read_only=True)
+    student_responses = StudentResponseSerializer(many=True)
+
+    def create(self, validated_data):
+        responses_data = validated_data.pop('student_responses')
+        student = Student.objects.create(**validated_data)
+        for response_data in responses_data:
+            StudentResponse.objects.create(student=student, **response_data)
+        return student
 
     class Meta:
         model = Student

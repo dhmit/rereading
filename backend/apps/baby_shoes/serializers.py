@@ -3,8 +3,6 @@ from .models import BabyShoes, Question, Context, Student, StudentResponse
 
 
 class StudentResponseSerializer(serializers.ModelSerializer):
-    # response = serializers.StringRelatedField(many=True, read_only=True)
-
     class Meta:
         model = StudentResponse
 
@@ -21,7 +19,6 @@ class StudentSerializer(serializers.ModelSerializer):
         model = Student
 
         fields = (
-            'id',
             'student_responses',
         )
 

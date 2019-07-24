@@ -29,8 +29,8 @@ function Question(props) {
                 <label>
                     <input type={'text'} value={props.answer} onChange={props.onChange} />
                 </label>
+                <button type='submit'>Continue</button>
             </form>
-            <button onClick={props.onSubmit}>{'Continue'}</button>
         </div>
     );
 }
@@ -47,6 +47,7 @@ class Study extends React.Component {
             answers: [[]],
             finished: false,
             start: true,
+            textInput: '',
         };
 
     }
@@ -84,68 +85,64 @@ class Study extends React.Component {
     }
 
     handleFormChange(e) {
-        const context = this.state.context_number;
-        const question = this.state.question_number;
-        const responses = this.state.answers.slice();
+        this.setState({textInput: e.target.value});
+    }
 
-        if (responses[context]) {
-            responses[context][question] = e.target.value;
+    validateSubmission(response, word_limit) {
+        if (!response) {
+            alert('Please enter a response.');
+            return false;
         } else {
-            responses[context] = [e.target.value];
+            const response_list = response.trim().split(' ');
+            if (!(response_list.length <= word_limit)) {
+                alert('Make sure to respect word limits.')
+                return false;
+            } 
         }
 
-        this.setState({answers: responses});
-
+        return true;
     }
+
 
     handleSubmit(e) {
         e.preventDefault();
         let question_number = this.state.question_number;
-        let new_context = this.state.context_number;
-        let answers = this.state.answers.slice();
-        let finished = false;
-        let response = answers[new_context][question_number];
-        let word_limit = this.state.questions[question_number].word_limit;
-        if (!response) {
-            alert('Please enter a response.');
-            return null;
-        }
-        question_number += 1;
+        let context_number = this.state.context_number;
+        const answers = this.state.answers.slice();
+        const response = this.state.textInput;
+        const word_limit = this.state.questions[question_number].word_limit;
+        let finished = this.state.finished;
 
-        const response_list = response.split(' ');
+        const isValid = this.validateSubmission(response, word_limit);
+        if (!isValid) { return; }
 
-        if (response_list.length <= word_limit) {
-            if (question_number === this.state.questions.length) {
-                new_context += 1;
+        answers[context_number][question_number] = response;
+
+        if (question_number < this.state.questions.length - 1) {
+            question_number += 1;
+            answers[context_number].push('')
+        } else { // we're at the last question
+            if (context_number < this.state.contexts.length - 1) {
+                context_number += 1;
                 question_number = 0;
-                answers[new_context] = [];
-            }
-
-            if (new_context === this.state.contexts.length) {
+                answers[context_number] = ['']
+            } else { // we're at the last context
                 finished = true;
-                answers = answers.slice(0, new_context)
             }
+        } 
 
-            this.setState({
-            question_number: question_number,
-            context_number: new_context,
-            answers: answers,
-            finished: finished,
-            });
-
-            e.target.reset();
-
-        } else {
-            alert('Make sure to respect word limits.')
-        }
+        this.setState({
+            question_number,
+            context_number,
+            answers,
+            finished,
+            textInput: '',
+        });
     }
 
     handleStartClick() {
         this.setState({start: false,})
     }
-
-
-
 
     render() {
 
@@ -168,7 +165,7 @@ class Study extends React.Component {
                     question={this.state.questions[this.state.question_number]['text']}
                     onChange={(e) => this.handleFormChange(e)}
                     onSubmit={(e) => this.handleSubmit(e)}
-                    answer={this.state.answers[this.state.context_number][this.state.question_number]}
+                    answer={this.state.textInput}
                 />);
             } else {
                 this.postData();

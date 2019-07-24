@@ -95,7 +95,7 @@ class Study extends React.Component {
         } else {
             const response_list = response.trim().split(' ');
             if (!(response_list.length <= word_limit)) {
-                alert('Make sure to respect word limits.')
+                alert('Make sure to respect word limits.');
                 return false;
             } 
         }

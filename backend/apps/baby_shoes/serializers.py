@@ -3,7 +3,7 @@ from .models import BabyShoes, Question, Context, Student, StudentResponse
 
 
 class StudentResponseSerializer(serializers.ModelSerializer):
-    responses = serializers.StringRelatedField(many=True, read_only=True)
+    # response = serializers.StringRelatedField(many=True, read_only=True)
 
     class Meta:
         model = StudentResponse
@@ -15,13 +15,14 @@ class StudentResponseSerializer(serializers.ModelSerializer):
 
 
 class StudentSerializer(serializers.ModelSerializer):
-    answers = StudentResponseSerializer(many=True, read_only=True)
+    student_responses = StudentResponseSerializer(many=True, read_only=True)
 
     class Meta:
         model = Student
 
         fields = (
-            'answers',
+            'id',
+            'student_responses',
         )
 
 

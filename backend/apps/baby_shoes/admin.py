@@ -1,13 +1,19 @@
 from django.contrib import admin
-from .models import BabyShoes, Context, Question, Student
+from .models import BabyShoes, Context, Question, Student, StudentResponse
 
 # Register your models here.
 # admin.site.register(BabyShoes)
 # admin.site.register(Context)
 
 
+class StudentResponseInline(admin.TabularInline):
+    model = StudentResponse
+    extra = 1
+
+
 class StudentAdmin(admin.ModelAdmin):
     model = Student
+    inlines = [StudentResponseInline]
 
 
 class QuestionInline(admin.TabularInline):

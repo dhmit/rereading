@@ -134,7 +134,7 @@ class Study extends React.Component {
         const answer = {
             'story': this.state.story,
             'context': this.state.contexts[context_number],
-            'question': this.state.questions[question_number],
+            'question': this.state.questions[question_number]['text'],
             'response': response,
             'views': views
         };

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Route, Link, BrowserRouter as Router } from 'react-router-dom';
-import './index.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import Study from './App';
 import InstructorPage from './instructor_data_view';
 import * as serviceWorker from './serviceWorker';

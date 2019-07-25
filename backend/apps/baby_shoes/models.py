@@ -27,12 +27,14 @@ class Question(models.Model):
 
 class Student(models.Model):
 
-    pass
+    story= models.TextField(default='')
 
 
 class StudentResponse(models.Model):
 
-    response = models.TextField()
+    question = models.TextField(default='')
+    context = models.TextField(default='')
+    response = models.TextField(default='')
     views = models.IntegerField(default=0)
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='student_responses')
 

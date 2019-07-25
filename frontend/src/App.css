@@ -1,4 +1,4 @@
-.story, .start, .finished {
+.story, .start, .finished, .question {
   text-align: center;
 }
 
@@ -6,11 +6,7 @@
   padding-top: 3%;
 }
 
-.story-text, .start {
+.story-text, .start, .question-prompt {
   padding-bottom: 3%;
   padding-top: 3%;
-}
-
-.question-prompt {
-  padding-bottom: 3%;
 }

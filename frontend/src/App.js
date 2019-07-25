@@ -80,6 +80,7 @@ class Study extends React.Component {
     postData() {
         const url = 'http://localhost:8000/api/add-response/';
         const data = {
+            story: this.state.story,
             student_responses: this.state.answers,
         };
 
@@ -132,11 +133,10 @@ class Study extends React.Component {
 
         // answers[context_number][question_number] = response;
         const answer = {
-            'story': this.state.story,
             'context': this.state.contexts[context_number],
-            'question': this.state.questions[question_number],
-            'response': response,
-            'views': views
+            'question': this.state.questions[question_number].text,
+            response,
+            views,
         };
         answers.push(answer);
         views = 0;

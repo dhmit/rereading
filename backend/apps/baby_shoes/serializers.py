@@ -9,6 +9,8 @@ class StudentResponseSerializer(serializers.ModelSerializer):
         fields = (
             'response',
             'views',
+            'question',
+            'context',
         )
 
 
@@ -20,12 +22,14 @@ class StudentSerializer(serializers.ModelSerializer):
         student = Student.objects.create(**validated_data)
         for response_data in responses_data:
             StudentResponse.objects.create(student=student, **response_data)
+
         return student
 
     class Meta:
         model = Student
 
         fields = (
+            'story',
             'student_responses',
         )
 

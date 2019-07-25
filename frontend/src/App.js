@@ -32,7 +32,7 @@ function Question(props) {
                     <Button variant='primary' type='submit' size='lg' block>Continue</Button>
                 </div>
             </form>
-            <Button variant='secondary' onClick={props.goBack}>Go back to story</Button>
+            <Button variant='secondary' onClick={props.goBack} size='lg' block>Go back to story</Button>
         </div>
     );
 }
@@ -42,7 +42,7 @@ function Story(props) {
         <div className={'story'}>
             <div className={'context-text'}>{props.context}</div>
             <div className={'story-text'}>{props.story}</div>
-            <button onClick={props.onClick}>Continue</button>
+            <Button variant='secondary' onClick={props.onClick} size='lg' block>Continue</Button>
         </div>
     );
 }
@@ -195,7 +195,9 @@ class Study extends React.Component {
                 response = (
                     <div className={'start'}>
                         <div>Are you ready?</div>
-                        <button onClick={() => this.handleStartClick()}>Start!</button>
+                        <Button variant='secondary' onClick={() => this.handleStartClick()} size='lg' block>
+                            Start!
+                        </Button>
                     </div>
 
                 );

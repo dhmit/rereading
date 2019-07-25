@@ -1,8 +1,8 @@
 import React from 'react'
 
 class InstructorPage extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             data: [],
         };

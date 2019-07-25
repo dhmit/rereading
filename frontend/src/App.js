@@ -182,3 +182,4 @@ class Study extends React.Component {
 }
 
 export default Study;
+

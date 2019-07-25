@@ -20,6 +20,6 @@ const routing = (
             <Route path="/instructor" component={InstructorPage} />
         </div>
     </Router>
-)
+);
 
-ReactDOM.render(routing,document.getElementById('root'))
+ReactDOM.render(routing,document.getElementById('root'));

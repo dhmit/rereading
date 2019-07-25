@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import Button from 'react-bootstrap/Button'
+import Form from 'react-bootstrap/Form'
 
 // const list = [
 //     {
@@ -26,7 +27,7 @@ function Question(props) {
             <div className={'question-prompt'}>{props.question}</div>
             <form onSubmit={props.onSubmit}>
                 <label>
-                    <input type={'text'} value={props.answer} onChange={props.onChange} />
+                    <Form.Control type={'text'} value={props.answer} onChange={props.onChange} />
                 </label>
                 <div>
                     <Button variant='primary' type='submit' size='lg' block>Continue</Button>

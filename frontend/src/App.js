@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import Button from 'react-bootstrap/Button'
 
 // const list = [
 //     {
@@ -27,9 +28,11 @@ function Question(props) {
                 <label>
                     <input type={'text'} value={props.answer} onChange={props.onChange} />
                 </label>
-                <button type='submit'>Continue</button>
+                <div>
+                    <Button variant='primary' type='submit' size='lg' block>Continue</Button>
+                </div>
             </form>
-            <button onClick={props.goBack}>Go back to story</button>
+            <Button variant='secondary' onClick={props.goBack}>Go back to story</Button>
         </div>
     );
 }

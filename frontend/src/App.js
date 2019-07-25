@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
+import Alert from 'react-bootstrap/Alert'
 
 // const list = [
 //     {
@@ -40,12 +41,27 @@ function Question(props) {
 
 function Story(props) {
     return (
-        <div className={'story'}>
+        <div className='story'>
             <div className={'context-text'}>{props.context}</div>
             <div className={'story-text'}>{props.story}</div>
             <Button variant='secondary' onClick={props.onClick} size='lg' block>Continue</Button>
         </div>
     );
+}
+
+function WordAlert(props) {
+
+    if (props.word_alert) {
+        return (
+            <div className='word-alert'>
+                <Alert variant='danger'>
+                    Please make sure to respect word limits, be sure to input a response.
+                </Alert>
+            </div>
+        );
+    } else {
+        return null;
+    }
 }
 
 class Study extends React.Component {
@@ -63,6 +79,7 @@ class Study extends React.Component {
             textInput: '',
             views: 0,
             show_story: true,
+            word_alert: false,
         };
 
     }
@@ -107,12 +124,10 @@ class Study extends React.Component {
 
     validateSubmission(response, word_limit) {
         if (!response) {
-            alert('Please enter a response.');
             return false;
         } else {
             const response_list = response.trim().split(' ');
             if (!(response_list.length <= word_limit)) {
-                alert('Make sure to respect word limits.');
                 return false;
             } 
         }
@@ -133,7 +148,10 @@ class Study extends React.Component {
         let show_story = this.state.show_story;
 
         const isValid = this.validateSubmission(response, word_limit);
-        if (!isValid) { return; }
+        if (!isValid) {
+            this.setState({word_alert: true,});
+            return;
+        }
 
         // answers[context_number][question_number] = response;
         const answer = {
@@ -166,6 +184,7 @@ class Study extends React.Component {
             textInput: '',
             show_story,
             views,
+            word_alert: false,
         });
     }
 
@@ -211,15 +230,22 @@ class Study extends React.Component {
                         onClick={() => this.toggleStory()}
                     />);
                 } else {
-                    response = (<Question
-                        story={this.state.story}
-                        context={this.state.contexts[this.state.context_number]}
-                        question={this.state.questions[this.state.question_number]['text']}
-                        onChange={(e) => this.handleFormChange(e)}
-                        onSubmit={(e) => this.handleSubmit(e)}
-                        answer={this.state.textInput}
-                        goBack={() => this.toggleStory()}
-                    />);
+                    response = (
+                        <div>
+                            <div><WordAlert word_alert={this.state.word_alert} /></div>
+                            <div>
+                                <Question
+                                    story={this.state.story}
+                                    context={this.state.contexts[this.state.context_number]}
+                                    question={this.state.questions[this.state.question_number]['text']}
+                                    onChange={(e) => this.handleFormChange(e)}
+                                    onSubmit={(e) => this.handleSubmit(e)}
+                                    answer={this.state.textInput}
+                                    goBack={() => this.toggleStory()}
+                                />
+                            </div>
+                        </div>
+                    );
                 }
             } else {
                 this.postData();

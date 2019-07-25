@@ -55,7 +55,7 @@ function WordAlert(props) {
         return (
             <div className='word-alert'>
                 <Alert variant='danger'>
-                    Please make sure to respect word limits, be sure to input a response.
+                    Please make sure to enter a response and respect word limits
                 </Alert>
             </div>
         );

@@ -42,7 +42,7 @@ function Story(props) {
         <div className={'story'}>
             <div className={'context-text'}>{props.context}</div>
             <div className={'story-text'}>{props.story}</div>
-            <button onClick={props.onClick}>Continue</button>
+            <Button variant='primary' onClick={props.onClick}>Continue</Button>
         </div>
     );
 }
@@ -195,7 +195,7 @@ class Study extends React.Component {
                 response = (
                     <div className={'start'}>
                         <div>Are you ready?</div>
-                        <button onClick={() => this.handleStartClick()}>Start!</button>
+                        <Button variant='primary' onClick={() => this.handleStartClick()}>Start!</Button>
                     </div>
 
                 );

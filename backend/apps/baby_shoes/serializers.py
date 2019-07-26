@@ -7,6 +7,7 @@ class StudentResponseSerializer(serializers.ModelSerializer):
         model = StudentResponse
 
         fields = (
+            'id',
             'response',
             'views',
             'question',
@@ -29,6 +30,7 @@ class StudentSerializer(serializers.ModelSerializer):
         model = Student
 
         fields = (
+            'id',
             'story',
             'student_responses',
         )
@@ -39,6 +41,7 @@ class QuestionSerializer(serializers.ModelSerializer):
         model = Question
 
         fields = (
+            'id',
             'text',
             'word_limit'
         )
@@ -49,6 +52,7 @@ class ContextSerializer(serializers.ModelSerializer):
         model = Context
 
         fields = (
+            'id',
             'text',
         )
 

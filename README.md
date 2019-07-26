@@ -1,6 +1,4 @@
-#Baby Shoes
-
-test
+## Setup
 
 1. Create a new virtual environment and activate it
 2. Install all package requirements via pip or using PyCharm's settings

@@ -43,7 +43,7 @@ class InstructorPage extends React.Component {
         return (
             <div>
                 {this.state.data.map(item => (
-                    <div key={item.id}>
+                    <div key={item.id} className={'box'}>
                         <h1>Story: {item.story}</h1>
                         <h3>Context: {item.student_responses[0]['context']}</h3>
                         <p>Questions: {item.student_responses[0]['question']}</p>

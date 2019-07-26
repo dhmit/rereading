@@ -139,6 +139,7 @@ frontend/node_modules
 
 # production
 /build
+/assets
 
 # misc
 .DS_Store
@@ -151,3 +152,4 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .idea/workspace.xml
+webpack-stats-dev.json

@@ -13,8 +13,8 @@ import InstructorPage from './instructor_data_view';
 const routing = (
     <Router>
         <div>
+            <Route path="/student" component={Study} />
             <Route path="/instructor" component={InstructorPage} />
-            <Route path="/" component={Study} />
         </div>
     </Router>
 );

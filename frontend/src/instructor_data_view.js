@@ -15,7 +15,7 @@ class InstructorPage extends React.Component {
 
     async componentDidMount() {
         try {
-            const res = await fetch('/api/add-response');
+            const res = await fetch('/api/add-response/');
             const data = await res.json();
             this.setState({
                 data

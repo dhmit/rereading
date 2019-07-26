@@ -25,7 +25,9 @@ SECRET_KEY = 'gpsthg6vl(=mziauv)us-7p8d5@ex_5j4s@gx=g$jfqdumdezv'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'rereading.dhmit.xyz',
+]
 
 
 # Application definition
@@ -130,7 +132,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+# the url where we'll look for static files
 STATIC_URL = '/static/'
+
+# where collectstatic puts static files for production
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
+
+# where collectstatic LOOKS for static files 
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'assets'),
 )
@@ -152,6 +160,6 @@ CORS_ORIGIN_WHITELIST = [
 WEBPACK_LOADER = {
     'DEFAULT': {
         'BUNDLE_DIR_NAME': 'bundles/',
-        'STATS_FILE': os.path.join(PROJECT_ROOT, 'webpack-stats.dev.json'),
+        'STATS_FILE': os.path.join(PROJECT_ROOT, 'webpack-stats.json'),
     }
 }

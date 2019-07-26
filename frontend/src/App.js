@@ -88,7 +88,7 @@ class Study extends React.Component {
         // Load from server
 
         try {
-            const questions = await fetch('http://localhost:8000/api/');
+            const questions = await fetch('/api/');
             const json = await questions.json();
             this.setState(json[0]);
         } catch (e) {
@@ -99,7 +99,7 @@ class Study extends React.Component {
     }
 
     postData() {
-        const url = 'http://localhost:8000/api/add-response/';
+        const url = '/api/add-response/';
         const data = {
             story: this.state.story,
             student_responses: this.state.answers,

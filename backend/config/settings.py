@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'corsheaders',
 
     # our apps
-    'apps.baby_shoes',
+    'apps.readings',
 ]
 
 MIDDLEWARE = [

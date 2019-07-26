@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import BabyShoes, Question, Context, Student, StudentResponse
+from .models import Story, Question, Context, Student, StudentResponse
 
 
 class StudentResponseSerializer(serializers.ModelSerializer):
@@ -57,12 +57,12 @@ class ContextSerializer(serializers.ModelSerializer):
         )
 
 
-class BabyShoesSerializer(serializers.ModelSerializer):
+class StorySerializer(serializers.ModelSerializer):
     contexts = serializers.StringRelatedField(many=True, read_only=True)
     questions = QuestionSerializer(many=True, read_only=True)
 
     class Meta:
-        model = BabyShoes
+        model = Story
         fields = (
             'id',
             'story',

@@ -1,9 +1,7 @@
 from django.contrib import admin
-from .models import BabyShoes, Context, Question, Student, StudentResponse
+from .models import Story, Context, Question, Student, StudentResponse
 
 # Register your models here.
-# admin.site.register(BabyShoes)
-# admin.site.register(Context)
 
 
 class StudentResponseInline(admin.TabularInline):
@@ -26,10 +24,10 @@ class ContextInline(admin.TabularInline):
     extra = 1
 
 
-class BabyShoesAdmin(admin.ModelAdmin):
-    model = BabyShoes
+class StoryAdmin(admin.ModelAdmin):
+    model = Story
     inlines = [ContextInline, QuestionInline]
 
 
-admin.site.register(BabyShoes, BabyShoesAdmin)
+admin.site.register(Story, StoryAdmin)
 admin.site.register(Student, StudentAdmin)

@@ -9,15 +9,15 @@ function Student(props) {
 
     return (
         <div className='student'>
-            <div>Student #{props.id}</div>
-            <div>Story: {props.story}</div>
+            <div><center><h1>Student #{props.id}</h1></center></div>
+            <div><h5><b>Story: </b> {props.story}</h5></div>
             <Table striped bordered hover responsive>
                 <thead>
                     <tr>
-                        <td>Context</td>
-                        <td>Question</td>
-                        <td>Response</td>
-                        <td>Views</td>
+                        <td><b>Context</b></td>
+                        <td><b>Question</b></td>
+                        <td><b>Response</b></td>
+                        <td><b>Views</b></td>
                     </tr>
                 </thead>
                 <tbody>{responses}</tbody>

@@ -9,7 +9,8 @@ function Student(props) {
 
     return (
         <div className='student'>
-            Student #{props.id}
+            <div>Student #{props.id}</div>
+            <div>Story: {props.story}</div>
             <Table striped bordered hover responsive>
                 <thead>
                     <tr>

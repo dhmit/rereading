@@ -1,24 +1,62 @@
 import React from 'react'
 import './index.css';
+import Table from 'react-bootstrap/Table'
 
-function Responses(props) {
+function Student(props) {
+    console.log(props);
+    const responses = props.student_responses.map(response => (
+        <Response response={response} key={response.id}/>
+    ));
 
+    return (
+        <div className='student'>
+            Student #{props.id}
+            <Table striped bordered hover responsive>
+                <thead>
+                    <tr>
+                        <td>Context</td>
+                        <td>Question</td>
+                        <td>Response</td>
+                        <td>Views</td>
+                    </tr>
+                </thead>
+                <tbody>{responses}</tbody>
+            </Table>
+        </div>
+    );
 }
+
+
+function Response(props) {
+    const response = props.response;
+
+    return (
+        <tr>
+            <td>{response.context}</td>
+            <td>{response.question}</td>
+            <td>{response.response}</td>
+            <td>{response.views}</td>
+        </tr>
+    );
+}
+
 
 class InstructorPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: [],
+            students: [],
+            loaded: false,
         };
     }
 
     async componentDidMount() {
         try {
             const res = await fetch('/api/add-response/');
-            const data = await res.json();
+            const students = await res.json();
             this.setState({
-                data
+                students,
+                loaded: true,
             });
         } catch (e) {
             console.log(e);
@@ -39,21 +77,30 @@ class InstructorPage extends React.Component {
         //     )
         //     index += 1;
         // }
+        if (this.state.loaded) {
+            const students = this.state.students.map(student => (
+                <Student story={student.story} student_responses={student.student_responses} id={student.id} key={student.id}/>
+            ));
 
-        return (
-            <div>
-                {this.state.data.map(item => (
-                    <div key={item.id} className={'box'}>
-                        <h1>Story: {item.story}</h1>
-                        <h3>Context: {item.student_responses[0]['context']}</h3>
-                        <p>Questions: {item.student_responses[0]['question']}</p>
-                        <p>Response: {item.student_responses[0]['response']}</p>
-                        <p>Views: {item.student_responses[0]['views']}</p>
-                    </div>
-                ))};
-                {/*result*/}
-            </div>
-        )
+            return students;
+        } else {
+            return null;
+        }
+
+        // return (
+        //     <div>
+        //         {this.state.students.map(item => (
+        //             <div key={item.id} className={'box'}>
+        //                 <h1>Story: {item.story}</h1>
+        //                 <h3>Context: {item.student_responses[0]['context']}</h3>
+        //                 <p>Questions: {item.student_responses[0]['question']}</p>
+        //                 <p>Response: {item.student_responses[0]['response']}</p>
+        //                 <p>Views: {item.student_responses[0]['views']}</p>
+        //             </div>
+        //         ))}
+        //
+        //     </div>
+        // )
     }
 }
 

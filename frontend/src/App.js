@@ -31,11 +31,12 @@ function Question(props) {
                 <label>
                     <Form.Control type={'text'} value={props.answer} onChange={props.onChange} />
                 </label>
-                <div>
+                <Navbar fixed={'bottom'}>
+                    <Button variant='secondary' onClick={props.goBack} size='lg' block>Go back to story</Button>
                     <Button variant='primary' type='submit' size='lg' block>Continue</Button>
-                </div>
+                </Navbar>
             </form>
-            <Button variant='secondary' onClick={props.goBack} size='lg' block>Go back to story</Button>
+
         </div>
     );
 }

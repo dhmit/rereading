@@ -81,7 +81,7 @@ class Study extends React.Component {
             finished: false,
             start: true,
             textInput: '',
-            views: 0,
+            views: 1,
             show_story: true,
             word_alert: false,
         };
@@ -165,7 +165,7 @@ class Study extends React.Component {
             views,
         };
         answers.push(answer);
-        views = 0;
+        views = 1;
 
         if (question_number < this.state.questions.length - 1) {
             question_number += 1;

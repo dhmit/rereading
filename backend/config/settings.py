@@ -25,9 +25,12 @@ SECRET_KEY = 'gpsthg6vl(=mziauv)us-7p8d5@ex_5j4s@gx=g$jfqdumdezv'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'rereading.dhmit.xyz',
-]
+if DEBUG:
+    ALLOWED_HOSTS = [] # wildcard
+else:
+    ALLOWED_HOSTS = [
+        'rereading.dhmit.xyz',
+    ]
 
 
 # Application definition

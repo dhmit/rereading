@@ -3,7 +3,6 @@ import './index.css';
 import Table from 'react-bootstrap/Table'
 
 function Student(props) {
-    console.log(props);
     const responses = props.student_responses.map(response => (
         <Response response={response} key={response.id}/>
     ));

@@ -3,6 +3,7 @@ import './App.css';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
+import Navbar from 'react-bootstrap/Navbar';
 
 // const list = [
 //     {
@@ -44,7 +45,9 @@ function Story(props) {
         <div className='story'>
             <div className={'context-text'}>{props.context}</div>
             <div className={'story-text'}>{props.story}</div>
-            <Button variant='secondary' onClick={props.onClick} size='lg' block>Continue</Button>
+            <Navbar fixed={'bottom'}>
+                <Button variant='secondary' onClick={props.onClick} size='lg' block>Continue</Button>
+            </Navbar>
         </div>
     );
 }
@@ -215,9 +218,11 @@ class Study extends React.Component {
                 response = (
                     <div className={'start'}>
                         <div>Are you ready?</div>
-                        <Button variant='secondary' onClick={() => this.handleStartClick()} size='lg' block>
-                            Start!
-                        </Button>
+                        <Navbar fixed={'bottom'}>
+                            <Button variant='secondary' onClick={() => this.handleStartClick()} size='lg' block>
+                                Start!
+                            </Button>
+                        </Navbar>
                     </div>
 
                 );

@@ -50,8 +50,8 @@ function Response(props) {
                 </Form.Group>
                 <Navbar fixed='bottom'>
                     <ButtonGroup className='multi-button' size='lg'>
-                        <Button variant='primary' onClick={props.goBack}>Go Back</Button>
                         <Button variant='secondary' type='submit'>Submit</Button>
+                        <Button variant='primary' onClick={props.goBack}>Go Back</Button>
                     </ButtonGroup>
                 </Navbar>
             </Form>

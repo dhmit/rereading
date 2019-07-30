@@ -37,7 +37,7 @@ function Context(props) {
                 <Button variant='primary' onClick={props.onClick} size='lg' block>Continue</Button>
             </Navbar>
         </div>
-    )
+    );
 }
 
 function Response(props) {
@@ -49,7 +49,10 @@ function Response(props) {
                     <Form.Control type='text' onChange={props.onChange} value={props.answer} />
                 </Form.Group>
                 <Navbar fixed='bottom'>
-                    <Button variant='primary' type='submit' size='lg' block>Submit</Button>
+                    <ButtonGroup className='multi-button' size='lg'>
+                        <Button variant='primary' onClick={props.goBack}>Go Back</Button>
+                        <Button variant='secondary' type='submit'>Submit</Button>
+                    </ButtonGroup>
                 </Navbar>
             </Form>
         </div>
@@ -216,27 +219,33 @@ class Study extends React.Component {
     }
 
     handleStartClick() {
-        this.setState({show_story: true,})
+        this.setState({show_story: true,});
     }
 
     storyButtonClick() {
-        this.setState({show_story: false, show_context:true,})
+        this.setState({show_story: false, show_context:true,});
     }
 
     contextButtonClick() {
-        this.setState({show_context: false, show_question:true})
+        this.setState({show_context: false, show_question:true});
     }
 
     questionButtonClick() {
-        this.setState({show_question: false, show_go_back: true,})
+        this.setState({show_question: false, show_go_back: true,});
     }
 
     backButtonClick() {
-        this.setState({show_go_back: false, show_story: true,})
+        const views = this.state.views + 1;
+        this.setState({
+            show_go_back: false,
+            show_story: true,
+            show_response: false,
+            views,
+        });
     }
 
     continueButtonClick() {
-        this.setState({show_go_back: false, show_response:true})
+        this.setState({show_go_back: false, show_response:true});
     }
 
 
@@ -281,6 +290,7 @@ class Study extends React.Component {
                             onChange={(e) => this.handleFormChange(e)}
                             question={this.state.questions[this.state.question_number]['text']}
                             answer={this.state.textInput}
+                            goBack={() => this.backButtonClick()}
                         />
                     </div>
                 );

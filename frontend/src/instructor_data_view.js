@@ -50,19 +50,22 @@ class InstructorPage extends React.Component {
         this.state = {
             students: [],
             loaded: false,
-            filterBy: 'Student',
+            sortBy: 'student',
         };
+
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     async componentDidMount() {
         try {
             const res = await fetch('/api/add-response/');
             const students = await res.json();
-            const filterBy = this.state.filterBy;
+            const sortBy = this.state.sortBy;
             this.setState({
                 students,
                 loaded: true,
-                filterBy,
+                sortBy,
             });
         } catch (e) {
             console.log(e);
@@ -75,32 +78,55 @@ class InstructorPage extends React.Component {
         this.setState({
             students,
             loaded,
-            filter: event.target.value
+            sortBy: event.target.value
+        });
+    }
+
+    handleChange(event) {
+        const students = this.state.students;
+        const loaded = this.state.loaded;
+        this.setState({
+            students,
+            loaded,
+            sortBy: event.target.value
         });
     }
 
     render() {
         if (this.state.loaded) {
-            const students = this.state.students.map(student => (
-                <Student story={student.story} student_responses={student.student_responses} id={student.id} key={student.id}/>
-            ));
+            let tempStudents = [...this.state.students];
+            let students;
+            if (this.state.sortBy === 'story') {
+                tempStudents.sort((a, b) => (a.story.toLowerCase() > b.story.toLowerCase() ? 1 : -1));
+                students = tempStudents.map(student => (
+                    <Student story={student.story} student_responses={student.student_responses} id={student.id} key={student.id}/>
+                ));
+            } else if (this.state.sortBy === 'question') {
+
+            } else {
+                students = tempStudents.map(student => (
+                    <Student story={student.story} student_responses={student.student_responses} id={student.id} key={student.id}/>
+                ));
+            }
 
             return (
                 <div>
                     <Navbar fixed={'top'}>
                         <form onSubmit={this.handleSubmit}>
                             <label>
-                                Filter by
-                                <select value={this.state.filter}>
-                                    <option value={'Student'}>Student</option>
-                                    <option value={'Story'}>Story</option>
-                                    <option value={'Question'}>Question</option>
+                                Sort by
+                                <select value={this.state.sortBy} onChange={this.handleChange}>
+                                    <option value={'student'}>Student</option>
+                                    <option value={'story'}>Story</option>
+                                    <option value={'question'}>Question</option>
                                 </select>
                             </label>
                             <input type={'submit'} value={'submit'}/>
                         </form>
                     </Navbar>
-                    <div> {students} </div>
+                    <div>
+                        {students}
+                    </div>
                 </div>
             );
         } else {

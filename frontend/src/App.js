@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
 import Navbar from 'react-bootstrap/Navbar';
@@ -60,8 +61,10 @@ function GoBack(props) {
         <div className='go-back'>
             <div>Would you like to see that again?</div>
             <Navbar fixed='bottom'>
-                <Button variant='primary' onClick={props.goBack} size='lg' block>Yes</Button>
-                <Button variant='secondary' onClick={props.continue} size='lg' block>No</Button>
+                <ButtonGroup className='multi-button' size='lg'>
+                    <Button variant='secondary' onClick={props.continue}>No</Button>
+                    <Button variant='primary' onClick={props.goBack}>Yes</Button>
+                </ButtonGroup>
             </Navbar>
         </div>
     );

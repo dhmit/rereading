@@ -5,38 +5,14 @@ import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
 import Navbar from 'react-bootstrap/Navbar';
 
-// const list = [
-//     {
-//         id: 0,
-//         story: 'Baby shoes. Never worn.',
-//         contexts: ['This is an ad.', 'This is a story.'],
-//         questions: [
-//             {
-//                 text: 'In one word or less, how did this make you feel?',
-//                 word_limit: 1,
-//             },
-//             {
-//                 text: 'In three words or less, what is this story about?',
-//                 word_limit: 3,
-//             },
-//         ],
-//     },
-// ];
 
 function Question(props) {
     return (
         <div className={'question'}>
             <div className={'question-prompt'}>{props.question}</div>
-            <form onSubmit={props.onSubmit}>
-                <label>
-                    <Form.Control type={'text'} value={props.answer} onChange={props.onChange} />
-                </label>
-                <Navbar fixed={'bottom'}>
-                    <Button variant='secondary' onClick={props.goBack} size='lg' block>Go back to story</Button>
-                    <Button variant='primary' type='submit' size='lg' block>Continue</Button>
-                </Navbar>
-            </form>
-
+            <Navbar fixed={'bottom'}>
+                <Button variant='primary' onClick={props.onClick} size='lg' block>Continue</Button>
+            </Navbar>
         </div>
     );
 }
@@ -44,10 +20,48 @@ function Question(props) {
 function Story(props) {
     return (
         <div className='story'>
-            <div className={'context-text'}>{props.context}</div>
             <div className={'story-text'}>{props.story}</div>
             <Navbar fixed={'bottom'}>
-                <Button variant='secondary' onClick={props.onClick} size='lg' block>Continue</Button>
+                <Button variant='primary' onClick={props.onClick} size='lg' block>Continue</Button>
+            </Navbar>
+        </div>
+    );
+}
+
+function Context(props) {
+    return (
+        <div className='context'>
+            <div className={'context-text'}>{props.context}</div>
+            <Navbar fixed='bottom'>
+                <Button variant='primary' onClick={props.onClick} size='lg' block>Continue</Button>
+            </Navbar>
+        </div>
+    )
+}
+
+function Response(props) {
+    return (
+        <div className='response'>
+            <Form onSubmit={props.onSubmit}>
+                <Form.Group>
+                    <Form.Label>{props.question}</Form.Label>
+                    <Form.Control type='text' onChange={props.onChange} value={props.answer} />
+                </Form.Group>
+                <Navbar fixed='bottom'>
+                    <Button variant='primary' type='submit' size='lg' block>Submit</Button>
+                </Navbar>
+            </Form>
+        </div>
+    );
+}
+
+function GoBack(props) {
+    return (
+        <div className='go-back'>
+            <div>Would you like to see that again?</div>
+            <Navbar fixed='bottom'>
+                <Button variant='primary' onClick={props.goBack} size='lg' block>Yes</Button>
+                <Button variant='secondary' onClick={props.continue} size='lg' block>No</Button>
             </Navbar>
         </div>
     );
@@ -79,10 +93,13 @@ class Study extends React.Component {
             question_number: 0,
             answers: [],
             finished: false,
-            start: true,
             textInput: '',
             views: 1,
-            show_story: true,
+            show_story: false,
+            show_context: false,
+            show_question: false,
+            show_response: false,
+            show_go_back: false,
             word_alert: false,
         };
 
@@ -133,7 +150,7 @@ class Study extends React.Component {
             const response_list = response.trim().split(' ');
             if (!(response_list.length <= word_limit)) {
                 return false;
-            } 
+            }
         }
 
         return true;
@@ -150,6 +167,7 @@ class Study extends React.Component {
         const word_limit = this.state.questions[question_number].word_limit;
         let finished = this.state.finished;
         let show_story = this.state.show_story;
+        let show_response = this.state.show_response;
 
         const isValid = this.validateSubmission(response, word_limit);
         if (!isValid) {
@@ -157,7 +175,6 @@ class Study extends React.Component {
             return;
         }
 
-        // answers[context_number][question_number] = response;
         const answer = {
             'context': this.state.contexts[context_number],
             'question': this.state.questions[question_number].text,
@@ -177,8 +194,10 @@ class Study extends React.Component {
                 show_story = true;
             } else { // we're at the last context
                 finished = true;
+                show_story = false;
+                show_response = false;
             }
-        } 
+        }
 
         this.setState({
             question_number,
@@ -187,27 +206,35 @@ class Study extends React.Component {
             finished,
             textInput: '',
             show_story,
+            show_response,
             views,
             word_alert: false,
         });
     }
 
     handleStartClick() {
-        this.setState({start: false,})
+        this.setState({show_story: true,})
     }
 
-    toggleStory() {
-        const show_story = !this.state.show_story;
-        let views = this.state.views;
-        if (show_story) {
-            views++;
-        }
-        this.setState({
-            show_story,
-            views,
-        });
+    storyButtonClick() {
+        this.setState({show_story: false, show_context:true,})
     }
 
+    contextButtonClick() {
+        this.setState({show_context: false, show_question:true})
+    }
+
+    questionButtonClick() {
+        this.setState({show_question: false, show_go_back: true,})
+    }
+
+    backButtonClick() {
+        this.setState({show_go_back: false, show_story: true,})
+    }
+
+    continueButtonClick() {
+        this.setState({show_go_back: false, show_response:true})
+    }
 
 
     render() {
@@ -215,51 +242,65 @@ class Study extends React.Component {
         let response;
 
         if (this.state.story) {
-            if (this.state.start) {
+            if (this.state.show_story) {
+                response = (<Story
+                        story={this.state.story}
+                        onClick={() => this.storyButtonClick()}
+                    />
+                );
+            } else if (this.state.show_context) {
+                response = (
+                    <Context
+                        context={this.state.contexts[this.state.context_number]}
+                        onClick={() => this.contextButtonClick()}
+                    />
+                );
+            } else if (this.state.show_go_back) {
+                response = (
+                    <GoBack
+                        goBack={() => this.backButtonClick()}
+                        continue={() => this.continueButtonClick()}
+                    />
+                );
+            } else if (this.state.show_question) {
+                response = (
+                    <Question
+                        question={this.state.questions[this.state.question_number]['text']}
+                        onClick={() => this.questionButtonClick()}
+                    />
+                );
+            } else if (this.state.show_response) {
+                response = (
+                    <div>
+                        <WordAlert word_alert={this.state.word_alert}/>
+                        <Response
+                            onSubmit={(e) => this.handleSubmit(e)}
+                            onChange={(e) => this.handleFormChange(e)}
+                            question={this.state.questions[this.state.question_number]['text']}
+                            answer={this.state.textInput}
+                        />
+                    </div>
+                );
+            } else if (this.state.finished) {
+                this.postData();
+                response = (
+                    <div className={'finished'}>
+                        Thank you for your time!
+                    </div>
+                );
+            } else {
                 response = (
                     <div className={'start'}>
                         <div>Are you ready?</div>
                         <Navbar fixed={'bottom'}>
-                            <Button variant='secondary' onClick={() => this.handleStartClick()} size='lg' block>
+                            <Button variant='primary' onClick={() => this.handleStartClick()} size='lg' block>
                                 Start!
                             </Button>
                         </Navbar>
                     </div>
-
                 );
-
-            } else if (!this.state.finished) {
-                if (this.state.show_story) {
-                    response = (<Story
-                        story={this.state.story}
-                        context={this.state.contexts[this.state.context_number]}
-                        onClick={() => this.toggleStory()}
-                    />);
-                } else {
-                    response = (
-                        <div>
-                            <div><WordAlert word_alert={this.state.word_alert} /></div>
-                            <div>
-                                <Question
-                                    story={this.state.story}
-                                    context={this.state.contexts[this.state.context_number]}
-                                    question={this.state.questions[this.state.question_number]['text']}
-                                    onChange={(e) => this.handleFormChange(e)}
-                                    onSubmit={(e) => this.handleSubmit(e)}
-                                    answer={this.state.textInput}
-                                    goBack={() => this.toggleStory()}
-                                />
-                            </div>
-                        </div>
-                    );
-                }
-            } else {
-                this.postData();
-                response = <div className={'finished'}>
-                    Thank you for your time!
-                </div>;
             }
-        } else {
+        } else { // Haven't pulled prompts from database yet
             response = null;
         }
 

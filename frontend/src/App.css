@@ -1,4 +1,4 @@
-.story, .start, .finished, .question {
+.story, .start, .finished, .question, .response, .context, .go-back {
   text-align: center;
 }
 

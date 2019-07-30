@@ -121,7 +121,6 @@ class InstructorPage extends React.Component {
                                     <option value={'question'}>Question</option>
                                 </select>
                             </label>
-                            <input type={'submit'} value={'submit'}/>
                         </form>
                     </Navbar>
                     <div>

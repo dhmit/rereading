@@ -1,6 +1,9 @@
 import React from 'react'
 import './index.css';
 import Table from 'react-bootstrap/Table'
+import Form from "react-bootstrap/Form";
+import Navbar from "react-bootstrap/Navbar";
+import Button from "react-bootstrap/Button";
 
 function Student(props) {
     const responses = props.student_responses.map(response => (
@@ -47,6 +50,7 @@ class InstructorPage extends React.Component {
         this.state = {
             students: [],
             loaded: false,
+            filterBy: 'Student',
         };
     }
 
@@ -54,13 +58,25 @@ class InstructorPage extends React.Component {
         try {
             const res = await fetch('/api/add-response/');
             const students = await res.json();
+            const filterBy = this.state.filterBy;
             this.setState({
                 students,
                 loaded: true,
+                filterBy,
             });
         } catch (e) {
             console.log(e);
         }
+    }
+
+    handleSubmit(event) {
+        const students = this.state.students;
+        const loaded = this.state.loaded;
+        this.setState({
+            students,
+            loaded,
+            filter: event.target.value
+        });
     }
 
     render() {
@@ -69,7 +85,24 @@ class InstructorPage extends React.Component {
                 <Student story={student.story} student_responses={student.student_responses} id={student.id} key={student.id}/>
             ));
 
-            return students;
+            return (
+                <div>
+                    <Navbar fixed={'top'}>
+                        <form onSubmit={this.handleSubmit}>
+                            <label>
+                                Filter by
+                                <select value={this.state.filter}>
+                                    <option value={'Student'}>Student</option>
+                                    <option value={'Story'}>Story</option>
+                                    <option value={'Question'}>Question</option>
+                                </select>
+                            </label>
+                            <input type={'submit'} value={'submit'}/>
+                        </form>
+                    </Navbar>
+                    <div> {students} </div>
+                </div>
+            );
         } else {
             return null;
         }

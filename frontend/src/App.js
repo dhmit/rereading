@@ -6,6 +6,23 @@ import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
 import Navbar from 'react-bootstrap/Navbar';
 
+class TimeIt {
+    constructor() {
+        this.start = Date.now();
+        this.end = null;
+        this.time = 0;
+    }
+
+    stop() {
+        this.end = Date.now();
+        this.time += this.end - this.start;
+        return this.time / 1000;
+    }
+
+    resume() {
+        this.start = Date.now();
+    }
+}
 
 function Question(props) {
     return (

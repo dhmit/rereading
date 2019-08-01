@@ -1,9 +1,7 @@
-import React from 'react'
+import React from 'react';
 import './index.css';
-import Table from 'react-bootstrap/Table'
-import Form from "react-bootstrap/Form";
+import Table from 'react-bootstrap/Table';
 import Navbar from "react-bootstrap/Navbar";
-import Button from "react-bootstrap/Button";
 
 function Student(props) {
     const responses = props.student_responses.map(response => (
@@ -39,6 +37,63 @@ function Response(props) {
             <td>{response.question}</td>
             <td>{response.response}</td>
             <td>{response.views}</td>
+        </tr>
+    );
+}
+
+function QuestionView(props) {
+    const students = props.students;
+    let questions = {};
+    for (let i = 0; i < students.length; i++) {
+        let student = students[i];
+        for (var prompt in student.student_responses) {
+            let question = student.student_responses[prompt].question;
+            if (questions.hasOwnProperty(question)) {
+                questions[question].push(i);
+            } else {
+                questions[question] = [i];
+            }
+        }
+    }
+    const questionsToView = Object.keys(questions).map(question => (
+        <Question question={question} indices={questions[question]} students={students} key={question}/>
+    ));
+
+    return (
+        <div className='question-view'>
+            {questionsToView}
+        </div>
+    );
+}
+
+function Question(props) {
+    const responses = props.indices.map(index => (
+        <QuestionResponse student={props.students[index]} key={index}/>
+    ));
+
+    return (
+        <div>
+            <div><center><h1>Question: {props.question}</h1></center></div>
+            <Table striped bordered hover responsive>
+                <thead>
+                <tr>
+                    <td><b>Student</b></td>
+                    <td><b>Response</b></td>
+                    <td><b>Views</b></td>
+                </tr>
+                </thead>
+                <tbody>{responses}</tbody>
+            </Table>
+        </div>
+    );
+}
+
+function QuestionResponse(props) {
+    return (
+        <tr>
+            <td>{props.student.id}</td>
+            <td>{props.student.student_responses.response}</td>
+            <td>{props.student.student_responses.views}</td>
         </tr>
     );
 }
@@ -102,7 +157,7 @@ class InstructorPage extends React.Component {
                     <Student story={student.story} student_responses={student.student_responses} id={student.id} key={student.id}/>
                 ));
             } else if (this.state.sortBy === 'question') {
-
+                students = <QuestionView students={tempStudents}/>;
             } else {
                 students = tempStudents.map(student => (
                     <Student story={student.story} student_responses={student.student_responses} id={student.id} key={student.id}/>

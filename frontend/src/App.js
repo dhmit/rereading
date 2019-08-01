@@ -117,13 +117,14 @@ class Study extends React.Component {
             answers: [],
             finished: false,
             textInput: '',
-            views: 1,
+            views: '[]',
             show_story: false,
             show_context: false,
             show_question: false,
             show_response: false,
             show_go_back: false,
             word_alert: false,
+            timer: null,
         };
 
     }
@@ -205,7 +206,8 @@ class Study extends React.Component {
             views,
         };
         answers.push(answer);
-        views = 1;
+        views = '[]';
+        const timer = new TimeIt();
 
         if (question_number < this.state.questions.length - 1) {
             question_number += 1;
@@ -232,15 +234,25 @@ class Study extends React.Component {
             show_response,
             views,
             word_alert: false,
+            timer,
         });
     }
 
     handleStartClick() {
-        this.setState({show_story: true,});
+        const timer = new TimeIt();
+        this.setState({show_story: true, timer,});
     }
 
     storyButtonClick() {
-        this.setState({show_story: false, show_context:true,});
+        const view_list = JSON.parse(this.state.views);
+        const time = this.state.timer.stop();
+        view_list.push(time);
+        const views = JSON.stringify(view_list);
+        this.setState({
+            show_story: false,
+            show_context:true,
+            views,
+        });
     }
 
     contextButtonClick() {
@@ -252,12 +264,12 @@ class Study extends React.Component {
     }
 
     backButtonClick() {
-        const views = this.state.views + 1;
+        const timer = new TimeIt();
         this.setState({
             show_go_back: false,
             show_story: true,
             show_response: false,
-            views,
+            timer,
         });
     }
 

@@ -35,7 +35,7 @@ class StudentResponse(models.Model):
     question = models.TextField(default='')
     context = models.TextField(default='')
     response = models.TextField(default='')
-    views = models.IntegerField(default=0)
+    views = models.TextField(default='')
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='student_responses')
 
 

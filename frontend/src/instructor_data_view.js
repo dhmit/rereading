@@ -46,7 +46,7 @@ function QuestionView(props) {
     let questions = {};
     for (let i = 0; i < students.length; i++) {
         let student = students[i];
-        for (var prompt in student.student_responses) {
+        for (let prompt in student.student_responses) {
             let question = student.student_responses[prompt].question;
             let context = student.student_responses[prompt].context;
             if (questions.hasOwnProperty(context)) {
@@ -55,20 +55,13 @@ function QuestionView(props) {
                 } else {
                     questions[context][question] = [[i, prompt]];
                 }
-                // questions[question].push([i, prompt]);
             } else {
-                // questions[question] = [[i, prompt]];
                 questions[context] = {};
                 questions[context][question] = [[i, prompt]];
             }
         }
     }
-    /*const questionsToView = Object.keys(questions).map(context => (
-        for (let question in questions[context]) {
-            <Question context={context} question={question} indices={questions[context][question]}
-                  students={students} key={context}/>
-        }
-    ));*/
+
     const questionsToView = [];
     for (let context in questions) {
         for (let question in questions[context]) {
@@ -77,7 +70,6 @@ function QuestionView(props) {
             );
         }
     }
-    // <Question context={context} indices={questions[context]} students={students} key={context}/>
 
     return (
         <div className='question-view'>
@@ -93,8 +85,8 @@ function Question(props) {
 
     return (
         <div>
-            <div><center><h2>Context: {props.context}</h2></center></div>
-            <div><center><h2>Question: {props.question}</h2></center></div>
+            <div><h2>Context: {props.context}</h2></div>
+            <div><h2>Question: {props.question}</h2></div>
             <Table striped bordered hover responsive>
                 <thead>
                 <tr>

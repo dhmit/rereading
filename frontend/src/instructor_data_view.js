@@ -49,9 +49,9 @@ function QuestionView(props) {
         for (var prompt in student.student_responses) {
             let question = student.student_responses[prompt].question;
             if (questions.hasOwnProperty(question)) {
-                questions[question].push(i);
+                questions[question].push([i, prompt]);
             } else {
-                questions[question] = [i];
+                questions[question] = [[i, prompt]];
             }
         }
     }
@@ -68,7 +68,7 @@ function QuestionView(props) {
 
 function Question(props) {
     const responses = props.indices.map(index => (
-        <QuestionResponse student={props.students[index]} key={index}/>
+        <QuestionResponse student={props.students[index[0]]} prompt={index[1]} key={index[0]}/>
     ));
 
     return (
@@ -92,8 +92,8 @@ function QuestionResponse(props) {
     return (
         <tr>
             <td>{props.student.id}</td>
-            <td>{props.student.student_responses.response}</td>
-            <td>{props.student.student_responses.views}</td>
+            <td>{props.student.student_responses[props.prompt].response}</td>
+            <td>{props.student.student_responses[props.prompt].views}</td>
         </tr>
     );
 }

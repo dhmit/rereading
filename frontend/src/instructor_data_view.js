@@ -48,16 +48,36 @@ function QuestionView(props) {
         let student = students[i];
         for (var prompt in student.student_responses) {
             let question = student.student_responses[prompt].question;
-            if (questions.hasOwnProperty(question)) {
-                questions[question].push([i, prompt]);
+            let context = student.student_responses[prompt].context;
+            if (questions.hasOwnProperty(context)) {
+                if (questions[context].hasOwnProperty(question)) {
+                    questions[context][question].push([i, prompt]);
+                } else {
+                    questions[context][question] = [[i, prompt]];
+                }
+                // questions[question].push([i, prompt]);
             } else {
-                questions[question] = [[i, prompt]];
+                // questions[question] = [[i, prompt]];
+                questions[context] = {};
+                questions[context][question] = [[i, prompt]];
             }
         }
     }
-    const questionsToView = Object.keys(questions).map(question => (
-        <Question question={question} indices={questions[question]} students={students} key={question}/>
-    ));
+    /*const questionsToView = Object.keys(questions).map(context => (
+        for (let question in questions[context]) {
+            <Question context={context} question={question} indices={questions[context][question]}
+                  students={students} key={context}/>
+        }
+    ));*/
+    const questionsToView = [];
+    for (let context in questions) {
+        for (let question in questions[context]) {
+            questionsToView.push(
+                <Question context={context} question={question} indices={questions[context][question]} students={students} key={context}/>
+            );
+        }
+    }
+    // <Question context={context} indices={questions[context]} students={students} key={context}/>
 
     return (
         <div className='question-view'>
@@ -73,7 +93,8 @@ function Question(props) {
 
     return (
         <div>
-            <div><center><h1>Question: {props.question}</h1></center></div>
+            <div><center><h2>Context: {props.context}</h2></center></div>
+            <div><center><h2>Question: {props.question}</h2></center></div>
             <Table striped bordered hover responsive>
                 <thead>
                 <tr>

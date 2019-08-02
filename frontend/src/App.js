@@ -38,7 +38,9 @@ function Question(props) {
 function Story(props) {
     return (
         <div className='story'>
-            <div className={'story-text'}>{props.story}</div>
+            <div className={'story-box'} onScroll={props.onScroll}>
+                <div className={'story-text'}>{props.story}</div>
+            </div>
             <Navbar fixed={'bottom'}>
                 <Button variant='primary' onClick={props.onClick} size='lg' block>Continue</Button>
             </Navbar>
@@ -117,7 +119,7 @@ class Study extends React.Component {
             answers: [],
             finished: false,
             textInput: '',
-            views: '[]',
+            views: '[]', // views is stored as a json string
             show_story: false,
             show_context: false,
             show_question: false,
@@ -125,6 +127,9 @@ class Study extends React.Component {
             show_go_back: false,
             word_alert: false,
             timer: null,
+            scrollTop: 0,
+            scroll_ups: 0,
+            scrolling_up: false,
         };
 
     }
@@ -135,12 +140,10 @@ class Study extends React.Component {
         try {
             const questions = await fetch('/api/');
             const json = await questions.json();
-            this.setState(json[0]);
+            this.setState(json[1]);
         } catch (e) {
             console.log(e);
         }
-
-        // this.setState(list[0])
     }
 
     postData() {
@@ -192,6 +195,7 @@ class Study extends React.Component {
         let finished = this.state.finished;
         let show_story = this.state.show_story;
         let show_response = this.state.show_response;
+        let scroll_ups = this.state.scroll_ups;
 
         const isValid = this.validateSubmission(response, word_limit);
         if (!isValid) {
@@ -204,10 +208,12 @@ class Study extends React.Component {
             'question': this.state.questions[question_number].text,
             response,
             views,
+            scroll_ups,
         };
         answers.push(answer);
-        views = '[]';
-        const timer = new TimeIt();
+        views = '[]'; // Reset views for the next response
+        const timer = new TimeIt(); // Refresh the timer so that you aren't double counting
+        scroll_ups = 0;
 
         if (question_number < this.state.questions.length - 1) {
             question_number += 1;
@@ -235,6 +241,7 @@ class Study extends React.Component {
             views,
             word_alert: false,
             timer,
+            scroll_ups,
         });
     }
 
@@ -277,6 +284,23 @@ class Study extends React.Component {
         this.setState({show_go_back: false, show_response:true});
     }
 
+    handleStoryScroll(e) {
+        const scrollTop = e.target.scrollTop;
+        const prev_scroll = this.state.scrollTop;
+        let scroll_ups = this.state.scroll_ups;
+        let scrolling_up = this.state.scrolling_up;
+
+        // If the user is scrolling up, log it
+        if (scrollTop < prev_scroll && !scrolling_up) {
+            scroll_ups++;
+            scrolling_up = true;
+        } else if (scrollTop > prev_scroll && scrolling_up) {
+            scrolling_up = false;
+        }
+
+        this.setState({scrollTop, scroll_ups, scrolling_up});
+    }
+
 
     render() {
 
@@ -287,6 +311,7 @@ class Study extends React.Component {
                 response = (<Story
                         story={this.state.story}
                         onClick={() => this.storyButtonClick()}
+                        onScroll={(e) => this.handleStoryScroll(e)}
                     />
                 );
             } else if (this.state.show_context) {

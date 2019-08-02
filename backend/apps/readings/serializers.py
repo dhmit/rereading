@@ -12,6 +12,7 @@ class StudentResponseSerializer(serializers.ModelSerializer):
             'views',
             'question',
             'context',
+            'scroll_ups'
         )
 
 

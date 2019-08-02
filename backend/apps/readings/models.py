@@ -36,6 +36,7 @@ class StudentResponse(models.Model):
     context = models.TextField(default='')
     response = models.TextField(default='')
     views = models.TextField(default='')
+    scroll_ups = models.IntegerField(default=0)
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='student_responses')
 
 

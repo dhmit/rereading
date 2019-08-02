@@ -6,7 +6,7 @@
   padding-top: 3%;
 }
 
-.story-text, .start, .question-prompt {
+.start, .question-prompt {
   padding-bottom: 3%;
   padding-top: 3%;
 }
@@ -19,4 +19,26 @@
 
 .multi-button {
   width: 100%;
+}
+
+.story {
+  position: absolute;
+  max-height: 90%;
+  width: auto;
+  top: 5%;
+  left: 5%;
+  right: 5%;
+  bottom: 10%;
+}
+
+.story-box {
+  border: 1px solid black;
+  max-height: 90%;
+  max-width: 90%;
+  overflow: auto;
+  display: inline-block;
+}
+
+.story-text {
+  margin: 5%;
 }

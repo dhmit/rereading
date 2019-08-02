@@ -140,7 +140,7 @@ class Study extends React.Component {
         try {
             const questions = await fetch('/api/');
             const json = await questions.json();
-            this.setState(json[1]);
+            this.setState(json[0]);
         } catch (e) {
             console.log(e);
         }

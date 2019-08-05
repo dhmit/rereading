@@ -68,7 +68,13 @@ function QuestionView(props) {
     for (let context in questions) {
         for (let question in questions[context]) {
             questionsToView.push(
-                <Question context={context} question={question} indices={questions[context][question]} students={students} key={context}/>
+                <Question
+                    context={context}
+                    question={question}
+                    indices={questions[context][question]}
+                    students={students}
+                    key={context}
+                />
             );
         }
     }
@@ -171,13 +177,23 @@ class InstructorPage extends React.Component {
             if (this.state.sortBy === 'story') {
                 tempStudents.sort((a, b) => (a.story.toLowerCase() > b.story.toLowerCase() ? 1 : -1));
                 students = tempStudents.map(student => (
-                    <Student story={student.story} student_responses={student.student_responses} id={student.id} key={student.id}/>
+                    <Student
+                        story={student.story}
+                        student_responses={student.student_responses}
+                        id={student.id}
+                        key={student.id}
+                    />
                 ));
             } else if (this.state.sortBy === 'question') {
                 students = <QuestionView students={tempStudents}/>;
             } else {
                 students = tempStudents.map(student => (
-                    <Student story={student.story} student_responses={student.student_responses} id={student.id} key={student.id}/>
+                    <Student
+                        story={student.story}
+                        student_responses={student.student_responses}
+                        id={student.id}
+                        key={student.id}
+                    />
                 ));
             }
 

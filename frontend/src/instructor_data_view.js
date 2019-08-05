@@ -19,6 +19,7 @@ function Student(props) {
                         <td><b>Question</b></td>
                         <td><b>Response</b></td>
                         <td><b>Views</b></td>
+                        <td><b>Scrolls</b></td>
                     </tr>
                 </thead>
                 <tbody>{responses}</tbody>
@@ -37,6 +38,7 @@ function Response(props) {
             <td>{response.question}</td>
             <td>{response.response}</td>
             <td>{response.views}</td>
+            <td>{response.scroll_ups}</td>
         </tr>
     );
 }
@@ -93,6 +95,7 @@ function Question(props) {
                     <td><b>Student</b></td>
                     <td><b>Response</b></td>
                     <td><b>Views</b></td>
+                    <td><b>Scrolls</b></td>
                 </tr>
                 </thead>
                 <tbody>{responses}</tbody>
@@ -107,6 +110,7 @@ function QuestionResponse(props) {
             <td>{props.student.id}</td>
             <td>{props.student.student_responses[props.prompt].response}</td>
             <td>{props.student.student_responses[props.prompt].views}</td>
+            <td>{props.student.student_responses[props.prompt].scroll_ups}</td>
         </tr>
     );
 }

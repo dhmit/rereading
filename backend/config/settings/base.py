@@ -12,25 +12,16 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 
-BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CONFIG_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BACKEND_DIR = os.path.dirname(CONFIG_DIR)
 PROJECT_ROOT = os.path.dirname(BACKEND_DIR)
 
-
-# Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'gpsthg6vl(=mziauv)us-7p8d5@ex_5j4s@gx=g$jfqdumdezv'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-if DEBUG:
-    ALLOWED_HOSTS = [] # wildcard
-else:
-    ALLOWED_HOSTS = [
-        'rereading.dhmit.xyz',
-    ]
+ALLOWED_HOSTS = [
+    'rereading.dhmit.xyz',
+]
 
 
 # Application definition

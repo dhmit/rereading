@@ -1,5 +1,5 @@
 """
-WSGI config for prompted_readings project.
+WSGI config for rereading project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

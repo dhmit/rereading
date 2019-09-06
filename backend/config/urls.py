@@ -24,6 +24,7 @@ class spa(TemplateView):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('apps.readings.urls')),
+    path('api', include('apps.readings.urls')),
     url('', spa.as_view()),
     re_path(r'^(?:.*)/?$', spa.as_view()), # capture all other urls, so react-router can take over
 ]

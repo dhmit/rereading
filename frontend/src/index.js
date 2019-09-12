@@ -4,8 +4,8 @@ import { Route, BrowserRouter as Router } from 'react-router-dom';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import Study from './App';
-import InstructorPage from './instructor_data_view';
+import Study from './prompted_readings/student_view';
+import InstructorPage from './prompted_readings/instructor_view';
 
 // note(ra): for sanity testing of django-webpack-loader...
 // ReactDOM.render(<span>Hello, world!</span>, document.getElementById('root'));
@@ -15,7 +15,6 @@ function Hello() {
         <div>Hello, world!</div>
     )
 }
-
 
 const routing = (
     <Router>

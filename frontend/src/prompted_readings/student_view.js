@@ -1,10 +1,5 @@
 import React from 'react';
-import './App.css';
-import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup'
-import Form from 'react-bootstrap/Form';
-import Alert from 'react-bootstrap/Alert';
-import Navbar from 'react-bootstrap/Navbar';
+import './student_view.css';
 
 class TimeIt {
     constructor() {
@@ -24,13 +19,19 @@ class TimeIt {
     }
 }
 
+function ContinueBtn(props) {
+    return (
+        <nav className="navbar fixed-bottom">
+            <button className="btn btn-primary btn-lg btn-block" onClick={props.onClick}>Continue</button>
+        </nav>
+    );
+}
+
 function Question(props) {
     return (
         <div className={'question'}>
             <div className={'question-prompt'}>{props.question}</div>
-            <Navbar fixed={'bottom'}>
-                <Button variant='primary' onClick={props.onClick} size='lg' block>Continue</Button>
-            </Navbar>
+            <ContinueBtn onClick={props.onClick}/>
         </div>
     );
 }
@@ -41,9 +42,7 @@ function Story(props) {
             <div className={'story-box'} onScroll={props.onScroll}>
                 <div className={'story-text'}>{props.story}</div>
             </div>
-            <Navbar fixed={'bottom'}>
-                <Button variant='primary' onClick={props.onClick} size='lg' block>Continue</Button>
-            </Navbar>
+            <ContinueBtn onClick={props.onClick}/>
         </div>
     );
 }
@@ -52,9 +51,7 @@ function Context(props) {
     return (
         <div className='context'>
             <div className={'context-text'}>{props.context}</div>
-            <Navbar fixed='bottom'>
-                <Button variant='primary' onClick={props.onClick} size='lg' block>Continue</Button>
-            </Navbar>
+            <ContinueBtn onClick={props.onClick}/>
         </div>
     );
 }
@@ -62,18 +59,18 @@ function Context(props) {
 function Response(props) {
     return (
         <div className='response'>
-            <Form onSubmit={props.onSubmit}>
-                <Form.Group>
-                    <Form.Label>{props.question}</Form.Label>
-                    <Form.Control type='text' onChange={props.onChange} value={props.answer} />
-                </Form.Group>
-                <Navbar fixed='bottom'>
-                    <ButtonGroup className='multi-button' size='lg'>
-                        <Button variant='secondary' type='submit'>Submit</Button>
-                        <Button variant='primary' onClick={props.goBack}>Go Back</Button>
-                    </ButtonGroup>
-                </Navbar>
-            </Form>
+            <form onSubmit={props.onSubmit}>
+                <div className='form-group'>
+                    <label className="form-control">{props.question}</label>
+                    <input type='text' className="form-control" onChange={props.onChange} value={props.answer} />
+                </div>
+                <nav className="navbar fixed-bottom">
+                    <div className='btn-group btn-group-lg multi-button'>
+                        <button className='btn btn-secondary' type='submit'>Submit</button>
+                        <button className='btn btn-primary' onClick={props.goBack}>Go Back</button>
+                    </div>
+                </nav>
+            </form>
         </div>
     );
 }
@@ -82,12 +79,12 @@ function GoBack(props) {
     return (
         <div className='go-back'>
             <div>Would you like to see that again?</div>
-            <Navbar fixed='bottom'>
-                <ButtonGroup className='multi-button' size='lg'>
-                    <Button variant='secondary' onClick={props.continue}>No</Button>
-                    <Button variant='primary' onClick={props.goBack}>Yes</Button>
-                </ButtonGroup>
-            </Navbar>
+            <nav className="navbar fixed-bottom">
+                <div className='btn-group btn-group-lg multi-button'>
+                    <button className='btn btn-secondary' onClick={props.continue}>No</button>
+                    <button className='btn btn-primary' onClick={props.goBack}>Yes</button>
+                </div>
+            </nav>
         </div>
     );
 }
@@ -97,9 +94,9 @@ function WordAlert(props) {
     if (props.word_alert) {
         return (
             <div className='word-alert'>
-                <Alert variant='danger'>
+                <div className='alert alert-danger' role='alert'>
                     Please make sure to enter a response and respect word limits
-                </Alert>
+                </div>
             </div>
         );
     } else {
@@ -359,11 +356,11 @@ class Study extends React.Component {
                 response = (
                     <div className={'start'}>
                         <div>Are you ready?</div>
-                        <Navbar fixed={'bottom'}>
-                            <Button variant='primary' onClick={() => this.handleStartClick()} size='lg' block>
+                        <nav className="navbar fixed-bottom">
+                            <button className="btn btn-primary btn-lg btn-block" onClick={() => this.handleStartClick()}>
                                 Start!
-                            </Button>
-                        </Navbar>
+                            </button>
+                        </nav>
                     </div>
                 );
             }

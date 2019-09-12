@@ -1,5 +1,6 @@
 import React from 'react';
-import './index.css';
+import '../index.css';
+
 
 function Student(props) {
     const responses = props.student_responses.map(response => (

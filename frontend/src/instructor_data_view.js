@@ -1,7 +1,5 @@
 import React from 'react';
 import './index.css';
-import Table from 'react-bootstrap/Table';
-import Navbar from "react-bootstrap/Navbar";
 
 function Student(props) {
     const responses = props.student_responses.map(response => (
@@ -12,7 +10,7 @@ function Student(props) {
         <div className='student'>
             <div><center><h1>Student #{props.id}</h1></center></div>
             <div><h5><b>Story: </b> {props.story}</h5></div>
-            <Table striped bordered hover responsive>
+            <table className="table striped bordered hover responsive">
                 <thead>
                     <tr>
                         <td><b>Context</b></td>
@@ -23,7 +21,7 @@ function Student(props) {
                     </tr>
                 </thead>
                 <tbody>{responses}</tbody>
-            </Table>
+            </table>
         </div>
     );
 }
@@ -95,7 +93,7 @@ function Question(props) {
         <div>
             <div><h2>Context: {props.context}</h2></div>
             <div><h2>Question: {props.question}</h2></div>
-            <Table striped bordered hover responsive>
+            <table className="table striped bordered hover responsive">
                 <thead>
                 <tr>
                     <td><b>Student</b></td>
@@ -105,7 +103,7 @@ function Question(props) {
                 </tr>
                 </thead>
                 <tbody>{responses}</tbody>
-            </Table>
+            </table>
         </div>
     );
 }
@@ -199,7 +197,7 @@ class InstructorPage extends React.Component {
 
             return (
                 <div>
-                    <Navbar fixed={'top'}>
+                     <nav className="navbar fixed-top">
                         <form onSubmit={this.handleSubmit}>
                             <label>
                                 Sort by
@@ -210,7 +208,7 @@ class InstructorPage extends React.Component {
                                 </select>
                             </label>
                         </form>
-                    </Navbar>
+                    </nav>
                     <div>
                         {students}
                     </div>

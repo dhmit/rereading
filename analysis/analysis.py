@@ -28,6 +28,10 @@ def load_data_csv(csv_path: Path):
 
 
 def run_analysis():
+    average_rereading_time_first_question()
+
+
+def average_rereading_time_first_question():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
     # TODO: do something with student_data that's not just printing it!
@@ -44,7 +48,7 @@ def run_analysis():
                     average_views += view_time
                 if len(student_data_dictionary['views']) != 0:
                     ad_count += 1
-                    average_ad_time += average_views/len(student_data_dictionary['views'])
+                    average_ad_time += average_views / len(student_data_dictionary['views'])
             else:
 
                 average_views = 0
@@ -56,10 +60,14 @@ def run_analysis():
     average_short_story_time /= short_story_count
     average_ad_time /= ad_count
 
-    print("Number of people who reread the text thinking it was an ad: " + str(ad_count) + ".")
-    print("Their average reread time for the first question was " + str(round(average_ad_time,2)) + " seconds.")
-    print("Number of people who reread the text thinking it was a short story: " + str(short_story_count) + ".")
-    print("Their average reread time for the first question was " + str(round(average_short_story_time,2)) + " seconds.")
+    print("Number of people who reread the text thinking it was an ad: "
+          + str(ad_count) + ".")
+    print("Their average reread time for the first question was "
+          + str(round(average_ad_time, 2)) + " seconds.")
+    print("Number of people who reread the text thinking it was a short story: "
+          + str(short_story_count) + ".")
+    print("Their average reread time for the first question was "
+          + str(round(average_short_story_time, )) + " seconds.")
     print(student_data)
 
 

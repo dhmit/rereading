@@ -14,6 +14,7 @@ class TimeIt {
         return this.time / 1000;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     resume() {
         this.start = Date.now();
     }
@@ -90,7 +91,6 @@ function GoBack(props) {
 }
 
 function WordAlert(props) {
-
     if (props.word_alert) {
         return (
             <div className='word-alert'>

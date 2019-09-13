@@ -10,7 +10,11 @@ class Story(models.Model):
 
 class Context(models.Model):
     text = models.TextField()
-    story = models.ForeignKey(Story, on_delete=models.CASCADE, related_name='contexts')
+    story = models.ForeignKey(
+        Story,
+        on_delete=models.CASCADE,
+        related_name='contexts',
+    )
 
     def __str__(self):
         return self.text
@@ -19,7 +23,11 @@ class Context(models.Model):
 class Question(models.Model):
     text = models.TextField()
     word_limit = models.IntegerField()
-    story = models.ForeignKey(Story, on_delete=models.CASCADE, related_name='questions')
+    story = models.ForeignKey(
+        Story,
+        on_delete=models.CASCADE,
+        related_name='questions',
+    )
 
 
 class Student(models.Model):
@@ -32,4 +40,8 @@ class StudentResponse(models.Model):
     response = models.TextField(default='')
     views = models.TextField(default='')
     scroll_ups = models.IntegerField(default=0)
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='student_responses')
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,  # if the Student is deleted, all her/his responses are too.
+        related_name='student_responses',
+    )

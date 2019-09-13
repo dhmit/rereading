@@ -176,7 +176,7 @@ class Study extends React.Component {
         this.setState({textInput: e.target.value});
     }
 
-    validateSubmission(response, word_limit) {
+    static validateSubmission(response, word_limit) {
         if (!response) {
             return false;
         } else {
@@ -203,7 +203,7 @@ class Study extends React.Component {
         let show_response = this.state.show_response;
         let scroll_ups = this.state.scroll_ups;
 
-        const isValid = this.validateSubmission(response, word_limit);
+        const isValid = Study.validateSubmission(response, word_limit);
         if (!isValid) {
             this.setState({word_alert: true,});
             return;

@@ -28,10 +28,33 @@ def load_data_csv(csv_path: Path):
 
 
 def run_analysis():
+    """compares average viewtimes, given different context (ad vs story)"""
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
     # TODO: do something with student_data that's not just printing it!
-    print(student_data)
+
+    ad_sum = 0
+    ad_count = 0
+    story_sum = 0
+    story_count = 0
+
+
+    for dict in student_data:
+        if dict['context'] == "This is an ad.":
+            if not len(dict["views"])  == 0:
+                for view in dict["views"]:
+                    ad_sum = ad_sum + view
+            ad_count += 1
+        elif dict["context"] == "This is actually a short story.":
+            if not len(dict["views"])  == 0:
+                for view in dict["views"]:
+                    story_sum = story_sum + view
+            story_count += 1
+
+    print("Average viewtime for ad:", ad_sum/ad_count)
+    print("Average viewtime for short story", story_sum/story_count)
+
+    #print(student_data)
 
 
 if __name__ == '__main__':

@@ -37,6 +37,7 @@ def run_analysis():
     short_story_count = 0
     for student_data_dictionary in student_data:
         if student_data_dictionary['question'].find("feel") != -1:
+            if student_data_dictionary['context'] == "This is an ad.":
 
                 average_views = 0
                 for view_time in student_data_dictionary['views']:

@@ -1,7 +1,16 @@
 import React from 'react';
 import './student_view.css';
+import PropTypes from 'prop-types';
 
 class TimeIt {
+    TimeIt.propTypes = {
+        onScroll: PropTypes.func,
+        onSubmit: PropTypes.func,
+        onChange: PropTypes.func,
+        answer: PropTypes.string,
+        word_limit: PropTypes.number
+    };
+
     constructor() {
         this.start = Date.now();
         this.end = null;

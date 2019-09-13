@@ -3,6 +3,10 @@ import './student_view.css';
 import PropTypes from 'prop-types';
 
 class TimeIt {
+    /*
+     * This is used as a helper function for keeping track of how long a user has been looking at a story
+     */
+
     constructor() {
         this.start = Date.now();
         this.end = null;
@@ -10,6 +14,12 @@ class TimeIt {
     }
 
     stop() {
+        /*
+         * This stops the timer and logs how long the timer has been running
+         *
+         * TODO: ensure that the timer has been running, and that you are not calling stop() back to back
+         */
+
         this.end = Date.now();
         this.time += this.end - this.start;
         return this.time / 1000;
@@ -17,25 +27,13 @@ class TimeIt {
 
     // noinspection JSUnusedGlobalSymbols
     resume() {
+        /*
+         * Restarts the timer while maintaining the current time that was stored, useful for when someone takes a break
+         * or is no longer looking at the proper page
+         */
+
         this.start = Date.now();
     }
-}
-
-function ContinueBtn(props) {
-    return (
-        <nav className="navbar fixed-bottom">
-            <button className="btn btn-primary btn-lg btn-block" onClick={props.onClick}>Continue</button>
-        </nav>
-    );
-}
-
-function Question(props) {
-    return (
-        <div className={'question'}>
-            <div className={'question-prompt'}>{props.question}</div>
-            <ContinueBtn onClick={props.onClick}/>
-        </div>
-    );
 }
 
 TimeIt.propTypes = {
@@ -46,7 +44,43 @@ TimeIt.propTypes = {
     word_limit: PropTypes.number
 };
 
+
+function ContinueBtn(props) {
+    /*
+     * That big fancy blue button at the bottom of the screen, progresses the user to the next page
+     */
+
+    return (
+        <nav className="navbar fixed-bottom">
+            <button className="btn btn-primary btn-lg btn-block" onClick={props.onClick}>Continue</button>
+        </nav>
+    );
+}
+
+
+function Question(props) {
+    /*
+     * Displays the question page to the user, including all relevant progression features
+     */
+
+    return (
+        <div className={'question'}>
+            <div className={'question-prompt'}>{props.question}</div>
+            <ContinueBtn onClick={props.onClick}/>
+        </div>
+    );
+}
+
+
 function Story(props) {
+    /*
+     * Displays the story page to the user.
+     *
+     * The story itself is located in a div that tracks when and how the user scrolls.
+     *
+     * Also contains progression features for moving to the next page
+     */
+
     return (
         <div className='story'>
             <div className={'story-box'} onScroll={props.onScroll}>
@@ -58,6 +92,10 @@ function Story(props) {
 }
 
 function Context(props) {
+    /*
+     * Displays the context page to the user, including all relevant progression features
+     */
+
     return (
         <div className='context'>
             <div className={'context-text'}>{props.context}</div>
@@ -67,6 +105,13 @@ function Context(props) {
 }
 
 function Response(props) {
+    /*
+     * Page that handles letting the user submit responses.
+     *
+     * Allows the user to go back to view the story/question/etc. if they want to see it again or continue once they
+     * have a response
+     */
+
     return (
         <div className='response'>
             <form onSubmit={props.onSubmit}>
@@ -86,6 +131,11 @@ function Response(props) {
 }
 
 function GoBack(props) {
+    /*
+     * Displays a page allowing the user to go back and see the sequence of prompts again should they need it, or move
+     * on if they feel they understand
+     */
+
     return (
         <div className='go-back'>
             <div>Would you like to see that again?</div>
@@ -99,7 +149,13 @@ function GoBack(props) {
     );
 }
 
+/**
+ * @return {null}
+ */
 function WordAlert(props) {
+    /*
+     * Displays an error message if the user did not follow the guidelines for a response
+     */
     if (props.word_alert) {
         return (
             <div className='word-alert'>
@@ -114,6 +170,12 @@ function WordAlert(props) {
 }
 
 class Study extends React.Component {
+    /*
+     * Main component for the student view.
+     *
+     * Handles all logic, displays information, and makes database query/posts
+     */
+
     constructor(props) {
         super(props);
         this.state = {
@@ -125,7 +187,7 @@ class Study extends React.Component {
             answers: [],
             finished: false,
             textInput: '',
-            views: '[]', // views is stored as a json string
+            views: '[]', // views is stored as a json string due to Django constraints
             show_story: false,
             show_context: false,
             show_question: false,
@@ -141,18 +203,25 @@ class Study extends React.Component {
     }
 
     async componentDidMount() {
-        // Load from server
+        /*
+         * Grabs relevant story information from the server and stores it for displaying later
+         */
 
         try {
             const questions = await fetch('/api/');
             const json = await questions.json();
-            this.setState(json[0]);
+            this.setState(json[0]);  // TODO: (?) Currently only accesses first story, cannot handle multiple
         } catch (e) {
             console.log(e);
         }
     }
 
     postData() {
+        /*
+         * Once the user has finished answering all of the questions, this function uploads all of the data to the
+         * database so that it can be referenced in the instructor view
+         */
+
         const url = '/api/add-response/';
         const data = {
             story: this.state.story,
@@ -173,10 +242,21 @@ class Study extends React.Component {
     }
 
     handleFormChange(e) {
+        /*
+         * Called when the user provides input into the response field, and updates the state accordingly
+         */
+
         this.setState({textInput: e.target.value});
     }
 
     static validateSubmission(response, word_limit) {
+        /*
+         * Ensures that the response the user is trying to submit obeys the word limit (as well as check that the
+         * response exists).
+         *
+         * Returns false if there is a conflict between the rules and response, true otherwise
+         */
+
         if (!response) {
             return false;
         } else {
@@ -191,6 +271,13 @@ class Study extends React.Component {
 
 
     handleSubmit(e) {
+        /*
+         * When a user tries to submit a response, this function should be called.
+         *
+         * It first checks to make sure that the response is valid, and then stores it in memory in a format that
+         * is easy to transfer to Django when the user has completed all of the questions
+         */
+
         e.preventDefault();
         let question_number = this.state.question_number;
         let context_number = this.state.context_number;
@@ -203,6 +290,7 @@ class Study extends React.Component {
         let show_response = this.state.show_response;
         let scroll_ups = this.state.scroll_ups;
 
+        // Don't let the user submit until their response fits the criteria of the question
         const isValid = Study.validateSubmission(response, word_limit);
         if (!isValid) {
             this.setState({word_alert: true,});
@@ -217,10 +305,11 @@ class Study extends React.Component {
             scroll_ups,
         };
         answers.push(answer);
-        views = '[]'; // Reset views for the next response
-        const timer = new TimeIt(); // Refresh the timer so that you aren't double counting
-        scroll_ups = 0;
+        views = '[]';  // Reset views for the next response
+        const timer = new TimeIt();  // Refresh the timer so that you aren't double counting
+        scroll_ups = 0;  // Reset scrolls for next response
 
+        // Logic for storing data in memory
         if (question_number < this.state.questions.length - 1) {
             question_number += 1;
 
@@ -252,15 +341,25 @@ class Study extends React.Component {
     }
 
     handleStartClick() {
+        /*
+         * Readies all information for when the user presses the start button on the landing screen
+         */
+
         const timer = new TimeIt();
         this.setState({show_story: true, timer,});
     }
 
     storyButtonClick() {
+        /*
+         * Handles what to do when the user advances past the story page
+         */
+
+        // Keep track of the length of time that the user viewed the story
         const view_list = JSON.parse(this.state.views);
         const time = this.state.timer.stop();
         view_list.push(time);
         const views = JSON.stringify(view_list);
+
         this.setState({
             show_story: false,
             show_context:true,
@@ -269,14 +368,26 @@ class Study extends React.Component {
     }
 
     contextButtonClick() {
+        /*
+         * Handles what to do when the user advances past the context page
+         */
+
         this.setState({show_context: false, show_question:true});
     }
 
     questionButtonClick() {
+        /*
+         * Handles what to do when the user advances past the question page
+         */
+
         this.setState({show_question: false, show_go_back: true,});
     }
 
     backButtonClick() {
+        /*
+         * When the user presses a back button, displays the relevant page and starts a new timer object
+         */
+
         const timer = new TimeIt();
         this.setState({
             show_go_back: false,
@@ -287,10 +398,22 @@ class Study extends React.Component {
     }
 
     continueButtonClick() {
+        /*
+         * Handles what to do when the user advances beyond the page that checks if they wish to go back
+         */
+
         this.setState({show_go_back: false, show_response:true});
     }
 
     handleStoryScroll(e) {
+        /*
+         * For large enough stories, this function logs how many times the user scrolls up to read a previous portion
+         * of the story
+         *
+         * Note: This only tracks the number of times scrolled up, and not when the user scrolls down to "advance" the
+         * story
+         */
+
         const scrollTop = e.target.scrollTop;
         const prev_scroll = this.state.scrollTop;
         let scroll_ups = this.state.scroll_ups;
@@ -312,7 +435,7 @@ class Study extends React.Component {
 
         let response;
 
-        if (this.state.story) {
+        if (this.state.story) {  // Check that the story is loaded before showing any data, or else things break :(
             if (this.state.show_story) {
                 response = (<Story
                         story={this.state.story}

@@ -1,0 +1,181 @@
+id,question,context,response,views,student_id,scroll_ups
+59,"In one word, how does this text make you feel?",This is an ad.,Sad,[2.319],15,0
+60,"In three words or fewer, what is this text about?",This is an ad.,Miscarriage,[2.945],15,0
+61,Have you encountered this text before?,This is an ad.,No,[],15,0
+62,"In one word, how does this text make you feel?",This is actually a short story.,Sad,[1.121],15,0
+63,"In three words or fewer, what is this text about?",This is actually a short story.,Miscarriage,[],15,0
+64,Have you encountered this text before?,This is actually a short story.,Yes,[],15,0
+65,"In one word, how does this text make you feel?",This is an ad.,Targeted,"[3.194,3.101]",16,0
+66,"In three words or fewer, what is this text about?",This is an ad.,New baby shoes,[],16,0
+67,Have you encountered this text before?,This is an ad.,Yes,[],16,0
+68,"In one word, how does this text make you feel?",This is actually a short story.,Enticed,[1.073],16,0
+69,"In three words or fewer, what is this text about?",This is actually a short story.,Baby shoes,[],16,0
+70,Have you encountered this text before?,This is actually a short story.,Yes,[],16,0
+71,"In one word, how does this text make you feel?",This is an ad.,Confused,"[2.8,1.174,1.021,0.414,1.817]",17,0
+72,"In three words or fewer, what is this text about?",This is an ad.,Baby shoes,[3.807],17,0
+73,Have you encountered this text before?,This is an ad.,No,[],17,0
+74,"In one word, how does this text make you feel?",This is actually a short story.,Ok,[1.149],17,0
+75,"In three words or fewer, what is this text about?",This is actually a short story.,S,[],17,0
+76,Have you encountered this text before?,This is actually a short story.,Yes,[],17,0
+77,"In one word, how does this text make you feel?",This is an ad.,Bored,[2.426],18,0
+78,"In three words or fewer, what is this text about?",This is an ad.,Something for sale,[],18,0
+79,Have you encountered this text before?,This is an ad.,No,[],18,0
+80,"In one word, how does this text make you feel?",This is actually a short story.,Sad,[3.532],18,0
+81,"In three words or fewer, what is this text about?",This is actually a short story.,Miscarriage,[],18,0
+82,Have you encountered this text before?,This is actually a short story.,Yes,[],18,0
+83,"In one word, how does this text make you feel?",This is an ad.,Informed,"[2.514,4.221]",19,0
+84,"In three words or fewer, what is this text about?",This is an ad.,Selling baby shoes,[],19,0
+85,Have you encountered this text before?,This is an ad.,No,[],19,0
+86,"In one word, how does this text make you feel?",This is actually a short story.,Inyrigu,[2.375],19,0
+87,"In three words or fewer, what is this text about?",This is actually a short story.,Unworn baby shoes,[0.966],19,0
+88,Have you encountered this text before?,This is actually a short story.,Yes,[],19,0
+89,"In one word, how does this text make you feel?",This is an ad.,Annoyed,[0.542],20,0
+90,"In three words or fewer, what is this text about?",This is an ad.,Advertisement,[],20,0
+91,Have you encountered this text before?,This is an ad.,No,[],20,0
+92,"In one word, how does this text make you feel?",This is actually a short story.,Interested,[0.867],20,0
+93,"In three words or fewer, what is this text about?",This is actually a short story.,A story,[],20,0
+94,Have you encountered this text before?,This is actually a short story.,Yes,[],20,0
+95,"In one word, how does this text make you feel?",This is an ad.,Informed,"[3.297,1.528,0.616]",21,0
+96,"In three words or fewer, what is this text about?",This is an ad.,New baby shoes,[],21,0
+97,Have you encountered this text before?,This is an ad.,No,[],21,0
+98,"In one word, how does this text make you feel?",This is actually a short story.,Somber,"[2.033,6.101]",21,0
+99,"In three words or fewer, what is this text about?",This is actually a short story.,Failed pregnancy,[],21,0
+100,Have you encountered this text before?,This is actually a short story.,No,[],21,0
+101,"In one word, how does this text make you feel?",This is an ad.,weird,"[4.112,4.634]",22,0
+102,"In three words or fewer, what is this text about?",This is an ad.,baby shoe ad,[],22,0
+103,Have you encountered this text before?,This is an ad.,yes,[],22,0
+104,"In one word, how does this text make you feel?",This is actually a short story.,mysterious,"[1.971,9.891]",22,0
+105,"In three words or fewer, what is this text about?",This is actually a short story.,unworn shoes,[],22,0
+106,Have you encountered this text before?,This is actually a short story.,yes,[],22,0
+107,"In one word, how does this text make you feel?",This is an ad.,Comfortable,"[7.376,3.039,5.068]",23,0
+108,"In three words or fewer, what is this text about?",This is an ad.,Shoes on sale,[],23,0
+109,Have you encountered this text before?,This is an ad.,No,[],23,0
+110,"In one word, how does this text make you feel?",This is actually a short story.,Surprised,[2.405],23,0
+111,"In three words or fewer, what is this text about?",This is actually a short story.,A short story,[],23,0
+112,Have you encountered this text before?,This is actually a short story.,No,[],23,0
+113,"In one word, how does this text make you feel?",This is an ad.,fine,[2.674],24,0
+114,"In three words or fewer, what is this text about?",This is an ad.,selling baby shoes,[],24,0
+115,Have you encountered this text before?,This is an ad.,no,[],24,0
+116,"In one word, how does this text make you feel?",This is actually a short story.,sad,[1.898],24,0
+117,"In three words or fewer, what is this text about?",This is actually a short story.,an unexpected death,[],24,0
+118,Have you encountered this text before?,This is actually a short story.,yes,[],24,0
+119,"In one word, how does this text make you feel?",This is an ad.,Melancholic,[2.54],25,0
+120,"In three words or fewer, what is this text about?",This is an ad.,A lost child,[],25,0
+121,Have you encountered this text before?,This is an ad.,Yes,[],25,0
+122,"In one word, how does this text make you feel?",This is actually a short story.,Curious,"[1.347,1.057,1.376,0.916]",25,0
+123,"In three words or fewer, what is this text about?",This is actually a short story.,A child passed.,[],25,0
+124,Have you encountered this text before?,This is actually a short story.,Yes,[],25,0
+125,"In one word, how does this text make you feel?",This is an ad.,Sad,[3.697],26,0
+126,"In three words or fewer, what is this text about?",This is an ad.,Story,[],26,0
+127,Have you encountered this text before?,This is an ad.,Yes,[],26,0
+128,"In one word, how does this text make you feel?",This is actually a short story.,Sad,[1.356],26,0
+129,"In three words or fewer, what is this text about?",This is actually a short story.,Story,[],26,0
+130,Have you encountered this text before?,This is actually a short story.,Yes,[],26,0
+131,"In one word, how does this text make you feel?",This is an ad.,melancholy,"[3.007,1.865,1.953]",27,0
+132,"In three words or fewer, what is this text about?",This is an ad.,Giving up hope,[],27,0
+133,Have you encountered this text before?,This is an ad.,Yes,[],27,0
+134,"In one word, how does this text make you feel?",This is actually a short story.,Sad,"[1.03,0.816]",27,0
+135,"In three words or fewer, what is this text about?",This is actually a short story.,losing a child,[],27,0
+136,Have you encountered this text before?,This is actually a short story.,Yes,[],27,0
+137,"In one word, how does this text make you feel?",This is an ad.,sad,"[5.768,3.701]",28,0
+138,"In three words or fewer, what is this text about?",This is an ad.,an infant's death,[],28,0
+139,Have you encountered this text before?,This is an ad.,yes,[],28,0
+140,"In one word, how does this text make you feel?",This is actually a short story.,sad,[1.011],28,0
+141,"In three words or fewer, what is this text about?",This is actually a short story.,an infant's death,[],28,0
+142,Have you encountered this text before?,This is actually a short story.,yes,[],28,0
+143,"In one word, how does this text make you feel?",This is an ad.,concerned,"[4.581,2.398]",29,0
+144,"In three words or fewer, what is this text about?",This is an ad.,interested,[0.905],29,0
+145,Have you encountered this text before?,This is an ad.,no,[],29,0
+146,"In one word, how does this text make you feel?",This is actually a short story.,interested,[1.015],29,0
+147,"In three words or fewer, what is this text about?",This is actually a short story.,shoes on sale,[],29,0
+148,Have you encountered this text before?,This is actually a short story.,no,[],29,0
+149,"In one word, how does this text make you feel?",This is an ad.,suspicious,[1.861],30,0
+150,"In three words or fewer, what is this text about?",This is an ad.,advertising grief,[],30,0
+151,Have you encountered this text before?,This is an ad.,Yes,[],30,0
+152,"In one word, how does this text make you feel?",This is actually a short story.,concerned,[1.355],30,0
+153,"In three words or fewer, what is this text about?",This is actually a short story.,sad short story,[],30,0
+154,Have you encountered this text before?,This is actually a short story.,Yes,[],30,0
+155,"In one word, how does this text make you feel?",This is an ad.,Uncomfortable,"[3.947,5.175]",31,0
+156,"In three words or fewer, what is this text about?",This is an ad.,Selling baby shoes,"[1.604,1.196]",31,0
+157,Have you encountered this text before?,This is an ad.,Yea,[],31,0
+158,"In one word, how does this text make you feel?",This is actually a short story.,Interested,"[2.017,7.446]",31,0
+159,"In three words or fewer, what is this text about?",This is actually a short story.,Unborn baby,[],31,0
+160,Have you encountered this text before?,This is actually a short story.,Yea,[],31,0
+161,"In one word, how does this text make you feel?",This is an ad.,Speculative,[6.218],32,0
+162,"In three words or fewer, what is this text about?",This is an ad.,Asking me something,[],32,0
+163,Have you encountered this text before?,This is an ad.,No,[],32,0
+164,"In one word, how does this text make you feel?",This is actually a short story.,Helped,[3.544],32,0
+165,"In three words or fewer, what is this text about?",This is actually a short story.,Clarifying something ominous,[],32,0
+166,Have you encountered this text before?,This is actually a short story.,No,[],32,0
+167,"In one word, how does this text make you feel?",This is an ad.,Confused,"[3.772,0.933,1.053]",33,0
+168,"In three words or fewer, what is this text about?",This is an ad.,Ad for shoes,[0.633],33,0
+169,Have you encountered this text before?,This is an ad.,No,[],33,0
+170,"In one word, how does this text make you feel?",This is actually a short story.,Underwhelmed,"[1.87,3.377]",33,0
+171,"In three words or fewer, what is this text about?",This is actually a short story.,Shoes for sale,[],33,0
+172,Have you encountered this text before?,This is actually a short story.,Yes,[],33,0
+173,"In one word, how does this text make you feel?",This is an ad.,curious,"[29.153,0.884,1.95]",34,0
+174,"In three words or fewer, what is this text about?",This is an ad.,selling baby shoes,[],34,0
+175,Have you encountered this text before?,This is an ad.,yes,[],34,0
+176,"In one word, how does this text make you feel?",This is actually a short story.,sad,[3.358],34,0
+177,"In three words or fewer, what is this text about?",This is actually a short story.,a dead child,[],34,0
+178,Have you encountered this text before?,This is actually a short story.,Yes,[],34,0
+179,"In one word, how does this text make you feel?",This is an ad.,disappointed,"[8.009,4.151,3.934,1.368]",35,0
+180,"In three words or fewer, what is this text about?",This is an ad.,Advertisements manipulating emotions.,[1.185],35,0
+181,Have you encountered this text before?,This is an ad.,yes,"[2.22,1.332]",35,0
+182,"In one word, how does this text make you feel?",This is actually a short story.,Melancholy,"[0.93,1.433]",35,0
+183,"In three words or fewer, what is this text about?",This is actually a short story.,Disappointment and grief,[],35,0
+184,Have you encountered this text before?,This is actually a short story.,yes,[],35,0
+185,"In one word, how does this text make you feel?",This is an ad.,Depressed,[0.615],36,0
+186,"In three words or fewer, what is this text about?",This is an ad.,Deceased babies,[],36,0
+187,Have you encountered this text before?,This is an ad.,Yes,[],36,0
+188,"In one word, how does this text make you feel?",This is actually a short story.,Depressed,[1.006],36,0
+189,"In three words or fewer, what is this text about?",This is actually a short story.,Deceased babies,[],36,0
+190,Have you encountered this text before?,This is actually a short story.,Yes,[],36,0
+191,"In one word, how does this text make you feel?",This is an ad.,indifferent,"[3.368,0.75]",37,0
+192,"In three words or fewer, what is this text about?",This is an ad.,shoes for sale,[],37,0
+193,Have you encountered this text before?,This is an ad.,yes,[],37,0
+194,"In one word, how does this text make you feel?",This is actually a short story.,sad,[0.932],37,0
+195,"In three words or fewer, what is this text about?",This is actually a short story.,dead babies,[],37,0
+196,Have you encountered this text before?,This is actually a short story.,yes,[],37,0
+197,"In one word, how does this text make you feel?",This is an ad.,fine,"[6.632,6.515]",38,0
+198,"In three words or fewer, what is this text about?",This is an ad.,selling shoes,[],38,0
+199,Have you encountered this text before?,This is an ad.,yes,[],38,0
+200,"In one word, how does this text make you feel?",This is actually a short story.,sad,[1.83],38,0
+201,"In three words or fewer, what is this text about?",This is actually a short story.,a baby died,[],38,0
+202,Have you encountered this text before?,This is actually a short story.,yes,[],38,0
+203,"In one word, how does this text make you feel?",This is an ad.,Neutral,"[6.471,2.005]",39,0
+204,"In three words or fewer, what is this text about?",This is an ad.,Resold consumer goods,[],39,0
+205,Have you encountered this text before?,This is an ad.,Yes,[],39,0
+206,"In one word, how does this text make you feel?",This is actually a short story.,Sad/curious,[1.04],39,0
+207,"In three words or fewer, what is this text about?",This is actually a short story.,Infant mortality,[],39,0
+208,Have you encountered this text before?,This is actually a short story.,Yes,[],39,0
+209,"In one word, how does this text make you feel?",This is an ad.,confused,[5.14],40,0
+210,"In three words or fewer, what is this text about?",This is an ad.,advertising baby shoes,[1.892],40,0
+211,Have you encountered this text before?,This is an ad.,no,[],40,0
+212,"In one word, how does this text make you feel?",This is actually a short story.,intrigued,[2.457],40,0
+213,"In three words or fewer, what is this text about?",This is actually a short story.,someone selling shoes,[],40,0
+214,Have you encountered this text before?,This is actually a short story.,yes,[],40,0
+215,"In one word, how does this text make you feel?",This is an ad.,Sad,"[4.876,2.4]",41,0
+216,"In three words or fewer, what is this text about?",This is an ad.,Loss,[],41,0
+217,Have you encountered this text before?,This is an ad.,Yes,[],41,0
+218,"In one word, how does this text make you feel?",This is actually a short story.,Sadder,"[5.854,0.969]",41,0
+219,"In three words or fewer, what is this text about?",This is actually a short story.,Unfortunate events,[],41,0
+220,Have you encountered this text before?,This is actually a short story.,Yes,[],41,0
+221,"In one word, how does this text make you feel?",This is an ad.,annoyed,[16.525],42,0
+222,"In three words or fewer, what is this text about?",This is an ad.,nonsense,[2.849],42,0
+223,Have you encountered this text before?,This is an ad.,no,[],42,0
+224,"In one word, how does this text make you feel?",This is actually a short story.,confused,[2.026],42,0
+225,"In three words or fewer, what is this text about?",This is actually a short story.,a short story,[],42,0
+226,Have you encountered this text before?,This is actually a short story.,no,[],42,0
+227,"In one word, how does this text make you feel?",This is an ad.,Confused,"[4.018,1.807]",43,0
+228,"In three words or fewer, what is this text about?",This is an ad.,Asking questions,[],43,0
+229,Have you encountered this text before?,This is an ad.,Possibly,[],43,0
+230,"In one word, how does this text make you feel?",This is actually a short story.,Puzzled,[1.49],43,0
+231,"In three words or fewer, what is this text about?",This is actually a short story.,Repetition,[],43,0
+232,Have you encountered this text before?,This is actually a short story.,Yes,[],43,0
+233,"In one word, how does this text make you feel?",This is an ad.,Melancholy,"[3.695,1.769]",44,0
+234,"In three words or fewer, what is this text about?",This is an ad.,A garage sale,[],44,0
+235,Have you encountered this text before?,This is an ad.,Yes,[],44,0
+236,"In one word, how does this text make you feel?",This is actually a short story.,Depressed,[1.352],44,0
+237,"In three words or fewer, what is this text about?",This is actually a short story.,Parent losing child,[],44,0
+238,Have you encountered this text before?,This is actually a short story.,Yes,[],44,0

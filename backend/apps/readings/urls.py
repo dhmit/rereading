@@ -1,3 +1,6 @@
+"""
+URLs lists all the paths that lead to a view.
+"""
 from django.urls import path
 from . import views
 

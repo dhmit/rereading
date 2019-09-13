@@ -30,10 +30,13 @@ def run_analysis():
     # Arrays for each type of context
     q1_ad = []
     q1_short = []
-    for row in range[1, 181]:
-        if "ad" in student_data[row]['context'] and "encountered" in student_data[row]['question']:
-            q1_ad[row - 1] = len(student_data[row]['views'])
-    print(student_data)
+    for row in student_data:
+        # "ad" signifies the "This is an ad." context
+        # "encountered" signifies the "Have you encountered this text before?" question
+        if "ad" in row['context'] and "encountered" in row['question']:
+            view_count = len(row['views'])
+            q1_ad.append(view_count)
+    print(q1_ad)
 
 
 if __name__ == '__main__':

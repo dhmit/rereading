@@ -19,6 +19,7 @@ def load_data_csv(csv_path: Path):
     with open(str(csv_path)) as csv_file:
         reader = csv.DictReader(csv_file)
         for row in reader:
+            row['views'] = eval(row['views'])  # eval the list
             out_data.append(row)
     return out_data
 

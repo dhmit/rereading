@@ -31,7 +31,15 @@ def run_analysis():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
     # TODO: do something with student_data that's not just printing it!
-    print(student_data)
+    response_ad = []
+    response_story = []
+    for x in student_data:
+        if x['question'] == "In three words or fewer, what is this text about?" and x['context'] == "This is an ad.":
+            response_ad.append(x['response'])
+        elif x['question'] == "In three words or fewer, what is this text about?" and x['context'] == "This is actually a short story.":
+            response_story.append(x['response'])
+    print(response_ad)
+    print(response_story)
 
 
 if __name__ == '__main__':

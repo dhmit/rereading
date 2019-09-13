@@ -1,4 +1,3 @@
 # Kitty
-#Stephan
-# Kitty, hello
-# Kitty, Felix
+# Stephan
+# Felix

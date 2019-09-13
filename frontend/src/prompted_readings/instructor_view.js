@@ -9,7 +9,7 @@ function Student(props) {
 
     return (
         <div className='student'>
-            <div><center><h1>Student #{props.id}</h1></center></div>
+            <div style="text-align: center;"><h1>Student #{props.id}</h1></div>
             <div><h5><b>Story: </b> {props.story}</h5></div>
             <table className="table striped bordered hover responsive">
                 <thead>

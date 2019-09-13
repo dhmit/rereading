@@ -44,11 +44,46 @@ Data collection ideas
 '''
 
 
+
 def run_analysis():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
+    '''
+    Analyze answer response times by computing a ratio of the response
+    time of the first question to the response time of the second question;
+    if multiple responses are recorded for the same question, add 
+    response times first.
+    '''
     # TODO: do something with student_data that's not just printing it!
-    print(student_data[0])
+    # print(student_data)
+
+    student_0 = {
+        'name': 'Stephan',
+        'grade': 3,
+    }
+
+    student_1 = {
+        'name': 'Kitty',
+        'grade': 10,
+    }
+
+    student_list = [student_0, student_1]
+
+    grades = []
+    names = []
+    for student_dict in student_list:
+        grade = student_dict['grade']
+        name = student_dict['name']
+
+        grades.append(grade)
+        names.append(name)
+
+    print(grades)
+    print(names)
+
+
+
+
 
 
 if __name__ == '__main__':

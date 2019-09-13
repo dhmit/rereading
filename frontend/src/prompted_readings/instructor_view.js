@@ -3,8 +3,14 @@ import './instructor_view.css';
 
 
 function Student(props) {
+    /*
+     * A component that returns a simple table with all of the responses for a particular student
+     *
+     * Passes props.student_responses to Response component
+     */
+
     const responses = props.student_responses.map(response => (
-        <Response response={response} key={response.id}/>
+        <StudentResponse response={response} key={response.id}/>
     ));
 
     return (
@@ -28,7 +34,13 @@ function Student(props) {
 }
 
 
-function Response(props) {
+function StudentResponse(props) {
+    /*
+     * Returns a single table row given the response data
+     *
+     * For use with the Student component
+     */
+
     const response = props.response;
 
     return (
@@ -43,8 +55,16 @@ function Response(props) {
 }
 
 function QuestionView(props) {
+    /*
+     * Returns a page that sorts students' responses by the question that they are answering
+     *
+     * Passes data to Question component
+     */
+
     const students = props.students;
     let questions = {};
+
+    // Sorts each student response by the context and question that they are answering
     for (let i = 0; i < students.length; i++) {
         let student = students[i];
         for (let prompt in student.student_responses) {
@@ -54,19 +74,21 @@ function QuestionView(props) {
 
             let question = student.student_responses[prompt].question;
             let context = student.student_responses[prompt].context;
-            if (questions.hasOwnProperty(context)) {
-                if (questions[context].hasOwnProperty(question)) {
+            if (questions.hasOwnProperty(context)) {  // The context is already in the list
+
+                if (questions[context].hasOwnProperty(question)) {  // The question is already in the context's list
                     questions[context][question].push([i, prompt]);
-                } else {
+                } else {  // The context/question pairing doesn't exist yet
                     questions[context][question] = [[i, prompt]];
                 }
-            } else {
+            } else {  // The context doesn't exist yet, add it to the list
                 questions[context] = {};
                 questions[context][question] = [[i, prompt]];
             }
         }
     }
 
+    // Create sections on the page dedicated to each Context/Question pairing
     const questionsToView = [];
     for (let context in questions) {
         if (!(questions.hasOwnProperty(context))) {
@@ -97,6 +119,12 @@ function QuestionView(props) {
 }
 
 function Question(props) {
+    /*
+     * Creates a <div> that displays student response data for a particular question
+     *
+     * Requires 'indices' property to display
+     */
+
     if (!(props.hasOwnProperty('indices'))) {
         return;
     }
@@ -124,8 +152,12 @@ function Question(props) {
 }
 
 function QuestionResponse(props) {
-    // This line below is NOT something we do in this lab: we will learn soon
-    //     how to fix it.
+    /*
+     * Generates and returns a single row for the Question component
+     */
+
+    // This line below is NOT something we do in this lab: we will learn soon how to fix it.
+
     // noinspection JSUnresolvedVariable
     return (
         <tr>
@@ -139,6 +171,10 @@ function QuestionResponse(props) {
 
 
 class InstructorPage extends React.Component {
+    /*
+     * Main component for the Instructor view. Accesses and maintains database data for student responses and handles
+     * displaying the information properly on the page.
+     */
     constructor(props) {
         super(props);
         this.state = {
@@ -152,6 +188,12 @@ class InstructorPage extends React.Component {
     }
 
     async componentDidMount() {
+        /*
+         * This loads all of the data the moment the Instructor view is opened in the browser.
+         *
+         * If it cannot access the database, it logs the error
+         */
+
         try {
             const res = await fetch('/api/add-response/');
             const students = await res.json();
@@ -167,6 +209,11 @@ class InstructorPage extends React.Component {
     }
 
     handleSubmit(event) {
+        /*
+         * Called when the user wishes to change the way that the data on the page is displayed (i.e. by student, story
+         * or question) and updates the state accordingly.
+         */
+
         const students = this.state.students;
         const loaded = this.state.loaded;
         this.setState({
@@ -177,6 +224,10 @@ class InstructorPage extends React.Component {
     }
 
     handleChange(event) {
+        /*
+         * Whenever the user changes the value of the 'Sort by' dropdown menu, this function is called and updates the
+         * state accordingly
+         */
         const students = this.state.students;
         const loaded = this.state.loaded;
         this.setState({
@@ -187,10 +238,11 @@ class InstructorPage extends React.Component {
     }
 
     render() {
-        if (this.state.loaded) {
+        if (this.state.loaded) {  // Only do this if we have the data!!! Otherwise bad things happen :(
             let tempStudents = [...this.state.students];
             let students;
-            if (this.state.sortBy === 'story') {
+
+            if (this.state.sortBy === 'story') { // If we're sorting by story
                 tempStudents.sort((a, b) => (a.story.toLowerCase() > b.story.toLowerCase() ? 1 : -1));
                 students = tempStudents.map(student => (
                     <Student
@@ -200,9 +252,9 @@ class InstructorPage extends React.Component {
                         key={student.id}
                     />
                 ));
-            } else if (this.state.sortBy === 'question') {
+            } else if (this.state.sortBy === 'question') {  // If we're sorting by the question
                 students = <QuestionView students={tempStudents}/>;
-            } else {
+            } else {  // The default is the Student view, which is displayed when first loading the page
                 students = tempStudents.map(student => (
                     <Student
                         story={student.story}
@@ -232,7 +284,7 @@ class InstructorPage extends React.Component {
                     </div>
                 </div>
             );
-        } else {
+        } else {  // This ensures that our page doesn't get funky if we don't have data loaded properly
             return null;
         }
     }

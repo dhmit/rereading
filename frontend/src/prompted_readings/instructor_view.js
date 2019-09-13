@@ -48,6 +48,10 @@ function QuestionView(props) {
     for (let i = 0; i < students.length; i++) {
         let student = students[i];
         for (let prompt in student.student_responses) {
+            if (!(student.student_responses.hasOwnProperty(prompt))) {
+                continue;
+            }
+
             let question = student.student_responses[prompt].question;
             let context = student.student_responses[prompt].context;
             if (questions.hasOwnProperty(context)) {
@@ -65,7 +69,14 @@ function QuestionView(props) {
 
     const questionsToView = [];
     for (let context in questions) {
+        if (!(questions.hasOwnProperty(context))) {
+            continue;
+        }
+
         for (let question in questions[context]) {
+            if (!(questions[context].hasOwnProperty(question))) {
+                continue;
+            }
             questionsToView.push(
                 <Question
                     context={context}
@@ -86,6 +97,9 @@ function QuestionView(props) {
 }
 
 function Question(props) {
+    if (!(props.hasOwnProperty('indices'))) {
+        return;
+    }
     const responses = props.indices.map(index => (
         <QuestionResponse student={props.students[index[0]]} prompt={index[1]} key={index[0]}/>
     ));
@@ -110,6 +124,9 @@ function Question(props) {
 }
 
 function QuestionResponse(props) {
+    // This line below is NOT something we do in this lab: we will learn soon
+    //     how to fix it.
+    // noinspection JSUnresolvedVariable
     return (
         <tr>
             <td>{props.student.id}</td>

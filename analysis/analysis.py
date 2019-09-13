@@ -31,17 +31,16 @@ def run_analysis():
 
     ad = {}
     story = {}
+    data = {}
     for elem in student_data:
-        if elem['context'] == 'This is an ad.':
-            sentiment = elem['response']
-            if sentiment not in ad:
-                ad[sentiment] += 1
-
-
-
-
-    print(student_data)
-    print(type(student_data[0]))
+        if elem['context'] not in data:
+            data[elem['context']] = {elem['response']:1}
+        else:
+            if elem['response'] in data[elem['context']]:
+                data[elem['context']][elem['response']] += 1
+            else:
+                data[elem['context']][elem['response']] = 1
+    print(data)
 
 
 if __name__ == '__main__':

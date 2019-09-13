@@ -27,7 +27,12 @@ def load_data_csv(csv_path: Path):
 def run_analysis():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
-    # TODO: do something with student_data that's not just printing it!
+    # Arrays for each type of context
+    q1_ad = []
+    q1_short = []
+    for row in range[1, 181]:
+        if "ad" in student_data[row]['context'] and "encountered" in student_data[row]['question']:
+            q1_ad[row - 1] = len(student_data[row]['views'])
     print(student_data)
 
 

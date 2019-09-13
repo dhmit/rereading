@@ -1,5 +1,5 @@
 import React from 'react';
-import '../index.css';
+import './instructor_view.css';
 
 
 function Student(props) {
@@ -9,7 +9,7 @@ function Student(props) {
 
     return (
         <div className='student'>
-            <div style="text-align: center;"><h1>Student #{props.id}</h1></div>
+            <div className='student-number'><h1>Student #{props.id}</h1></div>
             <div><h5><b>Story: </b> {props.story}</h5></div>
             <table className="table striped bordered hover responsive">
                 <thead>

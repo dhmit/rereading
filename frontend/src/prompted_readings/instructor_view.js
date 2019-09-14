@@ -1,14 +1,12 @@
 import React from 'react';
 import './instructor_view.css';
 
-
+/**
+ * A component that returns a simple table with all of the responses for a particular student
+ *
+ * Passes props.student_responses to Response component
+ */
 function Student(props) {
-    /*
-     * A component that returns a simple table with all of the responses for a particular student
-     *
-     * Passes props.student_responses to Response component
-     */
-
     const responses = props.student_responses.map(response => (
         <StudentResponse response={response} key={response.id}/>
     ));
@@ -34,13 +32,12 @@ function Student(props) {
 }
 
 
+/**
+ * Returns a single table row given the response data
+ *
+ * For use with the Student component
+ */
 function StudentResponse(props) {
-    /*
-     * Returns a single table row given the response data
-     *
-     * For use with the Student component
-     */
-
     const response = props.response;
 
     return (
@@ -54,13 +51,13 @@ function StudentResponse(props) {
     );
 }
 
-function QuestionView(props) {
-    /*
-     * Returns a page that sorts students' responses by the question that they are answering
-     *
-     * Passes data to Question component
-     */
 
+/**
+ * Returns a page that sorts students' responses by the question that they are answering
+ *
+ * Passes data to Question component
+ */
+function QuestionView(props) {
     const students = props.students;
     let questions = {};
 
@@ -118,13 +115,13 @@ function QuestionView(props) {
     );
 }
 
-function Question(props) {
-    /*
-     * Creates a <div> that displays student response data for a particular question
-     *
-     * Requires 'indices' property to display
-     */
 
+/**
+ * Creates a <div> that displays student response data for a particular question
+ *
+ * Requires 'indices' property to display
+ */
+function Question(props) {
     if (!(props.hasOwnProperty('indices'))) {
         return;
     }
@@ -151,11 +148,11 @@ function Question(props) {
     );
 }
 
-function QuestionResponse(props) {
-    /*
-     * Generates and returns a single row for the Question component
-     */
 
+/**
+ * Generates and returns a single row for the Question component
+ */
+function QuestionResponse(props) {
     // This line below is NOT something we do in this lab: we will learn soon how to fix it.
 
     // noinspection JSUnresolvedVariable
@@ -170,11 +167,11 @@ function QuestionResponse(props) {
 }
 
 
+/**
+ * Main component for the Instructor view. Accesses and maintains database data for student responses and handles
+ * displaying the information properly on the page.
+ */
 class InstructorPage extends React.Component {
-    /*
-     * Main component for the Instructor view. Accesses and maintains database data for student responses and handles
-     * displaying the information properly on the page.
-     */
     constructor(props) {
         super(props);
         this.state = {
@@ -187,13 +184,12 @@ class InstructorPage extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    /**
+     * This loads all of the data the moment the Instructor view is opened in the browser.
+     *
+     * If it cannot access the database, it logs the error
+     */
     async componentDidMount() {
-        /*
-         * This loads all of the data the moment the Instructor view is opened in the browser.
-         *
-         * If it cannot access the database, it logs the error
-         */
-
         try {
             const res = await fetch('/api/add-response/');
             const students = await res.json();
@@ -208,12 +204,11 @@ class InstructorPage extends React.Component {
         }
     }
 
+    /**
+     * Called when the user wishes to change the way that the data on the page is displayed (i.e. by student, story
+     * or question) and updates the state accordingly.
+     */
     handleSubmit(event) {
-        /*
-         * Called when the user wishes to change the way that the data on the page is displayed (i.e. by student, story
-         * or question) and updates the state accordingly.
-         */
-
         const students = this.state.students;
         const loaded = this.state.loaded;
         this.setState({
@@ -223,11 +218,11 @@ class InstructorPage extends React.Component {
         });
     }
 
+    /**
+     * Whenever the user changes the value of the 'Sort by' dropdown menu, this function is called and updates the
+     * state accordingly
+     */
     handleChange(event) {
-        /*
-         * Whenever the user changes the value of the 'Sort by' dropdown menu, this function is called and updates the
-         * state accordingly
-         */
         const students = this.state.students;
         const loaded = this.state.loaded;
         this.setState({

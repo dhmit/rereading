@@ -77,7 +77,7 @@ def word_freq_all(data):
         if the_key not in output:
             output[the_key] = {}
         qc_dict = output[the_key]
-        response = entry['response']
+        response = entry['response'].lower()
         if response not in qc_dict:
             qc_dict[response] = 1
         else:

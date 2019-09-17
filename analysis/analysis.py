@@ -49,28 +49,27 @@ def frequent_responses(freq_dict):
     for key in freq_dict:
         details = {}
         a_freq_dict = freq_dict[key]
-        max_occurances = 0
+        max_occurrences = 0
         max_list = []
         for word in a_freq_dict:
-            occurance = a_freq_dict[word]
-            if  occurance > max_occurances:
-                max_occurances = occurance
+            occurrence = a_freq_dict[word]
+            if occurrence > max_occurrences:
+                max_occurrences = occurrence
                 max_list = [word]
-            elif occurance == max_occurances:
+            elif occurrence == max_occurrences:
                 max_list.append(word)
         details['most_frequent_words'] = max_list
-        details['max_occurances'] = max_occurances
+        details['max_occurrences'] = max_occurrences
         output[key] = details
     return output
 
 
-
 def word_freq_all(data):
-    '''
+    """
     :param data: A list of all of the data entries from the survey
     :return: A dictionary with a tuple of the question and context as keys and with values of a dictionary with the
     words as keys and their frequencies as values
-    '''
+    """
     output = {}
     for entry in data:
         the_key = (entry["question"], entry["context"])

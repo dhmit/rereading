@@ -31,6 +31,9 @@ class Question(models.Model):
 
 
 class Student(models.Model):
+    first = models.CharField(max_length=70, default ='')
+    last = models.CharField(max_length=70, default ='')
+    email = models.EmailField(default = 'null@email.com')
     story = models.TextField(default='')
 
 

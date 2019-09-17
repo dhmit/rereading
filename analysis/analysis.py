@@ -37,6 +37,32 @@ def run_analysis():
         print(key)
         print(freq_dict[key])
         print("================")
+    most_frequent_responses = frequent_responses(freq_dict)
+    for key in most_frequent_responses:
+        print(key)
+        print(most_frequent_responses[key])
+        print("--------------------")
+
+
+def frequent_responses(freq_dict):
+    output = {}
+    for key in freq_dict:
+        details = {}
+        a_freq_dict = freq_dict[key]
+        max_occurances = 0
+        max_list = []
+        for word in a_freq_dict:
+            occurance = a_freq_dict[word]
+            if  occurance > max_occurances:
+                max_occurances = occurance
+                max_list = [word]
+            elif occurance == max_occurances:
+                max_list.append(word)
+        details['most_frequent_words'] = max_list
+        details['max_occurances'] = max_occurances
+        output[key] = details
+    return output
+
 
 
 def word_freq_all(data):

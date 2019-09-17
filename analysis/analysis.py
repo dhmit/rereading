@@ -38,7 +38,7 @@ def compute_total_view_time(student_data):
     """
     total_view_time = 0
     for row in student_data:
-        for view_time in row['views']:
+        for view_time in row.get('views'):
             total_view_time += view_time
     return total_view_time
 
@@ -69,4 +69,4 @@ class TestAnalysisMethods(unittest.TestCase):
 
 if __name__ == '__main__':
     run_analysis()
-    unittest.main()
+    unittest.main()  # run the tests

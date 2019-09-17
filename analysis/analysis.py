@@ -31,7 +31,32 @@ def run_analysis():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
     # TODO: do something with student_data that's not just printing it!
-    print(student_data)
+    # print(student_data)
+    freq_dict = word_freq_all(student_data)
+    for key in freq_dict:
+        print(key)
+        print(freq_dict[key])
+        print("================")
+
+
+def word_freq_all(data):
+    '''
+    :param data: A list of all of the data entries from the survey
+    :return: A dictionary with a tuple of the question and context as keys and with values of a dictionary with the
+    words as keys and their frequencies as values
+    '''
+    output = {}
+    for entry in data:
+        the_key = (entry["question"], entry["context"])
+        if the_key not in output:
+            output[the_key] = {}
+        qc_dict = output[the_key]
+        response = entry['response']
+        if response not in qc_dict:
+            qc_dict[response] = 1
+        else:
+            qc_dict[response] += 1
+    return output
 
 
 if __name__ == '__main__':

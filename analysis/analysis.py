@@ -55,16 +55,25 @@ class TestAnalysisMethods(unittest.TestCase):
     def setUp(self):
         test_data_path = Path('data', 'test_data.csv')
         self.test_student_data = load_data_csv(test_data_path)
+        self.default_student_data = [  # model default values
+            {
+                'id': 0,
+                'question': '',
+                'context': '',
+                'response': '',
+                'views': [],
+                'student_id': 0,
+                'scroll_ups': 0,
+            }
+        ]
 
     def test_compute_total_view_time(self):
         total_view_time = compute_total_view_time(self.test_student_data)
         self.assertEqual(total_view_time, 6.385)
 
-        # check it doesn't crash on empty views field
-        no_views_student_data = [
-            {'views': []},
-        ]
-        compute_total_view_time(no_views_student_data)
+        # check we don't crash on the defaults from the model!
+        total_view_time = compute_total_view_time(self.default_student_data)
+        self.assertEqual(total_view_time, 0)
 
 
 if __name__ == '__main__':

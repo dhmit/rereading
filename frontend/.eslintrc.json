@@ -4,7 +4,8 @@
     },
 
     "extends": [
-        "airbnb-base"
+        "eslint:recommended",
+        "plugin:react/recommended"
     ],
 
     "parser": "babel-eslint",
@@ -14,10 +15,24 @@
     ],
 
     "rules": {
+        "camelcase": ["off"],
+        "indent": ["error", 4],
+        "line-endings": ["off"],
         "max-len": ["warn", {
             "code": 100,
             "ignoreUrls": true
         }]
-    }
+    },
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    },
+    "overrides": [
+        {
+            "files": [ "**/*.test.js" ],
+            "env": { "jest": true }
+        }
+    ]
 }
 

@@ -56,7 +56,7 @@ jobs:
         cd backend
         python manage.py test
 
-  analysis_tests
+  analysis_tests:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -72,16 +72,16 @@ jobs:
         cd analysis
         python analysis.py
 
-  frontend_tests:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - uses: actions/setup-node@v1
-      with:
-        node-version: '10.x'
-    - name: Run eslint on frontend/src
-      run: |
-        cd frontend
-        npm install
-        npm install -g eslint
-        eslint src
+#  frontend_tests:
+#    runs-on: ubuntu-latest
+#    steps:
+#    - uses: actions/checkout@v1
+#    - uses: actions/setup-node@v1
+#      with:
+#        node-version: '10.x'
+#    - name: Run eslint on frontend/src
+#      run: |
+#        cd frontend
+#        npm install
+#        npm install -g eslint
+#        eslint src

@@ -28,6 +28,10 @@ def load_data_csv(csv_path: Path):
 
 
 def run_analysis():
+    """
+    Takes in no parameters and initializes the analysis of the data
+    :return: None
+    """
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
     # TODO: do something with student_data that's not just printing it!
@@ -45,6 +49,16 @@ def run_analysis():
 
 
 def frequent_responses(freq_dict):
+    """
+    Takes in a dictionary with values that are frequency dictionaries
+    Returns a dictionary showing the most frequent responses
+    :param freq_dict: dictionary, A dictionary with tuples as keys and a dictionary as values.
+    These values are actually dictionaries with strings as keys and numbers (the frequency) as
+    values.
+    :return: dictionary, A dictionary with tuples as keys and a dictionary as values.
+    The values are dictionaries with different information about the most frequent responses
+    such as a list of the most common responses as well as the number of times they occurred
+    """
     output = {}
     for key in freq_dict:
         details = {}
@@ -66,9 +80,10 @@ def frequent_responses(freq_dict):
 
 def word_freq_all(data):
     """
-    :param data: A list of all of the data entries from the survey
-    :return: A dictionary with a tuple of the question and context as keys and with values of a dictionary with the
-    words as keys and their frequencies as values
+    :param data: list, A list of all of the data entries from the survey
+    :return: dictionary, A dictionary with a tuple of the question and
+    context as keys and with values of a dictionary with the words as
+    keys and their frequencies as values
     """
     output = {}
     for entry in data:

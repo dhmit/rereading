@@ -4,7 +4,6 @@ on:
     push:
         branches:
         - master
-        - 'analysis_cleanup_structure'
     pull_request:
         branches:
         - '*'

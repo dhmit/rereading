@@ -66,22 +66,26 @@ jobs:
   ############################################################################## 
   # JS jobs
   ############################################################################## 
-  js_linters:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - uses: actions/setup-node@v1
-      with:
-        node-version: '10.x'
-    - name: Install deps and eslint
-      run: |
-        cd frontend
-        npm install
-        npm install -g eslint
-    - name: Run eslint on frontend/src
-      run: |
-        cd frontend
-        eslint src
+
+# NOTE(ra) 2019-09-18: temporarily disabled until weird integration bug between
+#                      eslint and PyCharm is resolved (ASAP!)
+
+#  js_linters:
+#    runs-on: ubuntu-latest
+#    steps:
+#    - uses: actions/checkout@v1
+#    - uses: actions/setup-node@v1
+#      with:
+#        node-version: '10.x'
+#    - name: Install deps and eslint
+#      run: |
+#        cd frontend
+#        npm install
+#        npm install -g eslint
+#    - name: Run eslint on frontend/src
+#      run: |
+#        cd frontend
+#        eslint src
 
 #  frontend_tests:
 #    runs-on: ubuntu-latest

@@ -79,7 +79,9 @@ jobs:
         npm install
         npm install -g eslint
     - name: Run eslint on frontend/src
-      run: eslint frontend/src
+      run: |
+        cd frontend
+        eslint src
 
 #  frontend_tests:
 #    runs-on: ubuntu-latest

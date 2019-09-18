@@ -71,16 +71,18 @@ function QuestionView(props) {
     let questions = {};
 
     // Sorts each student response by the context and question that they are answering
+    // TODO: clean this up!
     for (let i = 0; i < students.length; i++) {
         let student = students[i];
         for (const prompt in student.student_responses) {
-            if (!(student.student_responses.hasOwnProperty(prompt))) {
+            if (!Object.prototype.hasOwnProperty.call(student.student_responses, prompt)) {
                 continue;
             }
             let question = student.student_responses[prompt].question;
             let context = student.student_responses[prompt].context;
-            if (questions.hasOwnProperty(context)) {  // The context is already in the list
-                if (questions[context].hasOwnProperty(question)) {
+            if (Object.prototype.hasOwnProperty.call(questions, context)) {
+                // The context is already in the list
+                if (Object.prototype.hasOwnProperty.call(questions[context], question)) {
                     // The question is already in the context's list
                     questions[context][question].push([i, prompt]);
                 } else {  // The context/question pairing doesn't exist yet
@@ -95,13 +97,13 @@ function QuestionView(props) {
 
     // Create sections on the page dedicated to each Context/Question pairing
     const questionsToView = [];
-    for (let context in questions) {
-        if (!(questions.hasOwnProperty(context))) {
+    for (const context in questions) {
+        if (!Object.prototype.hasOwnProperty.call(questions, context)) {
             continue;
         }
 
-        for (let question in questions[context]) {
-            if (!(questions[context].hasOwnProperty(question))) {
+        for (const question in questions[context]) {
+            if (!Object.prototype.hasOwnProperty.call(questions[context], question)) {
                 continue;
             }
             questionsToView.push(
@@ -132,9 +134,6 @@ QuestionView.propTypes = {
  * Requires 'indices' property to display
  */
 function Question(props) {
-    if (!(props.hasOwnProperty('indices'))) {
-        return;
-    }
     const responses = props.indices.map(index => (
         <QuestionResponse student={props.students[index[0]]} prompt_num={index[1]} key={index[0]}/>
     ));
@@ -158,7 +157,7 @@ function Question(props) {
     );
 }
 Question.propTypes = {
-    indices: PropTypes.array,
+    indices: PropTypes.array.isRequired,
     students: PropTypes.array,
     context: PropTypes.string,
     question: PropTypes.string,

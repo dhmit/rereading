@@ -1,5 +1,6 @@
 import React from 'react';
 import './instructor_view.css';
+import PropTypes from "prop-types";
 
 /**
  * A component that returns a simple table with all of the responses for a particular student
@@ -30,6 +31,11 @@ function Student(props) {
         </div>
     );
 }
+Student.propTypes = {
+    id: PropTypes.number,
+    student_responses: PropTypes.array,
+    story: PropTypes.string,
+};
 
 
 /**
@@ -50,6 +56,9 @@ function StudentResponse(props) {
         </tr>
     );
 }
+StudentResponse.propTypes = {
+    response: PropTypes.object,
+};
 
 
 /**
@@ -64,16 +73,15 @@ function QuestionView(props) {
     // Sorts each student response by the context and question that they are answering
     for (let i = 0; i < students.length; i++) {
         let student = students[i];
-        for (let prompt in student.student_responses) {
+        for (const prompt in student.student_responses) {
             if (!(student.student_responses.hasOwnProperty(prompt))) {
                 continue;
             }
-
             let question = student.student_responses[prompt].question;
             let context = student.student_responses[prompt].context;
             if (questions.hasOwnProperty(context)) {  // The context is already in the list
-
-                if (questions[context].hasOwnProperty(question)) {  // The question is already in the context's list
+                if (questions[context].hasOwnProperty(question)) {
+                    // The question is already in the context's list
                     questions[context][question].push([i, prompt]);
                 } else {  // The context/question pairing doesn't exist yet
                     questions[context][question] = [[i, prompt]];
@@ -114,7 +122,9 @@ function QuestionView(props) {
         </div>
     );
 }
-
+QuestionView.propTypes = {
+    students: PropTypes.array,
+};
 
 /**
  * Creates a <div> that displays student response data for a particular question
@@ -126,7 +136,7 @@ function Question(props) {
         return;
     }
     const responses = props.indices.map(index => (
-        <QuestionResponse student={props.students[index[0]]} prompt={index[1]} key={index[0]}/>
+        <QuestionResponse student={props.students[index[0]]} prompt_num={index[1]} key={index[0]}/>
     ));
 
     return (
@@ -135,18 +145,24 @@ function Question(props) {
             <div><h2>Question: {props.question}</h2></div>
             <table className="table striped bordered hover responsive">
                 <thead>
-                <tr>
-                    <td><b>Student</b></td>
-                    <td><b>Response</b></td>
-                    <td><b>Views</b></td>
-                    <td><b>Scrolls</b></td>
-                </tr>
+                    <tr>
+                        <td><b>Student</b></td>
+                        <td><b>Response</b></td>
+                        <td><b>Views</b></td>
+                        <td><b>Scrolls</b></td>
+                    </tr>
                 </thead>
                 <tbody>{responses}</tbody>
             </table>
         </div>
     );
 }
+Question.propTypes = {
+    indices: PropTypes.array,
+    students: PropTypes.array,
+    context: PropTypes.string,
+    question: PropTypes.string,
+};
 
 
 /**
@@ -165,10 +181,15 @@ function QuestionResponse(props) {
         </tr>
     );
 }
+QuestionResponse.propTypes = {
+    student: PropTypes.object,
+    prompt: PropTypes.number,
+};
 
 
 /**
- * Main component for the Instructor view. Accesses and maintains database data for student responses and handles
+ * Main component for the Instructor view.
+ * Accesses and maintains database data for student responses and handles
  * displaying the information properly on the page.
  */
 class InstructorPage extends React.Component {
@@ -205,8 +226,8 @@ class InstructorPage extends React.Component {
     }
 
     /**
-     * Called when the user wishes to change the way that the data on the page is displayed (i.e. by student, story
-     * or question) and updates the state accordingly.
+     * Called when the user wishes to change the way that the data on the page is displayed
+     * (i.e. by student, story, or question) and updates the state accordingly.
      */
     handleSubmit(event) {
         const students = this.state.students;
@@ -219,8 +240,8 @@ class InstructorPage extends React.Component {
     }
 
     /**
-     * Whenever the user changes the value of the 'Sort by' dropdown menu, this function is called and updates the
-     * state accordingly
+     * Whenever the user changes the value of the 'Sort by' dropdown menu,
+     * this function is called and updates the state accordingly
      */
     handleChange(event) {
         const students = this.state.students;
@@ -233,12 +254,13 @@ class InstructorPage extends React.Component {
     }
 
     render() {
-        if (this.state.loaded) {  // Only do this if we have the data!!! Otherwise bad things happen :(
+        if (this.state.loaded) {  // Only do this if we have the data! Otherwise breaks :(
             let tempStudents = [...this.state.students];
             let students;
 
             if (this.state.sortBy === 'story') { // If we're sorting by story
-                tempStudents.sort((a, b) => (a.story.toLowerCase() > b.story.toLowerCase() ? 1 : -1));
+                const sorter = (a, b) => (a.story.toLowerCase() > b.story.toLowerCase() ? 1 : -1);
+                tempStudents.sort((a, b) => sorter(a, b));
                 students = tempStudents.map(student => (
                     <Student
                         story={student.story}
@@ -249,7 +271,7 @@ class InstructorPage extends React.Component {
                 ));
             } else if (this.state.sortBy === 'question') {  // If we're sorting by the question
                 students = <QuestionView students={tempStudents}/>;
-            } else {  // The default is the Student view, which is displayed when first loading the page
+            } else {  // By default, the Student view is displayed on page load
                 students = tempStudents.map(student => (
                     <Student
                         story={student.story}
@@ -262,7 +284,7 @@ class InstructorPage extends React.Component {
 
             return (
                 <div>
-                     <nav className="navbar fixed-top">
+                    <nav className="navbar fixed-top">
                         <form onSubmit={this.handleSubmit}>
                             <label>
                                 Sort by
@@ -279,7 +301,8 @@ class InstructorPage extends React.Component {
                     </div>
                 </div>
             );
-        } else {  // This ensures that our page doesn't get funky if we don't have data loaded properly
+        } else {
+            // This ensures that our page doesn't get funky if we don't have data loaded properly
             return null;
         }
     }

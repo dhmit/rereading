@@ -21,7 +21,8 @@
         "max-len": ["warn", {
             "code": 100,
             "ignoreUrls": true
-        }]
+        }],
+        "no-console": ["off"]
     },
     "settings": {
         "react": {

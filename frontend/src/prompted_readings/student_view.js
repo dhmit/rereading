@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 
 
 /**
- * This is used as a helper function for keeping track of how long a user has been looking at a story
+ * This is used as a helper function for keeping track of
+ * how long a user has been looking at a story
  */
 class TimeIt {
     constructor() {
@@ -16,7 +17,8 @@ class TimeIt {
     /**
      * This stops the timer and logs how long the timer has been running
      *
-     * TODO: ensure that the timer has been running, and that you are not calling stop() back to back
+     * TODO: ensure that the timer has been running,
+     * and that you are not calling stop() back to back
      */
     stop() {
         this.end = Date.now();
@@ -25,8 +27,8 @@ class TimeIt {
     }
 
     /**
-     * Restarts the timer while maintaining the current time that was stored, useful for when someone takes a break
-     * or is no longer looking at the proper page
+     * Restarts the timer while maintaining the current time that was stored,
+     * useful for when someone takes a break or is no longer looking at the proper page
      */
     // noinspection JSUnusedGlobalSymbols
     resume() {
@@ -49,11 +51,12 @@ TimeIt.propTypes = {
 function ContinueBtn(props) {
     return (
         <nav className="navbar fixed-bottom">
-            <button className="btn btn-primary btn-lg btn-block" onClick={props.onClick}>Continue</button>
+            <button className="btn btn-primary btn-lg btn-block" onClick={props.onClick}>
+                Continue
+            </button>
         </nav>
     );
 }
-
 
 ContinueBtn.propTypes = {
     onClick: PropTypes.func
@@ -72,9 +75,9 @@ function Question(props) {
     );
 }
 
-
 Question.propTypes = {
     question: PropTypes.string,
+    onClick: PropTypes.func,
 };
 
 
@@ -95,6 +98,11 @@ function Story(props) {
         </div>
     );
 }
+Story.propTypes = {
+    story: PropTypes.string,
+    onScroll: PropTypes.func,
+    onClick: PropTypes.func,
+};
 
 
 /**
@@ -108,13 +116,18 @@ function Context(props) {
         </div>
     );
 }
+Context.propTypes = {
+    context: PropTypes.string,
+    onClick: PropTypes.func,
+};
 
 
 /**
  * Page that handles letting the user submit responses.
  *
- * Allows the user to go back to view the story/question/etc. if they want to see it again or continue once they
- * have a response
+ * Allows the user to
+ *      - go back to view the story/question/etc. if they want to see it again or
+ *      - continue once they have a response
  */
 function Response(props) {
     return (
@@ -122,7 +135,10 @@ function Response(props) {
             <form onSubmit={props.onSubmit}>
                 <div className='form-group'>
                     <label className="form-control">{props.question}</label>
-                    <input type='text' className="form-control" onChange={props.onChange} value={props.answer} />
+                    <input
+                        type='text' className="form-control"
+                        onChange={props.onChange} value={props.answer}
+                    />
                 </div>
                 <nav className="navbar fixed-bottom">
                     <div className='btn-group btn-group-lg multi-button'>
@@ -134,11 +150,19 @@ function Response(props) {
         </div>
     );
 }
+Response.propTypes = {
+    question: PropTypes.string,
+    answer: PropTypes.string,
+    onSubmit: PropTypes.func,
+    onChange: PropTypes.func,
+    onScroll: PropTypes.func,
+    goBack: PropTypes.func,
+};
 
 
 /**
- * Displays a page allowing the user to go back and see the sequence of prompts again should they need it, or move
- * on if they feel they understand
+ * Displays a page allowing the user to go back and see the sequence of prompts again
+ * should they need it, or move on if they feel they understand
  */
 function GoBack(props) {
     return (
@@ -153,6 +177,10 @@ function GoBack(props) {
         </div>
     );
 }
+GoBack.propTypes = {
+    continue: PropTypes.func,
+    goBack: PropTypes.func,
+};
 
 
 /**
@@ -214,15 +242,17 @@ class Study extends React.Component {
         try {
             const questions = await fetch('/api/');
             const json = await questions.json();
-            this.setState(json[0]);  // TODO: (?) Currently only accesses first story, cannot handle multiple
+            // TODO: (?) Currently only accesses first story, cannot handle multiple
+            this.setState(json[0]);
         } catch (e) {
             console.log(e);
         }
     }
 
     /**
-     * Once the user has finished answering all of the questions, this function uploads all of the data to the
-     * database so that it can be referenced in the instructor view
+     * Once the user has finished answering all of the questions,
+     * this function uploads all of the data to the database
+     * so that it can be referenced in the instructor view
      */
     postData() {
         const url = '/api/add-response/';
@@ -245,7 +275,8 @@ class Study extends React.Component {
     }
 
     /**
-     * Called when the user provides input into the response field, and updates the state accordingly
+     * Called when the user provides input into the response field,
+     * and updates the state accordingly
      */
     handleFormChange(e) {
         this.setState({textInput: e.target.value});
@@ -253,8 +284,8 @@ class Study extends React.Component {
 
 
     /**
-     * Ensures that the response the user is trying to submit obeys the word limit (as well as check that the
-     * response exists).
+     * Ensures that the response the user is trying to submit
+     * obeys the word limit (as well as check that the response exists).
      *
      * Returns false if there is a conflict between the rules and response, true otherwise
      */
@@ -275,8 +306,9 @@ class Study extends React.Component {
     /**
      * When a user tries to submit a response, this function should be called.
      *
-     * It first checks to make sure that the response is valid, and then stores it in memory in a format that
-     * is easy to transfer to Django when the user has completed all of the questions
+     * It first checks to make sure that the response is valid
+     * and then stores it in memory in a format that is easy to transfer
+     * to Django when the user has completed all of the questions
      */
     handleSubmit(e) {
         e.preventDefault();
@@ -429,9 +461,10 @@ class Study extends React.Component {
 
         let response;
 
-        if (this.state.story) {  // Check that the story is loaded before showing any data, or else things break :(
+        if (this.state.story) { // Check that the story is loaded before showing any data
             if (this.state.show_story) {
-                response = (<Story
+                response = (
+                    <Story
                         story={this.state.story}
                         onClick={() => this.storyButtonClick()}
                         onScroll={(e) => this.handleStoryScroll(e)}
@@ -483,7 +516,9 @@ class Study extends React.Component {
                     <div className={'start'}>
                         <div>Are you ready?</div>
                         <nav className="navbar fixed-bottom">
-                            <button className="btn btn-primary btn-lg btn-block" onClick={() => this.handleStartClick()}>
+                            <button
+                                className="btn btn-primary btn-lg btn-block"
+                                onClick={() => this.handleStartClick()}>
                                 Start!
                             </button>
                         </nav>

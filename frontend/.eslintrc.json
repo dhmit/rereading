@@ -1,0 +1,17 @@
+{
+    "extends": [
+        "airbnb-base"
+    ],
+
+    "parser": "babel-eslint",
+    "plugins": [
+        "react"
+    ],
+    "rules": {
+        "max-len": ["warn", {
+            "code": 100,
+            "ignoreUrls": true
+        }]
+    }
+}
+

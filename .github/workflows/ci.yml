@@ -1,0 +1,87 @@
+name: CI
+
+on:
+    push:
+        branches:
+        - master
+    pull_request:
+        branches:
+        - '*'
+
+jobs:
+  python_linters:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.7'
+        architecture: 'x64'
+    - name: Install Python packages
+      run: |
+        pip install -r requirements.txt
+        pip install pylint
+    - name: Run pylint on backend/
+      run: pylint backend/
+    - name: Run pylint on analysis/
+      run: pylint analysis/
+
+  js_linters:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+    - name: Run eslint on frontend/src
+      run: |
+        cd frontend
+        npm install
+        npm install -g eslint
+        eslint src
+
+  backend_tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.7'
+        architecture: 'x64'
+    - name: Install Python packages
+      run: |
+        pip install -r requirements.txt
+    - name: Run Django tests
+      run: |
+        cd backend
+        python manage.py test
+
+  analysis_tests
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.7'
+        architecture: 'x64'
+    - name: Install Python packages
+      run: |
+        pip install -r requirements.txt
+    - name: Run analysis tests
+      run: |
+        cd analysis
+        python analysis.py
+
+  frontend_tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+    - name: Run eslint on frontend/src
+      run: |
+        cd frontend
+        npm install
+        npm install -g eslint
+        eslint src

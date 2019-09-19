@@ -47,19 +47,37 @@ def run_analysis():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
     # TODO: do something with student_data that's not just printing it!
-    # print(student_data)
+    response_groups = get_response_groups_frequencies(student_data)
+    for group_name in response_groups:
+        print("Word frequencies for", group_name, ":", response_groups[group_name], "\n")
+
+    total_view_time = compute_total_view_time(student_data)
+    print(f'The total view time of all students was {total_view_time}.')
+
+
+def get_response_groups_frequencies(student_data):
+    """"
+    :param student_data
+    :return: list of four dictionaries (one for each response group) mapping words
+    to frequencies within that response group
+    """
     people_with_multiple_views = []
     people_with_one_view = []
 
-    # one word answers for each question separated out by view count (one vs multiple)
-    single_view_responses_to_c1 = []
-    single_view_responses_to_c2 = []
-    multiple_view_responses_to_c1 = []
-    multiple_view_responses_to_c2 = []
+    # one word answers for each question separated out by view count
+    # (one vs multiple)
+
+    response_groups = {
+        "Single view responses to ad context": [],
+        "Single view responses to short story context": [],
+        "Multiple view responses to ad context": [],
+        "Multiple view responses to short story context": []
+    }
 
     for person_response in student_data:
         # filter out responses from people who didn't go back
-        # this sorting doesn't work. We need to find a way to sort people with 1, +1 views...
+        # this sorting doesn't work. We need to find a way to sort people with 1, +1
+        # views...
         if len(person_response['views']) == 1:
             people_with_one_view.append(person_response)
         else:
@@ -68,24 +86,21 @@ def run_analysis():
     for person in people_with_one_view:
         if person['question'] == "In one word, how does this text make you feel?":
             if person['context'] == "This is actually a short story.":
-                single_view_responses_to_c2.append(person['response'].lower())
+                response_groups["Single view responses to short story context"].append(person['response'].lower())
             else:
-                single_view_responses_to_c1.append(person['response'].lower())
+                response_groups["Single view responses to ad context"].append(person['response'].lower())
 
     for person in people_with_multiple_views:
         if person['question'] == "In one word, how does this text make you feel?":
             if person['context'] == "This is actually a short story.":
-                multiple_view_responses_to_c2.append(person['response'].lower())
+                response_groups["Multiple view responses to short story context"].append(person['response'].lower())
             else:
-                multiple_view_responses_to_c1.append(person['response'].lower())
+                response_groups["Multiple view responses to ad context"].append(person['response'].lower())
 
-    for i in (single_view_responses_to_c1, single_view_responses_to_c2,
-              multiple_view_responses_to_c1, multiple_view_responses_to_c2):
-        print(find_word_frequency(i))
-        print("\n")
-
-    total_view_time = compute_total_view_time(student_data)
-    print(f'The total view time of all students was {total_view_time}.')
+    for group_name in response_groups:
+        freq_dict = find_word_frequency(response_groups[group_name])
+        response_groups[group_name] = freq_dict
+    return response_groups
 
 
 def find_word_frequency(response_list):
@@ -125,4 +140,6 @@ class TestAnalysisMethods(unittest.TestCase):
 
 if __name__ == '__main__':
     run_analysis()
+    print("*******")
     unittest.main()  # run the tests
+

@@ -98,7 +98,6 @@ def find_word_frequency(response_list):
     return freq
 
 
-
 class TestAnalysisMethods(unittest.TestCase):
     def setUp(self):
         test_data_path = Path('data', 'test_data.csv')

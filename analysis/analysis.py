@@ -55,7 +55,7 @@ def run_analysis():
     print(f'The total view time of all students was {total_view_time}.')
 
 
-def get_response_groups_frequencies(student_data):
+def get_response_groups_frequencies(student_data: list):
     """"
     Given student_data,
     Returns dict mapping response groups to frequency dicts, which themselves
@@ -142,6 +142,5 @@ class TestAnalysisMethods(unittest.TestCase):
 
 if __name__ == '__main__':
     run_analysis()
-    print("*******")
     unittest.main()  # run the tests
 

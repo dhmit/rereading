@@ -57,15 +57,17 @@ def run_analysis():
 
 def get_response_groups_frequencies(student_data):
     """"
+    Given student_data,
+    Returns dict mapping response groups to frequency dicts, which themselves
+    map response words to frequencies for that response group
+    Response groups based on single vs. multiple views and ad vs. short story
+    context to the "In one word, how does this text make you feel?" question
     :param student_data
-    :return: list of four dictionaries (one for each response group) mapping words
+    :return: dict, keys are four dicts (one for each response group) mapping words
     to frequencies within that response group
     """
     people_with_multiple_views = []
     people_with_one_view = []
-
-    # one word answers for each question separated out by view count
-    # (one vs multiple)
 
     response_groups = {
         "Single view responses to ad context": [],

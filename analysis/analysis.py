@@ -28,21 +28,46 @@ def load_data_csv(csv_path: Path):
 
 
 def run_analysis():
-    mean_rereading_times()
-
-
-def mean_rereading_times():
+    """
+    Runs the analysis on the data loaded from the CSV file by looking at the average
+    reread time for each question and the context that the question was given in and
+    prints it in a nice readable format.
+    :return: None
+    """
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
-    mean_rereading_time_for_a_question(student_data, "feel", "ad")
-    mean_rereading_time_for_a_question(student_data, "about", "ad")
-    mean_rereading_time_for_a_question(student_data, "encountered", "ad")
-    mean_rereading_time_for_a_question(student_data, "feel", "short story")
-    mean_rereading_time_for_a_question(student_data, "about", "short story")
-    mean_rereading_time_for_a_question(student_data, "encountered", "short story")
+
+    mean_rereading_time_results_data = [
+        mean_rereading_time_for_a_question(student_data, "feel", "ad"),
+        mean_rereading_time_for_a_question(student_data, "about", "ad"),
+        mean_rereading_time_for_a_question(student_data, "encountered", "ad"),
+        mean_rereading_time_for_a_question(student_data, "feel", "short story"),
+        mean_rereading_time_for_a_question(student_data, "about", "short story"),
+        mean_rereading_time_for_a_question(student_data, "encountered", "short story")
+    ]
+
+    for rereading_result in mean_rereading_time_results_data:
+        if rereading_result[3] != 0:
+            print(f"Out of those who thought the reading was a(n) {rereading_result[1]} and were asked "
+                  f"\"{rereading_result[0]}\"")
+            print(f"{rereading_result[3]} subject(s) reread the text for an average of {rereading_result[2]} seconds.")
+        else:
+            print(f"No who thought the reading was a(n) {rereading_result[1]} and were asked "
+                  f"\"{rereading_result[0]}\" reread the text.")
+        print()
 
 
 def mean_rereading_time_for_a_question(student_data, question_keyword, context):
+    """
+    Given the student response dicts, computes the mean reread time for a
+    specific question (given by its keyword) and the context in which it was asked.
+    Returns the question, context, mean reread time, and number of people who reread.
+    :param student_data: list, student response dicts
+    :param question_keyword: string, keyword to determine which question was being asked
+    :param context: string, what the reader thought the reading was
+    :return: tuple, in order of the question asked (full question), the context, the mean
+             reread time, and the number of people who reread it
+    """
     mean_time = 0
     number_of_rereaders = 0
     question_asked = ""
@@ -59,12 +84,9 @@ def mean_rereading_time_for_a_question(student_data, question_keyword, context):
     if number_of_rereaders != 0:
         mean_time /= number_of_rereaders
         mean_time = round(mean_time, 2)
-        print(f"When those who thought the reading was a(n) {context} were asked \"{question_asked}\"")
-        print(f"{number_of_rereaders} subjects reread the text for an average of {mean_time} seconds.")
-    else:
-        print(f"No who thought the reading was a(n) {context} and were asked \"{question_asked}\" reread the text.")
 
-    print()
+    return question_asked, context, mean_time, number_of_rereaders
+
 
 if __name__ == '__main__':
     run_analysis()

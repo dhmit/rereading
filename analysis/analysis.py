@@ -49,12 +49,12 @@ def compile_response(student_data, question):
     response and their frequency as the value.
     :param student_data: list of OrderedDicts, set of responses
     :param question: string, question
-    :return: dictionary
+    :return: dictionary mapping strings to integers
     """
     data = {}
     for elem in student_data:
         student_question = elem['question']
-        student_response = elem['response']
+        student_response = elem['response'].lower()
         question_context = elem['context']
         if student_question == question:
             if question_context not in data:
@@ -69,19 +69,18 @@ def compile_response(student_data, question):
 
 def common_response(student_data, question, context):
     """
-    Returns the most common response
-    :param student_data:
-    :param question:
-    :param context:
-    :return:
+    Returns a list of the most common response(s) given a set of data, a question, and a context.
+    :param student_data: list of OrderedDicts, student response data
+    :param question: string, question
+    :param context: string, context
+    :return: list of strings
     """
-    max_freq = 0
-    max_response = ''
+    max_response = []
     response_dict = compile_response(student_data, question)
-    for response in response_dict[context]:
-        if response_dict[context][response] > max_freq:
-            max_freq = response_dict[context][response]
-            max_response = response
+    responses_by_context = response_dict[context]
+    for response in responses_by_context:
+        if responses_by_context[response] == max(responses_by_context.values()):
+            max_response.append(response)
     return max_response
 
 
@@ -91,6 +90,7 @@ def run_analysis():
 
     total_view_time = compute_total_view_time(student_data)
     print(f'The total view time of all students was {total_view_time}.')
+    print(compile_response(student_data, "In one word, how does this text make you feel?"))
     print(common_response(student_data, "In one word, how does this text make you feel?", "This is an ad."))
 
 
@@ -119,12 +119,14 @@ class TestAnalysisMethods(unittest.TestCase):
         self.assertEqual(total_view_time, 0)
 
     def test_common_response(self):
-        most_common_response = common_response(self.test_student_data, "In one word, how does this text make you feel?", "This is an ad.")
-        self.assertEqual(most_common_response, "Happy")
+        most_common_response = common_response(self.test_student_data,
+                                               "In one word, how does this text make you feel?",
+                                               "This is an ad.")
+        self.assertEqual(most_common_response, ['sad'])
 
         # check we don't crash on the defaults from the model!
-        most_common_response = common_response(self.default_student_data, "In one word, how does this text make you feel?", "This is an ad.")
-        self.assertEqual(most_common_response, '')
+        most_common_response = common_response(self.default_student_data, '', '')
+        self.assertEqual(most_common_response, [''])
 
 
 if __name__ == '__main__':

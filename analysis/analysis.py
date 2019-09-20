@@ -38,10 +38,21 @@ def compile_response(student_data, question):
     return data
 
 
+def common_response(student_data, question, context):
+    max = 0
+    max_response = ''
+    response_dict = compile_response(student_data, question)
+    for response in response_dict[context]:
+        if response_dict[context][response] > max:
+            max = response_dict[context][response]
+            max_response = response
+    return max_response
+
+
 def run_analysis():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
-    print(compile_response(student_data, "In one word, how does this text make you feel?"))
+    print(common_response(student_data, "In one word, how does this text make you feel?", "This is an ad."))
 
 
 if __name__ == '__main__':

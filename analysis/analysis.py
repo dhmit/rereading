@@ -37,12 +37,11 @@ def compile_response(student_data, question):
                     data[elem['context']][elem['response']] = 1
     return data
 
+
 def run_analysis():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
     print(compile_response(student_data, "In one word, how does this text make you feel?"))
-
-
 
 
 if __name__ == '__main__':

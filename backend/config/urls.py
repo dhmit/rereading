@@ -1,4 +1,5 @@
-""" rereading URL Configuration
+"""
+Rereading URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.2/topics/http/urls/
@@ -9,7 +10,7 @@ Function views
 Class-based views
     1. Add an import:  from other_app.views import Home
     2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
+Including another URL configuration
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
@@ -18,13 +19,17 @@ from django.urls import path, re_path, include
 from django.conf.urls import url
 from django.views.generic.base import TemplateView
 
-class spa(TemplateView):
-    template_name='index.html'
+
+class SinglePageApp(TemplateView):
+    template_name = 'index.html'
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('apps.readings.urls')),
     path('api', include('apps.readings.urls')),
-    url('', spa.as_view()),
-    re_path(r'^(?:.*)/?$', spa.as_view()), # capture all other urls, so react-router can take over
+    url('', SinglePageApp.as_view()),
+
+    # capture all other urls, so other routes can take over
+    re_path(r'^(?:.*)/?$', SinglePageApp.as_view()),
 ]

@@ -3,6 +3,10 @@ from .models import Story, Question, Context, Student, StudentResponse
 
 
 class StudentResponseSerializer(serializers.ModelSerializer):
+    """
+    A serializer makes it possible to view a database Django model
+    on the web, such as React
+    """
     class Meta:
         model = StudentResponse
 

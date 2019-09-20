@@ -28,48 +28,43 @@ def load_data_csv(csv_path: Path):
 
 
 def run_analysis():
-    average_rereading_time_first_question()
+    mean_rereading_times()
 
 
-def average_rereading_time_first_question():
+def mean_rereading_times():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
-    # TODO: do something with student_data that's not just printing it!
-    average_ad_time = 0
-    average_short_story_time = 0
-    ad_count = 0
-    short_story_count = 0
+    mean_rereading_time_for_a_question(student_data, "feel", "ad")
+    mean_rereading_time_for_a_question(student_data, "about", "ad")
+    mean_rereading_time_for_a_question(student_data, "encountered", "ad")
+    mean_rereading_time_for_a_question(student_data, "feel", "short story")
+    mean_rereading_time_for_a_question(student_data, "about", "short story")
+    mean_rereading_time_for_a_question(student_data, "encountered", "short story")
+
+
+def mean_rereading_time_for_a_question(student_data, question_keyword, context):
+    mean_time = 0
+    number_of_rereaders = 0
+    question_asked = ""
     for student_data_dictionary in student_data:
-        if student_data_dictionary['question'].find("feel") != -1:
-            if student_data_dictionary['context'] == "This is an ad.":
-
-                average_views = 0
+        if student_data_dictionary['question'].find(question_keyword) != -1:
+            question_asked = student_data_dictionary['question']
+            if student_data_dictionary['context'].find(context) != -1:
+                mean_views = 0
                 for view_time in student_data_dictionary['views']:
-                    average_views += view_time
+                    mean_views += view_time
                 if len(student_data_dictionary['views']) != 0:
-                    ad_count += 1
-                    average_ad_time += average_views / len(student_data_dictionary['views'])
-            else:
+                    number_of_rereaders += 1
+                    mean_time += mean_views / len(student_data_dictionary['views'])
+    if number_of_rereaders != 0:
+        mean_time /= number_of_rereaders
+        mean_time = round(mean_time, 2)
+        print(f"When those who thought the reading was a(n) {context} were asked \"{question_asked}\"")
+        print(f"{number_of_rereaders} subjects reread the text for an average of {mean_time} seconds.")
+    else:
+        print(f"No who thought the reading was a(n) {context} and were asked \"{question_asked}\" reread the text.")
 
-                average_views = 0
-                for view_time in student_data_dictionary['views']:
-                    average_views += view_time
-                if len(student_data_dictionary['views']) != 0:
-                    short_story_count += 1
-                    average_short_story_time += average_views / len(student_data_dictionary['views'])
-    average_short_story_time /= short_story_count
-    average_ad_time /= ad_count
-
-    print("Number of people who reread the text thinking it was an ad: "
-          + str(ad_count) + ".")
-    print("Their average reread time for the first question was "
-          + str(round(average_ad_time, 2)) + " seconds.")
-    print("Number of people who reread the text thinking it was a short story: "
-          + str(short_story_count) + ".")
-    print("Their average reread time for the first question was "
-          + str(round(average_short_story_time, )) + " seconds.")
-    print(student_data)
-
+    print()
 
 if __name__ == '__main__':
     run_analysis()

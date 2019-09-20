@@ -32,47 +32,38 @@ def run_analysis():
     on the context (ad or short story) and the question.
     """
 
-    # Question 1
     q1_ad = []
     q1_short = []
-    for row in student_data:
-        # "encountered" signifies the "Have you encountered this text before?" question
-        # "ad" signifies the "This is an ad." context
-        # "short" signifies the "This is a short story." context
-        if "ad" in row['context'] and "encountered" in row['question']:
-            view_count = len(row['views'])
-            q1_ad.append(view_count)
-        elif "short" in row['context'] and "encountered" in row['question']:
-            view_count = len(row['views'])
-            q1_short.append(view_count)
-
-    # Question 2
     q2_ad = []
     q2_short = []
-    for row in student_data:
-        # "one" signifies the "In one word, how does this make you feel?" question
-        # "ad" signifies the "This is an ad." context
-        # "short" signifies the "This is a short story." context
-        if "ad" in row['context'] and "one" in row['question']:
-            view_count = len(row['views'])
-            q2_ad.append(view_count)
-        elif "short" in row['context'] and "one" in row['question']:
-            view_count = len(row['views'])
-            q2_short.append(view_count)
-
-    # Question 3
     q3_ad = []
     q3_short = []
     for row in student_data:
+        # "encountered" signifies the "Have you encountered this text before?" question
+        # "one" signifies the "In one word, how does this make you feel?" question
         # "three" signifies the "In three words or fewer, what is this text about?" question
         # "ad" signifies the "This is an ad." context
         # "short" signifies the "This is a short story." context
-        if "ad" in row['context'] and "three" in row['question']:
-            view_count = len(row['views'])
-            q3_ad.append(view_count)
-        elif "short" in row['context'] and "three" in row['question']:
-            view_count = len(row['views'])
-            q3_short.append(view_count)
+        view_count = len(row['views'])
+        question = row['question']
+        context = row['context']
+        if "ad" in context:
+            if "encountered" in question:
+                q1_ad.append(view_count)
+            elif "one" in question:
+                q2_ad.append(view_count)
+            elif "three" in question:
+                q3_ad.append(view_count)
+
+        if "short" in context:
+            if "encountered" in question:
+                q1_short.append(view_count)
+            elif "one" in question:
+                q2_short.append(view_count)
+            elif "three" in question:
+                q3_short.append(view_count)
+
+
 q1_final_ad = []
 q2_final_ad = []
 q3_final_ad = []

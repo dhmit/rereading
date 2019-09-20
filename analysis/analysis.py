@@ -24,23 +24,25 @@ def load_data_csv(csv_path: Path):
     return out_data
 
 
+def compile_response(student_data, question):
+    data = {}
+    for elem in student_data:
+        if elem['question'] == question:
+            if elem['context'] not in data:
+                data[elem['context']] = {elem['response']: 1}
+            else:
+                if elem['response'] in data[elem['context']]:
+                    data[elem['context']][elem['response']] += 1
+                else:
+                    data[elem['context']][elem['response']] = 1
+    return data
+
 def run_analysis():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
-    # TODO: do something with student_data that's not just printing it!
+    print(compile_response(student_data, "In one word, how does this text make you feel?"))
 
-    ad = {}
-    story = {}
-    data = {}
-    for elem in student_data:
-        if elem['context'] not in data:
-            data[elem['context']] = {elem['response']:1}
-        else:
-            if elem['response'] in data[elem['context']]:
-                data[elem['context']][elem['response']] += 1
-            else:
-                data[elem['context']][elem['response']] = 1
-    print(data)
+
 
 
 if __name__ == '__main__':

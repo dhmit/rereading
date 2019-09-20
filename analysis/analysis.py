@@ -66,9 +66,10 @@ def run_analysis():
         if rereading_result[3] != 0:
             print(f"Out of those who thought the reading was a(n) {rereading_result[1]} and were asked "
                   f"\"{rereading_result[0]}\"")
-            print(f"{rereading_result[3]} subject(s) reread the text for an average of {rereading_result[2]} seconds.")
+            print(
+                f"{rereading_result[3]} subject(s) reread the text for an average of {rereading_result[2]} seconds.")
         else:
-            print(f"No who thought the reading was a(n) {rereading_result[1]} and were asked "
+            print(f"No one who thought the reading was a(n) {rereading_result[1]} and were asked "
                   f"\"{rereading_result[0]}\" reread the text.")
         print()
 
@@ -102,8 +103,6 @@ def mean_rereading_time_for_a_question(student_data, question_keyword, context):
         mean_time = round(mean_time, 2)
 
     return question_asked, context, mean_time, number_of_rereaders
-    total_view_time = compute_total_view_time(student_data)
-    print(f'The total view time of all students was {total_view_time}.')
 
 
 class TestAnalysisMethods(unittest.TestCase):
@@ -121,6 +120,32 @@ class TestAnalysisMethods(unittest.TestCase):
                 'scroll_ups': 0,
             }
         ]
+
+    def test_mean_rereading_time_for_a_question(self):
+        # check we don't crash on the defaults from the model!
+        mean_rereading_data = mean_rereading_time_for_a_question(self.default_student_data, "", "")
+        empty_comparison_tuple = ("", "", 0, 0)
+        self.assertEqual(mean_rereading_data, empty_comparison_tuple)
+
+        mean_rereading_time_results_data = [
+            mean_rereading_time_for_a_question(self.test_student_data, "feel", "ad"),
+            mean_rereading_time_for_a_question(self.test_student_data, "about", "ad"),
+            mean_rereading_time_for_a_question(self.test_student_data, "encountered", "ad"),
+            mean_rereading_time_for_a_question(self.test_student_data, "feel", "short story"),
+            mean_rereading_time_for_a_question(self.test_student_data, "about", "short story"),
+            mean_rereading_time_for_a_question(self.test_student_data, "encountered", "short story")
+        ]
+        # The expected result times are rounded to 2 decimals here due to Python rounding errors
+        # not matching actual rounding.
+        mean_comparison_results = [
+            ("In one word, how does this text make you feel?", "ad", round(2.319, 2), 1),
+            ("In three words or fewer, what is this text about?", "ad", round(2.945, 2), 1),
+            ("Have you encountered this text before?", "ad", 0, 0),
+            ("In one word, how does this text make you feel?", "short story", round(1.121, 2), 1),
+            ("In three words or fewer, what is this text about?", "short story", 0, 0),
+            ("Have you encountered this text before?", "short story", 0, 0)
+        ]
+        self.assertEqual(mean_rereading_time_results_data, mean_comparison_results)
 
     def test_compute_total_view_time(self):
         total_view_time = compute_total_view_time(self.test_student_data)

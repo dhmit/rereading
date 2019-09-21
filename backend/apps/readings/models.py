@@ -2,10 +2,10 @@ from django.db import models
 
 
 class Story(models.Model):
-    story = models.TextField()
+    story_text = models.TextField()
 
     def __str___(self):
-        return self.story
+        return self.story_text
 
 
 class Context(models.Model):

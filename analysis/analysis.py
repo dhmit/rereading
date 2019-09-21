@@ -172,12 +172,6 @@ def print_analysis(data):
     print_total_analysis_views(data)
 
 
-def run_analysis():
-    """
-    Runs the whole analysis
-    :return: None
-    """
-    print_analysis(load_data())
 def compute_total_view_time(student_data):
     """
     Given a list of student response dicts,
@@ -194,11 +188,11 @@ def compute_total_view_time(student_data):
 
 
 def run_analysis():
-    csv_path = Path('data', 'rereading_data_2019-09-13.csv')
-    student_data = load_data_csv(csv_path)
-
-    total_view_time = compute_total_view_time(student_data)
-    print(f'The total view time of all students was {total_view_time}.')
+    """
+    Runs the whole analysis
+    :return: None
+    """
+    print_analysis(load_data())
 
 
 class TestAnalysisMethods(unittest.TestCase):
@@ -224,6 +218,22 @@ class TestAnalysisMethods(unittest.TestCase):
         # check we don't crash on the defaults from the model!
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
+
+    def test_extract_response(self):
+        question = "In one word, how does this text make you feel?"
+        response_ad = extract_response(self.test_student_data, question, "This is an ad.")
+        self.assertEqual(response_ad, ["Sad"])
+
+        response_ad = extract_response(self.default_student_data, question, "This is an ad.")
+        self.assertEqual(response_ad, [])
+
+    def test_extract_views(self):
+        question = "In one word, how does this text make you feel?"
+        views = extract_views(self.test_student_data, question, "This is an ad.")
+        self.assertEqual(views, [1])
+
+        views = extract_views(self.default_student_data, question, "This is an ad.")
+        self.assertEqual(views, [])
 
 
 if __name__ == '__main__':

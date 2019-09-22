@@ -35,17 +35,49 @@ def run_analysis():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
     # TODO: do something with student_data that's not just printing it!
-    # print(student_data)
-    freq_dict = word_freq_all(student_data)
-    for key in freq_dict:
-        print(key)
-        print(freq_dict[key])
-        print("================")
-    most_frequent_responses = frequent_responses(freq_dict)
-    for key in most_frequent_responses:
-        print(key)
-        print(most_frequent_responses[key])
-        print("--------------------")
+
+
+def average_time(data):
+    """
+    Takes the data and finds the average time of all the times [views] in the data
+
+    :param data: path to the CSV file
+    :return: integer representing the average time overall
+    """
+
+    times = 0
+    count = 0
+    for dictionary in data:
+        views = dictionary["views"]
+        for view in views:
+            times += view
+            count += 1
+    return times/count
+
+
+def avg_time_cxt(data, question, context):
+    """
+    Takes the data, a question, and context and computes the average time of the views of this specific context
+
+    :param question: String representing specific question
+    :param context: String representing a specific context
+    :param data:  path to the CSV file
+    :return: integer: represents the average time of this question and context when there is this specific question and
+                context
+    :return: None: when there is no data entries for this specific question and context
+    """
+    count = 0
+    times = 0
+    for dictionary in data:
+        dict_question = dictionary["question"]
+        dict_context = dictionary["context"]
+        if dict_question == question and dict_context == context:
+            for view in dictionary["views"]:
+                count += 1
+                times += view
+    if count == 0:
+        return None
+    return times/count
 
 
 def frequent_responses(freq_dict):

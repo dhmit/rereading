@@ -64,35 +64,36 @@ def compute_reread_counts(student_data):
             elif "three" in question:
                 q3_short.append(view_count)
 
+        all_arrays = [q1_ad, q1_short, q2_ad, q2_short, q3_ad, q3_short]
+        zero_counter = 0
+        one_counter = 0
+        two_counter = 0
+        three_counter = 0
+        four_counter = 0
+        five_above= 0
 
-    q1_final_ad = []
-    q2_final_ad = []
-    q3_final_ad = []
-    q1_final_short = []
-    q2_final_short = []
-    q3_final_short = []
-    zero_counter = 0
-    one_counter = 0
-    two_counter = 0
-    three_counter = 0
-    four_counter = 0
-    five_above= 0
-
-    for x in q1_ad:
-        if(x==0):
-            zero_counter+=1
-        elif(x==1):
-            one_counter+=1
-        elif (x == 2):
-            two_counter += 1
-        elif (x == 3):
-            three_counter += 1
-        elif (x == 4):
-            four_counter += 1
-        else:
-            five_above +=1
-
-    return results  # We need to format our output
+        for x in all_arrays:
+            for y in x:
+                if y == 0:
+                    zero_counter += 1
+                elif y == 1:
+                    one_counter += 1
+                elif y == 2:
+                    two_counter += 1
+                elif y == 3:
+                    three_counter += 1
+                elif y == 4:
+                    four_counter += 1
+                else:
+                    five_above += 1
+                clear(x)
+                x.append(zero_counter)
+                x.append(one_counter)
+                x.append(two_counter)
+                x.append(three_counter)
+                x.append(four_counter)
+                x.append(five_above)
+        return all_arrays  # We need to format our output
 
 
 def run_analysis():

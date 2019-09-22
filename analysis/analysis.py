@@ -46,14 +46,22 @@ def compute_total_view_time(student_data):
 def run_analysis():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
-    # TODO: do something with student_data that's not just printing it!
     response_groups = get_response_groups_frequencies(student_data)
-    for group_name in response_groups:
-        print("Word frequencies for", group_name, ":", response_groups[group_name], "\n")
-
+    show_response_groups(response_groups)
     total_view_time = compute_total_view_time(student_data)
     print(f'The total view time of all students was {total_view_time}.')
 
+def show_response_groups(response_groups):
+    """
+    Given response_group dictionary, prints/shows the dictionaries so that they
+    can be compared in the terminal
+
+    Input: response groups, keys are four dicts (one for each response group) mapping words
+    to frequencies within that response group
+    Returns: None
+    """
+    for group_name in response_groups:
+        print("Word frequencies for", group_name, ":", response_groups[group_name], "\n")
 
 def get_response_groups_frequencies(student_data: list):
     """"
@@ -130,6 +138,8 @@ class TestAnalysisMethods(unittest.TestCase):
                 'scroll_ups': 0,
             }
         ]
+        sample_csv_path = Path('data', 'rereading_data_2019-09-13.csv')
+        self.student_data = load_data_csv(sample_csv_path)
 
     def test_compute_total_view_time(self):
         total_view_time = compute_total_view_time(self.test_student_data)
@@ -138,6 +148,42 @@ class TestAnalysisMethods(unittest.TestCase):
         # check we don't crash on the defaults from the model!
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
+
+    def test_get_response_group_frequencies(self):
+        response_groups = get_response_groups_frequencies(self.student_data)
+        expected = {
+                    'Single view responses to ad context': {'sad': 2, 'bored': 1,
+                                                            'annoyed': 2, 'fine': 1,
+                                                            'melancholic': 1, 'suspicious': 1,
+                                                            'speculative': 1, 'depressed': 1,
+                                                            'confused': 1},
+                    'Single view responses to short story context': {
+                                                                        'sad': 8, 'enticed': 1,
+                                                                        'ok': 1,'inyrigu': 1,
+                                                                        'interested': 2,
+                                                                        'surprised': 1,
+                                                                        'concerned': 1, 'helped': 1,
+                                                                        'depressed': 2,
+                                                                        'sad/curious': 1,
+                                                                        'intrigued': 1,
+                                                                        'confused': 1,
+                                                                        'puzzled': 1},
+                    'Multiple view responses to ad context': {'targeted': 1, 'confused': 3,
+                                                              'informed': 2, 'weird': 1,
+                                                              'comfortable': 1, 'melancholy': 2,
+                                                              'sad': 2, 'concerned': 1,
+                                                              'uncomfortable': 1, 'curious': 1,
+                                                              'disappointed': 1, 'indifferent': 1,
+                                                              'fine': 1, 'neutral': 1},
+                    'Multiple view responses to short story context': {'somber': 1,
+                                                                       'mysterious': 1,
+                                                                       'curious': 1, 'sad': 1,
+                                                                       'interested': 1,
+                                                                       'underwhelmed': 1,
+                                                                       'melancholy': 1,
+                                                                       'sadder': 1}
+                    }
+        self.assertEquals(expected, response_groups)
 
 
 if __name__ == '__main__':

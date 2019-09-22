@@ -55,15 +55,37 @@ def average_time(data):
     return times/count
 
 
+def avg_time_student(data, student_id):
+    """
+    Takes the data and an id and computes the average time overall of the student
+
+    :param student_id: integer, represents specific id number
+    :param data:  path to the CSV file
+    :return: integer: represents the average time of this id
+    :return: None: when there is no data entries for this specific id
+    """
+    count = 0
+    times = 0
+    for dictionary in data:
+        dict_id = dictionary["student_id"]
+        if dict_id == student_id:
+            for view in dictionary["views"]:
+                count += 1
+                times += view
+    if count == 0:
+        return None
+    return times / count
+
+
 def avg_time_cxt(data, question, context):
     """
-    Takes the data, a question, and context and computes the average time of the views of this specific context
+    Takes the data, a question, and context and computes the average time of the views of this specific context and
+    question
 
     :param question: String representing specific question
     :param context: String representing a specific context
     :param data:  path to the CSV file
-    :return: integer: represents the average time of this question and context when there is this specific question and
-                context
+    :return: integer: represents the average time of this question and context when it exists
     :return: None: when there is no data entries for this specific question and context
     """
     count = 0

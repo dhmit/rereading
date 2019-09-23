@@ -70,7 +70,7 @@ class StorySerializer(serializers.ModelSerializer):
         model = Story
         fields = (
             'id',
-            'story',
+            'story_text',
             'contexts',
             'questions',
         )

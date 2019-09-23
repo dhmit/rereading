@@ -43,12 +43,30 @@ def compute_total_view_time(student_data):
     return total_view_time
 
 
+def compute_median_view_time(student_data):
+    """
+     Given a list of student response dicts,
+    return the median time (across all users) spent reading the text
+
+    :param student_data: list, student response dicts
+    :return: float, median amount of time users spend reading the text
+    """
+    list_of_times = []
+    for row in student_data:
+        for view_time in row.get('views'):
+            list_of_times.append(view_time)
+    list_of_times.sort()
+    middle_index = int(len(list_of_times) / 2)
+    return list_of_times[middle_index]
+
+
 def run_analysis():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
-
+    median_view_time = compute_median_view_time(student_data)
     total_view_time = compute_total_view_time(student_data)
     print(f'The total view time of all students was {total_view_time}.')
+    print(f'The median view time of all students was {median_view_time}.')
 
 
 class TestAnalysisMethods(unittest.TestCase):

@@ -42,6 +42,25 @@ def compute_total_view_time(student_data):
             total_view_time += view_time
     return total_view_time
 
+def mean_view_time(student_data):
+    """
+    Given a list of student response dicts,
+    return the mean time (across each view) spent reading the text
+    if the list is empty, then it returns 0
+    :param student_data: a list of dictionaries
+    :return: a float, the total time all users spent reading the text divided by total views
+    """
+    sum_of_views = 0
+    count = 0
+    for row_dict in student_data:
+        for view_times in row_dict['views']:
+            sum_of_views += view_times
+            count += 1
+    if count == 0:
+        return 0
+    else:
+        return sum_of_views / count
+
 
 def run_analysis():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
@@ -75,9 +94,15 @@ class TestAnalysisMethods(unittest.TestCase):
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
 
+    # TODO: do something with student_data that's not just printing it!
+    print(student_data)
+    print(mean_view_time(student_data))
+
+
 
 if __name__ == '__main__':
     run_analysis()
+
 #select responses with negative connotations (sad, missacarriage) when the context
 # was "This is an ad." and find the difference between avg view times of these
 # students' with those of neutral connotations (confused, sale). Our 'hypothesis' is that there

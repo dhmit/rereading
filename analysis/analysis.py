@@ -32,7 +32,6 @@ def compute_total_view_time(student_data):
     """
     Given a list of student response dicts,
     return the total time (across all users) spent reading the text
-
     :param student_data: list, student response dicts
     :return: float, the total time all users spent reading the text
     """
@@ -48,19 +47,20 @@ def run_analysis():
     Takes in no parameters and initializes the analysis of the data
     :return: None
     """
-    csv_path = Path('data', 'rereading_data_2019-09-13.csv')
-    student_data = load_data_csv(csv_path)
+    # csv_path = Path('data', 'test_data.csv')
+    # csv_path = Path('data', 'rereading_data_2019-09-13.csv')
+    # student_data = load_data_csv(csv_path)
     # TODO: do something with student_data that's not just printing it!
+    # total_view_time = compute_total_view_time(student_data)
+    # print(f'The total view time of all students was {total_view_time}.')
 
 
 def average_time(data):
     """
     Takes the data and finds the average time of all the times [views] in the data
-
     :param data: path to the CSV file
     :return: integer representing the average time overall
     """
-
     times = 0
     count = 0
     for dictionary in data:
@@ -74,7 +74,6 @@ def average_time(data):
 def avg_time_student(data, student_id):
     """
     Takes the data and an id and computes the average time overall of the student
-
     :param student_id: integer, represents specific id number
     :param data:  path to the CSV file
     :return: integer: represents the average time of this id
@@ -95,9 +94,8 @@ def avg_time_student(data, student_id):
 
 def avg_time_cxt(data, question, context):
     """
-    Takes the data, a question, and context and computes the average time of the views of this specific context and
-    question
-
+    Takes the data, a question, and context and computes the average time of the
+    views of this specific context and question
     :param question: String representing specific question
     :param context: String representing a specific context
     :param data:  path to the CSV file
@@ -168,9 +166,6 @@ def word_freq_all(data):
             qc_dict[response] += 1
     return output
 
-    total_view_time = compute_total_view_time(student_data)
-    print(f'The total view time of all students was {total_view_time}.')
-
 
 class TestAnalysisMethods(unittest.TestCase):
     def setUp(self):
@@ -188,13 +183,37 @@ class TestAnalysisMethods(unittest.TestCase):
             }
         ]
 
-    def test_compute_total_view_time(self):
-        total_view_time = compute_total_view_time(self.test_student_data)
-        self.assertEqual(total_view_time, 6.385)
+    # def test_compute_total_view_time(self):
+    #     total_view_time = compute_total_view_time(self.test_student_data)
+    #     self.assertEqual(total_view_time, 6.385)
+    #
+    #     # check we don't crash on the defaults from the model!
+    #     total_view_time = compute_total_view_time(self.default_student_data)
+    #     self.assertEqual(total_view_time, 0)
+    def test_average_time(self):
+        average_view_time = average_time(self.test_student_data)
+        self.assertAlmostEqual(average_view_time, 2.128333333333)
 
-        # check we don't crash on the defaults from the model!
         total_view_time = compute_total_view_time(self.default_student_data)
-        self.assertEqual(total_view_time, 0)
+        self.assertAlmostEqual(total_view_time, 0)
+
+    def test_frequent_responses(self):
+        most_frequent_responses = frequent_responses(word_freq_all(self.test_student_data))
+        specific_question_context = ('In one word, how does this text make you feel?',
+                                     'This is an ad.')
+        answer = {
+            'most_frequent_words': ['sad'],
+            'max_occurrences': 1
+        }
+        self.assertEqual(most_frequent_responses[specific_question_context], answer)
+
+        most_frequent_responses = frequent_responses(word_freq_all(self.default_student_data))
+        specific_question_context = ("", "")
+        answer = {
+            'most_frequent_words': [''],
+            'max_occurrences': 1
+        }
+        self.assertEqual(most_frequent_responses[specific_question_context], answer)
 
 
 if __name__ == '__main__':

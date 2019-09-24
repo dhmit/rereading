@@ -1,6 +1,8 @@
 import React from 'react';
-import './student_view.css';
 import PropTypes from 'prop-types';
+
+import { getCookie } from '../common'
+import './student_view.css';
 
 
 /**
@@ -232,7 +234,7 @@ class Study extends React.Component {
             scroll_ups: 0,
             scrolling_up: false,
         };
-
+        this.csrftoken = getCookie('csrftoken');
     }
 
     /**
@@ -267,7 +269,8 @@ class Study extends React.Component {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'X-CSRFToken': this.csrftoken,
             }
 
         }).then(res => res.json()).then(response => console.log(JSON.stringify(response)))

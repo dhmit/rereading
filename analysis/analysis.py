@@ -42,6 +42,7 @@ def compute_total_view_time(student_data):
             total_view_time += view_time
     return total_view_time
 
+
 def mean_view_time(student_data):
     """
     Given a list of student response dicts,
@@ -69,6 +70,10 @@ def run_analysis():
     total_view_time = compute_total_view_time(student_data)
     print(f'The total view time of all students was {total_view_time}.')
 
+    # TODO: do something with student_data that's not just printing it!
+    print(student_data)
+    print(mean_view_time(student_data))
+
 
 class TestAnalysisMethods(unittest.TestCase):
     def setUp(self):
@@ -94,16 +99,12 @@ class TestAnalysisMethods(unittest.TestCase):
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
 
-    # TODO: do something with student_data that's not just printing it!
-    print(student_data)
-    print(mean_view_time(student_data))
-
-
 
 if __name__ == '__main__':
     run_analysis()
+    unittest.main()  # run the tests
 
-#select responses with negative connotations (sad, missacarriage) when the context
+# select responses with negative connotations (sad, miscarriage) when the context
 # was "This is an ad." and find the difference between avg view times of these
 # students' with those of neutral connotations (confused, sale). Our 'hypothesis' is that there
 # might be a statistically significant difference showing students with responses of negative
@@ -118,4 +119,4 @@ if __name__ == '__main__':
 # take average of view time with context of "This is an ad."
 
 
-#take average of view time with context of "This is actually a short story."
+# take average of view time with context of "This is actually a short story."

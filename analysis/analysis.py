@@ -190,12 +190,29 @@ class TestAnalysisMethods(unittest.TestCase):
     #     # check we don't crash on the defaults from the model!
     #     total_view_time = compute_total_view_time(self.default_student_data)
     #     self.assertEqual(total_view_time, 0)
+
     def test_average_time(self):
         average_view_time = average_time(self.test_student_data)
         self.assertAlmostEqual(average_view_time, 2.128333333333)
 
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertAlmostEqual(total_view_time, 0)
+
+    def test_word_freq_all(self):
+        freq_dict = word_freq_all(self.test_student_data)
+        specific_question_context = ('In one word, how does this text make you feel?',
+                                     'This is an ad.')
+        answer = {
+            'sad': 1
+        }
+        self.assertEqual(freq_dict[specific_question_context], answer)
+
+        freq_dict = word_freq_all(self.default_student_data)
+        specific_question_context = ("", "")
+        answer = {
+            '': 1
+        }
+        self.assertEqual(freq_dict[specific_question_context], answer)
 
     def test_frequent_responses(self):
         most_frequent_responses = frequent_responses(word_freq_all(self.test_student_data))

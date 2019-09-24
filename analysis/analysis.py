@@ -48,7 +48,14 @@ def run_analysis():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
     # TODO: do something with student_data that's not just printing it!
+    average_times = context_vs_read_time(student_data)
 
+    #print(student_data)
+
+    total_view_time = compute_total_view_time(student_data)
+    print(f'The total view time of all students was {total_view_time}.')
+
+def context_vs_read_time(student_data):
     ad_sum = 0
     ad_count = 0
     story_sum = 0
@@ -67,13 +74,10 @@ def run_analysis():
                     story_sum = story_sum + view
             story_count += 1
 
-    print("Average viewtime for ad:", ad_sum/ad_count)
-    print("Average viewtime for short story", story_sum/story_count)
+    average_ad_view = ad_sum / ad_count
+    average_story_view = story_sum / story_count
 
-    #print(student_data)
-
-    total_view_time = compute_total_view_time(student_data)
-    print(f'The total view time of all students was {total_view_time}.')
+    return average_ad_view, average_story_view
 
 
 class TestAnalysisMethods(unittest.TestCase):

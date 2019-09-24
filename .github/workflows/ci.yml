@@ -10,9 +10,9 @@ on:
         - '*'
 
 jobs:
-  ############################################################################## 
+  ##############################################################################
   # Python jobs
-  ############################################################################## 
+  ##############################################################################
   python_linters:
     runs-on: ubuntu-latest
     steps:
@@ -63,9 +63,9 @@ jobs:
         cd analysis
         python analysis.py
 
-  ############################################################################## 
+  ##############################################################################
   # JS jobs
-  ############################################################################## 
+  ##############################################################################
 
   js_linters:
     runs-on: ubuntu-latest
@@ -74,7 +74,7 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '10.x'
-    - name: Install deps and eslint
+    - name: Install frontend deps and eslint
       run: |
         cd frontend
         npm install
@@ -84,17 +84,20 @@ jobs:
         cd frontend
         eslint src
 
-#  frontend_tests:
-#    runs-on: ubuntu-latest
-#    steps:
-#    - uses: actions/checkout@v1
-#    - uses: actions/setup-node@v1
-#      with:
-#        node-version: '10.x'
-#    - name: Run eslint on frontend/src
-#      run: |
-#        cd frontend
-#        npm install
-#        npm install -g eslint
-#        eslint src
-#
+  frontend_tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+    - name: Install frontend deps
+      run: |
+        cd frontend
+        npm install
+    - name: Run frontend tests
+      run: |
+        cd frontend
+        npm run test
+
+

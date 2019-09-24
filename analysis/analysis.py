@@ -37,7 +37,7 @@ def run_analysis():
     yes_id = []
     no_id = []
     for response in student_data:
-        if (response['question'].find('encountered this text') == 0
+        if (response['question'].find('Have you encountered this text before') == 0
                 and response['context'].find('This is an ad.') == 0):
             if response['response'].lower().find('yes')  == -1:
                 no_id.append(response['student_id'])
@@ -46,10 +46,59 @@ def run_analysis():
     print(yes_id)
     print(no_id)
 
+    # Iterate through all responses to
     ad_yes_words = []
     ad_no_words = []
     for element in student_data:
-        if element['question'].find('In one word') == 0:
+        if element['question'].find('In one word') == 0 \
+                and element['context'].find('This is an ad') == 0:
+            if element['student_id'] in yes_id:
+                ad_yes_words.append(element['response'].lower())
+            else:
+                ad_no_words.append(element['response'].lower())
+    print(ad_yes_words)
+    print(ad_no_words)
+
+    yes_responses = dict()
+    no_responses = dict()
+
+    for response in ad_yes_words:
+        if response in yes_responses:
+            yes_responses[response] += 1
+        else:
+            yes_responses[response] = 1
+
+    for response in ad_no_words:
+        if response in no_responses:
+            no_responses[response] += 1
+        else:
+            no_responses[response] = 1
+
+    print(yes_responses)
+    print(no_responses)
+
+    diff_responses = dict()
+
+    for word in yes_responses:
+        if word in no_responses:
+            diff_responses[word] = yes_responses[word] - no_responses[word]
+        else:
+            diff_responses[word] = yes_responses[word]
+    for word in no_responses:
+        if word not in yes_responses:
+            diff_responses[word] = - no_responses[word]
+
+    print(diff_responses)
+
+    diff_responses_list = []
+    for word in diff_responses:
+        diff_responses_list.append((word, diff_responses[word]))
+    print(diff_responses_list)
+
+
+
+
+
 
 
 

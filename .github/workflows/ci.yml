@@ -4,6 +4,7 @@ on:
     push:
         branches:
         - master
+        - '*_CI'  # run on branches suffixed with _CI
     pull_request:
         branches:
         - '*'

@@ -1,7 +1,13 @@
+"""
+Models for the Rereading app.
+"""
 from django.db import models
 
 
 class Story(models.Model):
+    """
+    A single story with its text.
+    """
     story_text = models.TextField()
 
     def __str___(self):
@@ -9,6 +15,9 @@ class Story(models.Model):
 
 
 class Context(models.Model):
+    """
+    The Context in which a story is read.
+    """
     text = models.TextField()
     story = models.ForeignKey(
         Story,
@@ -21,6 +30,9 @@ class Context(models.Model):
 
 
 class Question(models.Model):
+    """
+    A question about a Story.
+    """
     text = models.TextField()
     word_limit = models.IntegerField()
     story = models.ForeignKey(
@@ -31,10 +43,18 @@ class Question(models.Model):
 
 
 class Student(models.Model):
+    """
+    A user who reads stories and responds to questions.
+    """
     story = models.TextField(default='')
 
 
 class StudentResponse(models.Model):
+    """
+    The response of a student to a question given a context.
+
+    TODO(msc): why are these not links to other models?
+    """
     question = models.TextField(default='')
     context = models.TextField(default='')
     response = models.TextField(default='')

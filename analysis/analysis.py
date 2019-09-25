@@ -44,6 +44,11 @@ def compute_total_view_time(student_data):
 
 
 def run_analysis():
+    """
+    Runs the analytical method on the reading data
+
+    :return: None
+    """
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
 
@@ -52,6 +57,9 @@ def run_analysis():
 
 
 class TestAnalysisMethods(unittest.TestCase):
+    """
+    Test cases to make sure things are running properly
+    """
     def setUp(self):
         test_data_path = Path('data', 'test_data.csv')
         self.test_student_data = load_data_csv(test_data_path)
@@ -68,6 +76,9 @@ class TestAnalysisMethods(unittest.TestCase):
         ]
 
     def test_compute_total_view_time(self):
+        """
+        Test that the total view time equals the expected values.
+        """
         total_view_time = compute_total_view_time(self.test_student_data)
         self.assertEqual(total_view_time, 6.385)
 

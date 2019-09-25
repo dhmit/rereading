@@ -185,7 +185,6 @@ QuestionResponse.propTypes = {
     prompt: PropTypes.number,
 };
 
-
 /**
  * Main component for the Instructor view.
  * Accesses and maintains database data for student responses and handles
@@ -251,6 +250,7 @@ class InstructorPage extends React.Component {
             sortBy: event.target.value
         });
     }
+
 
     render() {
         if (this.state.loaded) {  // Only do this if we have the data! Otherwise breaks :(

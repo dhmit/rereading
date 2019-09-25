@@ -20,14 +20,21 @@ from django.conf.urls import url
 from django.views.generic.base import TemplateView
 
 
+from apps.readings import views as readings_views
+
+
 class SinglePageApp(TemplateView):
     template_name = 'index.html'
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('apps.readings.urls')),
-    path('api', include('apps.readings.urls')),
+
+    # API endpoints
+    path('api/', readings_views.ListStory.as_view()),
+    path('api/add-response/', readings_views.ListStudent.as_view()),
+    path('api/<int:pk>/', readings_views.DetailStory.as_view()),
+
     url('', SinglePageApp.as_view()),
 
     # capture all other urls, so other routes can take over

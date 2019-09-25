@@ -51,6 +51,10 @@ def run_analysis():
     total_view_time = compute_total_view_time(student_data)
     print(f'The total view time of all students was {total_view_time}.')
 
+#     My thought is that we can compare the word frequencies we return for each response group to
+#     find the similarities and differences between contexts (not enough data atm for this to be
+#     significant, but the insights would become more interesting as response # increases)
+
 def show_response_groups(response_groups):
     """
     Given response_group dictionary, prints/shows the dictionaries so that they
@@ -85,9 +89,6 @@ def get_response_groups_frequencies(student_data: list):
     }
 
     for person_response in student_data:
-        # filter out responses from people who didn't go back
-        # this sorting doesn't work. We need to find a way to sort people with 1, +1
-        # views...
         if len(person_response['views']) == 1:
             people_with_one_view.append(person_response)
         else:
@@ -183,7 +184,7 @@ class TestAnalysisMethods(unittest.TestCase):
                                                                        'melancholy': 1,
                                                                        'sadder': 1}
                     }
-        self.assertEquals(expected, response_groups)
+        self.assertEqual(expected, response_groups)
 
 
 if __name__ == '__main__':

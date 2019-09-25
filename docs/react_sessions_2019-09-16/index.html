@@ -48,33 +48,16 @@
     <hr>
 
     <!-- the React way -->
+    <!--
     <h1>React!</h1>
     <div id="react_root"></div>
     <script type="text/babel">
         class ReactToggler extends React.Component {
-            constructor(){
-                super();
-                this.state = {
-                    on: false,
-                    toggle_count: 0,
-                };
-            }
-
-            toggle_click(){
-                this.setState({
-                    on: !this.state.on,
-                    toggle_count: this.state.toggle_count + 1,
-                });
-            }
-
             render() {
                 return (
                     <div>
-                        <div>{this.state.on ? 'On' : 'Off'}</div>
-                        <button onClick={() => this.toggle_click()}>
-                            Turn status {this.state.on ? 'Off' : 'On'}
-                        </button>
-                        You've toggled {this.state.toggle_count} times!
+                        <div>Off</div>
+                        <button>Turn status on</button>
                     </div>
                 );
             }
@@ -85,7 +68,7 @@
             document.getElementById('react_root')
         );
     </script>
-
+    -->
 
     </body>
 </html>

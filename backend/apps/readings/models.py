@@ -45,3 +45,5 @@ class StudentResponse(models.Model):
         on_delete=models.CASCADE,  # if the Student is deleted, all her/his responses are too.
         related_name='student_responses',
     )
+def hello(name):
+    print('hi'+nme)

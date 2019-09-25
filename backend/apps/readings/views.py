@@ -1,7 +1,7 @@
 """
 These classes describe one way of entering into the web site.
 """
-
+import json
 from rest_framework import generics
 from .models import Story, Student
 from .serializers import StorySerializer, StudentSerializer
@@ -28,3 +28,6 @@ class ListStory(generics.ListCreateAPIView):
 class DetailStory(generics.RetrieveUpdateDestroyAPIView):
     queryset = Story.objects.all()
     serializer_class = StorySerializer
+
+
+#I wanted to make more views here but they won't let me do so. And so i will just write. Okay  that's the main thing that is the

@@ -67,6 +67,7 @@ def show_response_groups(response_groups):
     for group_name in response_groups:
         print("Word frequencies for", group_name, ":", response_groups[group_name], "\n")
 
+
 def get_response_groups_frequencies(student_data: list):
     """"
     Given student_data,
@@ -97,16 +98,20 @@ def get_response_groups_frequencies(student_data: list):
     for person in people_with_one_view:
         if person['question'] == "In one word, how does this text make you feel?":
             if person['context'] == "This is actually a short story.":
-                response_groups["Single view responses to short story context"].append(person['response'].lower())
+                response_groups["Single view responses to short story context"].append\
+                    (person['response'].lower())
             else:
-                response_groups["Single view responses to ad context"].append(person['response'].lower())
+                response_groups["Single view responses to ad context"].append\
+                    (person['response'].lower())
 
     for person in people_with_multiple_views:
         if person['question'] == "In one word, how does this text make you feel?":
             if person['context'] == "This is actually a short story.":
-                response_groups["Multiple view responses to short story context"].append(person['response'].lower())
+                response_groups["Multiple view responses to short story context"].append\
+                    (person['response'].lower())
             else:
-                response_groups["Multiple view responses to ad context"].append(person['response'].lower())
+                response_groups["Multiple view responses to ad context"].\
+                    append(person['response'].lower())
 
     for group_name in response_groups:
         freq_dict = find_word_frequency(response_groups[group_name])

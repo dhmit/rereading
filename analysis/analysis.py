@@ -43,15 +43,12 @@ def compute_total_view_time(student_data):
     return total_view_time
 
 
-def get_word_frequency_differences():
+def get_word_frequency_differences(student_data):
     """
     Looks over the data and compares responses from people who have read the text vs.
     people who have not read the text before this exercise
     :return: a list of word frequency differences, by increasing order of frequency differences
     """
-
-    csv_path = Path('data', 'rereading_data_2019-09-13.csv')
-    student_data = load_data_csv(csv_path)
 
     # Iterate through all data, and separate ids of students who have vs. have not read the text
     yes_id = []
@@ -161,6 +158,15 @@ class TestAnalysisMethods(unittest.TestCase):
         # check we don't crash on the defaults from the model!
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
+
+    def test_word_frequency_differences(self):
+        """
+        Test the word_frequency_differences function
+        """
+
+        word_frequency_differences = get_word_frequency_differences(self.test_student_data)
+        expected = [('sad', -1)]
+        self.assertEqual(word_frequency_differences, expected)
 
 
 if __name__ == '__main__':

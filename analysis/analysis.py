@@ -43,7 +43,7 @@ def compute_total_view_time(student_data):
     return total_view_time
 
 
-def run_analysis_get_word_frequency_differences():
+def get_word_frequency_differences():
     """
     Looks over the data and compares responses from people who have read the text vs.
     people who have not read the text before this exercise

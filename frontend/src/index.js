@@ -10,16 +10,9 @@ import InstructorPage from './prompted_readings/instructor_view';
 // note(ra): for sanity testing of django-webpack-loader...
 // ReactDOM.render(<span>Hello, world!</span>, document.getElementById('root'));
 
-function Hello() {
-    return (
-        <div>Hello, world!</div>
-    )
-}
-
 const routing = (
     <Router>
         <div>
-            <Route path="/" component={Hello} />
             <Route path="/student" component={Study} />
             <Route path="/instructor" component={InstructorPage} />
         </div>

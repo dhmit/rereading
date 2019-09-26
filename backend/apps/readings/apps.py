@@ -1,3 +1,7 @@
+"""
+Configuration for the Readings app.
+"""
+
 from django.apps import AppConfig
 
 

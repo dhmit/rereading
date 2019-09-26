@@ -1,6 +1,6 @@
 """
 
-Analysis.py - initial analyses for dhmit/rereading
+Analysis.py - initial analyses for rereading
 
 """
 from ast import literal_eval
@@ -81,7 +81,7 @@ def count_word(responses, word):
 def analyze_word_count(student_data, question, word):
     """
     Takes a dataset, a specific question, and a word
-    returns the number of responses that contain the word from the ad context & the story context respectively
+    returns the number of responses that contain the word from the ad context & the story context
     :param student_data: list, student response dicts
     :param question: str, question of interest
     :param word: str, word of interest
@@ -106,7 +106,8 @@ def print_analysis_word_count(student_data, question, word):
     """
     result = analyze_word_count(student_data, question, word)
     print(f'For the question: "{question}":')
-    print(f"Given the context of an ad, the number of responses that include '{word}' is {result[0]}")
+    print(f"Given the ad context, the number of responses that include '{word}' is"
+          f" {result[0]}")
     print(f"In comparison, given the context of a story, the number is {result[1]}")
     print()
 
@@ -115,18 +116,21 @@ def print_total_analysis_word_count(student_data):
     """
     Takes a dataset,
     prints the comparison between ad and story context
-    number of times "sad" appeared in one-word responses & number of times "shoe" appeared in three-word responses
+    number of times "sad" appeared in one-word responses
+    & number of times "shoe" appeared in three-word responses
     :param student_data: list, student response dicts
     :return: None
     """
     print_analysis_word_count(student_data, "In one word, how does this text make you feel?", "sad")
-    print_analysis_word_count(student_data, "In three words or fewer, what is this text about?", "shoe")
+    print_analysis_word_count(student_data, "In three words or fewer, what is this text about?",
+                              "shoe")
 
 
 def print_analysis_views(student_data, question):
     """
     Takes a dataset and a specific question,
-    prints the statistical summaries on the number of views people took for the question for ad & story contexts
+    prints the statistical summaries on
+    the number of views people took for the question for ad & story contexts
     :param student_data: list, student response dicts
     :param question: str, question of interest
     :return: None
@@ -139,13 +143,15 @@ def print_analysis_views(student_data, question):
     print(f"(Min: {min(views_ad)}, Max: {max(views_ad)}, Median: {statistics.median(views_ad)})")
     print(f"In comparison, given the context of a story, the average number is "
           f"{'{0:.3g}'.format(sum(views_story) / len(views_story))}")
-    print(f"(Min: {min(views_story)}, Max: {max(views_story)}, Median: {statistics.median(views_story)})")
+    print(f"(Min: {min(views_story)}, Max: {max(views_story)}, "
+          f"Median: {statistics.median(views_story)})")
     print()
 
 
 def print_total_analysis_views(student_data):
     """
-    Takes a dataset, prints the analysis results on the number of views (compared between ad & story context)
+    Takes a dataset, prints the analysis results
+    on the number of views (compared between ad & story context)
     :param student_data: list, student response dicts
     :return: None
     """
@@ -172,21 +178,6 @@ def print_analysis(data):
     print_total_analysis_views(data)
 
 
-def compute_total_view_time(student_data):
-    """
-    Given a list of student response dicts,
-    return the total time (across all users) spent reading the text
-
-    :param student_data: list, student response dicts
-    :return: float, the total time all users spent reading the text
-    """
-    total_view_time = 0
-    for row in student_data:
-        for view_time in row.get('views'):
-            total_view_time += view_time
-    return total_view_time
-
-
 def run_analysis():
     """
     Runs the whole analysis
@@ -210,30 +201,34 @@ class TestAnalysisMethods(unittest.TestCase):
                 'scroll_ups': 0,
             }
         ]
-
-    def test_compute_total_view_time(self):
-        total_view_time = compute_total_view_time(self.test_student_data)
-        self.assertEqual(total_view_time, 6.385)
-
-        # check we don't crash on the defaults from the model!
-        total_view_time = compute_total_view_time(self.default_student_data)
-        self.assertEqual(total_view_time, 0)
+        self.test_question = "In one word, how does this text make you feel?"
+        self.test_context = "This is an ad."
 
     def test_extract_response(self):
-        question = "In one word, how does this text make you feel?"
-        response_ad = extract_response(self.test_student_data, question, "This is an ad.")
+        response_ad = extract_response(self.test_student_data, self.test_question,
+                                       self.test_context)
         self.assertEqual(response_ad, ["Sad"])
 
-        response_ad = extract_response(self.default_student_data, question, "This is an ad.")
+        response_ad = extract_response(self.default_student_data, self.test_question,
+                                       self.test_context)
         self.assertEqual(response_ad, [])
 
     def test_extract_views(self):
-        question = "In one word, how does this text make you feel?"
-        views = extract_views(self.test_student_data, question, "This is an ad.")
+        views = extract_views(self.test_student_data, self.test_question, self.test_context)
         self.assertEqual(views, [1])
 
-        views = extract_views(self.default_student_data, question, "This is an ad.")
+        views = extract_views(self.default_student_data, self.test_question, self.test_context)
         self.assertEqual(views, [])
+
+    def test_count_word(self):
+        response = extract_response(self.test_student_data, self.test_question, self.test_context)
+        count = count_word(response, "sad")
+        self.assertEqual(count, 1)
+
+        response = extract_response(self.default_student_data, self.test_question,
+                                    self.test_context)
+        count = count_word(response, "sad")
+        self.assertEqual(count, 0)
 
 
 if __name__ == '__main__':

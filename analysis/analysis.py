@@ -52,7 +52,10 @@ def run_analysis():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
     # TODO: do something with student_data that's not just printing it!
-#    print(student_data[0]['question'])
+    print(student_data[0]['question'])
+
+    total_view_time = compute_total_view_time(student_data)
+    print(f'The total view time of all students was {total_view_time}.')
 
     # Iterate through all records, and separate
     yes_id = []
@@ -118,16 +121,6 @@ def run_analysis():
 
     ordered_responses = sorted(diff_responses_list, key=lambda x: x[1])
     print(ordered_responses)
-
-
-
-
-
-
-
-
-    total_view_time = compute_total_view_time(student_data)
-    print(f'The total view time of all students was {total_view_time}.')
 
 
 class TestAnalysisMethods(unittest.TestCase):

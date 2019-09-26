@@ -26,6 +26,7 @@ def load_data_csv(csv_path: Path):
             out_data.append(row)
     return out_data
 
+
 '''
 Analysis ideas
 - Aggregating connotations of words
@@ -44,7 +45,6 @@ Data collection ideas
 '''
 
 
-
 def run_analysis():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
@@ -57,32 +57,31 @@ def run_analysis():
     # TODO: do something with student_data that's not just printing it!
     # print(student_data)
 
-    student_0 = {
-        'name': 'Stephan',
-        'grade': 3,
-    }
+    total_first_response = 0
+    total_second_response = 0
+    total_participants = 0
+    last_student_id = -1  # value not present in the data
+    for line in student_data:
+        context = line["context"]
+        question = line["question"]
+        student_id = line["student_id"]
+        if question == "In one word, how does this text make you feel?":
+            if context == 'This is an ad.':
+                for duration in line["views"]:
+                    total_first_response += duration
+            elif context == "This is actually a short story.":
+                for duration in line["views"]:
+                    total_second_response += duration
+        if student_id != last_student_id:
+            total_participants += 1
+            last_student_id = student_id
 
-    student_1 = {
-        'name': 'Kitty',
-        'grade': 10,
-    }
+    mean_first_response = total_first_response / total_participants
+    mean_second_response = total_second_response / total_participants
 
-    student_list = [student_0, student_1]
-
-    grades = []
-    names = []
-    for student_dict in student_list:
-        grade = student_dict['grade']
-        name = student_dict['name']
-
-        grades.append(grade)
-        names.append(name)
-
-    print(grades)
-    print(names)
-
-
-
+    print(f"total participants: {total_participants}")
+    print(f"Mean first response: {mean_first_response}")
+    print(f"Mean first response: {mean_second_response}")
 
 
 

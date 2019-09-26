@@ -95,7 +95,8 @@ def run_analysis():
         diff_responses_list.append((word, diff_responses[word]))
     print(diff_responses_list)
 
-
+    ordered_responses = sorted(diff_responses_list, key=lambda x: x[1])
+    print(ordered_responses)
 
 
 

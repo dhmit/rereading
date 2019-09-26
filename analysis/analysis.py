@@ -43,36 +43,33 @@ def compute_total_view_time(student_data):
     return total_view_time
 
 
-def run_analysis():
+def run_analysis_get_word_frequency_differences():
     """
-    Runs the analytical method on the reading data
+    Looks over the data and compares responses from people who have read the text vs.
+    people who have not read the text before this exercise
+    :return: a list of word frequency differences, by increasing order of frequency differences
+    """
 
-    :return: None
-    """
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
-    # TODO: do something with student_data that's not just printing it!
-    print(student_data[0]['question'])
 
-    total_view_time = compute_total_view_time(student_data)
-    print(f'The total view time of all students was {total_view_time}.')
-
-    # Iterate through all records, and separate
+    # Iterate through all data, and separate ids of students who have vs. have not read the text
     yes_id = []
     no_id = []
+
     for response in student_data:
         if (response['question'].find('Have you encountered this text before') == 0
                 and response['context'].find('This is an ad.') == 0):
-            if response['response'].lower().find('yes')  == -1:
+            if response['response'].lower().find('yes') == -1:
                 no_id.append(response['student_id'])
             else:
                 yes_id.append(response['student_id'])
-    print(yes_id)
-    print(no_id)
 
-    # Iterate through all responses to
+    # Iterate through all responses, store in list words used to describe the text for students who
+    # have vs. have not read the text
     ad_yes_words = []
     ad_no_words = []
+
     for element in student_data:
         if element['question'].find('In one word') == 0 \
                 and element['context'].find('This is an ad') == 0:
@@ -80,9 +77,8 @@ def run_analysis():
                 ad_yes_words.append(element['response'].lower())
             else:
                 ad_no_words.append(element['response'].lower())
-    print(ad_yes_words)
-    print(ad_no_words)
-
+    # Iterate through ad_yes_words and ad_no_words, store words and response frequency as keys and
+    # values of a dictionary
     yes_responses = dict()
     no_responses = dict()
 
@@ -98,9 +94,8 @@ def run_analysis():
         else:
             no_responses[response] = 1
 
-    print(yes_responses)
-    print(no_responses)
-
+    # Iterate through yes_responses and no_responses, store words and frequency differences as keys
+    # and values of a dictionary
     diff_responses = dict()
 
     for word in yes_responses:
@@ -112,15 +107,29 @@ def run_analysis():
         if word not in yes_responses:
             diff_responses[word] = - no_responses[word]
 
-    print(diff_responses)
-
+    # Convert diff_responses from a dictionary to a list of tuples
     diff_responses_list = []
     for word in diff_responses:
         diff_responses_list.append((word, diff_responses[word]))
-    print(diff_responses_list)
 
+    # Order diff_responses and return ordered list
     ordered_responses = sorted(diff_responses_list, key=lambda x: x[1])
-    print(ordered_responses)
+    return ordered_responses
+
+
+def run_analysis():
+    """
+    Runs the analytical method on the reading data
+
+    :return: None
+    """
+    csv_path = Path('data', 'rereading_data_2019-09-13.csv')
+    student_data = load_data_csv(csv_path)
+    # TODO: do something with student_data that's not just printing it!
+    print(student_data[0]['question'])
+
+    total_view_time = compute_total_view_time(student_data)
+    print(f'The total view time of all students was {total_view_time}.')
 
 
 class TestAnalysisMethods(unittest.TestCase):

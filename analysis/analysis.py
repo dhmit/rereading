@@ -116,6 +116,11 @@ def get_response_groups_frequencies(student_data: list):
 
 
 def get_groups_by_context(people_with_view_number):
+    """
+
+    :param people_with_view_number: list of responses for people with certain number of views
+    :return: two lists, one for responses to short story context and one for ad context
+    """
     short_story_context_group = []
     ad_context_group = []
     for person in people_with_view_number:

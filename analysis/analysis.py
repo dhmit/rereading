@@ -125,6 +125,11 @@ def get_response_groups_frequencies(student_data: list):
 
 
 def find_word_frequency(response_list):
+    """
+    :param response_list: list of single-word str
+    :return: freq, dict mapping each unique word in response_list to number of appearances in
+    response_list
+    """
     freq = {}
     for word in response_list:
         if word not in freq:
@@ -166,7 +171,11 @@ class TestAnalysisMethods(unittest.TestCase):
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
 
-    def test_get_response_group_frequencies(self):
+    def test_response_group_frequencies(self):
+        """
+        Tests get_response_groups_frequencies returns correct freq dictionaries when passed
+        certain student data set
+        """
         response_groups = get_response_groups_frequencies(self.student_data)
         expected = {
             'Single view responses to ad context': {'sad': 2, 'bored': 1, 'annoyed': 2,
@@ -182,17 +191,16 @@ class TestAnalysisMethods(unittest.TestCase):
             'Multiple view responses to ad context': {'targeted': 1, 'confused': 3, 'informed': 2,
                                                       'weird': 1, 'comfortable': 1, 'melancholy': 2,
                                                       'sad': 2, 'concerned': 1, 'uncomfortable': 1,
-                                                      'curious': 1,'disappointed': 1,
+                                                      'curious': 1, 'disappointed': 1,
                                                       'indifferent': 1, 'fine': 1, 'neutral': 1},
             'Multiple view responses to short story context': {'somber': 1, 'mysterious': 1,
                                                                'curious': 1, 'sad': 1,
                                                                'interested': 1, 'underwhelmed': 1,
                                                                'melancholy': 1, 'sadder': 1}
-                    }
+        }
         self.assertEqual(expected, response_groups)
 
 
 if __name__ == '__main__':
     run_analysis()
     unittest.main()  # run the tests
-

@@ -51,48 +51,44 @@ def run_analysis():
     """
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
-    response_groups = get_response_groups_frequencies(student_data)
-    show_response_groups(response_groups)
+    response_groups_freq_dicts = get_response_groups_frequencies(student_data)
+    show_response_groups(response_groups_freq_dicts)
     total_view_time = compute_total_view_time(student_data)
     print(f'The total view time of all students was {total_view_time}.')
 
-#     My thought is that we can compare the word frequencies we return for each response group to
-#     find the similarities and differences between contexts (not enough data atm for this to be
-#     significant, but the insights would become more interesting as response # increases)
 
-def show_response_groups(response_groups):
+def show_response_groups(response_groups_freq_dicts):
     """
-    Given response_group dictionary, prints/shows the dictionaries so that they
-    can be compared in the terminal
+    Given response_group dictionary, prints the dicts in readable format
 
-    Input: response groups, keys are four dicts (one for each response group) mapping words
-    to frequencies within that response group
-    Returns: None
+    :param response_groups_freq_dicts, keys are four dicts (one for each response group)
+    mapping words to frequencies within that response group
+    :return None
     """
-    for group_name in response_groups:
-        print("Word frequencies for", group_name, ":", response_groups[group_name], "\n")
+    # print(f'Word frequencies for {group_name}: {response_groups_freq_dicts[group_name]}\n')
+    print(f'Word frequencies for Single view responses to ad context:',
+          response_groups_freq_dicts[0])
+    print(f'Word frequencies for Single view responses to short story context:',
+          response_groups_freq_dicts[1])
+    print(f'Word frequencies for Multiple view responses to ad context:',
+          response_groups_freq_dicts[2])
+    print(f'Word frequencies for Multiple view responses to short story context:',
+          response_groups_freq_dicts[3])
 
 
 def get_response_groups_frequencies(student_data: list):
     """"
     Given student_data,
-    Returns dict mapping response groups to frequency dicts, which themselves
-    map response words to frequencies for that response group
-    Response groups based on single vs. multiple views and ad vs. short story
+    Returns dict mapping response groups to frequency dicts,
+    which themselves map response words to frequencies for that response group.
+    Response groups are based on single vs. multiple views and ad vs. short story
     context to the "In one word, how does this text make you feel?" question
-    :param student_data
+    :param student_data, list of dicts
     :return: dict, keys are four dicts (one for each response group) mapping words
     to frequencies within that response group
     """
     people_with_multiple_views = []
     people_with_one_view = []
-
-    response_groups = {
-        "Single view responses to ad context": [],
-        "Single view responses to short story context": [],
-        "Multiple view responses to ad context": [],
-        "Multiple view responses to short story context": []
-    }
 
     for person_response in student_data:
         if len(person_response['views']) == 1:
@@ -100,28 +96,36 @@ def get_response_groups_frequencies(student_data: list):
         else:
             people_with_multiple_views.append(person_response)
 
-    for person in people_with_one_view:
-        if person['question'] == "In one word, how does this text make you feel?":
-            if person['context'] == "This is actually a short story.":
-                response_groups["Single view responses to short story context"].append\
-                    (person['response'].lower())
-            else:
-                response_groups["Single view responses to ad context"].append\
-                    (person['response'].lower())
+    single_view_short_story_group, single_view_ad_group = \
+        get_groups_by_context(people_with_one_view)
+    multiple_view_short_story_group, multiple_view_ad_group = \
+        get_groups_by_context(people_with_multiple_views)
 
-    for person in people_with_multiple_views:
-        if person['question'] == "In one word, how does this text make you feel?":
-            if person['context'] == "This is actually a short story.":
-                response_groups["Multiple view responses to short story context"].append\
-                    (person['response'].lower())
-            else:
-                response_groups["Multiple view responses to ad context"].\
-                    append(person['response'].lower())
+    response_groups = [
+        single_view_ad_group,
+        single_view_short_story_group,
+        multiple_view_ad_group,
+        multiple_view_short_story_group,
+    ]
 
+    response_groups_freq_dicts = []
     for group_name in response_groups:
-        freq_dict = find_word_frequency(response_groups[group_name])
-        response_groups[group_name] = freq_dict
-    return response_groups
+        freq_dict = find_word_frequency(group_name)
+        response_groups_freq_dicts.append(freq_dict)
+    return response_groups_freq_dicts
+
+
+def get_groups_by_context(people_with_view_number):
+    short_story_context_group = []
+    ad_context_group = []
+    for person in people_with_view_number:
+        if person['question'] == "In one word, how does this text make you feel?":
+            response = person['response'].lower()
+            if person['context'] == "This is actually a short story.":
+                short_story_context_group.append(response)
+            else:
+                ad_context_group.append(response)
+    return short_story_context_group, ad_context_group
 
 
 def find_word_frequency(response_list):
@@ -177,27 +181,18 @@ class TestAnalysisMethods(unittest.TestCase):
         certain student data set
         """
         response_groups = get_response_groups_frequencies(self.student_data)
-        expected = {
-            'Single view responses to ad context': {'sad': 2, 'bored': 1, 'annoyed': 2,
-                                                    'fine': 1, 'melancholic': 1,
-                                                    'suspicious': 1, 'speculative': 1,
-                                                    'depressed': 1, 'confused': 1},
-            'Single view responses to short story context': {'sad': 8, 'enticed': 1, 'ok': 1,
-                                                             'inyrigu': 1, 'interested': 2,
-                                                             'surprised': 1, 'concerned': 1,
-                                                             'helped': 1, 'depressed': 2,
-                                                             'sad/curious': 1, 'intrigued': 1,
-                                                             'confused': 1, 'puzzled': 1},
-            'Multiple view responses to ad context': {'targeted': 1, 'confused': 3, 'informed': 2,
-                                                      'weird': 1, 'comfortable': 1, 'melancholy': 2,
-                                                      'sad': 2, 'concerned': 1, 'uncomfortable': 1,
-                                                      'curious': 1, 'disappointed': 1,
-                                                      'indifferent': 1, 'fine': 1, 'neutral': 1},
-            'Multiple view responses to short story context': {'somber': 1, 'mysterious': 1,
-                                                               'curious': 1, 'sad': 1,
-                                                               'interested': 1, 'underwhelmed': 1,
-                                                               'melancholy': 1, 'sadder': 1}
-        }
+        expected = [
+            {'sad': 2, 'bored': 1, 'annoyed': 2, 'fine': 1, 'melancholic': 1, 'suspicious': 1,
+             'speculative': 1, 'depressed': 1, 'confused': 1},
+            {'sad': 8, 'enticed': 1, 'ok': 1, 'inyrigu': 1, 'interested': 2, 'surprised': 1,
+             'concerned': 1, 'helped': 1, 'depressed': 2, 'sad/curious': 1, 'intrigued': 1,
+             'confused': 1, 'puzzled': 1},
+            {'targeted': 1, 'confused': 3, 'informed': 2, 'weird': 1, 'comfortable': 1,
+             'melancholy': 2, 'sad': 2, 'concerned': 1, 'uncomfortable': 1, 'curious': 1,
+             'disappointed': 1, 'indifferent': 1, 'fine': 1, 'neutral': 1},
+            {'somber': 1, 'mysterious': 1, 'curious': 1, 'sad': 1, 'interested': 1,
+             'underwhelmed': 1, 'melancholy': 1, 'sadder': 1},
+        ]
         self.assertEqual(expected, response_groups)
 
 

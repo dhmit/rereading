@@ -53,13 +53,15 @@ def run_analysis():
     # TODO: do something with student_data that's not just printing it!
     # total_view_time = compute_total_view_time(student_data)
     # print(f'The total view time of all students was {total_view_time}.')
+    # print(average_time(student_data))
 
 
 def average_time(data):
     """
-    Takes the data and finds the average time of all the times [views] in the data
-    :param data: path to the CSV file
-    :return: integer representing the average time overall
+    Takes the data and finds the average time of all the view times in the data
+    :param data: list of responses
+    :return: float representing the average view times
+    :return: None when there are no entries for viewing time
     """
     times = 0
     count = 0
@@ -68,15 +70,17 @@ def average_time(data):
         for view in views:
             times += view
             count += 1
+    if count == 0:
+        return None
     return times/count
 
 
 def avg_time_student(data, student_id):
     """
-    Takes the data and an id and computes the average time overall of the student
-    :param student_id: integer, represents specific id number
-    :param data:  path to the CSV file
-    :return: integer: represents the average time of this id
+    Takes the data and an id and computes the average time overall of the entry with that id
+    :param student_id: integer, represents specific id number of student
+    :param data: list of responses
+    :return: float: represents the average view time of the student with this id
     :return: None: when there is no data entries for this specific id
     """
     count = 0
@@ -96,10 +100,10 @@ def avg_time_cxt(data, question, context):
     """
     Takes the data, a question, and context and computes the average time of the
     views of this specific context and question
-    :param question: String representing specific question
+    :param question: String representing a specific question
     :param context: String representing a specific context
-    :param data:  path to the CSV file
-    :return: integer: represents the average time of this question and context when it exists
+    :param data: list of responses
+    :return: float: represents the average view time spent on this specific question and context
     :return: None: when there is no data entries for this specific question and context
     """
     count = 0
@@ -119,10 +123,10 @@ def avg_time_cxt(data, question, context):
 def frequent_responses(freq_dict):
     """
     Takes in a dictionary with values that are frequency dictionaries
-    Returns a dictionary showing the most frequent responses
-    :param freq_dict: dictionary, A dictionary with tuples as keys and a dictionary as values.
-    These values are actually dictionaries with strings as keys and numbers (the frequency) as
-    values.
+    Returns a dictionary showing the most frequent responses to each specific question/context
+    combination
+    :param freq_dict: dictionary, A dictionary with tuples as keys and a
+    frequency dictionary as values.
     :return: dictionary, A dictionary with tuples as keys and a dictionary as values.
     The values are dictionaries with different information about the most frequent responses
     such as a list of the most common responses as well as the number of times they occurred
@@ -148,10 +152,11 @@ def frequent_responses(freq_dict):
 
 def word_freq_all(data):
     """
+    Takes in the list of responses
+    Returns a dictionary linking question/context combinations to a frequency dictionary
     :param data: list, A list of all of the data entries from the survey
     :return: dictionary, A dictionary with a tuple of the question and
-    context as keys and with values of a dictionary with the words as
-    keys and their frequencies as values
+    context as keys and with a frequency dictionary as values
     """
     output = {}
     for entry in data:
@@ -182,21 +187,77 @@ class TestAnalysisMethods(unittest.TestCase):
                 'scroll_ups': 0,
             }
         ]
+        self.default_student_data_2 = [
+            {
+                'id': 0,
+                'question': 'In one word, how does this text make you feel?',
+                'context': 'This is actually a short story.',
+                'response': 'Sad',
+                'views': [4.231, 1.234, 5.231],
+                'student_id': 2,
+                'scroll_ups': 0,
+            },
+            {
+                'id': 5,
+                'question': 'In one word, how does this text make you feel?',
+                'context': 'This is actually a short story.',
+                'response': 'saD',
+                'views': [2.2, 3.1],
+                'student_id': 7,
+                'scroll_ups': 2,
+            },
+            {
+                'id': 19,
+                'question': 'In one word, how does this text make you feel?',
+                'context': 'This is an ad.',
+                'response': 'intrigued',
+                'views': [1.3],
+                'student_id': 7,
+                'scroll_ups': 0,
+            }
+        ]
 
-    # def test_compute_total_view_time(self):
-    #     total_view_time = compute_total_view_time(self.test_student_data)
-    #     self.assertEqual(total_view_time, 6.385)
-    #
-    #     # check we don't crash on the defaults from the model!
-    #     total_view_time = compute_total_view_time(self.default_student_data)
-    #     self.assertEqual(total_view_time, 0)
+    def test_avg_time_cxt(self):
+        args = [self.test_student_data,
+                'In one word, how does this text make you feel?',
+                'This is an ad.']
+        avg_time = avg_time_cxt(*args)
+        self.assertAlmostEqual(avg_time, 2.319)
+
+        args = [self.default_student_data_2,
+                'In one word, how does this text make you feel?',
+                'This is actually a short story.']
+        avg_time = avg_time_cxt(*args)
+        self.assertAlmostEqual(avg_time, 3.1992)
+
+        args = [self.default_student_data,
+                'In one word, how does this text make you feel?',
+                'This is an ad.']
+        avg_time = avg_time_cxt(*args)
+        self.assertIsNone(avg_time)
+
+    def test_avg_time_student(self):
+        avg_time = avg_time_student(self.test_student_data, 15)
+        self.assertAlmostEqual(avg_time, 2.128333333333)
+
+        avg_time = avg_time_student(self.default_student_data, 0)
+        self.assertIsNone(avg_time)
+
+        avg_time = avg_time_student(self.default_student_data_2, 7)
+        self.assertAlmostEqual(avg_time, 2.2)
+
+        avg_time = avg_time_student(self.default_student_data_2, 999)
+        self.assertIsNone(avg_time)
 
     def test_average_time(self):
-        average_view_time = average_time(self.test_student_data)
-        self.assertAlmostEqual(average_view_time, 2.128333333333)
+        avg_time = average_time(self.test_student_data)
+        self.assertAlmostEqual(avg_time, 2.128333333333)
 
-        total_view_time = compute_total_view_time(self.default_student_data)
-        self.assertAlmostEqual(total_view_time, 0)
+        avg_time = average_time(self.default_student_data)
+        self.assertIsNone(avg_time)
+
+        avg_time = average_time(self.default_student_data_2)
+        self.assertAlmostEqual(avg_time, 2.88266666666)
 
     def test_word_freq_all(self):
         freq_dict = word_freq_all(self.test_student_data)

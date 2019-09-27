@@ -35,14 +35,22 @@ def compute_reread_counts(student_data):
     the text based on the context and question.
     :param student_data: list, student response dicts
     :return: matrix, rows being context & question, columns having tallies
-    of how many students reread 1 time, 2 times, etc.
+    of how many students reread 1 time, 2 times, etc. Returning list of 6 lists. Each individual
+    list has 6 elements.
     """
-    q1_ad = []
-    q1_short = []
-    q2_ad = []
-    q2_short = []
-    q3_ad = []
-    q3_short = []
+
+    compilation_of_contexts_and_question = {
+        "q1_ad": [],
+        "q1_short": [],
+        "q2_ad": [],
+        "q2_short": [],
+        "q3_ad": [],
+        "q3_short": []
+    }
+
+
+    # For each row in the student data, the loop sorts the number of reread counts into 6 lists
+    # for the six different questions
     for row in student_data:
         # "encountered" signifies the "Have you encountered this text before?" question
         # "one" signifies the "In one word, how does this make you feel?" question
@@ -54,50 +62,65 @@ def compute_reread_counts(student_data):
         context = row['context']
         if "ad" in context:
             if "encountered" in question:
-                q1_ad.append(view_count)
+                compilation_of_contexts_and_question["q1_ad"].append(view_count)
             elif "one" in question:
-                q2_ad.append(view_count)
+                compilation_of_contexts_and_question["q2_ad"].append(view_count)
             elif "three" in question:
-                q3_ad.append(view_count)
+                compilation_of_contexts_and_question["q3_ad"].append(view_count)
 
         if "short" in context:
             if "encountered" in question:
-                q1_short.append(view_count)
+                compilation_of_contexts_and_question["q1_short"].append(view_count)
             elif "one" in question:
-                q2_short.append(view_count)
+                compilation_of_contexts_and_question["q2_short"].append(view_count)
             elif "three" in question:
-                q3_short.append(view_count)
+                compilation_of_contexts_and_question["q3_short"].append(view_count)
 
-        all_arrays = [q1_ad, q1_short, q2_ad, q2_short, q3_ad, q3_short]
-        zero_counter = 0
-        one_counter = 0
-        two_counter = 0
-        three_counter = 0
-        four_counter = 0
-        five_above = 0
+    # Ryaan's suggestion: reformat the second half to store data in a dictionary instead of a list
+    # of lists
+    # Compiles all of the question reread count lists into one single list
 
-        for x in all_arrays:
-            for y in x:
-                if y == 0:
-                    zero_counter += 1
-                elif y == 1:
-                    one_counter += 1
-                elif y == 2:
-                    two_counter += 1
-                elif y == 3:
-                    three_counter += 1
-                elif y == 4:
-                    four_counter += 1
-                else:
-                    five_above += 1
-                x.clear()
-                x.append(zero_counter)
-                x.append(one_counter)
-                x.append(two_counter)
-                x.append(three_counter)
-                x.append(four_counter)
-                x.append(five_above)
-        return all_arrays  # We need to format our output
+    # For each question and context of question, this loop counts the number of responses that
+    # had 0, 1, 2, 3, and 5 or above reread counts. This data is added to a list.
+    organized_data = {
+        "q1_ad": {},
+        "q1_short": {},
+        "q2_ad": {},
+        "q2_short": {},
+        "q3_ad": {},
+        "q3_short": {}
+    }
+    for question_and_context in compilation_of_contexts_and_question.keys():
+        for entry in compilation_of_contexts_and_question[question_and_context]:
+            if entry in organized_data.keys():
+                organized_data[question_and_context][entry] = organized_data[
+                                                                  question_and_context][entry]+1
+            else:
+                organized_data[question_and_context].update({entry: 1})
+    print(organized_data)
+        return organized_data
+        """
+            if entry == 0:
+                zero_counter += 1
+            elif entry == 1:
+                one_counter += 1
+            elif entry == 2:
+                two_counter += 1
+            elif entry == 3:
+                three_counter += 1
+            elif entry == 4:
+                four_counter += 1
+            else:
+                five_above += 1
+            return_counts.append(zero_counter)
+            return_counts.append(one_counter)
+            return_counts.append(two_counter)
+            return_counts.append(three_counter)
+            return_counts.append(four_counter)
+            return_counts.append(five_above)
+        return_array.append(return_counts)
+    return return_array
+    """
 
 
 def compute_total_view_time(student_data):
@@ -167,10 +190,14 @@ class TestAnalysisMethods(unittest.TestCase):
         Test that the reread count equals the expected values.
         """
         total_reread_count = compute_reread_counts(self.test_student_data)
-        self.assertEqual(total_reread_count, 1)
-
-        total_reread_count = compute_reread_counts(self.test_student_data)
-        self.assertEqual(total_reread_count, 0)
+        self.assertEqual(total_reread_count, { "q1_ad": {"0" : 1},
+                                               "q1_short": [1, 0, 0, 0, 0, 0],
+                                               "q2_ad": [0, 1, 0, 0, 0, 0],
+                                               "q2_short": [0, 1, 0,0, 0, 0],
+                                               "q3_ad": [0, 1, 0, 0, 0, 0],
+                                               "q3_short": [1, 0, 0, 0, 0, 0]})
+        total_reread_count = compute_reread_counts(self.default_student_data)
+        self.assertEqual(total_reread_count, [[], [], [], [], [], []])
 
 
 if __name__ == '__main__':

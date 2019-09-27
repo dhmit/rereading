@@ -168,6 +168,16 @@ class TestAnalysisMethods(unittest.TestCase):
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
 
+    def test_question_sentiment_analysis(self):
+        """
+        test that the average and standard deviation of test data equals the expected values
+        """
+        single_word_data = question_sentiment_analysis(self.test_student_data, 'one word')
+        self.assertEqual(single_word_data, (-.25, 0))
+
+        three_words_data = question_sentiment_analysis(self.test_student_data, 'three words')
+        self.assertEqual(three_words_data, (0, 0))
+
 
 if __name__ == '__main__':
     run_analysis()

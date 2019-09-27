@@ -56,8 +56,11 @@ def compute_median_view_time(student_data):
         for view_time in row.get('views'):
             list_of_times.append(view_time)
     list_of_times.sort()
-    middle_index = int(len(list_of_times) / 2)
-    return list_of_times[middle_index]
+    if len(list_of_times) == 0:
+        median_view_time = 0
+    else:
+        median_view_time = list_of_times[int(len(list_of_times) / 2)]
+    return median_view_time
 
 
 def run_analysis():
@@ -92,6 +95,14 @@ class TestAnalysisMethods(unittest.TestCase):
         # check we don't crash on the defaults from the model!
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
+
+    def test_compute_median_view_time(self):
+        median_view_time = compute_median_view_time(self.test_student_data)
+        self.assertEqual(median_view_time, 2.319)
+
+        # check we don't crash on the defaults from the model!
+        median_view_time = compute_median_view_time(self.default_student_data)
+        self.assertEqual(median_view_time, 0)
 
 
 if __name__ == '__main__':

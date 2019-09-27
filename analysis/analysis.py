@@ -57,8 +57,9 @@ def load_data_csv(csv_path: Path):
 #     return response_dict_story
 
 # analysis of verbs versus nouns in ad responses and story responses - OLD ANALYSIS PROGRAM
+
 def run_analysis():
-    stop_words = ['a', 'and', 'the', 'of']
+    stop_words = ['a', 'and', 'the', 'of', 'an', 'for']
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
     # TODO: do something with student_data that's not just printing it!
@@ -75,20 +76,34 @@ def run_analysis():
     ad_resp_words = {}
     story_resp_words = {}
     for word in response_ad:
+
         if word in ad_resp_words:
             ad_resp_words[word] += 1
-        else:
+        elif word not in stop_words:
             ad_resp_words[word] = 1
     # change to story responses
     for word in response_story:
         if word in story_resp_words:
             story_resp_words[word] += 1
-        else:
+        elif word not in stop_words:
             story_resp_words[word] = 1
-
+    # count the words in the response that repeat the original story
+    story_vocab_list = ["for", "sale", "baby", "shoes", "never", "worn"]
+    # for the first question with the context of the ad
+    print("Given text vocab words that occurred in ad-context responses: ")
+    for word in story_vocab_list:
+        if word in ad_resp_words:
+            print(word, ad_resp_words[word])
+    # for the 2nd question with the context of the story
+    print("Given text vocab words that occurred in story-context responses: ")
+    for word in story_vocab_list:
+        if word in story_resp_words:
+            print(word, story_resp_words[word])
+#
     # print(max(story_resp_words.items(), key=lambda item: item[1]))
-    print(ad_resp_words)
-    print(story_resp_words)
+
+    # print(ad_resp_words)
+    # print(story_resp_words)
 
 
 if __name__ == '__main__':

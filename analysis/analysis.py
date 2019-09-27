@@ -91,7 +91,8 @@ def run_analysis():
     total_view_time = compute_total_view_time(student_data)
     print(f'The total view time of all students was {total_view_time}.')
     print(compile_response(student_data, "In one word, how does this text make you feel?"))
-    print(common_response(student_data, "In one word, how does this text make you feel?", "This is an ad."))
+    print(common_response(student_data, "In one word, how does this text make you feel?",
+                                        "This is an ad."))
 
 
 class TestAnalysisMethods(unittest.TestCase):
@@ -119,6 +120,10 @@ class TestAnalysisMethods(unittest.TestCase):
         self.assertEqual(total_view_time, 0)
 
     def test_common_response(self):
+        """
+        Tests to make sure the function runs properly by checking against known data sets.
+        :return: None
+        """
         most_common_response = common_response(self.test_student_data,
                                                "In one word, how does this text make you feel?",
                                                "This is an ad.")

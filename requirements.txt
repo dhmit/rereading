@@ -1,3 +1,4 @@
+prompt_toolkit
 Django==2.2.4
 django-cors-headers==3.0.2
 django-webpack-loader==0.6.0

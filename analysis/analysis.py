@@ -3,10 +3,10 @@
 Analysis.py - initial analyses for dhmit/rereading
 
 """
-from ast import literal_eval
 import csv
-from pathlib import Path
 import unittest
+from ast import literal_eval
+from pathlib import Path
 
 
 def load_data_csv(csv_path: Path):
@@ -74,7 +74,7 @@ def compute_reread_counts(student_data):
         two_counter = 0
         three_counter = 0
         four_counter = 0
-        five_above= 0
+        five_above = 0
 
         for x in all_arrays:
             for y in x:
@@ -90,7 +90,7 @@ def compute_reread_counts(student_data):
                     four_counter += 1
                 else:
                     five_above += 1
-                clear(x)
+                x.clear()
                 x.append(zero_counter)
                 x.append(one_counter)
                 x.append(two_counter)
@@ -98,6 +98,7 @@ def compute_reread_counts(student_data):
                 x.append(four_counter)
                 x.append(five_above)
         return all_arrays  # We need to format our output
+
 
 def compute_total_view_time(student_data):
     """
@@ -125,7 +126,7 @@ def run_analysis():
     reread_counts = compute_reread_counts(student_data)
     print("Number of times students reread text based on question or context:\n")
     print(reread_counts)
-    
+
     total_view_time = compute_total_view_time(student_data)
     print(f'The total view time of all students was {total_view_time}.')
 
@@ -134,6 +135,7 @@ class TestAnalysisMethods(unittest.TestCase):
     """
     Test cases to make sure things are running properly
     """
+
     def setUp(self):
         test_data_path = Path('data', 'test_data.csv')
         self.test_student_data = load_data_csv(test_data_path)
@@ -159,6 +161,16 @@ class TestAnalysisMethods(unittest.TestCase):
         # check we don't crash on the defaults from the model!
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
+
+    def test_compute_reread_count(self):
+        """
+        Test that the reread count equals the expected values.
+        """
+        total_reread_count = compute_reread_counts(self.test_student_data)
+        self.assertEqual(total_reread_count, 1)
+
+        total_reread_count = compute_reread_counts(self.test_student_data)
+        self.assertEqual(total_reread_count, 0)
 
 
 if __name__ == '__main__':

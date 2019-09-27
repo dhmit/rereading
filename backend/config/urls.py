@@ -15,21 +15,23 @@ Including another URL configuration
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, re_path, include
+from django.urls import path
 from django.conf.urls import url
-from django.views.generic.base import TemplateView
 
-
-class SinglePageApp(TemplateView):
-    template_name = 'index.html'
+from apps.common import render_react_view
+from apps.readings import views as readings_views
 
 
 urlpatterns = [
+    # Django admin page
     path('admin/', admin.site.urls),
-    path('api/', include('apps.readings.urls')),
-    path('api', include('apps.readings.urls')),
-    url('', SinglePageApp.as_view()),
 
-    # capture all other urls, so other routes can take over
-    re_path(r'^(?:.*)/?$', SinglePageApp.as_view()),
+    # API endpoints
+    path('api/', readings_views.ListStory.as_view()),
+    path('api/add-response/', readings_views.ListStudent.as_view()),
+    path('api/<int:pk>/', readings_views.DetailStory.as_view()),
+
+    # React views
+    url('student/', render_react_view, {'component_name': 'StudentView'}),
+    url('instructor/', render_react_view, {'component_name': 'InstructorView'}),
 ]

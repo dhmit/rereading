@@ -143,6 +143,7 @@ class TestAnalysisMethods(unittest.TestCase):
         mean_response_length = compute_mean_response_length(self.default_student_data)
         self.assertEqual(mean_response_length, 0)
 
+
 if __name__ == '__main__':
     run_analysis()
     unittest.main()  # run the tests

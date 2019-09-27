@@ -109,6 +109,8 @@ ENV/
 env.bak/
 venv.bak/
 
+
+
 # Spyder project settings
 .spyderproject
 .spyproject
@@ -128,8 +130,11 @@ dmypy.json
 .pyre/
 
 # PyCharm
-.idea/
 .idea/workspace.xml
+.idea/pylint.xml
+.idea/dataSources.xml
+.idea/usage.statistics.xml
+.idea/tasks.xml
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
@@ -157,3 +162,4 @@ yarn-error.log*
 webpack-stats-dev.json
 webpack-stats.json
 package-lock.json
+*.swp

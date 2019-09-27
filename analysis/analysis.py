@@ -62,8 +62,50 @@ def mean_view_time(student_data):
     else:
         return sum_of_views / count
 
-
+def find_connotation_change(student_data):
+    """
+    Given a list of student response dicts,
+    return the mean time (across each view) spent reading the text
+    if the list is empty, then it returns 0
+    :param student_data: a list of dictionaries
+    :return: a float, the total time all users spent reading the text divided by total views
+    """   
+    for response_dict in student_data:
+#        print(response_dict['question'])
+#        print(response_dict['context'])
+        negative_total_view_time = 0
+        neutral_total_view_time = 0
+        negative_responses = 0
+        neutral_responses = 0
+        
+        if (response_dict['question'] == "In three words or fewer, what is this text about?") \
+        and (response_dict['context'] == "This is an ad."):
+            response_word = response_dict['response'].lower()
+#            if response_word in negative_key_words_list:
+#                negative_total_view_time += sum(response_dict['views'])
+#                negative_responses += 1
+#            else:
+#                neutral_total_view_time += sum(response_dict['views'])
+#                neutral_responses += 1
+        
+    if negative_responses == 0:
+        negative_mean_view_time = 0
+    else:
+        negative_mean_view_time = negative_total_view_time/negative_responses
+    
+    if neutral_responses == 0:
+        neutral_mean_view_time = 0
+    else:
+        neutral_mean_view_time = neutral_total_view_time/neutral_responses
+    
+    print("People who understood the hidden meaning the first time read the \
+          message for " + str(negative_mean_view_time) + " on average. While \
+          people who did not, read the text for " + str(neutral_mean_view_time))
+                
+            
+            
 def run_analysis():
+    
     """
     Runs the analytical method on the reading data
 
@@ -72,12 +114,12 @@ def run_analysis():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
 
-    total_view_time = compute_total_view_time(student_data)
-    print(f'The total view time of all students was {total_view_time}.')
+#    total_view_time = compute_total_view_time(student_data)
+#    print(f'The total view time of all students was {total_view_time}.')
 
     # TODO: do something with student_data that's not just printing it!
     print(student_data)
-    print(mean_view_time(student_data))
+    print(find_connotation_change(student_data))
 
 
 class TestAnalysisMethods(unittest.TestCase):
@@ -113,7 +155,7 @@ class TestAnalysisMethods(unittest.TestCase):
 
 if __name__ == '__main__':
     run_analysis()
-    unittest.main()  # run the tests
+#    unittest.main()  # run the tests
 
 # select responses with negative connotations (sad, miscarriage) when the context
 # was "This is an ad." and find the difference between avg view times of these

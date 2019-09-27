@@ -31,19 +31,14 @@ def load_data_csv(csv_path: Path):
 
 
 
-def compute_mean_reading_times(student_data):
 
-    '''
+def compute_mean_reading_times(student_data):
+    """
     Analyze answer response times by computing a ratio of the response
     time of the first question to the response time of the second question;
     if multiple responses are recorded for the same question, add
     response times first.
-    :param student_data: list, student response dicts
-    :return: list, total number of participants, mean of first reading time, mean of second reading time
-    '''
-    # TODO: do something with student_data that's not just printing it!
-    # print(student_data)
-
+    """
     total_first_response = 0
     total_second_response = 0
     total_participants = 0
@@ -68,21 +63,6 @@ def compute_mean_reading_times(student_data):
     return [total_participants, mean_first_response, mean_second_response]
 
 
-def compute_total_view_time(student_data):
-    """
-    Given a list of student response dicts,
-    return the total time (across all users) spent reading the text
-
-    :param student_data: list, student response dicts
-    :return: float, the total time all users spent reading the text
-    """
-    total_view_time = 0
-    for row in student_data:
-        for view_time in row.get('views'):
-            total_view_time += view_time
-    return total_view_time
-
-
 def run_analysis():
     """
     Runs the analytical method on the reading data
@@ -93,37 +73,6 @@ def run_analysis():
     student_data = load_data_csv(csv_path)
     mean_data = compute_mean_reading_times(student_data)
     print(mean_data)
-
-
-class TestAnalysisMethods(unittest.TestCase):
-    """
-    Test cases to make sure things are running properly
-    """
-    def setUp(self):
-        test_data_path = Path('data', 'test_data.csv')
-        self.test_student_data = load_data_csv(test_data_path)
-        self.default_student_data = [  # model default values
-            {
-                'id': 0,
-                'question': '',
-                'context': '',
-                'response': '',
-                'views': [],
-                'student_id': 0,
-                'scroll_ups': 0,
-            }
-        ]
-
-    def test_compute_total_view_time(self):
-        """
-        Test that the total view time equals the expected values.
-        """
-        total_view_time = compute_total_view_time(self.test_student_data)
-        self.assertEqual(total_view_time, 6.385)
-
-        # check we don't crash on the defaults from the model!
-        total_view_time = compute_total_view_time(self.default_student_data)
-        self.assertEqual(total_view_time, 0)
 
 
 if __name__ == '__main__':

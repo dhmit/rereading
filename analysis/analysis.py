@@ -28,6 +28,51 @@ def load_data_csv(csv_path: Path):
     return out_data
 
 
+def get_sentiments() -> dict:
+    """
+    Returns a dictionary of sentiment scores, with the keys being the word and the values being
+    their score
+
+    :return: dict mapping words to their sentiment scores
+    """
+    sentiment_path = Path('data', 'sentiments.txt')
+
+    sentiments = dict()
+    with open(sentiment_path, 'r') as file:
+        word = file.readline()
+
+        # We want to handle each word individually, rather than as a whole set
+        while word is not '':
+
+            # This particular file starts lines with '#' for non-sentiment comments, so skip them
+            if word[0] == '#' or word[0] == '\t':
+                word = file.readline()
+                continue
+
+            # All words use tabs to define the different parts of the data
+            attributes = word.split('\t')
+
+            # Pull out the word from the line
+            data = attributes[4]
+            data = data.split('#')
+            new_word = data[0]
+
+            # Find the largest sentiment score for the word, and define negative sentiments
+            # as negative values (if there's a tie, the sentiment is 0)
+            if attributes[2] == attributes[3]:
+                score = 0
+            elif attributes[2] > attributes[3]:
+                score = float(attributes[2])
+            else:
+                score = -float(attributes[3])
+
+            sentiments[new_word] = score
+
+            word = file.readline()
+
+    return sentiments
+
+
 def compute_total_view_time(student_data):
     """
     Given a list of student response dicts,

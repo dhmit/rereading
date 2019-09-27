@@ -92,7 +92,7 @@ def run_analysis():
     print(f'The total view time of all students was {total_view_time}.')
     print(compile_response(student_data, "In one word, how does this text make you feel?"))
     print(common_response(student_data, "In one word, how does this text make you feel?",
-                                        "This is an ad."))
+                          "This is an ad."))
 
 
 class TestAnalysisMethods(unittest.TestCase):

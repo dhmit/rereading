@@ -6,6 +6,7 @@ Analysis.py - initial analyses for dhmit/rereading
 from ast import literal_eval
 import csv
 from pathlib import Path
+from statistics import stdev
 import unittest
 
 
@@ -71,6 +72,42 @@ def get_sentiments() -> dict:
             word = file.readline()
 
     return sentiments
+
+
+def question_sentiment_analysis(student_data, question_text):
+    """
+    Takes in a list of student response dicts, and a question prompt (or a substring of one) and
+    returns the average sentiment score and standard deviation for all responses to that question
+
+    :param student_data: list of dicts
+    :param question_text: question string or substring
+    :return: tuple in the form (average, standard_dev)
+    """
+
+    sentiments = get_sentiments()
+
+    # Set up data for calculating data
+    num_scores = 0
+    sentiment_sum = 0
+    score_list = list()
+
+    for response in student_data:
+
+        if question_text in response['question']:
+            words = response['response'].lower().split()
+
+            # Find the sentiment score for each word, and add it to our data
+            for word in words:
+                # Ignore the word if it't not in the sentiment dictionary
+                if word in sentiments:
+                    sentiment_sum += sentiments[word]
+                    num_scores += 1
+                    score_list.append(sentiments[word])
+
+    average = sentiment_sum / num_scores
+    standard_dev = stdev(score_list)
+
+    return average, standard_dev
 
 
 def compute_total_view_time(student_data):

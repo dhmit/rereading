@@ -1,3 +1,11 @@
+"""
+Tests for the Rereading app.
+"""
+
 from django.test import TestCase
 
-# Create your tests here.
+
+class RereadingTests(TestCase):
+    def test_is_this_on(self):
+        """ Trivial test to make sure the testing system is working """
+        self.assertTrue(2+2 == 4)

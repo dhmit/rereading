@@ -87,7 +87,7 @@ def compute_reread_counts(student_data):
         "q3_ad": {},
         "q3_short": {}
     }
-    for question_and_context in compilation_of_contexts_and_question.keys():
+    for question_and_context in compilation_of_contexts_and_question:
         for entry in compilation_of_contexts_and_question[question_and_context]:
             if entry in organized_data.keys():
                 organized_data[question_and_context][entry] += 1

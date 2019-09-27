@@ -54,13 +54,17 @@ def run_analysis():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
 
+    question_one = "In one word, how does this text make you feel?"
+    question_two = "In three words or fewer, what is this text about?"
+    question_three = "Have you encountered this text before?"
+
     mean_rereading_time_results_data = [
-        mean_rereading_time_for_a_question(student_data, "feel", "ad"),
-        mean_rereading_time_for_a_question(student_data, "about", "ad"),
-        mean_rereading_time_for_a_question(student_data, "encountered", "ad"),
-        mean_rereading_time_for_a_question(student_data, "feel", "short story"),
-        mean_rereading_time_for_a_question(student_data, "about", "short story"),
-        mean_rereading_time_for_a_question(student_data, "encountered", "short story")
+        mean_rereading_time_for_a_question(student_data, question_one, "ad"),
+        mean_rereading_time_for_a_question(student_data, question_two, "ad"),
+        mean_rereading_time_for_a_question(student_data, question_three, "ad"),
+        mean_rereading_time_for_a_question(student_data, question_one, "short story"),
+        mean_rereading_time_for_a_question(student_data, question_two, "short story"),
+        mean_rereading_time_for_a_question(student_data, question_three, "short story")
     ]
 
     for rereading_result in mean_rereading_time_results_data:
@@ -95,13 +99,15 @@ def mean_rereading_time_for_a_question(student_data, question_keyword, context):
     total_question_view_time = 0
 
     for student_data_dictionary in student_data:
-        if student_data_dictionary['question'].find(question_keyword) != -1:
-            question_asked = student_data_dictionary['question']
-            if student_data_dictionary['context'].find(context) != -1:
-                if len(student_data_dictionary['views']) != 0:
-                    number_of_rereaders += 1
-                for view_time in student_data_dictionary['views']:
-                    rereading_time.append(view_time)
+        if question_keyword not in student_data_dictionary['question']:
+            continue
+        question_asked = student_data_dictionary['question']
+        if context not in student_data_dictionary['context']:
+            continue
+        if len(student_data_dictionary['views']) != 0:
+            number_of_rereaders += 1
+        for view_time in student_data_dictionary['views']:
+            rereading_time.append(view_time)
 
     if len(rereading_time) != 0:
         remove_outliers(rereading_time)
@@ -322,6 +328,20 @@ class TestAnalysisMethods(unittest.TestCase):
             ("Have you encountered this text before?", "short story", 0, 0)
         ]
         self.assertEqual(mean_rereading_time_results_data, mean_comparison_results)
+
+    def test_mean_rereading_time_for_a_question(self):
+        mean_rereading_time = mean_rereading_time_for_a_question(self.test_student_data,
+                                "Have you encountered this text before?",
+                                                                 "this is")
+
+        self.assertEqual(mean_rereading_time[0], "Have you encountered this text before?")
+
+    def test_mean_rereading_time_for_a_question_reversed(self):
+        mean_rereading_time = mean_rereading_time_for_a_question(reversed(self.test_student_data),
+                                                "Have you encountered this text before?",
+                                                            "this is")
+
+        self.assertEqual(mean_rereading_time[0], "Have you encountered this text before?")
 
     def test_remove_outliers(self):
         outliers_data_1 = [-100, -50, 1, 2, 3, 4, 5, 100]

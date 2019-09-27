@@ -54,6 +54,30 @@ def run_analysis():
 
     total_view_time = compute_total_view_time(student_data)
     print(f'The total view time of all students was {total_view_time}.')
+    print(count_revists(student_data))
+
+
+def count_revists(data):
+    """
+    Returns the average number of revisits per question
+
+    :param data: list, student response dict
+    :return: dict, Key = question, string. Value = average number of revisits, float.
+    """
+
+    results = {}
+
+    for entry in data:
+        if results.get(entry['question']):
+            results[entry['question']][0] += 1
+            results[entry['question']][1] += len(entry['views'])
+        else:  # create a key with starting values
+            results[entry['question']] = [1, len(entry['views'])]
+
+    for question in results:
+        results[question] = round(results[question][1] / results[question][0], 2)
+
+    return results
 
 
 class TestAnalysisMethods(unittest.TestCase):
@@ -85,6 +109,20 @@ class TestAnalysisMethods(unittest.TestCase):
         # check we don't crash on the defaults from the model!
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
+
+    def test_count_revisits(self):
+        """
+        Test that the average number of revisits equals the expected values.
+        """
+        revisits_per_question = count_revists(self.test_student_data)
+        self.assertEqual(revisits_per_question['In one word, how does this text make you feel?'], 1)
+        self.assertEqual(revisits_per_question['In three words or fewer, what is this text '
+                                               'about?'], 0.5)
+        self.assertEqual(revisits_per_question['Have you encountered this text before?'], 0)
+
+        # check we don't crash on the defaults
+        revisits_per_question = count_revists(self.default_student_data)
+        self.assertEqual(revisits_per_question[''], 0)
 
 
 if __name__ == '__main__':

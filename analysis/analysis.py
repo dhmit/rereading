@@ -9,6 +9,7 @@ from pathlib import Path
 import unittest
 
 
+
 def load_data_csv(csv_path: Path):
     """
     Takes the path to a csv file, reads it, and returns its
@@ -64,18 +65,26 @@ def count_revists(data):
     :param data: list, student response dict
     :return: dict, Key = question, string. Value = average number of revisits, float.
     """
-
     results = {}
 
+    # Accumulates the total views and number of responses per unique question
     for entry in data:
-        if results.get(entry['question']):
-            results[entry['question']][0] += 1
-            results[entry['question']][1] += len(entry['views'])
-        else:  # create a key with starting values
-            results[entry['question']] = [1, len(entry['views'])]
+        question = entry['question']
+        num_views = len(entry['views'])
+        result = results.get(question)
+        if result:
+            view_count, view_sum = result
+            view_count += 1
+            view_sum += num_views
+            results[question] = [view_count, view_sum]
+        else:  # Create a key with starting values
+            results[question] = [1, num_views]
 
+    # Averages the number of revisits per unique question
     for question in results:
-        results[question] = round(results[question][1] / results[question][0], 2)
+        total_count, total_views = results[question]
+        views_per_count = total_views/total_count
+        results[question] = round(views_per_count, 2)
 
     return results
 

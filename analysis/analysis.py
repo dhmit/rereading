@@ -5,6 +5,7 @@ Analysis.py - initial analyses for dhmit/rereading
 """
 from ast import literal_eval
 import csv
+from builtins import dict
 from pathlib import Path
 import unittest
 
@@ -60,13 +61,18 @@ def compute_median_view_time(student_data):
     return list_of_times[middle_index]
 
 
+def run_time_analysis_functions(student_data):
+    median_view_time = compute_median_view_time(student_data)
+    total_view_time = compute_total_view_time(student_data)
+
+    print(f'The total view time of all students was {total_view_time}.')
+    print(f'The median view time of all students was {median_view_time}.')
+
+
 def run_analysis():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
-    median_view_time = compute_median_view_time(student_data)
-    total_view_time = compute_total_view_time(student_data)
-    print(f'The total view time of all students was {total_view_time}.')
-    print(f'The median view time of all students was {median_view_time}.')
+    run_time_analysis_functions(student_data)
 
 
 class TestAnalysisMethods(unittest.TestCase):

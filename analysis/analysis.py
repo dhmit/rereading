@@ -44,17 +44,14 @@ Data collection ideas
 
 '''
 
-def compute_mean_reading_times(student_data):
 
-    '''
+def compute_mean_reading_times(student_data):
+    """
     Analyze answer response times by computing a ratio of the response
     time of the first question to the response time of the second question;
     if multiple responses are recorded for the same question, add
     response times first.
-    '''
-    # TODO: do something with student_data that's not just printing it!
-    # print(student_data)
-
+    """
     total_first_response = 0
     total_second_response = 0
     total_participants = 0
@@ -78,11 +75,13 @@ def compute_mean_reading_times(student_data):
     mean_second_response = total_second_response / total_participants
     return [total_participants, mean_first_response, mean_second_response]
 
+
 def run_analysis():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
     mean_data = compute_mean_reading_times(student_data)
     print(mean_data)
+
 
 if __name__ == '__main__':
     run_analysis()

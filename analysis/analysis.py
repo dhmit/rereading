@@ -7,6 +7,7 @@ from ast import literal_eval
 import csv
 from pathlib import Path
 import unittest
+import math
 
 
 def load_data_csv(csv_path: Path):
@@ -64,10 +65,11 @@ def run_analysis():
 
     for rereading_result in mean_rereading_time_results_data:
         if rereading_result[3] != 0:
-            print(f"Out of those who thought the reading was a(n) {rereading_result[1]} and were asked "
-                  f"\"{rereading_result[0]}\"")
+            print(f"Out of those who thought the reading was a(n) {rereading_result[1]}"
+                  f"and were asked {rereading_result[0]}\"")
             print(
-                f"{rereading_result[3]} subject(s) reread the text for an average of {rereading_result[2]} seconds.")
+                f"{rereading_result[3]} subject(s) reread the text for an average of "
+                f"{round(rereading_result[2], 3)} seconds.")
         else:
             print(f"No one who thought the reading was a(n) {rereading_result[1]} and were asked "
                   f"\"{rereading_result[0]}\" reread the text.")
@@ -82,27 +84,63 @@ def mean_rereading_time_for_a_question(student_data, question_keyword, context):
     :param student_data: list, student response dicts
     :param question_keyword: string, keyword to determine which question was being asked
     :param context: string, what the reader thought the reading was
-    :return: tuple, in order of the question asked (full question), the context, the mean
-             reread time, and the number of people who reread it
+    :return: tuple, in order of the question asked (full question), the context, the mean reread
+             time, and the number of people who reread it
     """
     mean_time = 0
     number_of_rereaders = 0
     question_asked = ""
+    question_count = 0
+    rereading_time = []
+    total_question_view_time = 0
+
     for student_data_dictionary in student_data:
         if student_data_dictionary['question'].find(question_keyword) != -1:
             question_asked = student_data_dictionary['question']
             if student_data_dictionary['context'].find(context) != -1:
-                mean_views = 0
-                for view_time in student_data_dictionary['views']:
-                    mean_views += view_time
                 if len(student_data_dictionary['views']) != 0:
                     number_of_rereaders += 1
-                    mean_time += mean_views / len(student_data_dictionary['views'])
-    if number_of_rereaders != 0:
-        mean_time /= number_of_rereaders
-        mean_time = round(mean_time, 2)
+                for view_time in student_data_dictionary['views']:
+                    rereading_time.append(view_time)
+
+    if len(rereading_time) != 0:
+        remove_outliers(rereading_time)
+
+    view_time = 0
+    while view_time < len(rereading_time):
+        question_count += 1
+        total_question_view_time += rereading_time[view_time]
+        view_time += 1
+
+    if len(rereading_time) != 0:
+        mean_time = round(total_question_view_time / len(rereading_time), 2)
 
     return question_asked, context, mean_time, number_of_rereaders
+
+
+def remove_outliers(rereading_time):
+    """
+    Given a list of times, calculates and removes outliers.
+    :param rereading_time: list, rereading times for a specific question
+    :return: list, rereading times for a specific question with outliers removed
+    """
+    rereading_time.sort()
+    quartile_one = rereading_time[math.trunc(len(rereading_time) * 0.25)]
+    quartile_three = rereading_time[math.trunc(len(rereading_time) * 0.75)]
+    interquartile_range = quartile_three - quartile_one
+    lower_fence = quartile_one - (1.5 * interquartile_range)
+    upper_fence = quartile_three + (1.5 * interquartile_range)
+
+    view_time_two = 0
+    while view_time_two < len(rereading_time):
+        if (rereading_time[view_time_two] < lower_fence) \
+                or (rereading_time[view_time_two] > upper_fence):
+            rereading_time.remove(rereading_time[view_time_two])
+            view_time_two -= 1
+        else:
+            view_time_two += 1
+
+    return rereading_time
 
 
 class TestAnalysisMethods(unittest.TestCase):
@@ -124,6 +162,7 @@ class TestAnalysisMethods(unittest.TestCase):
     def test_mean_rereading_time_for_a_question(self):
         # check we don't crash on the defaults from the model!
         mean_rereading_data = mean_rereading_time_for_a_question(self.default_student_data, "", "")
+
         empty_comparison_tuple = ("", "", 0, 0)
         self.assertEqual(mean_rereading_data, empty_comparison_tuple)
 
@@ -135,6 +174,7 @@ class TestAnalysisMethods(unittest.TestCase):
             mean_rereading_time_for_a_question(self.test_student_data, "about", "short story"),
             mean_rereading_time_for_a_question(self.test_student_data, "encountered", "short story")
         ]
+
         # The expected result times are rounded to 2 decimals here due to Python rounding errors
         # not matching actual rounding.
         mean_comparison_results = [

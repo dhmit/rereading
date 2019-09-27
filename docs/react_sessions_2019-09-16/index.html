@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>React demo</title>
+
+        <!-- React -->
+        <script src="ext/react.development.js"></script>
+        <script src="ext/react-dom.development.js"></script>
+        <script src="ext/babel.min.js"></script>
+
+        <!-- jQuery -->
+        <script src="ext/jquery.min.js" type="text/javascript"></script>
+    </head>
+
+    <body>
+
+    <!-- the jQuery way -->
+    <h1>jQuery!</h1>
+    <div id='status_div'>Off</div>
+    <button id='toggle_status_btn'>Turn status on</button>
+
+    <script>
+        class Toggler {
+            constructor() {
+                this.status = $('#status_div');
+                this.toggle_status_btn = $('#toggle_status_btn');
+            }
+
+            start() {
+                this.toggle_status_btn.click(() => this.toggle_status());
+            }
+
+            toggle_status() {
+                if (this.status.text() === 'Off') {
+                    this.status.text('On');
+                    this.toggle_status_btn.text('Turn status off');
+                } else {
+                    this.status.text('Off');
+                    this.toggle_status_btn.text('Turn status on');
+                }
+            }
+        }
+        const toggler = new Toggler();
+        toggler.start();
+    </script>
+
+    <hr>
+
+    <!-- the React way -->
+    <!--
+    <h1>React!</h1>
+    <div id="react_root"></div>
+    <script type="text/babel">
+        class ReactToggler extends React.Component {
+            render() {
+                return (
+                    <div>
+                        <div>Off</div>
+                        <button>Turn status on</button>
+                    </div>
+                );
+            }
+        }
+
+        ReactDOM.render(
+            <ReactToggler />,
+            document.getElementById('react_root')
+        );
+    </script>
+    -->
+
+    </body>
+</html>

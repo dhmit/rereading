@@ -13,9 +13,7 @@ code {
 }
 
 .box {
-  border: 3px;
-  border-color: lightblue;
-  border-style: solid;
+  border: 3px solid lightblue;
   padding: 4px;
   margin-bottom: 1px;
 }

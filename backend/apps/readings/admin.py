@@ -1,7 +1,10 @@
+"""
+This file controls the administrative interface for the
+Rereading project's "readings" app.
+"""
+
 from django.contrib import admin
 from .models import Story, Context, Question, Student, StudentResponse
-
-# Register your models here.
 
 
 class StudentResponseInline(admin.TabularInline):

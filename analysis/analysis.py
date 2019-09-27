@@ -7,6 +7,23 @@ from ast import literal_eval
 import csv
 from pathlib import Path
 
+class TestAnalysisMethods(unittest.TestCase):
+    def setUp(self):
+        test_data_path = Path('data', 'test_data.csv')
+        self.test_student_data=load_data_csv(test_data_path)
+        self.default_student_data=[ #model default values
+            {
+                'id':0,
+                'question':'',
+                'context':'',
+                'response':'',
+                'views':[],
+                'student_id':0,
+                'scroll_ups':0,
+
+            }
+
+         ]
 
 def load_data_csv(csv_path: Path):
     """
@@ -27,22 +44,7 @@ def load_data_csv(csv_path: Path):
     return out_data
 
 
-'''
-Analysis ideas
-- Aggregating connotations of words
-- Sort words into different tones or moods
-- What are the most common responses?
-- Words and frequencies
-- The first reading response vs. the second reading response
-    - how often does the response stay the same vs. change?
-    - how does the connotation of the response change?
-- Compare lengths of readings
-- Number of rereadings (and avg etc.)
 
-Data collection ideas
-- What happens if we reverse the order of the contexts?
-
-'''
 
 def compute_mean_reading_times(student_data):
 
@@ -51,6 +53,8 @@ def compute_mean_reading_times(student_data):
     time of the first question to the response time of the second question;
     if multiple responses are recorded for the same question, add
     response times first.
+    :param student_data: list, student response dicts
+    :return: list, total number of participants, mean of first reading time, mean of second reading time
     '''
     # TODO: do something with student_data that's not just printing it!
     # print(student_data)
@@ -86,3 +90,4 @@ def run_analysis():
 
 if __name__ == '__main__':
     run_analysis()
+    unittest.main()            #run the tests

@@ -1,6 +1,8 @@
 import React from 'react';
-import './student_view.css';
 import PropTypes from 'prop-types';
+
+import { getCookie } from '../common'
+import './student_view.css';
 
 
 /**
@@ -92,14 +94,14 @@ function Story(props) {
     return (
         <div className='story'>
             <div className={'story-box'} onScroll={props.onScroll}>
-                <div className={'story-text'}>{props.story}</div>
+                <div className={'story-text'}>{props.story_text}</div>
             </div>
             <ContinueBtn onClick={props.onClick}/>
         </div>
     );
 }
 Story.propTypes = {
-    story: PropTypes.string,
+    story_text: PropTypes.string,
     onScroll: PropTypes.func,
     onClick: PropTypes.func,
 };
@@ -212,7 +214,7 @@ class Study extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            story: null,
+            story_text: null,
             contexts: [],
             questions: [],
             context_number: 0,
@@ -232,7 +234,7 @@ class Study extends React.Component {
             scroll_ups: 0,
             scrolling_up: false,
         };
-
+        this.csrftoken = getCookie('csrftoken');
     }
 
     /**
@@ -257,7 +259,7 @@ class Study extends React.Component {
     postData() {
         const url = '/api/add-response/';
         const data = {
-            story: this.state.story,
+            story_text: this.state.story_text,
             student_responses: this.state.answers,
         };
 
@@ -267,7 +269,8 @@ class Study extends React.Component {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'X-CSRFToken': this.csrftoken,
             }
 
         }).then(res => res.json()).then(response => console.log(JSON.stringify(response)))
@@ -458,14 +461,13 @@ class Study extends React.Component {
 
 
     render() {
-
         let response;
 
-        if (this.state.story) { // Check that the story is loaded before showing any data
+        if (this.state.story_text) { // Check that the story is loaded before showing any data
             if (this.state.show_story) {
                 response = (
                     <Story
-                        story={this.state.story}
+                        story_text={this.state.story_text}
                         onClick={() => this.storyButtonClick()}
                         onScroll={(e) => this.handleStoryScroll(e)}
                     />

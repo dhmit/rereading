@@ -44,7 +44,8 @@ def compute_total_view_time(student_data):
 
 def run_analysis():
     """
-    Takes in no parameters and initializes the analysis of the data
+    Runs the analytical method on the reading data
+
     :return: None
     """
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
@@ -200,6 +201,9 @@ def standard_deviation(data, average):
 
 
 class TestAnalysisMethods(unittest.TestCase):
+    """
+    Test cases to make sure things are running properly
+    """
     def setUp(self):
         test_data_path = Path('data', 'test_data.csv')
         self.test_student_data = load_data_csv(test_data_path)
@@ -250,18 +254,23 @@ class TestAnalysisMethods(unittest.TestCase):
                 'This is an ad.']
         avg_time = avg_time_cxt(*args)
         self.assertAlmostEqual(avg_time, 2.319)
-
+        
         args = [self.default_student_data_2,
                 'In one word, how does this text make you feel?',
                 'This is actually a short story.']
         avg_time = avg_time_cxt(*args)
         self.assertAlmostEqual(avg_time, 3.1992)
-
-        args = [self.default_student_data,
-                'In one word, how does this text make you feel?',
+        args = [self.default_student_data,'In one word, how does this text make you feel?',
                 'This is an ad.']
         avg_time = avg_time_cxt(*args)
         self.assertIsNone(avg_time)
+        
+    def test_compute_total_view_time(self):
+        """
+        Test that the total view time equals the expected values.
+        """
+        total_view_time = compute_total_view_time(self.test_student_data)
+        self.assertEqual(total_view_time, 6.385)
 
     def test_avg_time_student(self):
         avg_time = avg_time_student(self.test_student_data, 15)

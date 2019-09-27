@@ -1,3 +1,7 @@
+"""
+Tests for the Rereading app.
+"""
+
 from django.test import TestCase
 
 

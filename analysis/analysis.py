@@ -296,12 +296,6 @@ class TestAnalysisMethods(unittest.TestCase):
         self.default_student_data_2 = load_data_csv(test_data_2_path)
 
     def test_mean_rereading_time_for_a_question(self):
-        output = ""
-        for thing in self.default_student_data_2:
-            for key in thing:
-                output += str(thing[key]) + ","
-            output += "\n"
-        print(output)
         # check we don't crash on the defaults from the model!
         mean_rereading_data = mean_rereading_time_for_a_question(self.default_student_data, "", "")
 
@@ -329,6 +323,13 @@ class TestAnalysisMethods(unittest.TestCase):
         ]
         self.assertEqual(mean_rereading_time_results_data, mean_comparison_results)
 
+    def test_remove_outliers(self):
+        outliers_data_1 = [-100, -50, 1, 2, 3, 4, 5, 100]
+        outliers_data_2 = [1, 2, 3, 4, 5]
+
+        remove_outliers(outliers_data_1)
+        self.assertEqual(outliers_data_1, outliers_data_2)
+
     def test_compute_total_view_time(self):
         total_view_time = compute_total_view_time(self.test_student_data)
         self.assertEqual(total_view_time, 6.385)
@@ -353,13 +354,6 @@ class TestAnalysisMethods(unittest.TestCase):
                 'This is an ad.']
         avg_time = avg_time_context(*args)
         self.assertIsNone(avg_time)
-
-    def test_compute_total_view_time(self):
-        """
-        Test that the total view time equals the expected values.
-        """
-        total_view_time = compute_total_view_time(self.test_student_data)
-        self.assertEqual(total_view_time, 6.385)
 
     def test_avg_time_student(self):
         avg_time = avg_time_student(self.test_student_data, 15)

@@ -8,6 +8,24 @@ import csv
 from pathlib import Path
 import unittest
 
+neutral_words_list = [
+    'baby shoes',
+    'sale',
+    'selling',
+    'advertisement',
+    'ad',
+    'asking'
+    ]
+
+negative_key_words_list = [
+        'miscarriage',
+        'lost child',
+        'death',
+        'grief',
+        'giving up hope',
+        'deceased',
+        'loss'
+        ]
 
 def load_data_csv(csv_path: Path):
     """
@@ -163,6 +181,8 @@ if __name__ == '__main__':
 # might be a statistically significant difference showing students with responses of negative
 # connotations (i.e. got the deeper meaning of text w/o clue from context) had a correlation
 # with spending more time with the text
+
+
 
 # select students with responses with neutral connotations (confused, sale) when the context was
 # "This is an ad." but had responses with negative connotations when the context was

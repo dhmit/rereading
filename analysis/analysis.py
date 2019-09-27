@@ -8,23 +8,7 @@ import csv
 from pathlib import Path
 import unittest
 
-class TestAnalysisMethods(unittest.TestCase):
-    def setUp(self):
-        test_data_path = Path('data', 'test_data.csv')
-        self.test_student_data=load_data_csv(test_data_path)
-        self.default_student_data=[ #model default values
-            {
-                'id':0,
-                'question':'',
-                'context':'',
-                'response':'',
-                'views':[],
-                'student_id':0,
-                'scroll_ups':0,
 
-            }
-
-         ]
 
 def load_data_csv(csv_path: Path):
     """

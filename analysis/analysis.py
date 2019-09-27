@@ -47,13 +47,21 @@ def run_analysis():
     Takes in no parameters and initializes the analysis of the data
     :return: None
     """
+    csv_path = Path('data', 'rereading_data_2019-09-13.csv')
+    student_data = load_data_csv(csv_path)
+    #print(student_data)
+
+
     # csv_path = Path('data', 'test_data.csv')
     # csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     # student_data = load_data_csv(csv_path)
     # TODO: do something with student_data that's not just printing it!
     # total_view_time = compute_total_view_time(student_data)
     # print(f'The total view time of all students was {total_view_time}.')
-    # print(average_time(student_data))
+    # print(average_time(student_data)
+    #  print(data))
+    average = average_time(student_data)
+    print("The standard deviation:", standard_deviation(student_data, average))
 
 
 def average_time(data):
@@ -170,6 +178,25 @@ def word_freq_all(data):
         else:
             qc_dict[response] += 1
     return output
+
+
+def standard_deviation(data, average):
+    """
+    Takes the data and finds the standard deviation of the time
+    :param data: list of responses
+    :param average: float that represents average time of views
+    :return: float representing the standard deviation
+
+    """
+    result = 0
+    elements = 0
+    for ele in data:
+        for view in ele["views"]:
+            elements = elements + 1
+            result = result + (view - average) ** 2
+    result = result / (elements - 1)
+    result = result ** (1/2)
+    return result
 
 
 class TestAnalysisMethods(unittest.TestCase):
@@ -297,3 +324,4 @@ class TestAnalysisMethods(unittest.TestCase):
 if __name__ == '__main__':
     run_analysis()
     unittest.main()  # run the tests
+

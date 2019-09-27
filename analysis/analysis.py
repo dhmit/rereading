@@ -7,6 +7,7 @@ from ast import literal_eval
 import csv
 from pathlib import Path
 import unittest
+from textblob import TextBlob
 
 
 def load_data_csv(csv_path: Path):
@@ -43,45 +44,31 @@ def compute_total_view_time(student_data):
     return total_view_time
 
 
-def compile_response(student_data, question):
-    """
-    Returns answers as a dictionary with context as the keys and another dictionary containing each
-    response and their frequency as the value.
-    :param student_data: list of OrderedDicts, set of responses
-    :param question: string, question
-    :return: dictionary mapping strings to integers
-    """
-    data = {}
-    for elem in student_data:
-        student_question = elem['question']
-        student_response = elem['response'].lower()
-        question_context = elem['context']
+def return_response_sentiment(response):
+    return 2
+
+
+def average_sentiment(student_data, question):
+    size = len(student_data.keys())
+    total_sentiment = 0
+    for student in student_data:
+        student_question = student['question']
         if student_question == question:
-            if question_context not in data:
-                data[question_context] = {student_response: 1}
-            else:
-                if student_response in data[question_context]:
-                    data[question_context][student_response] += 1
-                else:
-                    data[question_context][student_response] = 1
-    return data
+            response = id['response']
+            total_sentiment += return_response_sentiment(response)
+    average = total_sentiment / size
+    return average
 
 
-def common_response(student_data, question, context):
-    """
-    Returns a list of the most common response(s) given a set of data, a question, and a context.
-    :param student_data: list of OrderedDicts, student response data
-    :param question: string, question
-    :param context: string, context
-    :return: list of strings
-    """
-    max_response = []
-    response_dict = compile_response(student_data, question)
-    responses_by_context = response_dict[context]
-    for response in responses_by_context:
-        if responses_by_context[response] == max(responses_by_context.values()):
-            max_response.append(response)
-    return max_response
+def complete_average_sentiment(student_data):
+    all_sentiment = {}
+    questions = []
+    for student in student_data:
+        student_question = student['question']
+        if student_question not in questions:
+            questions.append(student_question)
+    for question in questions:
+        all_sentiment[question] = average_sentiment(student_data, question)
 
 
 def run_analysis():
@@ -95,12 +82,6 @@ def run_analysis():
 
     total_view_time = compute_total_view_time(student_data)
     print(f'The total view time of all students was {total_view_time}.')
-    print(compile_response(student_data, "In one word, how does this text make you feel?"))
-    print(common_response(
-        student_data,
-        "In one word, how does this text make you feel?",
-        "This is an ad."
-    ))
 
 
 class TestAnalysisMethods(unittest.TestCase):

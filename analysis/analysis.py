@@ -55,41 +55,32 @@ def get_word_frequency_differences(student_data):
     no_id = []
 
     for response in student_data:
-        if (response['question'].find('Have you encountered this text before') == 0
-                and response['context'].find('This is an ad.') == 0):
-            if response['response'].lower().find('yes') == -1:
+        if 'Have you encountered this text before' in response['question'] \
+                and 'This is an ad.' in response['context']:
+            if 'yes' not in response['response'].lower():
                 no_id.append(response['student_id'])
             else:
                 yes_id.append(response['student_id'])
 
-    # Iterate through all responses, store in list words used to describe the text for students who
-    # have vs. have not read the text
-    ad_yes_words = []
-    ad_no_words = []
+    # Iterate through all responses, store words and word frequencies of yes vs. no responses as
+    # keys and values in 2 dictionaries
 
-    for element in student_data:
-        if element['question'].find('In one word') == 0 \
-                and element['context'].find('This is an ad') == 0:
-            if element['student_id'] in yes_id:
-                ad_yes_words.append(element['response'].lower())
-            else:
-                ad_no_words.append(element['response'].lower())
-    # Iterate through ad_yes_words and ad_no_words, store words and response frequency as keys and
-    # values of a dictionary
     yes_responses = dict()
     no_responses = dict()
 
-    for response in ad_yes_words:
-        if response in yes_responses:
-            yes_responses[response] += 1
-        else:
-            yes_responses[response] = 1
-
-    for response in ad_no_words:
-        if response in no_responses:
-            no_responses[response] += 1
-        else:
-            no_responses[response] = 1
+    for element in student_data:
+        if 'In one word' in element['question'] and 'This is an ad' in element['context']:
+            response = element['response'].lower()
+            if element['student_id'] in yes_id:
+                if response in yes_responses:
+                    yes_responses[response] += 1
+                else:
+                    yes_responses[response] = 1
+            else:
+                if response in no_responses:
+                    no_responses[response] += 1
+                else:
+                    no_responses[response] = 1
 
     # Iterate through yes_responses and no_responses, store words and frequency differences as keys
     # and values of a dictionary

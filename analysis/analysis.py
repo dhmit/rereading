@@ -88,23 +88,28 @@ def find_connotation_change(student_data):
     :param student_data: a list of dictionaries
     :return: a float, the total time all users spent reading the text divided by total views
     """   
+#    print(response_dict['question'])
+#    print(response_dict['context'])
+    negative_total_view_time = 0
+    neutral_total_view_time = 0
+    negative_responses = 0
+    neutral_responses = 0
+    
     for response_dict in student_data:
-#        print(response_dict['question'])
-#        print(response_dict['context'])
-        negative_total_view_time = 0
-        neutral_total_view_time = 0
-        negative_responses = 0
-        neutral_responses = 0
         
         if (response_dict['question'] == "In three words or fewer, what is this text about?") \
         and (response_dict['context'] == "This is an ad."):
-            response_word = response_dict['response'].lower()
-#            if response_word in negative_key_words_list:
-#                negative_total_view_time += sum(response_dict['views'])
-#                negative_responses += 1
-#            else:
-#                neutral_total_view_time += sum(response_dict['views'])
-#                neutral_responses += 1
+            response = response_dict['response'].lower()
+            print(response)
+            print(response.split())
+            for word in response.split():
+                print(word)
+                if word in negative_key_words_list:
+                    negative_total_view_time += sum(response_dict['views'])
+                    negative_responses += 1
+                else:
+                    neutral_total_view_time += sum(response_dict['views'])
+                    neutral_responses += 1
         
     if negative_responses == 0:
         negative_mean_view_time = 0
@@ -116,9 +121,10 @@ def find_connotation_change(student_data):
     else:
         neutral_mean_view_time = neutral_total_view_time/neutral_responses
     
-    print("People who understood the hidden meaning the first time read the \
+    print("People who understood the deeper meaning the first time read the \
           message for " + str(negative_mean_view_time) + " on average. While \
           people who did not, read the text for " + str(neutral_mean_view_time))
+    print(negative_responses, neutral_responses)
                 
             
             
@@ -136,8 +142,8 @@ def run_analysis():
 #    print(f'The total view time of all students was {total_view_time}.')
 
     # TODO: do something with student_data that's not just printing it!
-    print(student_data)
-    print(find_connotation_change(student_data))
+#    print(student_data)
+    find_connotation_change(student_data)
 
 
 class TestAnalysisMethods(unittest.TestCase):

@@ -63,6 +63,24 @@ def compute_median_view_time(student_data):
     return median_view_time
 
 
+def compute_mean_response_length(student_data):
+    """
+    Given a list of student response dicts,
+    return the mean character length (across all users) of the response
+
+    :param student_data: list, student response dicts
+    :return: float, median number of characters in the user's response
+    """
+
+    list_of_responses = []
+    for row in student_data:
+        list_of_responses.append(row.get("response"))
+    mean_response_length = 0
+    for response in range(len(list_of_responses)):
+        mean_response_length += len(list_of_responses[response])
+    return mean_response_length / len(list_of_responses)
+
+
 def run_analysis():
     """
     Runs the analytical method on the reading data
@@ -73,8 +91,10 @@ def run_analysis():
     student_data = load_data_csv(csv_path)
     median_view_time = compute_median_view_time(student_data)
     total_view_time = compute_total_view_time(student_data)
+    mean_response_length = compute_mean_response_length(student_data)
     print(f'The total view time of all students was {total_view_time}.')
     print(f'The median view time of all students was {median_view_time}.')
+    print(f'The mean response length of all students was {mean_response_length}.')
 
 
 class TestAnalysisMethods(unittest.TestCase):
@@ -115,6 +135,13 @@ class TestAnalysisMethods(unittest.TestCase):
         median_view_time = compute_median_view_time(self.default_student_data)
         self.assertEqual(median_view_time, 0)
 
+    def test_compute_mean_response_length(self):
+        mean_response_length = compute_mean_response_length(self.test_student_data)
+        self.assertEqual(mean_response_length, 5.5)
+
+        # check we don't crash on the defaults from the model!
+        mean_response_length = compute_mean_response_length(self.default_student_data)
+        self.assertEqual(mean_response_length, 0)
 
 if __name__ == '__main__':
     run_analysis()

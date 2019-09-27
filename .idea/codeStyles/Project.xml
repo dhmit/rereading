@@ -1,0 +1,13 @@
+<component name="ProjectCodeStyleConfiguration">
+  <code_scheme name="Project" version="173">
+    <codeStyleSettings language="JavaScript">
+      <option name="RIGHT_MARGIN" value="100" />
+      <option name="INDENT_CASE_FROM_SWITCH" value="false" />
+      <option name="ALIGN_MULTILINE_PARAMETERS" value="false" />
+      <option name="ALIGN_MULTILINE_FOR" value="false" />
+    </codeStyleSettings>
+    <codeStyleSettings language="Python">
+      <option name="WRAP_LONG_LINES" value="true" />
+    </codeStyleSettings>
+  </code_scheme>
+</component>

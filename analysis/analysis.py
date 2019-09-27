@@ -30,9 +30,9 @@ def load_data_csv(csv_path: Path):
 
 def word_time_relations(student_data: list) -> dict:
     """
-    Takes a list of dicts representing student data and aggregates
-    case-insensitive responses into a dictionary, with the response as the key and the average
-    time (across all similar responses) viewing the story as the value.
+    Takes a list of dicts representing student data and aggregates case-insensitive responses
+    into a dictionary, with the response as the key and the average time (across all similar
+    responses) viewing the story as the value.
 
     :param student_data: list of dicts obtained from load_data_csv
     :return: dict, responses as keys and values as average view times for that response

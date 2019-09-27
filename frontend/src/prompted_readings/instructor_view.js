@@ -190,7 +190,7 @@ QuestionResponse.propTypes = {
  * Accesses and maintains database data for student responses and handles
  * displaying the information properly on the page.
  */
-class InstructorPage extends React.Component {
+class InstructorView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -307,4 +307,4 @@ class InstructorPage extends React.Component {
     }
 }
 
-export default InstructorPage;
+export default InstructorView;

@@ -124,6 +124,10 @@ class TestAnalysisMethods(unittest.TestCase):
         self.assertEqual(total_view_time, 0)
 
     def test_word_time_relations(self):
+        """
+        Test the word_time_relations function against the test data and an empty dataset
+        """
+
         # Expected values for test_data.csv
         expected = {
             'sad': 1.72,

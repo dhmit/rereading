@@ -329,17 +329,17 @@ class TestAnalysisMethods(unittest.TestCase):
         ]
         self.assertEqual(mean_rereading_time_results_data, mean_comparison_results)
 
-    def test_mean_rereading_time_for_a_question(self):
+    def test_mean_rereading_time_for_a_question_two(self):
         mean_rereading_time = mean_rereading_time_for_a_question(self.test_student_data,
-                                "Have you encountered this text before?",
-                                                                 "this is")
+                                                                 "Have you encountered this text "
+                                                                 "before?", "this is")
 
         self.assertEqual(mean_rereading_time[0], "Have you encountered this text before?")
 
     def test_mean_rereading_time_for_a_question_reversed(self):
         mean_rereading_time = mean_rereading_time_for_a_question(reversed(self.test_student_data),
-                                                "Have you encountered this text before?",
-                                                            "this is")
+                                                                 "Have you encountered this text "
+                                                                 "before?", "this is")
 
         self.assertEqual(mean_rereading_time[0], "Have you encountered this text before?")
 

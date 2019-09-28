@@ -59,32 +59,32 @@ def run_analysis():
 
 def show_response_groups(response_groups_freq_dicts):
     """
-    Given response_group dictionary, prints the dicts in readable format
+    Given response_groups_freq_dicts list of dictionaries, prints the dicts in readable format
 
-    :param response_groups_freq_dicts, keys are four dicts (one for each response group)
+    :param response_groups_freq_dicts, lists of 4 dicts (one for each response
+    group)
     mapping words to frequencies within that response group
     :return None
     """
-    # print(f'Word frequencies for {group_name}: {response_groups_freq_dicts[group_name]}\n')
-    print(f'Word frequencies for Single view responses to ad context:',
+    print(f'Word frequencies for Single view responses to ad context: ',
           response_groups_freq_dicts[0])
-    print(f'Word frequencies for Single view responses to short story context:',
+    print(f'Word frequencies for Single view responses to short story context: ',
           response_groups_freq_dicts[1])
-    print(f'Word frequencies for Multiple view responses to ad context:',
+    print(f'Word frequencies for Multiple view responses to ad context: ',
           response_groups_freq_dicts[2])
-    print(f'Word frequencies for Multiple view responses to short story context:',
+    print(f'Word frequencies for Multiple view responses to short story context: ',
           response_groups_freq_dicts[3])
 
 
 def get_response_groups_frequencies(student_data: list):
     """"
     Given student_data,
-    Returns dict mapping response groups to frequency dicts,
-    which themselves map response words to frequencies for that response group.
+    Returns lists of 4 frequency dicts, one for each response group,
+     that map response words to frequencies for each response group.
     Response groups are based on single vs. multiple views and ad vs. short story
     context to the "In one word, how does this text make you feel?" question
     :param student_data, list of dicts
-    :return: dict, keys are four dicts (one for each response group) mapping words
+    :return: list of four dicts (one for each response group) mapping words
     to frequencies within that response group
     """
     people_with_multiple_views = []
@@ -117,7 +117,6 @@ def get_response_groups_frequencies(student_data: list):
 
 def get_groups_by_context(people_with_view_number):
     """
-
     :param people_with_view_number: list of responses for people with certain number of views
     :return: two lists, one for responses to short story context and one for ad context
     """

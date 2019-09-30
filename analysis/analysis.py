@@ -28,6 +28,43 @@ def load_data_csv(csv_path: Path):
     return out_data
 
 
+def word_time_relations(student_data: list) -> dict:
+    """
+    Takes a list of dicts representing student data and aggregates case-insensitive responses
+    into a dictionary, with the response as the key and the average time (across all similar
+    responses) viewing the story as the value.
+
+    :param student_data: list of dicts obtained from load_data_csv
+    :return: dict, responses as keys and values as average view times for that response
+    """
+
+    # First gather all responses in an easy-to-handle format of dict(response: times)
+    responses = dict()
+    for response_data in student_data:
+
+        # Find total time spent looking at story
+        total_time = 0
+        for view in response_data['views']:
+            total_time += view
+
+        # Add this time to the response dictionary (case-insensitive)
+        response = response_data['response'].lower()
+        if response not in responses:
+            responses[response] = [total_time]
+        else:
+            responses[response].append(total_time)
+
+    # Now compute the average time for each response and add them to a new dictionary
+    averages = dict()
+    for response in responses:
+        times = responses[response]
+        total = sum(times)
+        average = total / len(times)
+        averages[response] = average
+
+    return averages
+
+
 def compute_total_view_time(student_data):
     """
     Given a list of student response dicts,
@@ -198,6 +235,28 @@ class TestAnalysisMethods(unittest.TestCase):
              'underwhelmed': 1, 'melancholy': 1, 'sadder': 1},
         ]
         self.assertEqual(expected, response_groups)
+       
+    def test_word_time_relations(self):
+        """
+        Test the word_time_relations function against the test data and an empty dataset
+        """
+
+        # Expected values for test_data.csv
+        expected = {
+            'sad': 1.72,
+            'miscarriage': 1.4725,
+            'no': 0,
+            'yes': 0
+        }
+        test_result = word_time_relations(self.test_student_data)
+        self.assertEqual(test_result, expected)
+
+        # Expected dictionary for empty default data
+        default_expected = {
+            '': 0,
+        }
+        default_result = word_time_relations(self.default_student_data)
+        self.assertEqual(default_result, default_expected)
 
 
 if __name__ == '__main__':

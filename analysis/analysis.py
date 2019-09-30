@@ -235,7 +235,7 @@ class TestAnalysisMethods(unittest.TestCase):
              'underwhelmed': 1, 'melancholy': 1, 'sadder': 1},
         ]
         self.assertEqual(expected, response_groups)
-       
+
     def test_word_time_relations(self):
         """
         Test the word_time_relations function against the test data and an empty dataset

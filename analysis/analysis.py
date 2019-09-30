@@ -69,10 +69,67 @@ def run_time_analysis_functions(student_data):
     print(f'The median view time of all students was {median_view_time}.')
 
 
+def description_has_relevant_words(story_meaning_description, relevant_words):
+    """
+    Determine if the user's description contains a word relevant to the story's meaning
+    :param story_meaning_description: The three word description of the story that the user supplied
+    :param relevant_words: a list of words which show an understanding of the story's meaning
+    :return True if the description contains one of the relevant words. False otherwise
+    """
+    words_used_in_description = story_meaning_description.split(' ')
+    for word in relevant_words:
+        if word in words_used_in_description:
+            return True
+    return False
+
+
+RELEVANT_WORDS_FILE_PATH = 'data/words_related_to_story.txt'
+
+
+def percent_students_using_relevant_words(student_data, target_context, relevant_words):
+    """
+    Find the percentage of students that used relevant words in their responses
+    :param student_data: the data to analyze
+    :param target_context: the context (e.g. "This is an ad") to take responses from
+    :param relevant_words: a list of words which show an understanding of the story's meaning
+    :return: The percentage of students that used relevant words in their responses
+    """
+    number_of_students_using_relevant_words = 0
+    total_students = 0
+    for row in student_data:
+        if (row.get('context') == target_context and
+                row.get('question') == 'In three words or fewer, what is this text about?'):
+            total_students += 1
+            if description_has_relevant_words(row.get('response'), relevant_words):
+                number_of_students_using_relevant_words += 1
+    percentage_of_all_students = number_of_students_using_relevant_words / total_students
+    return percentage_of_all_students
+
+
+def read_words_from_txt_file(file):
+    lines = []
+    for line in file:
+        lines.append(line.strip())
+    return lines
+
+
+def run_relevant_word_analysis(student_data):
+    target_context = 'This is actually a short story.'
+
+    relevant_words_file = open(RELEVANT_WORDS_FILE_PATH, 'r')
+    relevant_words = read_words_from_txt_file(relevant_words_file)
+
+    relevant_words_used_percent = percent_students_using_relevant_words(
+        student_data, target_context, relevant_words)
+    print(f'{relevant_words_used_percent * 100}% of students used words related to '
+          f'the story\'s intended meaning.')
+
+
 def run_analysis():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
     run_time_analysis_functions(student_data)
+    run_relevant_word_analysis(student_data)
 
 
 class TestAnalysisMethods(unittest.TestCase):

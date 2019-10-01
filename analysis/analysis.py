@@ -93,7 +93,7 @@ def run_analysis():
     total_view_time = compute_total_view_time(student_data)
     print(f'The total view time of all students was {total_view_time}.')
 
-    
+
 def run_our_analysis(student_data):
     """
     Runs the analysis on the data loaded from the CSV file by looking at the average
@@ -421,6 +421,9 @@ class TestAnalysisMethods(unittest.TestCase):
     Test cases to make sure things are running properly
     """
     def setUp(self):
+        """
+        Sets up the data sets for testing
+        """
         test_data_path = Path('data', 'test_data.csv')
         self.test_student_data = load_data_csv(test_data_path)
         self.default_student_data = [  # model default values
@@ -440,7 +443,11 @@ class TestAnalysisMethods(unittest.TestCase):
         self.student_data = load_data_csv(sample_csv_path)
 
     def test_mean_rereading_time_for_a_question(self):
-        # check we don't crash on the defaults from the model!
+        """
+        Tests mean_rereading_time_for_a_question function with many data sets and checks if
+        the function crashes when it encounters the default data set. Also test many cases with
+        all question and context combinations.
+        """
         mean_rereading_data = mean_rereading_time_for_a_question(self.default_student_data, "", "")
 
         empty_comparison_tuple = ("", "", 0, 0)
@@ -474,6 +481,9 @@ class TestAnalysisMethods(unittest.TestCase):
         self.assertEqual(mean_rereading_time_results_data, mean_comparison_results)
 
     def test_mean_rereading_time_for_a_question_two(self):
+        """
+        Tests mean_rereading_time_for_a_question function with the test data set
+        """
         mean_rereading_time = mean_rereading_time_for_a_question(self.test_student_data,
                                                                  "Have you encountered this text "
                                                                  "before?",
@@ -482,6 +492,9 @@ class TestAnalysisMethods(unittest.TestCase):
         self.assertEqual(mean_rereading_time[0], "Have you encountered this text before?")
 
     def test_mean_rereading_time_for_a_question_reversed(self):
+        """
+        Tests mean_rereading_time_for_a_question function but with the data set reversed
+        """
         mean_rereading_time = mean_rereading_time_for_a_question(reversed(self.test_student_data),
                                                                  "Have you encountered this text "
                                                                  "before?",
@@ -490,12 +503,14 @@ class TestAnalysisMethods(unittest.TestCase):
         self.assertEqual(mean_rereading_time[0], "Have you encountered this text before?")
 
     def test_remove_outliers(self):
+        """
+        Test the remove_outlier functions on a list to see if it removes the outliers
+        """
         outliers_data_1 = [-100, -50, 1, 2, 3, 4, 5, 100]
         outliers_data_2 = [1, 2, 3, 4, 5]
 
         remove_outliers(outliers_data_1)
         self.assertEqual(outliers_data_1, outliers_data_2)
-
 
     def test_compute_total_view_time(self):
         """
@@ -509,6 +524,10 @@ class TestAnalysisMethods(unittest.TestCase):
         self.assertEqual(total_view_time, 0)
 
     def test_avg_time_context(self):
+        """
+        Test the avg_time_context function to see if it can find the avg view times given a question
+        and context. Also tests for if the question or context isn't in the data set.
+        """
         args = [self.test_student_data,
                 'In one word, how does this text make you feel?',
                 'This is an ad.']
@@ -526,6 +545,10 @@ class TestAnalysisMethods(unittest.TestCase):
         self.assertIsNone(avg_time)
 
     def test_avg_time_student(self):
+        """
+        Test the avg_time_student and see if given a student_id, the function can return
+        the average view times for that student, even if they didn't do any viewing.
+        """
         avg_time = avg_time_student(self.test_student_data, 15)
         self.assertAlmostEqual(avg_time, 2.128333333333)
 
@@ -539,6 +562,10 @@ class TestAnalysisMethods(unittest.TestCase):
         self.assertIsNone(avg_time)
 
     def test_average_time(self):
+        """
+        Test average_time function for many test cases and see if it returns either the correct
+        average time or None if there are no view times in the data set
+        """
         avg_time = average_time(self.test_student_data)
         self.assertAlmostEqual(avg_time, 2.128333333333)
 
@@ -549,6 +576,9 @@ class TestAnalysisMethods(unittest.TestCase):
         self.assertAlmostEqual(avg_time, 2.88266666666)
 
     def test_word_freq_all(self):
+        """
+        Test the word_freq_all function on the test data set and default data set
+        """
         freq_dict = word_freq_all(self.test_student_data)
         specific_question_context = ('In one word, how does this text make you feel?',
                                      'This is an ad.')
@@ -565,6 +595,9 @@ class TestAnalysisMethods(unittest.TestCase):
         self.assertEqual(freq_dict[specific_question_context], answer)
 
     def test_frequent_responses(self):
+        """
+        Test the function frequent_responses on the test data set and default data set
+        """
         most_frequent_responses = frequent_responses(word_freq_all(self.test_student_data))
         specific_question_context = ('In one word, how does this text make you feel?',
                                      'This is an ad.')

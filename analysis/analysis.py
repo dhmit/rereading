@@ -261,6 +261,7 @@ class TestAnalysisMethods(unittest.TestCase):
         }
         default_result = word_time_relations(self.default_student_data)
         self.assertEqual(default_result, default_expected)
+
     def test_compute_view_time_per_response(self):
         """
         Test that average view times per response equals the expected values.

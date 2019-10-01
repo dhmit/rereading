@@ -80,29 +80,26 @@ def run_analysis():
         print()
 
 
-def mean_rereading_time_for_a_question(student_data, question_keyword, context):
+def mean_rereading_time_for_a_question(student_data, question, context):
     """
     Given the student response dicts, computes the mean reread time for a
     specific question (given by its keyword) and the context in which it was asked.
     Returns the question, context, mean reread time, and number of people who reread.
     :param student_data: list, student response dicts
-    :param question_keyword: string, keyword to determine which question was being asked
+    :param question: string, to determine which question was being asked
     :param context: string, what the reader thought the reading was
     :return: tuple, in order of the question asked (full question), the context, the mean reread
              time, and the number of people who reread it
     """
     mean_time = 0
     number_of_rereaders = 0
-    question_asked = ""
     question_count = 0
     rereading_time = []
     total_question_view_time = 0
 
     for student_data_dictionary in student_data:
-        if question_keyword not in student_data_dictionary['question']:
-            continue
-        question_asked = student_data_dictionary['question']
-        if context not in student_data_dictionary['context']:
+        if question != student_data_dictionary['question'] or\
+                context != student_data_dictionary['context']:
             continue
         if len(student_data_dictionary['views']) != 0:
             number_of_rereaders += 1
@@ -121,7 +118,7 @@ def mean_rereading_time_for_a_question(student_data, question_keyword, context):
     if len(rereading_time) != 0:
         mean_time = round(total_question_view_time / len(rereading_time), 2)
 
-    return question_asked, context, mean_time, number_of_rereaders
+    return question, context, mean_time, number_of_rereaders
 
 
 def remove_outliers(rereading_time):
@@ -308,38 +305,46 @@ class TestAnalysisMethods(unittest.TestCase):
         empty_comparison_tuple = ("", "", 0, 0)
         self.assertEqual(mean_rereading_data, empty_comparison_tuple)
 
+        feel = "In one word, how does this text make you feel?"
+        about = "In three words or fewer, what is this text about?"
+        encountered = "Have you encountered this text before?"
+        ad = "This is an ad."
+        short_story = "This is actually a short story."
+
         mean_rereading_time_results_data = [
-            mean_rereading_time_for_a_question(self.test_student_data, "feel", "ad"),
-            mean_rereading_time_for_a_question(self.test_student_data, "about", "ad"),
-            mean_rereading_time_for_a_question(self.test_student_data, "encountered", "ad"),
-            mean_rereading_time_for_a_question(self.test_student_data, "feel", "short story"),
-            mean_rereading_time_for_a_question(self.test_student_data, "about", "short story"),
-            mean_rereading_time_for_a_question(self.test_student_data, "encountered", "short story")
+            mean_rereading_time_for_a_question(self.test_student_data, feel, ad),
+            mean_rereading_time_for_a_question(self.test_student_data, about, ad),
+            mean_rereading_time_for_a_question(self.test_student_data, encountered, ad),
+            mean_rereading_time_for_a_question(self.test_student_data, feel, short_story),
+            mean_rereading_time_for_a_question(self.test_student_data, about, short_story),
+            mean_rereading_time_for_a_question(self.test_student_data, encountered, short_story)
         ]
 
         # The expected result times are rounded to 2 decimals here due to Python rounding errors
         # not matching actual rounding.
         mean_comparison_results = [
-            ("In one word, how does this text make you feel?", "ad", round(2.319, 2), 1),
-            ("In three words or fewer, what is this text about?", "ad", round(2.945, 2), 1),
-            ("Have you encountered this text before?", "ad", 0, 0),
-            ("In one word, how does this text make you feel?", "short story", round(1.121, 2), 1),
-            ("In three words or fewer, what is this text about?", "short story", 0, 0),
-            ("Have you encountered this text before?", "short story", 0, 0)
+            (feel, ad, round(2.319, 2), 1),
+            (about, ad, round(2.945, 2), 1),
+            (encountered, ad, 0, 0),
+            (feel, short_story, round(1.121, 2), 1),
+            (about, short_story, 0, 0),
+            (encountered, short_story, 0, 0)
         ]
         self.assertEqual(mean_rereading_time_results_data, mean_comparison_results)
 
     def test_mean_rereading_time_for_a_question_two(self):
         mean_rereading_time = mean_rereading_time_for_a_question(self.test_student_data,
                                                                  "Have you encountered this text "
-                                                                 "before?", "this is")
+                                                                 "before?",
+                                                                 "This is an ad.")
 
         self.assertEqual(mean_rereading_time[0], "Have you encountered this text before?")
 
     def test_mean_rereading_time_for_a_question_reversed(self):
         mean_rereading_time = mean_rereading_time_for_a_question(reversed(self.test_student_data),
                                                                  "Have you encountered this text "
-                                                                 "before?", "this is")
+                                                                 "before?",
+                                                                 "This is an ad.")
 
         self.assertEqual(mean_rereading_time[0], "Have you encountered this text before?")
 
@@ -434,5 +439,5 @@ class TestAnalysisMethods(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    run_analysis()
+    #run_analysis()
     unittest.main()  # run the tests

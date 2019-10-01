@@ -90,65 +90,121 @@ class TestAnalysisMethods(unittest.TestCase):
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
 
-def compute_average_view_time_per_response(student_data):
+    def test_compute_view_time_per_response(self):
+        """
+        Test that average view times per response equals the expected values.
+        """
+        average_view_time_per_response = compute_view_time_per_response(
+            self.test_student_data)
+        self.assertEqual(average_view_time_per_response, {'This is an ad.': {'sad': [2.319]},
+                                                          'This is actually a short story.': {
+                                                              'sad': [1.121]}})
+
+        average_view_time_per_response = compute_view_time_per_response(
+            self.default_student_data)
+        self.assertEqual(average_view_time_per_response, {'This is an ad.': {},
+                                                          'This is actually a short story.': {}})
+
+    def test_reread_time_difference(self):
+        """
+        Test average and difference modules with expected values
+        """
+        view_times_per_response = compute_view_time_per_response(
+            self.test_student_data)
+        wanted_dict_ad_avg = build_average_dict(view_times_per_response['This is an ad.'])
+        wanted_dict_ss_avg = build_average_dict(view_times_per_response['This is actually a short'
+                                                                        ' story.'])
+        difference = reread_time_difference(wanted_dict_ad_avg, wanted_dict_ss_avg)
+        self.assertEqual(difference, {'sad': ['ad', 1.198]})
+
+        view_times_per_response = compute_view_time_per_response(
+            self.default_student_data)
+        wanted_dict_ad_avg = build_average_dict(view_times_per_response['This is an ad.'])
+        wanted_dict_ss_avg = build_average_dict(view_times_per_response['This is actually a short'
+                                                                        ' story.'])
+        difference = reread_time_difference(wanted_dict_ad_avg, wanted_dict_ss_avg)
+        self.assertEqual(difference, {})
+
+    def test_get_common_elements(self):
+        """
+        test that common elements returns the common key:value pairs between two dictionaries
+        with the values averaged together
+        """
+        view_times_per_response = compute_view_time_per_response(
+            self.test_student_data)
+        wanted_dict_ad_avg = build_average_dict(view_times_per_response['This is an ad.'])
+        wanted_dict_ss_avg = build_average_dict(view_times_per_response['This is actually '
+                                                                        'a short story.'])
+        common_dict = get_common_elements(wanted_dict_ad_avg, wanted_dict_ss_avg)
+        self.assertEqual(common_dict, {'sad': 1.72})
+
+        view_times_per_response = compute_view_time_per_response(
+            self.default_student_data)
+        wanted_dict_ad_avg = build_average_dict(view_times_per_response['This is an ad.'])
+        wanted_dict_ss_avg = build_average_dict(view_times_per_response['This is actually '
+                                                                        'a short story.'])
+        common_dict = get_common_elements(wanted_dict_ad_avg, wanted_dict_ss_avg)
+        self.assertEqual(common_dict, {})
+
+    def test_total_rereading_time_exclusive(self):
+        """
+        test that a dictionary of the elements exclusive to two dictionaries is what is expected
+        """
+        view_times_per_response = compute_view_time_per_response(
+            self.test_student_data)
+        wanted_dict_ad_avg = build_average_dict(view_times_per_response['This is an ad.'])
+        wanted_dict_ss_avg = build_average_dict(view_times_per_response['This is actually '
+                                                                        'a short story.'])
+        exclusive_responses = total_reading_time_exclusive(wanted_dict_ad_avg, wanted_dict_ss_avg)
+        self.assertEqual(exclusive_responses, {'This is an ad.': {},
+                                               'This is actually a short story.': {}})
+
+        view_times_per_response = compute_view_time_per_response(
+            self.default_student_data)
+        wanted_dict_ad_avg = build_average_dict(view_times_per_response['This is an ad.'])
+        wanted_dict_ss_avg = build_average_dict(view_times_per_response['This is actually '
+                                                                        'a short story.'])
+        exclusive_responses = total_reading_time_exclusive(wanted_dict_ad_avg, wanted_dict_ss_avg)
+        self.assertEqual(exclusive_responses, {'This is an ad.': {},
+                                               'This is actually a short story.': {}})
+
+
+def compute_view_time_per_response(student_data):
     """
+    Compute the total reread times for each response
     :param student_data: list, student response dicts
     :return:
-    wanted_dict_ad - Dictionary ('ad context response in lowercase': [total reading times for each user])
-    wanted_dict_ss - Dictionary ('short story context response in lowercase': [total reading times for each user])
-    wanted_dict_ad_exclusive - Dictionary ('ad context response in lowercase not in short story context responses':
-        [total reading times for each user])
-    wanted_dict_ss_exclusive - Dictionary ('short story context response in lowercase not in ad context responses':
-        [total reading times for each user])
-    wanted_dict_ad_exclusive_avg - Dictionary ('ad context response in lowercase not in short story context responses':
-        average reading time)
-    wanted_dict_ss_exclusive_avg - Dictionary ('short story context response in lowercase not in ad context responses':
-        average reading time)
-    wanted_dict_combined - Dictionary ('responses from both ad and short story context': average reading time)
-    wanted_dict_difference - Dictionary ('responses common to both ad and short story context':
-        [which context had a longer average reading time, the difference between the averages of the two contexts])
-    ad_response_times - Dictionary ('ad context response in lowercase': average reading time)
-    ss_response_times - Dictionary ('short story context response in lowercase': average reading time)
+    wanted_dict_ad - Dictionary ('ad context response in lowercase': [total reading times for
+        each user])
+    wanted_dict_ss - Dictionary ('short story context response in lowercase': [total reading
+        times for each user])
     """
 
-    # Collect the data from the response and time fields and compile them into dictionaries (1 per context)
-    header_1 = ('question', 'In one word, how does this text make you feel?')
-    header_2 = [('context', 'This is an ad.'), ('context', 'This is actually a short story')]
-    target_headers = ('response', 'views')
-    desired_data = (header_1, header_2, target_headers)
-    data_dict = extract_data(student_data, desired_data)
     wanted_dict_ad = defaultdict(list)
     wanted_dict_ss = defaultdict(list)
+
     for entry in student_data:
         if entry['question'] == 'In one word, how does this text make you feel?':
+            response = entry['response'].lower()
+            views = sum(entry['views'])
+
             if entry['context'] == 'This is an ad.':
-                response = entry['response']
-                # Ensure capitalization does not separate duplicate answers
-                response = response.lower()
-                views = sum(entry['views'])
                 wanted_dict_ad[response].append(views)
 
             elif entry['context'] == 'This is actually a short story.':
-                response = entry['response']
-                # Ensure capitalization does not separate duplicate answers
-                response = response.lower()
-                views = sum(entry['views'])
                 wanted_dict_ss[response].append(views)
 
-    # Average the response times for each response and make new dictionaries (1 per context)
-    ad_response_times = {}
-    ss_response_times = {}
-    for word in wanted_dict_ad:
-        running_sum = sum(wanted_dict_ad[word])
-        avg = running_sum / len(wanted_dict_ad[word])
-        ad_response_times[word] = avg
+    return {'This is an ad.': wanted_dict_ad, 'This is actually a short story.': wanted_dict_ss}
 
-    for word in wanted_dict_ss:
-        running_sum = sum(wanted_dict_ss[word])
-        avg = running_sum / len(wanted_dict_ss[word])
-        ss_response_times[word] = avg
 
-    # Start making a combined dictionary that does not separate based on context, begin with ad context
+def get_common_elements(ad_response_times, ss_response_times):
+    """
+    make a dictionary of the common elements between two dictionaries and averages them
+    :param ad_response_times: the first dictionary to compare
+    :param ss_response_times: the second dictionary to compare
+    :return: one dictionary
+    """
+    # Start making a combined dictionary that does not separate based on context
     wanted_dict_combined = {}
     for word in ad_response_times.keys():
         if word not in wanted_dict_combined.keys():
@@ -159,58 +215,77 @@ def compute_average_view_time_per_response(student_data):
         # Average current response with new data
         if word in wanted_dict_combined.keys():
             wanted_dict_combined[word] = (wanted_dict_combined[word] + ss_response_times[word]) / 2
+
         # Add the new data
         else:
             wanted_dict_combined[word] = ss_response_times[word]
 
-    # Make a dictionary that gives the name of the context with the longer average response time and difference
-    # between two contexts if a response is common to both contexts
+    return wanted_dict_combined
+
+
+def reread_time_difference(ad_response_times, ss_response_times):
+    """
+    make a dictionary of which context had a longer reread time for each response and the difference
+    :param ad_response_times: dictionary of ad response times
+    :param ss_response_times: dictionary of ss response times
+    :return: dict{response:[context,time]}
+    """
+    # Make a dictionary that gives the name of the context with the longer average response time
+    # and difference between two contexts if a response is common to both contexts
     wanted_dict_difference = {}
+
     for word in ad_response_times.keys():
         if word in ss_response_times.keys():
             if ad_response_times[word] > ss_response_times[word]:
-                wanted_dict_difference[word] = ["ad", ad_response_times[word] - ss_response_times[word]]
-            else:
-                wanted_dict_difference[word] = ["short story", ss_response_times[word] - ad_response_times[word]]
+                wanted_dict_difference[word] = ["ad", ad_response_times[word]
+                                                - ss_response_times[word]]
 
-    # Make a dictionary of the responses used in ad context that were not used in short story context and their total
-    # reading times
+            else:
+                wanted_dict_difference[word] = ["short story", ss_response_times[word]
+                                                - ad_response_times[word]]
+
+    return wanted_dict_difference
+
+
+def total_reading_time_exclusive(wanted_dict_ad, wanted_dict_ss):
+    """
+    returns two dictionaries of the exclusive key:value pairs between two dictionaries
+    :param wanted_dict_ss: the first dictionary to compare
+    :param wanted_dict_ad: the second dictionary to compare
+    :return: 2 dictionaries
+    """
+    # Make a dictionary of the responses used in ad context that were not used in short story
+    # context and their total reading times
+    wanted_dict_combined = get_common_elements(wanted_dict_ad, wanted_dict_ss)
     wanted_dict_ad_exclusive = defaultdict(list)
     wanted_dict_ss_exclusive = defaultdict(list)
-    wanted_dict_ad_exclusive_avg = {}
-    wanted_dict_ss_exclusive_avg = {}
+
     for word in wanted_dict_ad.keys():
         if word not in wanted_dict_combined.keys():
             wanted_dict_ad_exclusive[word].append(wanted_dict_ad[word])
-            # Make a separate dictionary of average times of responses exclusive to ad context
-            wanted_dict_ad_exclusive_avg[word] = sum(wanted_dict_ad[word]) / len(wanted_dict_ad[word])
 
-    # Make a list of the responses used in short story context that were not used in ad context and their total
-    # reading times
+    # Make a list of the responses used in short story context that were not used in ad context
+    # and their total reading times
     for word in wanted_dict_ss.keys():
         if word not in wanted_dict_combined.keys():
             wanted_dict_ss_exclusive[word].append(wanted_dict_ss[word])
-            # Make a separate dictionary of average times of responses exclusive to short story context
-            wanted_dict_ss_exclusive_avg[word] = sum(wanted_dict_ss[word]) / len(wanted_dict_ss[word])
+
+    return {'This is an ad.': wanted_dict_ad_exclusive, 'This is actually a short story.':
+            wanted_dict_ss_exclusive}
 
 
-def extract_data(student_data, data_headers):
+def build_average_dict(input_dict):
     """
-    Extracts the desired data fields from the data
-    :param student_data: list, student response dicts
-    :param data_headers: Tuple(Tuple(First Header:Text), List[Tuple(Second Header: Text)], List[Target Headers])
-    :return: desired data dict
-    """
+    Given a dictionary, return a dictionary with the same keys and the average of the values
 
-    return_dict = defaultdict(list)
-    for entry in student_data:
-        if entry[data_headers(1)(1)] == data_headers(1)(2):
-            for i in range(len(data_headers(2))):
-                if entry[data_headers(2)[i](1)] == entry[data_headers(2)[i](2)]:
-                    for h in range(len(data_headers(3))):
-                        # append the data to data header list
-                        return_dict[data_headers(2)[i](2)].append({data_headers(3)[h]:entry[data_headers(3)[h]]})
-    return return_dict
+    :param input_dict: dictionary {key:[values]}
+    :return: dictionary {key: float}
+    """
+    output_dict = {}
+    for key in input_dict.keys():
+        output_dict[key] = sum(input_dict[key]) / len(input_dict[key])
+
+    return output_dict
 
 
 if __name__ == '__main__':

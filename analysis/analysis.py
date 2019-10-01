@@ -49,11 +49,19 @@ def run_analysis():
     Runs the analysis on the data loaded from the CSV file by looking at the average
     reread time for each question and the context that the question was given in and
     prints it in a nice readable format.
-    :return: None
     """
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
+    run_our_analysis(student_data)
 
+
+def run_our_analysis(student_data):
+    """
+    Takes in the student data and runs our analysis
+    This function is meant to take everything out of the main run analysis function
+    :param student_data: the list of student data
+    :return: None
+    """
     question_one = "In one word, how does this text make you feel?"
     question_two = "In three words or fewer, what is this text about?"
     question_three = "Have you encountered this text before?"
@@ -77,7 +85,7 @@ def run_analysis():
         else:
             print(f"No one who thought the reading was a(n) {rereading_result[1]} and were asked "
                   f"\"{rereading_result[0]}\" reread the text.")
-        print()
+        print("")
 
 
 def mean_rereading_time_for_a_question(student_data, question, context):
@@ -439,5 +447,5 @@ class TestAnalysisMethods(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    #run_analysis()
+    run_analysis()
     unittest.main()  # run the tests

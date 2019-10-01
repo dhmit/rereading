@@ -456,13 +456,13 @@ class TestAnalysisMethods(unittest.TestCase):
         feel = "In one word, how does this text make you feel?"
         about = "In three words or fewer, what is this text about?"
         encountered = "Have you encountered this text before?"
-        ad = "This is an ad."
+        ads = "This is an ad."
         short_story = "This is actually a short story."
 
         mean_rereading_time_results_data = [
-            mean_rereading_time_for_a_question(self.test_student_data, feel, ad),
-            mean_rereading_time_for_a_question(self.test_student_data, about, ad),
-            mean_rereading_time_for_a_question(self.test_student_data, encountered, ad),
+            mean_rereading_time_for_a_question(self.test_student_data, feel, ads),
+            mean_rereading_time_for_a_question(self.test_student_data, about, ads),
+            mean_rereading_time_for_a_question(self.test_student_data, encountered, ads),
             mean_rereading_time_for_a_question(self.test_student_data, feel, short_story),
             mean_rereading_time_for_a_question(self.test_student_data, about, short_story),
             mean_rereading_time_for_a_question(self.test_student_data, encountered, short_story)
@@ -471,9 +471,9 @@ class TestAnalysisMethods(unittest.TestCase):
         # The expected result times are rounded to 2 decimals here due to Python rounding errors
         # not matching actual rounding.
         mean_comparison_results = [
-            (feel, ad, round(2.319, 2), 1),
-            (about, ad, round(2.945, 2), 1),
-            (encountered, ad, 0, 0),
+            (feel, ads, round(2.319, 2), 1),
+            (about, ads, round(2.945, 2), 1),
+            (encountered, ads, 0, 0),
             (feel, short_story, round(1.121, 2), 1),
             (about, short_story, 0, 0),
             (encountered, short_story, 0, 0)

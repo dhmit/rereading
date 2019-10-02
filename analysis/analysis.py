@@ -43,7 +43,7 @@ def get_sentiments() -> dict:
         word = file.readline()
 
         # We want to handle each word individually, rather than as a whole set
-        while word is not '':
+        while word:
 
             # This particular file starts lines with '#' for non-sentiment comments, so skip them
             if word[0] == '#' or word[0] == '\t':
@@ -57,15 +57,25 @@ def get_sentiments() -> dict:
             data = attributes[4]
             data = data.split('#')
             new_word = data[0]
+            positive_score = float(attributes[2])
+            negative_score = float(attributes[3])
+
+            # If the word is already in the dictionary, pick the larger value
+            # This is not optimal, but standardizes data
+            if new_word in sentiments:
+                if abs(sentiments[new_word]) > abs(positive_score) and abs(sentiments[new_word]) > \
+                        abs(negative_score):
+                    word = file.readline()
+                    continue
 
             # Find the largest sentiment score for the word, and define negative sentiments
             # as negative values (if there's a tie, the sentiment is 0)
-            if attributes[2] == attributes[3]:
+            if positive_score == negative_score:
                 score = 0
-            elif attributes[2] > attributes[3]:
-                score = float(attributes[2])
+            elif positive_score > negative_score:
+                score = float(positive_score)
             else:
-                score = -float(attributes[3])
+                score = -float(negative_score)
 
             sentiments[new_word] = score
 
@@ -98,7 +108,7 @@ def question_sentiment_analysis(student_data, question_text):
 
             # Find the sentiment score for each word, and add it to our data
             for word in words:
-                # Ignore the word if it't not in the sentiment dictionary
+                # Ignore the word if it's not in the sentiment dictionary
                 if word in sentiments:
                     sentiment_sum += sentiments[word]
                     num_scores += 1
@@ -173,10 +183,29 @@ class TestAnalysisMethods(unittest.TestCase):
         test that the average and standard deviation of test data equals the expected values
         """
         single_word_data = question_sentiment_analysis(self.test_student_data, 'one word')
-        self.assertEqual(single_word_data, (-.25, 0))
+        self.assertEqual(single_word_data, (-.75, 0))
 
         three_words_data = question_sentiment_analysis(self.test_student_data, 'three words')
         self.assertEqual(three_words_data, (0, 0))
+
+    def test_get_sentiments(self):
+        """
+        test that the get_sentiments method returns the correct data for each word
+        """
+        #length = len(get_sentiments())
+        #self.assertEqual(length, 117659)
+
+        sentiments = get_sentiments()
+        competent_score = sentiments['competent']
+        self.assertEqual(competent_score, 0.75)
+
+        inefficient_score = sentiments['inefficient']
+        self.assertEqual(inefficient_score, -0.5)
+
+        length = len(sentiments)
+        self.assertEqual(length, 89631)
+
+
 
 
 if __name__ == '__main__':

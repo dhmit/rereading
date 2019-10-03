@@ -7,7 +7,7 @@ from ast import literal_eval
 import csv
 from pathlib import Path
 import unittest
-
+import statistics
 
 
 def load_data_csv(csv_path: Path):
@@ -94,6 +94,7 @@ def run_analysis():
     total_view_time = compute_total_view_time(student_data)
     print(f'The total view time of all students was {total_view_time}.')
     print(f'Mean number of revisits per unique question: ', compute_mean_revisits(student_data))
+    print(f'Median number of revisits per unique question: ', compute_median_revisits(student_data))
 
 
 def compute_mean_revisits(data):
@@ -126,6 +127,31 @@ def compute_mean_revisits(data):
 
     return results
 
+
+def compute_median_revisits(data):
+    """
+    Returns the median count of revisits per unique question
+
+    :param data: list, student responses
+    :return: dict, key = question, string. value = median, int.
+    """
+    results = {}
+
+    # Append number of revisits into a list per unique question
+    for entry in data:
+        question = entry['question']
+        num_views = len(entry['views'])
+        result = results.get(question)
+        if result:
+            result.append(num_views)
+        else:  # Create the key with the list
+            results[question] = [num_views]
+
+    # Compute the median count of revisits per unique question
+    for question in results:
+        results[question] = statistics.median(results[question])
+
+    return results
 
 def show_response_groups(response_groups_freq_dicts):
     """
@@ -251,9 +277,23 @@ class TestAnalysisMethods(unittest.TestCase):
 
     def test_compute_mean_revisits(self):
         """
-        Test that the average number of revisits equals the expected values.
+        Test that the mean number of revisits equals the expected values.
         """
         revisits_per_question = compute_mean_revisits(self.test_student_data)
+        self.assertEqual(revisits_per_question['In one word, how does this text make you feel?'], 1)
+        self.assertEqual(revisits_per_question['In three words or fewer, what is this text '
+                                               'about?'], 0.5)
+        self.assertEqual(revisits_per_question['Have you encountered this text before?'], 0)
+
+        # check we don't crash on the defaults
+        revisits_per_question = compute_mean_revisits(self.default_student_data)
+        self.assertEqual(revisits_per_question[''], 0)
+
+    def test_compute_median_revisits(self):
+        """
+        Tests that the median number of revisits equals the expected values.
+        """
+        revisits_per_question = compute_median_revisits(self.test_student_data)
         self.assertEqual(revisits_per_question['In one word, how does this text make you feel?'], 1)
         self.assertEqual(revisits_per_question['In three words or fewer, what is this text '
                                                'about?'], 0.5)

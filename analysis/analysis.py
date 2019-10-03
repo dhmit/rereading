@@ -58,7 +58,10 @@ def run_analysis():
 
 
 def context_vs_read_time(student_data):
-    """compares average viewtimes, given different context (ad vs story)"""
+    """compares average viewtimes, given different context (ad vs story)
+    :param student_data: list, student response dicts
+    :return a tuple of the average ad view and the average story view
+    """
     ad_sum = 0
     ad_count = 0
     story_sum = 0
@@ -83,7 +86,8 @@ def context_vs_read_time(student_data):
 
 
 def frequency_feelings(student_data):
-    """returns a list of tuples of words that appear more than once, and how often they occur,
+    """ :param student_data: list, student response dicts
+    :return a list of tuples of words that appear more than once, and how often they occur,
     in order of their frequency"""
     feelings = {}
     for dicti in student_data:

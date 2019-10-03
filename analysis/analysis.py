@@ -99,6 +99,8 @@ def compute_mean_reading_times(student_data):
         if student_id != last_student_id:
             total_participants += 1
             last_student_id = student_id
+    if total_participants == 0:
+        return []
 
     mean_first_response = total_first_response / total_participants
     mean_second_response = total_second_response / total_participants
@@ -285,6 +287,15 @@ class TestAnalysisMethods(unittest.TestCase):
         default_result = word_time_relations(self.default_student_data)
         self.assertEqual(default_result, default_expected)
 
+    def compute_mean_reading_times(self):
+        """
+        Test the compute_mean_reading_times() function against the test data and an empty dataset.
+        """
+        mean_results = compute_mean_reading_times(self.student_data)
+        self.assertEqual(mean_results, [30, 7.546366666666666, 2.9542])
+
+        mean_results = compute_mean_reading_times(self.default_student_data)
+        self.assertEqual(mean_results, [])
 
 
 if __name__ == '__main__':

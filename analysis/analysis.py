@@ -80,6 +80,68 @@ def compute_total_view_time(student_data):
     return total_view_time
 
 
+def get_word_frequency_differences(student_data):
+    """
+    Looks over the data and compares responses from people who have read the text vs.
+    people who have not read the text before this exercise
+    :return: a list of word frequency differences, by increasing order of frequency differences
+    """
+
+    # Iterate through all data, and separate ids of students who have vs. have not read the text
+    yes_id = []
+    no_id = []
+
+    for response in student_data:
+        if 'Have you encountered this text before' in response['question'] \
+                and 'This is an ad.' in response['context']:
+            if 'yes' not in response['response'].lower():
+                no_id.append(response['student_id'])
+            else:
+                yes_id.append(response['student_id'])
+
+    # Iterate through all responses, store words and word frequencies of yes vs. no responses as
+    # keys and values in 2 dictionaries
+
+    yes_responses = dict()
+    no_responses = dict()
+
+    for element in student_data:
+        if 'In one word' in element['question'] and 'This is an ad' in element['context']:
+            response = element['response'].lower()
+            if element['student_id'] in yes_id:
+                if response in yes_responses:
+                    yes_responses[response] += 1
+                else:
+                    yes_responses[response] = 1
+            else:
+                if response in no_responses:
+                    no_responses[response] += 1
+                else:
+                    no_responses[response] = 1
+
+    # Iterate through yes_responses and no_responses, store words and frequency differences as keys
+    # and values of a dictionary
+    diff_responses = dict()
+
+    for word in yes_responses:
+        if word in no_responses:
+            diff_responses[word] = yes_responses[word] - no_responses[word]
+        else:
+            diff_responses[word] = yes_responses[word]
+    for word in no_responses:
+        if word not in yes_responses:
+            diff_responses[word] = - no_responses[word]
+
+    # Convert diff_responses from a dictionary to a list of tuples
+    diff_responses_list = []
+    for word in diff_responses:
+        diff_responses_list.append((word, diff_responses[word]))
+
+    # Order diff_responses and return ordered list
+    ordered_responses = sorted(diff_responses_list, key=lambda x: x[1])
+    return ordered_responses
+
+
 def run_analysis():
     """
     Runs the analytical method on the reading data
@@ -215,6 +277,15 @@ class TestAnalysisMethods(unittest.TestCase):
         # check we don't crash on the defaults from the model!
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
+
+    def test_word_frequency_differences(self):
+        """
+        Test the word_frequency_differences function
+        """
+
+        word_frequency_differences = get_word_frequency_differences(self.test_student_data)
+        expected = [('sad', -1)]
+        self.assertEqual(word_frequency_differences, expected)
 
     def test_response_group_frequencies(self):
         """

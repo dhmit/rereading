@@ -7,7 +7,6 @@ from ast import literal_eval
 import csv
 from pathlib import Path
 import unittest
-from textblob import TextBlob
 
 
 def load_data_csv(csv_path: Path):
@@ -113,20 +112,6 @@ class TestAnalysisMethods(unittest.TestCase):
         # check we don't crash on the defaults from the model!
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
-
-    def test_common_response(self):
-        """
-        Tests to make sure the function runs properly by checking against known data sets.
-        :return: None
-        """
-        most_common_response = common_response(self.test_student_data,
-                                               "In one word, how does this text make you feel?",
-                                               "This is an ad.")
-        self.assertEqual(most_common_response, ['sad'])
-
-        # check we don't crash on the defaults from the model!
-        most_common_response = common_response(self.default_student_data, '', '')
-        self.assertEqual(most_common_response, [''])
 
 
 if __name__ == '__main__':

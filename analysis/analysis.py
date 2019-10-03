@@ -29,8 +29,6 @@ def load_data_csv(csv_path: Path):
     return out_data
 
 
-<<<<<<< HEAD
-=======
 def word_time_relations(student_data: list) -> dict:
     """
     Takes a list of dicts representing student data and aggregates case-insensitive responses
@@ -73,7 +71,7 @@ def compute_total_view_time(student_data):
     Given a list of student response dicts,
     return the total time (across all users) spent reading the text
 >>>>>>> master
-
+    """
 
 
 def compute_mean_reading_times(student_data):
@@ -115,10 +113,8 @@ def run_analysis():
     """
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
-<<<<<<< HEAD
     mean_data = compute_mean_reading_times(student_data)
     print(mean_data)
-=======
     response_groups_freq_dicts = get_response_groups_frequencies(student_data)
     show_response_groups(response_groups_freq_dicts)
     total_view_time = compute_total_view_time(student_data)
@@ -246,7 +242,6 @@ class TestAnalysisMethods(unittest.TestCase):
         # check we don't crash on the defaults from the model!
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
->>>>>>> master
 
     def test_response_group_frequencies(self):
         """

@@ -172,7 +172,6 @@ def compute_total_view_time(student_data):
     return total_view_time
 
 
-
 def get_responses_for_question(student_data, question):
     """
     For a certain question, returns the set of responses as a dictionary with keys being the
@@ -213,6 +212,7 @@ def most_common_response(student_data, question, context):
         if responses_by_context[response] == max_response_frequency:
             max_response.append(response)
     return max_response
+
 
 def get_word_frequency_differences(student_data):
     """
@@ -274,7 +274,6 @@ def get_word_frequency_differences(student_data):
     # Order diff_responses and return ordered list
     ordered_responses = sorted(diff_responses_list, key=lambda x: x[1])
     return ordered_responses
-
 
 
 def run_analysis():
@@ -511,7 +510,6 @@ class TestAnalysisMethods(unittest.TestCase):
         }
         default_result = word_time_relations(self.default_student_data)
         self.assertEqual(default_result, default_expected)
-
 
 
 if __name__ == '__main__':

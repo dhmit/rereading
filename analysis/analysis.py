@@ -291,6 +291,9 @@ class TestAnalysisMethods(unittest.TestCase):
         self.assertEqual(default_result, default_expected)
 
 
+
 if __name__ == '__main__':
     run_analysis()
-    unittest.main()  # run the tests
+
+
+

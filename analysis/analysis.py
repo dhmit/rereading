@@ -93,12 +93,12 @@ def run_analysis():
     show_response_groups(response_groups_freq_dicts)
     total_view_time = compute_total_view_time(student_data)
     print(f'The total view time of all students was {total_view_time}.')
-    print(count_revists(student_data))
+    print(f'Mean number of revisits per unique question: ', compute_mean_revisits(student_data))
 
 
-def count_revists(data):
+def compute_mean_revisits(data):
     """
-    Returns the average number of revisits per question
+    Returns the mean count of revisits per question
 
     :param data: list, student response dict
     :return: dict, Key = question, string. Value = average number of revisits, float.
@@ -121,7 +121,7 @@ def count_revists(data):
     # Averages the number of revisits per unique question
     for question in results:
         total_count, total_views = results[question]
-        views_per_count = total_views/total_count
+        views_per_count = total_views / total_count
         results[question] = round(views_per_count, 2)
 
     return results
@@ -249,18 +249,18 @@ class TestAnalysisMethods(unittest.TestCase):
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
 
-    def test_count_revisits(self):
+    def test_compute_mean_revisits(self):
         """
         Test that the average number of revisits equals the expected values.
         """
-        revisits_per_question = count_revists(self.test_student_data)
+        revisits_per_question = compute_mean_revisits(self.test_student_data)
         self.assertEqual(revisits_per_question['In one word, how does this text make you feel?'], 1)
         self.assertEqual(revisits_per_question['In three words or fewer, what is this text '
                                                'about?'], 0.5)
         self.assertEqual(revisits_per_question['Have you encountered this text before?'], 0)
 
         # check we don't crash on the defaults
-        revisits_per_question = count_revists(self.default_student_data)
+        revisits_per_question = compute_mean_revisits(self.default_student_data)
         self.assertEqual(revisits_per_question[''], 0)
 
     def test_response_group_frequencies(self):

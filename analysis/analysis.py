@@ -1,7 +1,6 @@
 """
 
 Analysis.py - initial analyses for dhmit/rereading
-Reports frequencies of exact words from story prompt used in responses.
 
 """
 from ast import literal_eval
@@ -28,7 +27,11 @@ def load_data_csv(csv_path: Path):
     return out_data
 
 
-def run_analysis():
+def repeated_prompt_words():
+    """
+    Reports frequencies of exact words from story prompt used in responses.
+    :return: None, prints repeated words and frequencies.
+    """
     stop_words = ['a', 'and', 'the', 'of', 'an', 'for']
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)

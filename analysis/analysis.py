@@ -16,17 +16,18 @@ neutral_words_list = [
     'advertisement',
     'ad',
     'asking'
-    ]
+]
 
 negative_key_words_list = [
-        'miscarriage',
-        'lost child',
-        'death',
-        'grief',
-        'giving up hope',
-        'deceased',
-        'loss'
-        ]
+    'miscarriage',
+    'lost child',
+    'death',
+    'grief',
+    'giving up hope',
+    'deceased',
+    'loss'
+]
+
 
 def load_data_csv(csv_path: Path):
     """
@@ -81,6 +82,31 @@ def mean_view_time(student_data):
     else:
         return sum_of_views / count
 
+
+def change_sum_list_count(list_of_views, num_of_responses, total_viewtime,
+                          responses_viewtimes_list):
+    """
+    :param
+    list_of_views (is response_dict['views']) is a list of viewtimes associated with that answer
+    num_of_responses is the growing sum total of responses
+    total_viewtime is the toal sum of the viewtimes
+    responses_viewtimes_list is a growing list of views pulled from first parameter
+
+    :return: a float, the total time all users spent reading the text divided by total views
+
+    """
+    total_viewtime += sum(list_of_views)
+    assert isinstance(num_of_responses, int)
+    num_of_responses += 1
+    if len(list_of_views) == 1:
+        responses_viewtimes_list.extend(list_of_views)
+    else:
+        for individual_viewtime in list_of_views:
+            responses_viewtimes_list.append(individual_viewtime)
+
+    return num_of_responses, total_viewtime, responses_viewtimes_list
+
+
 def find_connotation_change(student_data):
     """
     Given a list of student response dicts,
@@ -89,86 +115,70 @@ def find_connotation_change(student_data):
     :param student_data: a list of dictionaries
     :return: a float, the total time all users spent reading the text divided by total views
     """
-#    print(response_dict['question'])
-#    print(response_dict['context'])
     negative_total_view_time = 0
     neutral_total_view_time = 0
     negative_responses = 0
     neutral_responses = 0
     negative_responses_viewtimes_list = []
     neutral_responses_viewtimes_list = []
-
     for response_dict in student_data:
-
-        if (response_dict['question'] == "In three words or fewer, what is this text about?") \
-        and (response_dict['context'] == "This is an ad."):
+        if (response_dict['question'] == 'In three words or fewer, what is this text about?') \
+            and (response_dict['context'] == 'This is an ad.'):
             response = response_dict['response'].lower()
-            #print(response)
-            #print(response.split())
             for word in response.split():
-                #print(word)
                 if word in negative_key_words_list:
-                    negative_total_view_time += sum(response_dict['views'])
-                    negative_responses += 1
-                    if len(response_dict['views']) == 1:
-                        negative_responses_viewtimes_list.append(response_dict['views'])
-                    else:
-                        for individual_viewtime in response_dict['views']:
-                            negative_responses_viewtimes_list.append(individual_viewtime)
+                    (negative_responses,
+                     negative_total_view_time,
+                     negative_responses_viewtimes_list) = change_sum_list_count(
+                        response_dict['views'],
+                        negative_responses,
+                        negative_total_view_time,
+                        negative_responses_viewtimes_list)
                 else:
-                    neutral_total_view_time += sum(response_dict['views'])
-                    neutral_responses += 1
-                    if len(response_dict['views']) == 1:
-                        neutral_responses_viewtimes_list.extend(response_dict['views'])
-                    else:
-                        for individual_viewtime in response_dict['views']:
-                            neutral_responses_viewtimes_list.append(individual_viewtime)
-
-    if negative_responses == 0:
-        negative_mean_view_time = 0
-    else:
-        negative_mean_view_time = negative_total_view_time/negative_responses
-
-    if neutral_responses == 0:
-        neutral_mean_view_time = 0
-    else:
-        neutral_mean_view_time = neutral_total_view_time/neutral_responses
-
-    standard_deviation_neutral_responses = stdev(neutral_responses_viewtimes_list)
-    standard_deviation_negative_responses = stdev(negative_responses_viewtimes_list)
-    print(standard_deviation_neutral_responses)
-    standard_error = (standard_deviation_negative_responses^2/negative_responses
-                      +standard_deviation_neutral_responses^2/neutral_responses)^(1/2)
-    t_value = (negative_mean_view_time-neutral_mean_view_time)/standard_error
-
-
-    print("People who understood the deeper meaning the first time read the \
-          message for " + str(negative_mean_view_time) + " on average. While \
-          people who did not, read the text for " + str(neutral_mean_view_time))
-
-    print('The sample size of the negative responses is ' ,negative_responses,
-          ' and the sample size of the neutral responses is ',  neutral_responses)
-    print('The t-value is '+ str(t_value))
-
-
-
+                    (neutral_responses,
+                     neutral_total_view_time,
+                     neutral_responses_viewtimes_list) = change_sum_list_count(
+                        response_dict['views'],
+                        neutral_responses,
+                        neutral_total_view_time,
+                        neutral_responses_viewtimes_list)
+    print(len(neutral_responses_viewtimes_list))
+    print(len(negative_responses_viewtimes_list))
+    try:
+        negative_mean_view_time: float = negative_total_view_time / negative_responses
+        neutral_mean_view_time: float = neutral_total_view_time / neutral_responses
+        standard_deviation_neutral_responses: float = stdev(neutral_responses_viewtimes_list)
+        standard_deviation_negative_responses: float = stdev(negative_responses_viewtimes_list)
+        standard_error: float = (standard_deviation_negative_responses ** 2 / negative_responses
+                                 + standard_deviation_neutral_responses ** 2 / neutral_responses) \
+                                ** (1 / 2)
+        t_value: float = (negative_mean_view_time - neutral_mean_view_time) / standard_error
+        print('People who understood the deeper meaning the first time read the \
+                  message for ' + str(negative_mean_view_time) + ' on average. While \
+                  people who did not, read the text for ' + str(neutral_mean_view_time))
+        print('The sample size of the negative responses is ' + str(negative_responses),
+              ' and the sample size of the neutral responses is ' + str(neutral_responses))
+        print('The t-value is ' + str(t_value))
+        if (neutral_responses + negative_responses) < 30:
+            print('Caution: Our sample size does not pass a t-test condition.')
+    except ZeroDivisionError:
+        # should cover for if we have zero responses or our _responses_viewtimes_list is empty and
+        # what about?? being called upon by stdev() function
+        print("We did not have any responses for at least one of our criterion")
 
 
 def run_analysis():
-
     """
     Runs the analytical method on the reading data
-
     :return: None
     """
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
-
-#    total_view_time = compute_total_view_time(student_data)
-#    print(f'The total view time of all students was {total_view_time}.')
+    #    total_view_time = compute_total_view_time(student_data)
+    #    print(f'The total view time of all students was {total_view_time}.')
 
     # TODO: do something with student_data that's not just printing it!
-#    print(student_data)
+    #    print(student_data)
     find_connotation_change(student_data)
 
 
@@ -176,6 +186,7 @@ class TestAnalysisMethods(unittest.TestCase):
     """
     Test cases to make sure things are running properly
     """
+
     def setUp(self):
         test_data_path = Path('data', 'test_data.csv')
         self.test_student_data = load_data_csv(test_data_path)
@@ -213,7 +224,6 @@ if __name__ == '__main__':
 # might be a statistically significant difference showing students with responses of negative
 # connotations (i.e. got the deeper meaning of text w/o clue from context) had a correlation
 # with spending more time with the text
-
 
 
 # select students with responses with neutral connotations (confused, sale) when the context was

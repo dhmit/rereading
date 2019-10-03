@@ -419,7 +419,6 @@ class TestAnalysisMethods(unittest.TestCase):
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
 
-
     def test_common_response(self):
         """
         Tests to make sure the function runs properly by checking against known data sets.

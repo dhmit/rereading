@@ -248,7 +248,7 @@ def run_analysis():
     print(f'The total view time of all students was {total_view_time}.')
 
 
-def run_our_analysis(student_data):
+def run_mean_rereading_analysis_for_questions(student_data):
     """
     Runs the analysis on the data loaded from the CSV file by looking at the average
     reread time for each question and the context that the question was given in and
@@ -324,7 +324,8 @@ def mean_rereading_time_for_a_question(student_data, question, context):
 
 def remove_outliers(rereading_time):
     """
-    Given a list of times, calculates and removes outliers.
+    Given a list of times, calculates and removes outliers, which are the data points that
+    are outside the interquartile range of the data
     :param rereading_time: list, rereading times for a specific question
     :return: list, rereading times for a specific question with outliers removed
     """
@@ -347,9 +348,9 @@ def remove_outliers(rereading_time):
     return rereading_time
 
 
-def average_time(data):
+def mean_rereading_time(data):
     """
-    Takes the data and finds the average time of all the view times in the data
+    Takes the data and finds the mean time of all the view times in the data
     :param data: list of responses
     :return: float representing the average view times
     :return: None when there are no entries for viewing time
@@ -366,7 +367,7 @@ def average_time(data):
     return times / count
 
 
-def avg_time_student(data, student_id):
+def mean_rereading_time_student(data, student_id):
     """
     Takes the data and an id and computes the average time overall of the entry with that id
     :param student_id: integer, represents specific id number of student
@@ -387,7 +388,7 @@ def avg_time_student(data, student_id):
     return times / count
 
 
-def avg_time_context(data, question, context):
+def mean_rereading_time_question_context(data, question, context):
     """
     Takes the data, a question, and context and computes the average time of the
     views of this specific context and question
@@ -463,7 +464,7 @@ def word_freq_all(data):
     return output
 
 
-def standard_deviation(data, average):
+def standard_deviation_of_rereading_given_average(data, average):
     """
     Takes the data and finds the standard deviation of the time
     :param data: list of responses
@@ -479,6 +480,7 @@ def standard_deviation(data, average):
     result = result / (elements - 1)
     result = result ** (1 / 2)
     return result
+
 
 def show_response_groups(response_groups_freq_dicts):
     """
@@ -613,26 +615,21 @@ class TestAnalysisMethods(unittest.TestCase):
         ads = "This is an ad."
         short_story = "This is actually a short story."
 
-        mean_rereading_time_results_data = [
-            mean_rereading_time_for_a_question(self.test_student_data, feel, ads),
-            mean_rereading_time_for_a_question(self.test_student_data, about, ads),
-            mean_rereading_time_for_a_question(self.test_student_data, encountered, ads),
-            mean_rereading_time_for_a_question(self.test_student_data, feel, short_story),
-            mean_rereading_time_for_a_question(self.test_student_data, about, short_story),
-            mean_rereading_time_for_a_question(self.test_student_data, encountered, short_story)
-        ]
-
         # The expected result times are rounded to 2 decimals here due to Python rounding errors
         # not matching actual rounding.
-        mean_comparison_results = [
-            (feel, ads, round(2.319, 2), 1),
-            (about, ads, round(2.945, 2), 1),
-            (encountered, ads, 0, 0),
-            (feel, short_story, round(1.121, 2), 1),
-            (about, short_story, 0, 0),
-            (encountered, short_story, 0, 0)
-        ]
-        self.assertEqual(mean_rereading_time_results_data, mean_comparison_results)
+        results = mean_rereading_time_for_a_question(self.test_student_data, feel, ads)
+        self.assertEqual(results, (feel, ads, round(2.319, 2), 1))
+        results = mean_rereading_time_for_a_question(self.test_student_data, about, ads)
+        self.assertEqual(results, (about, ads, round(2.945, 2), 1))
+        results = mean_rereading_time_for_a_question(self.test_student_data, encountered, ads)
+        self.assertEqual(results, (encountered, ads, 0, 0))
+        results = mean_rereading_time_for_a_question(self.test_student_data, feel, short_story)
+        self.assertEqual(results, (feel, short_story, round(1.121, 2), 1))
+        results = mean_rereading_time_for_a_question(self.test_student_data, about, short_story)
+        self.assertEqual(results, (about, short_story, 0, 0))
+        results = mean_rereading_time_for_a_question(self.test_student_data, encountered,
+                                                     short_story)
+        self.assertEqual(results, (encountered, short_story, 0, 0))
 
     def test_mean_rereading_time_for_a_question_two(self):
         """
@@ -677,56 +674,55 @@ class TestAnalysisMethods(unittest.TestCase):
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
 
-    def test_avg_time_context(self):
+    def test_mean_rereading_time_question_context(self):
         """
         Test the avg_time_context function to see if it can find the avg view times given a question
         and context. Also tests for if the question or context isn't in the data set.
         """
-        args = [self.test_student_data,
-                'In one word, how does this text make you feel?',
-                'This is an ad.']
-        avg_time = avg_time_context(*args)
+        avg_time = mean_rereading_time_question_context(self.test_student_data,
+            'In one word, how does this text make you feel?',
+            'This is an ad.')
         self.assertAlmostEqual(avg_time, 2.319)
 
-        args = [self.default_student_data_2,
-                'In one word, how does this text make you feel?',
-                'This is actually a short story.']
-        avg_time = avg_time_context(*args)
+        avg_time = mean_rereading_time_question_context(self.default_student_data_2,
+            'In one word, how does this text make you feel?',
+            'This is actually a short story.')
         self.assertAlmostEqual(avg_time, 3.1992)
-        args = [self.default_student_data, 'In one word, how does this text make you feel?',
-                'This is an ad.']
-        avg_time = avg_time_context(*args)
+
+        avg_time = mean_rereading_time_question_context(self.default_student_data,
+            'In one word, how does this text make you feel?',
+            'This is an ad.')
         self.assertIsNone(avg_time)
 
-    def test_avg_time_student(self):
+    def test_mean_rereading_time_student(self):
         """
         Test the avg_time_student and see if given a student_id, the function can return
         the average view times for that student, even if they didn't do any viewing.
         """
-        avg_time = avg_time_student(self.test_student_data, 15)
+        avg_time = mean_rereading_time_student(self.test_student_data, 15)
         self.assertAlmostEqual(avg_time, 2.128333333333)
 
-        avg_time = avg_time_student(self.default_student_data, 0)
+        avg_time = mean_rereading_time_student(self.default_student_data, 0)
         self.assertIsNone(avg_time)
 
-        avg_time = avg_time_student(self.default_student_data_2, 7)
+        avg_time = mean_rereading_time_student(self.default_student_data_2, 7)
         self.assertAlmostEqual(avg_time, 2.2)
 
-        avg_time = avg_time_student(self.default_student_data_2, 999)
+        avg_time = mean_rereading_time_student(self.default_student_data_2, 999)
         self.assertIsNone(avg_time)
 
-    def test_average_time(self):
+    def test_mean_rereading_time(self):
         """
         Test average_time function for many test cases and see if it returns either the correct
         average time or None if there are no view times in the data set
         """
-        avg_time = average_time(self.test_student_data)
+        avg_time = mean_rereading_time(self.test_student_data)
         self.assertAlmostEqual(avg_time, 2.128333333333)
 
-        avg_time = average_time(self.default_student_data)
+        avg_time = mean_rereading_time(self.default_student_data)
         self.assertIsNone(avg_time)
 
-        avg_time = average_time(self.default_student_data_2)
+        avg_time = mean_rereading_time(self.default_student_data_2)
         self.assertAlmostEqual(avg_time, 2.88266666666)
 
     def test_word_freq_all(self):
@@ -736,16 +732,12 @@ class TestAnalysisMethods(unittest.TestCase):
         freq_dict = word_freq_all(self.test_student_data)
         specific_question_context = ('In one word, how does this text make you feel?',
                                      'This is an ad.')
-        answer = {
-            'sad': 1
-        }
+        answer = {'sad': 1}
         self.assertEqual(freq_dict[specific_question_context], answer)
 
         freq_dict = word_freq_all(self.default_student_data)
         specific_question_context = ("", "")
-        answer = {
-            '': 1
-        }
+        answer = {'': 1}
         self.assertEqual(freq_dict[specific_question_context], answer)
 
     def test_frequent_responses(self):
@@ -755,18 +747,12 @@ class TestAnalysisMethods(unittest.TestCase):
         most_frequent_responses = frequent_responses(word_freq_all(self.test_student_data))
         specific_question_context = ('In one word, how does this text make you feel?',
                                      'This is an ad.')
-        answer = {
-            'most_frequent_words': ['sad'],
-            'max_occurrences': 1
-        }
+        answer = {'most_frequent_words': ['sad'], 'max_occurrences': 1}
         self.assertEqual(most_frequent_responses[specific_question_context], answer)
 
         most_frequent_responses = frequent_responses(word_freq_all(self.default_student_data))
         specific_question_context = ("", "")
-        answer = {
-            'most_frequent_words': [''],
-            'max_occurrences': 1
-        }
+        answer = {'most_frequent_words': [''], 'max_occurrences': 1}
         self.assertEqual(most_frequent_responses[specific_question_context], answer)
 
     def test_question_sentiment_analysis(self):

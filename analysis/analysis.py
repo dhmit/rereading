@@ -109,29 +109,29 @@ def change_sum_list_count(list_of_views, num_of_responses, total_viewtime,
 
 def mean_view_time_comparison(student_data):
     """
-    Given a list of student response dicts, determine if a response to a 
+    Given a list of student response dicts, determine if a response to a
     specific context and question indicates that the reader understood the deeper
-    meaining of the text the first time. Calculate the mean view time of both 
+    meaining of the text the first time. Calculate the mean view time of both
     groups (those who understood and those did not) for comparison.
     :param student_data: a list of dictionaries
     :return: a tuple of floats, the mean view times of negative and neutral
             respectively.
     """
-    
+
     negative_total_view_time = 0
     neutral_total_view_time = 0
     negative_responses = 0
     neutral_responses = 0
-#    negative_responses_viewtimes_list = []
-#    neutral_responses_viewtimes_list = []
-#    
+#    negative_responses_view_times_list = []
+#    neutral_responses_view_times_list = []
+#
     # Iterate through the responses that pertaining to the context and question desired
     for response_dict in student_data:
         is_not_negative = True
         if (response_dict['question'] == 'In three words or fewer, what is this text about?') \
             and (response_dict['context'] == 'This is an ad.'):
             response = response_dict['response'].lower()
-            
+
             # Iterate through negative words checking whether it can be found
             # in the current response. Keeps track of number of responses and
             # total times.
@@ -144,21 +144,21 @@ def mean_view_time_comparison(student_data):
             if is_not_negative:  # only run this if no negative word was found
                 neutral_responses += 1
                 neutral_total_view_time += sum(response_dict['views'])
-            
+
     # Find the mean view time, assign it as zero if division fails
     try:
         negative_mean_view_time = round(negative_total_view_time / negative_responses, 3)
-    except:
+    except ZeroDivisionError:
         negative_mean_view_time = 0
     try:
         neutral_mean_view_time = neutral_total_view_time / neutral_responses
-    except:
+    except ZeroDivisionError:
         neutral_mean_view_time = 0
-    
+
     print('People who understood the deeper meaning the first time read the message for ' + str(negative_mean_view_time) + ' seconds on average (mean). While people who did not, read the text for ' + str(round(neutral_mean_view_time, 3)) + ' seconds.')
     print('\nThere were ' + str(negative_responses) + ' negative responses and ' + str(neutral_responses) + ' neutral responses.\n')
-    
-    return (negative_mean_view_time, neutral_mean_view_time)
+
+    return negative_mean_view_time, neutral_mean_view_time
 #    try:
 #        negative_mean_view_time: float = negative_total_view_time / negative_responses
 #        neutral_mean_view_time: float = neutral_total_view_time / neutral_responses
@@ -227,7 +227,7 @@ class TestAnalysisMethods(unittest.TestCase):
         # check we don't crash on the defaults from the model!
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
-        
+
     def test_mean_view_time_comparison(self):
         """
         Test that the mean view times equal expected values.

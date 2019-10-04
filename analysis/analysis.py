@@ -248,7 +248,6 @@ def run_analysis():
     print(f'The total view time of all students was {total_view_time}.')
 
 
-
 def context_vs_read_time(student_data):
     """compares average viewtimes, given different context (ad vs story)
     :param student_data: list, student response dicts
@@ -468,7 +467,7 @@ class TestAnalysisMethods(unittest.TestCase):
         self.assertEqual(context_vs_read, expected)
         # test that it still works with default values
         context_vs_read = context_vs_read_time(self.default_student_data)
-        expected =(0,0)
+        expected = (0, 0)
         self.assertEqual(context_vs_read, expected)
 
     def test_frequency_feelings(self):
@@ -478,7 +477,7 @@ class TestAnalysisMethods(unittest.TestCase):
         frequency_feels = frequency_feelings(self.test_student_data)
         expected = [("sad", 2)]
         self.assertEqual(frequency_feels, expected)
-        #test that it works with default values
+        # test that it works with default values
         frequency_feels = frequency_feelings(self.default_student_data)
         expected = []
         self.assertEqual(frequency_feels, expected)

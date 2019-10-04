@@ -107,64 +107,79 @@ def change_sum_list_count(list_of_views, num_of_responses, total_viewtime,
     return num_of_responses, total_viewtime, responses_viewtimes_list
 
 
-def find_connotation_change(student_data):
+def mean_view_time_comparison(student_data):
     """
-    Given a list of student response dicts,
-    return the mean time (across each view) spent reading the text
-    if the list is empty, then it returns 0
+    Given a list of student response dicts, determine if a response to a 
+    specific context and question indicates that the reader understood the deeper
+    meaining of the text the first time. Calculate the mean view time of both 
+    groups (those who understood and those did not) for comparison.
     :param student_data: a list of dictionaries
-    :return: a float, the total time all users spent reading the text divided by total views
+    :return: a tuple of floats, the mean view times of negative and neutral
+            respectively.
     """
+    
     negative_total_view_time = 0
     neutral_total_view_time = 0
     negative_responses = 0
     neutral_responses = 0
-    negative_responses_viewtimes_list = []
-    neutral_responses_viewtimes_list = []
+#    negative_responses_viewtimes_list = []
+#    neutral_responses_viewtimes_list = []
+#    
+    # Iterate through the responses that pertaining to the context and question desired
     for response_dict in student_data:
+        is_not_negative = True
         if (response_dict['question'] == 'In three words or fewer, what is this text about?') \
             and (response_dict['context'] == 'This is an ad.'):
             response = response_dict['response'].lower()
-            for word in response.split():
-                if word in negative_key_words_list:
-                    (negative_responses,
-                     negative_total_view_time,
-                     negative_responses_viewtimes_list) = change_sum_list_count(
-                        response_dict['views'],
-                        negative_responses,
-                        negative_total_view_time,
-                        negative_responses_viewtimes_list)
-                else:
-                    (neutral_responses,
-                     neutral_total_view_time,
-                     neutral_responses_viewtimes_list) = change_sum_list_count(
-                        response_dict['views'],
-                        neutral_responses,
-                        neutral_total_view_time,
-                        neutral_responses_viewtimes_list)
-    print(len(neutral_responses_viewtimes_list))
-    print(len(negative_responses_viewtimes_list))
+            
+            # Iterate through negative words checking whether it can be found
+            # in the current response. Keeps track of number of responses and
+            # total times.
+            for word in negative_key_words_list:
+                if word in response:
+                    negative_responses += 1
+                    negative_total_view_time += sum(response_dict['views'])
+                    is_not_negative = False
+                    break
+            if is_not_negative:  # only run this if no negative word was found
+                neutral_responses += 1
+                neutral_total_view_time += sum(response_dict['views'])
+            
+    # Find the mean view time, assign it as zero if division fails
     try:
-        negative_mean_view_time: float = negative_total_view_time / negative_responses
-        neutral_mean_view_time: float = neutral_total_view_time / neutral_responses
-        standard_deviation_neutral_responses: float = stdev(neutral_responses_viewtimes_list)
-        standard_deviation_negative_responses: float = stdev(negative_responses_viewtimes_list)
-        standard_error: float = (standard_deviation_negative_responses ** 2 / negative_responses
-                                 + standard_deviation_neutral_responses ** 2 / neutral_responses) \
-                                ** (1 / 2)
-        t_value: float = (negative_mean_view_time - neutral_mean_view_time) / standard_error
-        print('People who understood the deeper meaning the first time read the \
-                  message for ' + str(negative_mean_view_time) + ' on average. While \
-                  people who did not, read the text for ' + str(neutral_mean_view_time))
-        print('The sample size of the negative responses is ' + str(negative_responses),
-              ' and the sample size of the neutral responses is ' + str(neutral_responses))
-        print('The t-value is ' + str(t_value))
-        if (neutral_responses + negative_responses) < 30:
-            print('Caution: Our sample size does not pass a t-test condition.')
-    except ZeroDivisionError:
-        # should cover for if we have zero responses or our _responses_viewtimes_list is empty and
-        # what about?? being called upon by stdev() function
-        print("We did not have any responses for at least one of our criterion")
+        negative_mean_view_time = round(negative_total_view_time / negative_responses, 3)
+    except:
+        negative_mean_view_time = 0
+    try:
+        neutral_mean_view_time = neutral_total_view_time / neutral_responses
+    except:
+        neutral_mean_view_time = 0
+    
+    print('People who understood the deeper meaning the first time read the message for ' + str(negative_mean_view_time) + ' seconds on average (mean). While people who did not, read the text for ' + str(round(neutral_mean_view_time, 3)) + ' seconds.')
+    print('\nThere were ' + str(negative_responses) + ' negative responses and ' + str(neutral_responses) + ' neutral responses.\n')
+    
+    return (negative_mean_view_time, neutral_mean_view_time)
+#    try:
+#        negative_mean_view_time: float = negative_total_view_time / negative_responses
+#        neutral_mean_view_time: float = neutral_total_view_time / neutral_responses
+#        standard_deviation_neutral_responses: float = stdev(neutral_responses_viewtimes_list)
+#        standard_deviation_negative_responses: float = stdev(negative_responses_viewtimes_list)
+#        standard_error: float = (standard_deviation_negative_responses ** 2 / negative_responses
+#                                 + standard_deviation_neutral_responses ** 2 / neutral_responses) \
+#                                ** (1 / 2)
+#        t_value: float = (negative_mean_view_time - neutral_mean_view_time) / standard_error
+#        print('People who understood the deeper meaning the first time read the \
+#                  message for ' + str(negative_mean_view_time) + ' on average. While \
+#                  people who did not, read the text for ' + str(neutral_mean_view_time))
+#        print('The sample size of the negative responses is ' + str(negative_responses),
+#              ' and the sample size of the neutral responses is ' + str(neutral_responses))
+#        print('The t-value is ' + str(t_value))
+#        if (neutral_responses + negative_responses) < 30:
+#            print('Caution: Our sample size does not pass a t-test condition.')
+#    except ZeroDivisionError:
+#        # should cover for if we have zero responses or our _responses_viewtimes_list is empty and
+#        # what about?? being called upon by stdev() function
+#        print("We did not have any responses for at least one of our criterion")
 
 
 def run_analysis():
@@ -179,7 +194,7 @@ def run_analysis():
 
     # TODO: do something with student_data that's not just printing it!
     #    print(student_data)
-    find_connotation_change(student_data)
+    mean_view_time_comparison(student_data)
 
 
 class TestAnalysisMethods(unittest.TestCase):
@@ -212,11 +227,17 @@ class TestAnalysisMethods(unittest.TestCase):
         # check we don't crash on the defaults from the model!
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
-
+        
+    def test_mean_view_time_comparison(self):
+        """
+        Test that the mean view times equal expected values.
+        """
+        result = mean_view_time_comparison(self.default_student_data)
+        self.assertEqual(result, (0,0))
 
 if __name__ == '__main__':
     run_analysis()
-#    unittest.main()  # run the tests
+    unittest.main()  # run the tests
 
 # select responses with negative connotations (sad, miscarriage) when the context
 # was "This is an ad." and find the difference between avg view times of these

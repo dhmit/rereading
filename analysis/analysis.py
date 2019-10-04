@@ -6,6 +6,7 @@ Analysis.py - initial analyses for dhmit/rereading
 from ast import literal_eval
 import csv
 from pathlib import Path
+from statistics import stdev
 import unittest
 
 def load_data_csv(csv_path: Path):
@@ -25,6 +26,134 @@ def load_data_csv(csv_path: Path):
             row = dict(row)
             out_data.append(row)
     return out_data
+
+
+def get_sentiments() -> dict:
+    """
+    Returns a dictionary of sentiment scores, with the keys being the word and the values being
+    their score
+
+    :return: dict mapping words to their sentiment scores
+    """
+    sentiment_path = Path('data', 'sentiments.txt')
+
+    sentiments = dict()
+    with open(sentiment_path, 'r') as file:
+        word = file.readline()
+
+        # We want to handle each word individually, rather than as a whole set
+        while word:
+
+            # This particular file starts lines with '#' for non-sentiment comments, so skip them
+            if word[0] == '#' or word[0] == '\t':
+                word = file.readline()
+                continue
+
+            # All words use tabs to define the different parts of the data
+            attributes = word.split('\t')
+
+            # Pull out the word from the line
+            data = attributes[4]
+            data = data.split('#')
+            new_word = data[0]
+            positive_score = float(attributes[2])
+            negative_score = float(attributes[3])
+
+            # If the word is already in the dictionary, pick the larger value
+            # This is not optimal, but standardizes data
+            if new_word in sentiments:
+                if abs(sentiments[new_word]) > abs(positive_score) and abs(sentiments[new_word]) > \
+                        abs(negative_score):
+                    word = file.readline()
+                    continue
+
+            # Find the largest sentiment score for the word, and define negative sentiments
+            # as negative values (if there's a tie, the sentiment is 0)
+            if positive_score == negative_score:
+                score = 0
+            elif positive_score > negative_score:
+                score = float(positive_score)
+            else:
+                score = -float(negative_score)
+
+            sentiments[new_word] = score
+
+            word = file.readline()
+
+    return sentiments
+
+
+def question_sentiment_analysis(student_data, question_text):
+    """
+    Takes in a list of student response dicts, and a question prompt (or a substring of one) and
+    returns the average sentiment score and standard deviation for all responses to that question
+
+    :param student_data: list of dicts
+    :param question_text: question string or substring
+    :return: tuple in the form (average, standard_dev)
+    """
+
+    sentiments = get_sentiments()
+
+    # Set up data for calculating data
+    num_scores = 0
+    sentiment_sum = 0
+    score_list = list()
+
+    for response in student_data:
+
+        if question_text in response['question']:
+            words = response['response'].lower().split()
+
+            # Find the sentiment score for each word, and add it to our data
+            for word in words:
+                # Ignore the word if it's not in the sentiment dictionary
+                if word in sentiments:
+                    sentiment_sum += sentiments[word]
+                    num_scores += 1
+                    score_list.append(sentiments[word])
+
+    average = sentiment_sum / num_scores
+    standard_dev = stdev(score_list)
+
+    return average, standard_dev
+
+
+def word_time_relations(student_data: list) -> dict:
+    """
+    Takes a list of dicts representing student data and aggregates case-insensitive responses
+    into a dictionary, with the response as the key and the average time (across all similar
+    responses) viewing the story as the value.
+
+    :param student_data: list of dicts obtained from load_data_csv
+    :return: dict, responses as keys and values as average view times for that response
+    """
+
+    # First gather all responses in an easy-to-handle format of dict(response: times)
+    responses = dict()
+    for response_data in student_data:
+
+        # Find total time spent looking at story
+        total_time = 0
+        for view in response_data['views']:
+            total_time += view
+
+        # Add this time to the response dictionary (case-insensitive)
+        response = response_data['response'].lower()
+        if response not in responses:
+            responses[response] = [total_time]
+        else:
+            responses[response].append(total_time)
+
+    # Now compute the average time for each response and add them to a new dictionary
+    averages = dict()
+    for response in responses:
+        times = responses[response]
+        total = sum(times)
+        average = total / len(times)
+        averages[response] = average
+
+    return averages
 
 
 def compute_total_view_time(student_data):
@@ -114,10 +243,103 @@ def run_analysis():
     student_data = load_data_csv(csv_path)
     #    total_view_time = compute_total_view_time(student_data)
     #    print(f'The total view time of all students was {total_view_time}.')
-
-    # TODO: do something with student_data that's not just printing it!
-    #    print(student_data)
     mean_view_time_comparison(student_data)
+
+    response_groups_freq_dicts = get_response_groups_frequencies(student_data)
+    show_response_groups(response_groups_freq_dicts)
+    total_view_time = compute_total_view_time(student_data)
+    print(f'The total view time of all students was {total_view_time}.')
+
+
+
+def show_response_groups(response_groups_freq_dicts):
+    """
+    Given response_groups_freq_dicts list of dictionaries, prints the dicts in readable format
+
+    :param response_groups_freq_dicts, lists of 4 dicts (one for each response
+    group)
+    mapping words to frequencies within that response group
+    :return None
+    """
+    print(f'Word frequencies for Single view responses to ad context: ',
+          response_groups_freq_dicts[0])
+    print(f'Word frequencies for Single view responses to short story context: ',
+          response_groups_freq_dicts[1])
+    print(f'Word frequencies for Multiple view responses to ad context: ',
+          response_groups_freq_dicts[2])
+    print(f'Word frequencies for Multiple view responses to short story context: ',
+          response_groups_freq_dicts[3])
+
+
+def get_response_groups_frequencies(student_data: list):
+    """"
+    Given student_data,
+    Returns lists of 4 frequency dicts, one for each response group,
+     that map response words to frequencies for each response group.
+    Response groups are based on single vs. multiple views and ad vs. short story
+    context to the "In one word, how does this text make you feel?" question
+    :param student_data, list of dicts
+    :return: list of four dicts (one for each response group) mapping words
+    to frequencies within that response group
+    """
+    people_with_multiple_views = []
+    people_with_one_view = []
+
+    for person_response in student_data:
+        if len(person_response['views']) == 1:
+            people_with_one_view.append(person_response)
+        else:
+            people_with_multiple_views.append(person_response)
+
+    single_view_short_story_group, single_view_ad_group = \
+        get_groups_by_context(people_with_one_view)
+    multiple_view_short_story_group, multiple_view_ad_group = \
+        get_groups_by_context(people_with_multiple_views)
+
+    response_groups = [
+        single_view_ad_group,
+        single_view_short_story_group,
+        multiple_view_ad_group,
+        multiple_view_short_story_group,
+    ]
+
+    response_groups_freq_dicts = []
+    for group_name in response_groups:
+        freq_dict = find_word_frequency(group_name)
+        response_groups_freq_dicts.append(freq_dict)
+    return response_groups_freq_dicts
+
+
+def get_groups_by_context(people_with_view_number):
+    """
+    :param people_with_view_number: list of responses for people with certain number of views
+    :return: two lists, one for responses to short story context and one for ad context
+    """
+    short_story_context_group = []
+    ad_context_group = []
+    for person in people_with_view_number:
+        if person['question'] == "In one word, how does this text make you feel?":
+            response = person['response'].lower()
+            if person['context'] == "This is actually a short story.":
+                short_story_context_group.append(response)
+            else:
+                ad_context_group.append(response)
+    return short_story_context_group, ad_context_group
+
+
+def find_word_frequency(response_list):
+    """
+    :param response_list: list of single-word str
+    :return: freq, dict mapping each unique word in response_list to number of appearances in
+    response_list
+    """
+    freq = {}
+    for word in response_list:
+        if word not in freq:
+            freq[word] = 1
+        else:
+            freq[word] += 1
+    return freq
 
 
 class TestAnalysisMethods(unittest.TestCase):

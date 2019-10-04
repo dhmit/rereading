@@ -30,6 +30,7 @@ urlpatterns = [
     path('api/', readings_views.ListStory.as_view()),
     path('api/add-response/', readings_views.ListStudent.as_view()),
     path('api/<int:pk>/', readings_views.DetailStory.as_view()),
+    path('api/analysis/', readings_views.analysis),
 
     # React views
     url('student/', render_react_view, {'component_name': 'StudentView'}),

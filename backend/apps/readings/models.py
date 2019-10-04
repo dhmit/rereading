@@ -1,6 +1,8 @@
 """
 Models for the Rereading app.
 """
+from ast import literal_eval
+
 from django.db import models
 
 
@@ -58,10 +60,19 @@ class StudentResponse(models.Model):
     question = models.TextField(default='')
     context = models.TextField(default='')
     response = models.TextField(default='')
-    views = models.TextField(default='')
+    views = models.TextField(default='')  # do not use me directly! see get_parsed_views()
     scroll_ups = models.IntegerField(default=0)
     student = models.ForeignKey(
         Student,
         on_delete=models.CASCADE,  # if the Student is deleted, all her/his responses are too.
         related_name='student_responses',
     )
+
+    def get_parsed_views(self):
+        """
+        Since views are stored as a TextField directly as the JSON representation
+        of a list of floats, we need to convert this to a Python object in order
+        to use it in our analyses.
+        """
+
+        return literal_eval(self.views)

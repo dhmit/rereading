@@ -6,7 +6,9 @@ Analysis.py - initial analyses for dhmit/rereading
 from ast import literal_eval
 import csv
 from pathlib import Path
+from statistics import stdev
 import unittest
+import math
 
 
 
@@ -27,6 +29,97 @@ def load_data_csv(csv_path: Path):
             row = dict(row)
             out_data.append(row)
     return out_data
+
+
+def get_sentiments() -> dict:
+    """
+    Returns a dictionary of sentiment scores, with the keys being the word and the values being
+    their score
+
+    :return: dict mapping words to their sentiment scores
+    """
+    sentiment_path = Path('data', 'sentiments.txt')
+
+    sentiments = dict()
+    with open(sentiment_path, 'r') as file:
+        word = file.readline()
+
+        # We want to handle each word individually, rather than as a whole set
+        while word:
+
+            # This particular file starts lines with '#' for non-sentiment comments, so skip them
+            if word[0] == '#' or word[0] == '\t':
+                word = file.readline()
+                continue
+
+            # All words use tabs to define the different parts of the data
+            attributes = word.split('\t')
+
+            # Pull out the word from the line
+            data = attributes[4]
+            data = data.split('#')
+            new_word = data[0]
+            positive_score = float(attributes[2])
+            negative_score = float(attributes[3])
+
+            # If the word is already in the dictionary, pick the larger value
+            # This is not optimal, but standardizes data
+            if new_word in sentiments:
+                if abs(sentiments[new_word]) > abs(positive_score) and abs(sentiments[new_word]) > \
+                        abs(negative_score):
+                    word = file.readline()
+                    continue
+
+            # Find the largest sentiment score for the word, and define negative sentiments
+            # as negative values (if there's a tie, the sentiment is 0)
+            if positive_score == negative_score:
+                score = 0
+            elif positive_score > negative_score:
+                score = float(positive_score)
+            else:
+                score = -float(negative_score)
+
+            sentiments[new_word] = score
+
+            word = file.readline()
+
+    return sentiments
+
+
+def question_sentiment_analysis(student_data, question_text):
+    """
+    Takes in a list of student response dicts, and a question prompt (or a substring of one) and
+    returns the average sentiment score and standard deviation for all responses to that question
+
+    :param student_data: list of dicts
+    :param question_text: question string or substring
+    :return: tuple in the form (average, standard_dev)
+    """
+
+    sentiments = get_sentiments()
+
+    # Set up data for calculating data
+    num_scores = 0
+    sentiment_sum = 0
+    score_list = list()
+
+    for response in student_data:
+
+        if question_text in response['question']:
+            words = response['response'].lower().split()
+
+            # Find the sentiment score for each word, and add it to our data
+            for word in words:
+                # Ignore the word if it's not in the sentiment dictionary
+                if word in sentiments:
+                    sentiment_sum += sentiments[word]
+                    num_scores += 1
+                    score_list.append(sentiments[word])
+
+    average = sentiment_sum / num_scores
+    standard_dev = stdev(score_list)
+
+    return average, standard_dev
 
 
 def word_time_relations(student_data: list) -> dict:
@@ -112,10 +205,113 @@ def compute_mean_reading_times(student_data):
     return result
 
 
+def get_responses_for_question(student_data, question):
+    """
+    For a certain question, returns the set of responses as a dictionary with keys being the
+    context and values being nested dictionaries containing each response and their frequency.
+    :param student_data: list of OrderedDicts, set of responses
+    :param question: string, question
+    :return: dictionary mapping strings to integers
+    """
+    responses = {}
+    for elem in student_data:
+        student_question = elem['question']
+        student_response = elem['response'].lower()
+        question_context = elem['context']
+        if student_question == question:
+            if question_context not in responses:
+                responses[question_context] = {student_response: 1}
+            else:
+                if student_response in responses[question_context]:
+                    responses[question_context][student_response] += 1
+                else:
+                    responses[question_context][student_response] = 1
+    return responses
+
+
+def most_common_response(student_data, question, context):
+    """
+    Returns a list of the most common response(s) given a set of data, a question, and a context.
+    :param student_data: list of OrderedDicts, student response data
+    :param question: string, question
+    :param context: string, context
+    :return: list of strings
+    """
+    max_response = []
+    response_dict = get_responses_for_question(student_data, question)
+    responses_by_context = response_dict[context]
+    max_response_frequency = max(responses_by_context.values())
+    for response in responses_by_context:
+        if responses_by_context[response] == max_response_frequency:
+            max_response.append(response)
+    return max_response
+
+
+def get_word_frequency_differences(student_data):
+    """
+    Looks over the data and compares responses from people who have read the text vs.
+    people who have not read the text before this exercise
+    :return: a list of word frequency differences, by increasing order of frequency differences
+    """
+
+    # Iterate through all data, and separate ids of students who have vs. have not read the text
+    yes_id = []
+    no_id = []
+
+    for response in student_data:
+        if 'Have you encountered this text before' in response['question'] \
+                and 'This is an ad.' in response['context']:
+            if 'yes' not in response['response'].lower():
+                no_id.append(response['student_id'])
+            else:
+                yes_id.append(response['student_id'])
+
+    # Iterate through all responses, store words and word frequencies of yes vs. no responses as
+    # keys and values in 2 dictionaries
+
+    yes_responses = dict()
+    no_responses = dict()
+
+    for element in student_data:
+        if 'In one word' in element['question'] and 'This is an ad' in element['context']:
+            response = element['response'].lower()
+            if element['student_id'] in yes_id:
+                if response in yes_responses:
+                    yes_responses[response] += 1
+                else:
+                    yes_responses[response] = 1
+            else:
+                if response in no_responses:
+                    no_responses[response] += 1
+                else:
+                    no_responses[response] = 1
+
+    # Iterate through yes_responses and no_responses, store words and frequency differences as keys
+    # and values of a dictionary
+    diff_responses = dict()
+
+    for word in yes_responses:
+        if word in no_responses:
+            diff_responses[word] = yes_responses[word] - no_responses[word]
+        else:
+            diff_responses[word] = yes_responses[word]
+    for word in no_responses:
+        if word not in yes_responses:
+            diff_responses[word] = - no_responses[word]
+
+    # Convert diff_responses from a dictionary to a list of tuples
+    diff_responses_list = []
+    for word in diff_responses:
+        diff_responses_list.append((word, diff_responses[word]))
+
+    # Order diff_responses and return ordered list
+    ordered_responses = sorted(diff_responses_list, key=lambda x: x[1])
+    return ordered_responses
+
+
 def run_analysis():
     """
     Runs the analytical method on the reading data
-
     :return: None
     """
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
@@ -124,6 +320,229 @@ def run_analysis():
     show_response_groups(response_groups_freq_dicts)
     total_view_time = compute_total_view_time(student_data)
     print(f'The total view time of all students was {total_view_time}.')
+    print(
+        get_responses_for_question(student_data, "In one word, how does this text make you feel?"))
+    print(most_common_response(
+        student_data,
+        "In one word, how does this text make you feel?",
+        "This is an ad."
+    ))
+
+
+def run_mean_reading_analysis_for_questions(student_data):
+    """
+    Runs the analysis on the data loaded from the CSV file by looking at the average
+    read time for each question and the context that the question was given in and
+    prints it in a nice readable format.
+    :return: None
+    """
+    question_one = "In one word, how does this text make you feel?"
+    question_two = "In three words or fewer, what is this text about?"
+    question_three = "Have you encountered this text before?"
+
+    mean_reading_time_results_data = [
+        mean_reading_time_for_a_question(student_data, question_one, "ad"),
+        mean_reading_time_for_a_question(student_data, question_two, "ad"),
+        mean_reading_time_for_a_question(student_data, question_three, "ad"),
+        mean_reading_time_for_a_question(student_data, question_one, "short story"),
+        mean_reading_time_for_a_question(student_data, question_two, "short story"),
+        mean_reading_time_for_a_question(student_data, question_three, "short story")
+    ]
+
+    for reading_result in mean_reading_time_results_data:
+        if reading_result[3] != 0:
+            print(f"Out of those who thought the reading was a(n) {reading_result[1]}"
+                  f"and were asked {reading_result[0]}\"")
+            print(
+                f"{reading_result[3]} subject(s) read the text for an average of "
+                f"{round(reading_result[2], 3)} seconds.")
+        else:
+            print(f"No one who thought the reading was a(n) {reading_result[1]} and were asked "
+                  f"\"{reading_result[0]}\" read the text.")
+        print("")
+
+
+def mean_reading_time_for_a_question(student_data, question, context):
+    """
+    Given the student response dicts, computes the mean read time for a
+    specific question (given by its keyword) and the context in which it was asked.
+    Returns the question, context, mean read time, and number of people who read.
+    :param student_data: list, student response dicts
+    :param question: string, to determine which question was being asked
+    :param context: string, what the reader thought the reading was
+    :return: tuple, in order of the question asked (full question), the context, the mean read
+             time, and the number of people who read it
+    """
+    mean_time = 0
+    number_of_readers = 0
+    question_count = 0
+    reading_time = []
+    total_question_view_time = 0
+
+    for student_data_dictionary in student_data:
+        if question != student_data_dictionary['question'] or\
+                context != student_data_dictionary['context']:
+            continue
+        if len(student_data_dictionary['views']) != 0:
+            number_of_readers += 1
+        for view_time in student_data_dictionary['views']:
+            reading_time.append(view_time)
+
+    if len(reading_time) != 0:
+        remove_outliers(reading_time)
+
+    view_time = 0
+    while view_time < len(reading_time):
+        question_count += 1
+        total_question_view_time += reading_time[view_time]
+        view_time += 1
+
+    if len(reading_time) != 0:
+        mean_time = round(total_question_view_time / len(reading_time), 2)
+
+    return question, context, mean_time, number_of_readers
+
+
+def remove_outliers(reading_time):
+    """
+    Given a list of times, calculates and removes outliers, which are the data points that
+    are outside the interquartile range of the data
+    :param reading_time: list, reading times for a specific question
+    :return: list, reading times for a specific question with outliers removed
+    """
+    reading_time.sort()
+    quartile_one = reading_time[math.trunc(len(reading_time) * 0.25)]
+    quartile_three = reading_time[math.trunc(len(reading_time) * 0.75)]
+    interquartile_range = quartile_three - quartile_one
+    lower_fence = quartile_one - (1.5 * interquartile_range)
+    upper_fence = quartile_three + (1.5 * interquartile_range)
+
+    view_time_two = 0
+    while view_time_two < len(reading_time):
+        if (reading_time[view_time_two] < lower_fence) \
+                or (reading_time[view_time_two] > upper_fence):
+            reading_time.remove(reading_time[view_time_two])
+            view_time_two -= 1
+        else:
+            view_time_two += 1
+
+    return reading_time
+
+
+def mean_reading_time(data):
+    """
+    Takes the data and finds the mean time of all the view times in the data
+    :param data: list of responses
+    :return: float representing the average view times
+    :return: None when there are no entries for viewing time
+    """
+    times = 0
+    count = 0
+    for dictionary in data:
+        views = dictionary["views"]
+        for view in views:
+            times += view
+            count += 1
+    if count == 0:
+        return None
+    return times / count
+
+
+def mean_reading_time_student(data, student_id):
+    """
+    Takes the data and an id and computes the average time overall of the entry with that id
+    :param student_id: integer, represents specific id number of student
+    :param data: list of responses
+    :return: float: represents the average view time of the student with this id
+    :return: None: when there is no data entries for this specific id
+    """
+    count = 0
+    times = 0
+    for dictionary in data:
+        dict_id = dictionary["student_id"]
+        if dict_id == student_id:
+            for view in dictionary["views"]:
+                count += 1
+                times += view
+    if count == 0:
+        return None
+    return times / count
+
+
+def mean_reading_time_question_context(data, question, context):
+    """
+    Takes the data, a question, and context and computes the average time of the
+    views of this specific context and question
+    :param question: String representing a specific question
+    :param context: String representing a specific context
+    :param data: list of responses
+    :return: float: represents the average view time spent on this specific question and context
+    :return: None: when there is no data entries for this specific question and context
+    """
+    count = 0
+    times = 0
+    for dictionary in data:
+        dict_question = dictionary["question"]
+        dict_context = dictionary["context"]
+        if dict_question == question and dict_context == context:
+            for view in dictionary["views"]:
+                count += 1
+                times += view
+    if count == 0:
+        return None
+    return times / count
+
+
+def frequent_responses(freq_dict):
+    """
+    Takes in a dictionary with values that are frequency dictionaries
+    Returns a dictionary showing the most frequent responses to each specific question/context
+    combination
+    :param freq_dict: dictionary, A dictionary with tuples as keys and a
+    frequency dictionary as values.
+    :return: dictionary, A dictionary with tuples as keys and a dictionary as values.
+    The values are dictionaries with different information about the most frequent responses
+    such as a list of the most common responses as well as the number of times they occurred
+    """
+    output = {}
+    for key in freq_dict:
+        details = {}
+        a_freq_dict = freq_dict[key]
+        max_occurrences = 0
+        max_list = []
+        for word in a_freq_dict:
+            occurrence = a_freq_dict[word]
+            if occurrence > max_occurrences:
+                max_occurrences = occurrence
+                max_list = [word]
+            elif occurrence == max_occurrences:
+                max_list.append(word)
+        details['most_frequent_words'] = max_list
+        details['max_occurrences'] = max_occurrences
+        output[key] = details
+    return output
+
+
+def word_freq_all(data):
+    """
+    Takes in the list of responses
+    Returns a dictionary linking question/context combinations to a frequency dictionary
+    :param data: list, A list of all of the data entries from the survey
+    :return: dictionary, A dictionary with a tuple of the question and
+    context as keys and with a frequency dictionary as values
+    """
+    output = {}
+    for entry in data:
+        the_key = (entry["question"], entry["context"])
+        if the_key not in output:
+            output[the_key] = {}
+        qc_dict = output[the_key]
+        response = entry['response'].lower()
+        if response not in qc_dict:
+            qc_dict[response] = 1
+        else:
+            qc_dict[response] += 1
+    return output
 
 
 def show_response_groups(response_groups_freq_dicts):
@@ -216,11 +635,22 @@ def find_word_frequency(response_list):
     return freq
 
 
+feel = "In one word, how does this text make you feel?"
+about = "In three words or fewer, what is this text about?"
+encountered = "Have you encountered this text before?"
+ads = "This is an ad."
+short_story = "This is actually a short story."
+
+
 class TestAnalysisMethods(unittest.TestCase):
     """
     Test cases to make sure things are running properly
     """
+
     def setUp(self):
+        """
+        Sets up the data sets for testing
+        """
         test_data_path = Path('data', 'test_data.csv')
         self.test_student_data = load_data_csv(test_data_path)
         self.default_student_data = [  # model default values
@@ -234,8 +664,57 @@ class TestAnalysisMethods(unittest.TestCase):
                 'scroll_ups': 0,
             }
         ]
+        test_data_2_path = Path('data', 'test_data_2.csv')
+        self.default_student_data_2 = load_data_csv(test_data_2_path)
         sample_csv_path = Path('data', 'rereading_data_2019-09-13.csv')
         self.student_data = load_data_csv(sample_csv_path)
+
+    def test_mean_reading_time_for_a_question(self):
+        """
+        Tests mean_reading_time_for_a_question function with many data sets and checks if
+        the function crashes when it encounters the default data set. Also test many cases with
+        all question and context combinations.
+        """
+        mean_reading_data = mean_reading_time_for_a_question(self.default_student_data, "", "")
+
+        empty_comparison_tuple = ("", "", 0, 0)
+        self.assertEqual(mean_reading_data, empty_comparison_tuple)
+
+        # The expected result times are rounded to 2 decimals here due to Python rounding errors
+        # not matching actual rounding.
+        results = mean_reading_time_for_a_question(self.test_student_data, feel, ads)
+        self.assertEqual(results, (feel, ads, round(2.319, 2), 1))
+        results = mean_reading_time_for_a_question(self.test_student_data, about, ads)
+        self.assertEqual(results, (about, ads, round(2.945, 2), 1))
+        results = mean_reading_time_for_a_question(self.test_student_data, encountered, ads)
+        self.assertEqual(results, (encountered, ads, 0, 0))
+        results = mean_reading_time_for_a_question(self.test_student_data, feel, short_story)
+        self.assertEqual(results, (feel, short_story, round(1.121, 2), 1))
+        results = mean_reading_time_for_a_question(self.test_student_data, about, short_story)
+        self.assertEqual(results, (about, short_story, 0, 0))
+        results = mean_reading_time_for_a_question(self.test_student_data, encountered,
+                                                   short_story)
+        self.assertEqual(results, (encountered, short_story, 0, 0))
+
+    def test_mean_reading_time_for_a_question_reversed(self):
+        """
+        Tests mean_reading_time_for_a_question function but with the data set reversed
+        """
+        mean_time = mean_reading_time_for_a_question(reversed(self.test_student_data),
+                                                     "Have you encountered this text before?",
+                                                     "This is an ad.")
+
+        self.assertEqual(mean_time[0], "Have you encountered this text before?")
+
+    def test_remove_outliers(self):
+        """
+        Test the remove_outlier functions on a list to see if it removes the outliers
+        """
+        outliers_data_1 = [-100, -50, 1, 2, 3, 4, 5, 100]
+        outliers_data_2 = [1, 2, 3, 4, 5]
+
+        remove_outliers(outliers_data_1)
+        self.assertEqual(outliers_data_1, outliers_data_2)
 
     def test_compute_total_view_time(self):
         """
@@ -257,6 +736,132 @@ class TestAnalysisMethods(unittest.TestCase):
 
         expected = compute_mean_reading_times(self.student_data)
         self.assertEqual(expected, [30, 7.546366666666666, 2.9542])
+    def test_mean_reading_time_question_context(self):
+        """
+        Test the avg_time_context function to see if it can find the avg view times given a question
+        and context. Also tests for if the question or context isn't in the data set.
+        """
+        avg_time = mean_reading_time_question_context(self.test_student_data,
+                                                      feel, ads)
+        self.assertAlmostEqual(avg_time, 2.319)
+
+        avg_time = mean_reading_time_question_context(self.default_student_data_2,
+                                                      feel, short_story)
+        self.assertAlmostEqual(avg_time, 3.1992)
+
+        avg_time = mean_reading_time_question_context(self.default_student_data,
+                                                      feel, ads)
+        self.assertIsNone(avg_time)
+
+    def test_mean_rereading_time_student(self):
+        """
+        Test the avg_time_student and see if given a student_id, the function can return
+        the average view times for that student, even if they didn't do any viewing.
+        """
+        avg_time = mean_reading_time_student(self.test_student_data, 15)
+        self.assertAlmostEqual(avg_time, 2.128333333333)
+
+        avg_time = mean_reading_time_student(self.default_student_data, 0)
+        self.assertIsNone(avg_time)
+
+        avg_time = mean_reading_time_student(self.default_student_data_2, 7)
+        self.assertAlmostEqual(avg_time, 2.2)
+
+        avg_time = mean_reading_time_student(self.default_student_data_2, 999)
+        self.assertIsNone(avg_time)
+
+    def test_mean_rereading_time(self):
+        """
+        Test average_time function for many test cases and see if it returns either the correct
+        average time or None if there are no view times in the data set
+        """
+        avg_time = mean_reading_time(self.test_student_data)
+        self.assertAlmostEqual(avg_time, 2.128333333333)
+
+        avg_time = mean_reading_time(self.default_student_data)
+        self.assertIsNone(avg_time)
+
+        avg_time = mean_reading_time(self.default_student_data_2)
+        self.assertAlmostEqual(avg_time, 2.88266666666)
+
+    def test_word_freq_all(self):
+        """
+        Test the word_freq_all function on the test data set and default data set
+        """
+        freq_dict = word_freq_all(self.test_student_data)
+        specific_question_context = ('In one word, how does this text make you feel?',
+                                     'This is an ad.')
+        answer = {'sad': 1}
+        self.assertEqual(freq_dict[specific_question_context], answer)
+
+        freq_dict = word_freq_all(self.default_student_data)
+        specific_question_context = ("", "")
+        answer = {'': 1}
+        self.assertEqual(freq_dict[specific_question_context], answer)
+
+    def test_frequent_responses(self):
+        """
+        Test the function frequent_responses on the test data set and default data set
+        """
+        most_frequent_responses = frequent_responses(word_freq_all(self.test_student_data))
+        specific_question_context = ('In one word, how does this text make you feel?',
+                                     'This is an ad.')
+        answer = {'most_frequent_words': ['sad'], 'max_occurrences': 1}
+        self.assertEqual(most_frequent_responses[specific_question_context], answer)
+
+        most_frequent_responses = frequent_responses(word_freq_all(self.default_student_data))
+        specific_question_context = ("", "")
+        answer = {'most_frequent_words': [''], 'max_occurrences': 1}
+        self.assertEqual(most_frequent_responses[specific_question_context], answer)
+
+    def test_common_response(self):
+        """
+        Tests to make sure the function runs properly by checking against known data sets.
+        """
+        most_common_response_value = most_common_response(self.test_student_data,
+                                                          "In one word, how does this text make "
+                                                          "you "
+                                                          "feel?",
+                                                          "This is an ad.")
+        self.assertEqual(most_common_response_value, ['sad'])
+
+        # check we don't crash on the defaults from the model!
+        most_common_response_value = most_common_response(self.default_student_data, '', '')
+        self.assertEqual(most_common_response_value, [''])
+
+    def test_question_sentiment_analysis(self):
+        """
+        test that the average and standard deviation of test data equals the expected values
+        """
+        single_word_data = question_sentiment_analysis(self.test_student_data, 'one word')
+        self.assertEqual(single_word_data, (-.75, 0))
+
+        three_words_data = question_sentiment_analysis(self.test_student_data, 'three words')
+        self.assertEqual(three_words_data, (0, 0))
+
+    def test_get_sentiments(self):
+        """
+        test that the get_sentiments method returns the correct data for each word
+        """
+
+        sentiments = get_sentiments()
+        competent_score = sentiments['competent']
+        self.assertEqual(competent_score, 0.75)
+
+        inefficient_score = sentiments['inefficient']
+        self.assertEqual(inefficient_score, -0.5)
+
+        length = len(sentiments)
+        self.assertEqual(length, 89631)
+
+    def test_word_frequency_differences(self):
+        """
+        Test the word_frequency_differences function
+        """
+
+        word_frequency_differences = get_word_frequency_differences(self.test_student_data)
+        expected = [('sad', -1)]
+        self.assertEqual(word_frequency_differences, expected)
 
     def test_response_group_frequencies(self):
         """

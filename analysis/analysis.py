@@ -336,11 +336,17 @@ def description_has_relevant_words(story_meaning_description, relevant_words):
     Determine if the user's description contains a word relevant to the story's meaning
     :param story_meaning_description: The three word description of the story that the user supplied
     :param relevant_words: a list of words which show an understanding of the story's meaning
-    :return True if the description contains one of the relevant words. False otherwise
+    :return True if the description contains one of the relevant words or relevant_words is empty.
+        False otherwise
     """
-    words_used_in_description = story_meaning_description.split(' ')
-    for word in relevant_words:
-        if word in words_used_in_description:
+    if len(relevant_words) == 0:
+        return True
+
+    lowercase_relevant_words = list(map(lambda s: s.lower(), relevant_words))
+    words_used_in_description = story_meaning_description.lower().split(' ')
+
+    for word in lowercase_relevant_words:
+        if word.lower() in words_used_in_description:
             return True
     return False
 
@@ -354,7 +360,8 @@ def percent_students_using_relevant_words(student_data, target_context, relevant
     :param student_data: the data to analyze
     :param target_context: the context (e.g. "This is an ad") to take responses from
     :param relevant_words: a list of words which show an understanding of the story's meaning
-    :return: The percentage of students that used relevant words in their responses
+    :return: The percentage [0.00, 1.00] of students that used relevant words in their
+    responses. 0 if there are no responses.
     """
     number_of_students_using_relevant_words = 0
     total_students = 0
@@ -364,20 +371,12 @@ def percent_students_using_relevant_words(student_data, target_context, relevant
             total_students += 1
             if description_has_relevant_words(row.get('response'), relevant_words):
                 number_of_students_using_relevant_words += 1
-    percentage_of_all_students = number_of_students_using_relevant_words / total_students
+
+    if total_students != 0:
+        percentage_of_all_students = number_of_students_using_relevant_words / total_students
+    else:
+        percentage_of_all_students = 0
     return percentage_of_all_students
-
-
-def read_words_from_txt_file(file):
-    """
-    Split a text file into a list of the words it contains
-    :param file: A txt file with one word on each line
-    :return: a list of the words in the file
-    """
-    lines = []
-    for line in file:
-        lines.append(line.strip())
-    return lines
 
 
 def run_relevant_word_analysis(student_data):
@@ -388,7 +387,8 @@ def run_relevant_word_analysis(student_data):
     target_context = 'This is actually a short story.'
 
     relevant_words_file = open(RELEVANT_WORDS_FILE_PATH, 'r')
-    relevant_words = read_words_from_txt_file(relevant_words_file)
+    untrimmed_relevant_words = relevant_words_file.readlines()
+    relevant_words = list(map(lambda s: s.strip(), untrimmed_relevant_words))
 
     relevant_words_used_percent = percent_students_using_relevant_words(
         student_data, target_context, relevant_words)
@@ -466,7 +466,7 @@ def mean_reading_time_for_a_question(student_data, question, context):
     total_question_view_time = 0
 
     for student_data_dictionary in student_data:
-        if question != student_data_dictionary['question'] or\
+        if question != student_data_dictionary['question'] or \
                 context != student_data_dictionary['context']:
             continue
         if len(student_data_dictionary['views']) != 0:
@@ -997,6 +997,50 @@ class TestAnalysisMethods(unittest.TestCase):
         }
         default_result = word_time_relations(self.default_student_data)
         self.assertEqual(default_result, default_expected)
+
+    def test_description_has_relevant_words(self):
+        relevant_words = ["dead", "death", "miscarriage", "killed", "kill", "losing", "loss",
+                          "lost", "deceased", "died", "grief", "pregnancy", "pregnant"]
+
+        empty_list_response = description_has_relevant_words("description", [])
+        self.assertTrue(empty_list_response)
+
+        single_word_positive_response = description_has_relevant_words("died", relevant_words)
+        self.assertTrue(single_word_positive_response)
+
+        capitalization_positive_response = description_has_relevant_words("MiScArrIAGe",
+                                                                          relevant_words)
+        self.assertTrue(capitalization_positive_response)
+
+        multi_word_positive_response = description_has_relevant_words("losing a baby",
+                                                                      relevant_words)
+        self.assertTrue(multi_word_positive_response)
+
+        negative_response = description_has_relevant_words("irrelevant words", relevant_words)
+        self.assertFalse(negative_response)
+
+    def test_percent_students_using_relevant_words(self):
+        relevant_words = ["dead", "death", "miscarriage", "killed", "kill", "losing", "loss",
+                          "lost", "deceased", "died", "grief", "pregnancy", "pregnant"]
+        story_context = "This is actually a short story."
+        calculated_percent_story = percent_students_using_relevant_words(self.test_student_data,
+                                                                         story_context,
+                                                                         relevant_words)
+        self.assertEqual(calculated_percent_story, 1.00)
+        default_percent_story = percent_students_using_relevant_words(self.default_student_data,
+                                                                      story_context,
+                                                                      relevant_words)
+        self.assertEqual(default_percent_story, 0)
+
+        ad_context = "This is an ad."
+        calculated_percent_ad = percent_students_using_relevant_words(self.test_student_data,
+                                                                      ad_context,
+                                                                      relevant_words)
+        self.assertEqual(calculated_percent_ad, 1.00)
+        default_percent_ad = percent_students_using_relevant_words(self.default_student_data,
+                                                                   ad_context,
+                                                                   relevant_words)
+        self.assertEqual(default_percent_ad, 0)
 
 
 if __name__ == '__main__':

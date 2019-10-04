@@ -36,7 +36,8 @@ def load_data_csv(csv_path: Path):
 #     for x in student_data:
 #         if x['question'] == "In three words or fewer, what is this text about?" and x['context'] == "This is an ad.":
 #             response_ad.append(x['response'])
-#         elif x['question'] == "In three words or fewer, what is this text about?" and x['context'] == "This is actually a short story.":
+#         elif x['question'] == "In three words or fewer, what is this text about?" and x['context']
+#         == "This is actually a short story.":
 #             response_story.append(x['response'])
 #     print(response_ad)
 #     print(response_story)
@@ -65,13 +66,23 @@ def run_analysis():
     # TODO: do something with student_data that's not just printing it!
     response_ad = []
     response_story = []
+    response_story_unique = []
+    unique_words_in_story = set()
+
     for x in student_data:
         x['response'] = x['response'].replace('.', '').lower()
         x['response'] = x['response'].replace(',', '')
         if x['question'] == "In three words or fewer, what is this text about?" and x['context'] == "This is an ad.":
             response_ad += x['response'].split()
         elif x['question'] == "In three words or fewer, what is this text about?" and x['context'] == "This is actually a short story.":
-            response_story += x['response'].split()
+            words = x['response'].split()
+            response_story += words
+            unique_words_in_story |= set(words)
+            response_story_unique.append(len(unique_words_in_story))
+    for n in response_story_unique:
+        print ("#"*n)
+
+    print(response_story_unique)
 
     ad_resp_words = {}
     story_resp_words = {}
@@ -104,6 +115,15 @@ def run_analysis():
 
     # print(ad_resp_words)
     # print(story_resp_words)
+    # print([w for w in response_ad if w not in ad_resp_words])
+
+    # only 36 unique words
+
+    # what if there're 1000 people? will there be a pattern? Overlaps? approach: take segments of
+    # data and analyze it to find patters and plot it
+    # manually tag the words (36 unique words) or just pick some representative words
+    # group the similar words together
+    # Q: how many times the responses contain negative words in the ad_response vs. story_response?
 
 
 if __name__ == '__main__':

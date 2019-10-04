@@ -153,6 +153,7 @@ def compute_median_revisits(data):
 
     return results
 
+
 def show_response_groups(response_groups_freq_dicts):
     """
     Given response_groups_freq_dicts list of dictionaries, prints the dicts in readable format

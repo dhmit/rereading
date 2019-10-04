@@ -303,7 +303,7 @@ def compute_mean_response_length(student_data):
     return the mean character length (across all users) of the response
 
     :param student_data: list, student response dicts
-    :return: float, median number of characters in the user's response
+    :return: float, mean number of characters in the user's response
     """
 
     list_of_responses = []
@@ -412,7 +412,6 @@ def run_analysis():
         "In one word, how does this text make you feel?",
         "This is an ad."
     ))
-
 
 
 def show_response_groups(response_groups_freq_dicts):
@@ -553,7 +552,7 @@ class TestAnalysisMethods(unittest.TestCase):
         # check we don't crash on the defaults from the model!
         mean_response_length = compute_mean_response_length(self.default_student_data)
         self.assertEqual(mean_response_length, 0)
-        
+
     def test_common_response(self):
         """
         Tests to make sure the function runs properly by checking against known data sets.

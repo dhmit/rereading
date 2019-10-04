@@ -83,12 +83,16 @@ def compute_mean_response_length(student_data):
 
 
 def run_time_analysis_functions(student_data):
+    """
+    Runs analysis functions related to the time students took to read the passage
+    :param student_data: the data to analyze
+    """
     median_view_time = compute_median_view_time(student_data)
     total_view_time = compute_total_view_time(student_data)
-
+    mean_response_length = compute_mean_response_length(student_data)
     print(f'The total view time of all students was {total_view_time}.')
     print(f'The median view time of all students was {median_view_time}.')
-    print(f'The mean response length of all students was {mean_response_length}.')
+    print(f'The mean response length of all students was {mean_response_length} characters.')
 
 
 def description_has_relevant_words(story_meaning_description, relevant_words):
@@ -129,6 +133,11 @@ def percent_students_using_relevant_words(student_data, target_context, relevant
 
 
 def read_words_from_txt_file(file):
+    """
+    Split a text file into a list of the words it contains
+    :param file: A txt file with one word on each line
+    :return: a list of the words in the file
+    """
     lines = []
     for line in file:
         lines.append(line.strip())
@@ -136,7 +145,10 @@ def read_words_from_txt_file(file):
 
 
 def run_relevant_word_analysis(student_data):
-    
+    """
+    Runs analysis functions related to the relevancy of words students wrote in their responses
+    :param student_data: the data to analyze
+    """
     target_context = 'This is actually a short story.'
 
     relevant_words_file = open(RELEVANT_WORDS_FILE_PATH, 'r')

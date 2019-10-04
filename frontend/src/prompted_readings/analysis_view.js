@@ -17,6 +17,7 @@ class AnalysisView extends React.Component {
     async componentDidMount() {
         try {
             const response = await fetch('/api/analysis/');
+            console.log(response);
             const analysis = await response.json();
             this.setState({analysis});
         } catch (e) {

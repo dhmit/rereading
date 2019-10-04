@@ -4,6 +4,7 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
 from .models import StudentResponse
+from statistics import stdev
 from pathlib import Path
 
 
@@ -23,8 +24,7 @@ def get_sentiments() -> dict:
         # We want to handle each word individually, rather than as a whole set
         while word:
 
-            # This particular file starts lines with '#' for non-sentiment comments,
-            # so skip them
+            # This particular file starts lines with '#' for non-sentiment comments, so skip them
             if word[0] == '#' or word[0] == '\t':
                 word = file.readline()
                 continue
@@ -42,9 +42,8 @@ def get_sentiments() -> dict:
             # If the word is already in the dictionary, pick the larger value
             # This is not optimal, but standardizes data
             if new_word in sentiments:
-                if abs(sentiments[new_word]) > abs(positive_score) and abs(
-                    sentiments[new_word]) > \
-                    abs(negative_score):
+                if abs(sentiments[new_word]) > abs(positive_score) and abs(sentiments[new_word]) > \
+                        abs(negative_score):
                     word = file.readline()
                     continue
 
@@ -90,3 +89,39 @@ class RereadingAnalysis:
             for view_time in response.get_parsed_views():
                 total_view_time += view_time
         return total_view_time
+
+    @property
+    def question_sentiment_analysis(self):
+
+        """
+        Uses database to create a list of sentiment scores for
+        :return:
+        """
+
+        sentiments = get_sentiments()
+        student_data = self.responses
+        question_text = 'In one word'
+
+        # Set up data for calculating data
+        num_scores = 0
+        sentiment_sum = 0
+        score_list = list()
+
+        for response in student_data:
+
+            if question_text in response['question']:
+                words = response['response'].lower().split()
+
+                # Find the sentiment score for each word, and add it to our data
+                for word in words:
+                    # Ignore the word if it's not in the sentiment dictionary
+                    if word in sentiments:
+                        sentiment_sum += sentiments[word]
+                        num_scores += 1
+                        score_list.append(sentiments[word])
+
+        average = sentiment_sum / num_scores
+        standard_dev = stdev(score_list)
+
+        return average, standard_dev
+

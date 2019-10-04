@@ -828,6 +828,7 @@ class TestAnalysisMethods(unittest.TestCase):
         # check we don't crash on the defaults from the model!
         mean_response_length = compute_mean_response_length(self.default_student_data)
         self.assertEqual(mean_response_length, 0)
+
     def test_mean_reading_time_question_context(self):
         """
         Test the avg_time_context function to see if it can find the avg view times given a question

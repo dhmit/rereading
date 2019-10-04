@@ -7,7 +7,7 @@ import csv
 import unittest
 from ast import literal_eval
 from pathlib import Path
-
+from statistics import stdev
 
 def load_data_csv(csv_path: Path):
     """

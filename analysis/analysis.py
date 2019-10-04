@@ -34,9 +34,8 @@ def compute_reread_counts(student_data):
     return a matrix containing the number of times students had to reread
     the text based on the context and question.
     :param student_data: list, student response dicts
-    :return: matrix, rows being context & question, columns having tallies
-    of how many students reread 1 time, 2 times, etc. Returning list of 6 lists. Each individual
-    list has 6 elements.
+    :return: dictionary, each key in dictionary is question and context combination and value is
+    the number of rereads with how many students reread the text that many of times
     """
 
     compilation_of_contexts_and_question = {
@@ -75,10 +74,8 @@ def compute_reread_counts(student_data):
             elif "three" in question:
                 compilation_of_contexts_and_question["q3_short"].append(view_count)
 
-    # Compiles all of the question reread count lists into one single list
-
-    # For each question and context of question, this loop counts the number of responses that
-    # had 0, 1, 2, 3, and 5 or above reread counts. This data is added to a list.
+    # Puts the question and context into keys in the dictionary and updates counts for each
+    # question and context
     organized_data = {
         "q1_ad": {},
         "q1_short": {},

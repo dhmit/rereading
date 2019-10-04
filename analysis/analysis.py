@@ -296,7 +296,7 @@ def run_analysis():
         "This is an ad."
     ))
 
-    
+
 def context_vs_read_time(student_data):
     """compares average viewtimes, given different context (ad vs story)
     :param student_data: list, student response dicts
@@ -359,7 +359,7 @@ def frequency_feelings(student_data):
     print(frequentwords)
     return frequentwords
 
-  
+
 def run_mean_reading_analysis_for_questions(student_data):
     """
     Runs the analysis on the data loaded from the CSV file by looking at the average

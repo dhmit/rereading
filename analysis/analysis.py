@@ -7,27 +7,6 @@ from ast import literal_eval
 import csv
 from pathlib import Path
 import unittest
-from statistics import stdev
-
-neutral_words_list = [
-    'baby shoes',
-    'sale',
-    'selling',
-    'advertisement',
-    'ad',
-    'asking'
-]
-
-negative_key_words_list = [
-    'miscarriage',
-    'lost child',
-    'death',
-    'grief',
-    'giving up hope',
-    'deceased',
-    'loss'
-]
-
 
 def load_data_csv(csv_path: Path):
     """
@@ -63,75 +42,35 @@ def compute_total_view_time(student_data):
     return total_view_time
 
 
-def mean_view_time(student_data):
-    """
-    Given a list of student response dicts,
-    return the mean time (across each view) spent reading the text
-    if the list is empty, then it returns 0
-    :param student_data: a list of dictionaries
-    :return: a float, the total time all users spent reading the text divided by total views
-    """
-    sum_of_views = 0
-    count = 0
-    for row_dict in student_data:
-        for view_times in row_dict['views']:
-            sum_of_views += view_times
-            count += 1
-    if count == 0:
-        return 0
-    else:
-        return sum_of_views / count
-
-
-def change_sum_list_count(list_of_views, num_of_responses, total_viewtime,
-                          responses_viewtimes_list):
-    """
-    :param
-    list_of_views (is response_dict['views']) is a list of viewtimes associated with that answer
-    num_of_responses is the growing sum total of responses
-    total_viewtime is the toal sum of the viewtimes
-    responses_viewtimes_list is a growing list of views pulled from first parameter
-
-    :return: a float, the total time all users spent reading the text divided by total views
-
-    """
-    total_viewtime += sum(list_of_views)
-    assert isinstance(num_of_responses, int)
-    num_of_responses += 1
-    if len(list_of_views) == 1:
-        responses_viewtimes_list.extend(list_of_views)
-    else:
-        for individual_viewtime in list_of_views:
-            responses_viewtimes_list.append(individual_viewtime)
-
-    return num_of_responses, total_viewtime, responses_viewtimes_list
-
-
 def mean_view_time_comparison(student_data):
     """
-    Given a list of student response dicts, determine if a response to a
-    specific context and question indicates that the reader understood the deeper
-    meaining of the text the first time. Calculate the mean view time of both
-    groups (those who understood and those did not) for comparison.
+    Calculate the mean view time of both groups (those who had a negative-word response and those
+    did not) for comparison.
     :param student_data: a list of dictionaries
     :return: a tuple of floats, the mean view times of negative and neutral
             respectively.
     """
-
     negative_total_view_time = 0
     neutral_total_view_time = 0
     negative_responses = 0
     neutral_responses = 0
-#    negative_responses_view_times_list = []
-#    neutral_responses_view_times_list = []
-#
-    # Iterate through the responses that pertaining to the context and question desired
+    # list of negative words used to separate students' responses
+    negative_key_words_list = [
+        'miscarriage',
+        'lost child',
+        'death',
+        'grief',
+        'giving up hope',
+        'deceased',
+        'loss'
+    ]
+    # iterates through all responses in student_data
     for response_dict in student_data:
         is_not_negative = True
         if (response_dict['question'] == 'In three words or fewer, what is this text about?') \
             and (response_dict['context'] == 'This is an ad.'):
             response = response_dict['response'].lower()
-
+            print(response_dict)
             # Iterate through negative words checking whether it can be found
             # in the current response. Keeps track of number of responses and
             # total times.
@@ -145,41 +84,25 @@ def mean_view_time_comparison(student_data):
                 neutral_responses += 1
                 neutral_total_view_time += sum(response_dict['views'])
 
-    # Find the mean view time, assign it as zero if division fails
-    try:
-        negative_mean_view_time = round(negative_total_view_time / negative_responses, 3)
-    except ZeroDivisionError:
+    if negative_responses == 0:
         negative_mean_view_time = 0
-    try:
-        neutral_mean_view_time = neutral_total_view_time / neutral_responses
-    except ZeroDivisionError:
+    else:
+        negative_mean_view_time = negative_total_view_time / negative_responses
+    if neutral_responses == 0:
         neutral_mean_view_time = 0
+    else:
+        neutral_mean_view_time = neutral_total_view_time / neutral_responses
 
-    print('People who understood the deeper meaning the first time read the message for ' + str(negative_mean_view_time) + ' seconds on average (mean). While people who did not, read the text for ' + str(round(neutral_mean_view_time, 3)) + ' seconds.')
-    print('\nThere were ' + str(negative_responses) + ' negative responses and ' + str(neutral_responses) + ' neutral responses.\n')
+    print('People who responded with a negative-word to the neutral ad-context '
+          'read the message for '+ str(round(negative_mean_view_time, 3)) +
+          ' seconds on average (mean). People who did not respond with a negative-word to the '
+          'neutral ad-context read the text for ' + str(round(neutral_mean_view_time, 3)) +
+          ' seconds on average (mean).')
+    print('\nThere were ' + str(negative_responses) + ' negative responses and '
+          + str(neutral_responses) + ' neutral responses.\n')
 
     return negative_mean_view_time, neutral_mean_view_time
-#    try:
-#        negative_mean_view_time: float = negative_total_view_time / negative_responses
-#        neutral_mean_view_time: float = neutral_total_view_time / neutral_responses
-#        standard_deviation_neutral_responses: float = stdev(neutral_responses_viewtimes_list)
-#        standard_deviation_negative_responses: float = stdev(negative_responses_viewtimes_list)
-#        standard_error: float = (standard_deviation_negative_responses ** 2 / negative_responses
-#                                 + standard_deviation_neutral_responses ** 2 / neutral_responses) \
-#                                ** (1 / 2)
-#        t_value: float = (negative_mean_view_time - neutral_mean_view_time) / standard_error
-#        print('People who understood the deeper meaning the first time read the \
-#                  message for ' + str(negative_mean_view_time) + ' on average. While \
-#                  people who did not, read the text for ' + str(neutral_mean_view_time))
-#        print('The sample size of the negative responses is ' + str(negative_responses),
-#              ' and the sample size of the neutral responses is ' + str(neutral_responses))
-#        print('The t-value is ' + str(t_value))
-#        if (neutral_responses + negative_responses) < 30:
-#            print('Caution: Our sample size does not pass a t-test condition.')
-#    except ZeroDivisionError:
-#        # should cover for if we have zero responses or our _responses_viewtimes_list is empty and
-#        # what about?? being called upon by stdev() function
-#        print("We did not have any responses for at least one of our criterion")
+
 
 
 def run_analysis():
@@ -216,7 +139,50 @@ class TestAnalysisMethods(unittest.TestCase):
                 'scroll_ups': 0,
             }
         ]
-
+        self.test_mean_view_time_comparison_student_data = [
+            {'id': 60, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'Miscarriage', 'views': [2.945],
+             'student_id': 15, 'scroll_ups': 0},
+            {'id': 66, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'New baby shoes', 'views': [],
+             'student_id': 16, 'scroll_ups': 0},
+            {'id': 72, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'Baby shoes', 'views': [3.807],
+             'student_id': 17, 'scroll_ups': 0},
+            {'id': 78, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'Something for sale', 'views': [],
+             'student_id': 18, 'scroll_ups': 0},
+            {'id': 84, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'Selling baby shoes', 'views': [],
+             'student_id': 19, 'scroll_ups': 0},
+            {'id': 90, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'Advertisement', 'views': [],
+             'student_id': 20, 'scroll_ups': 0},
+            {'id': 96, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'New baby shoes', 'views': [],
+             'student_id': 21, 'scroll_ups': 0},
+            {'id': 102, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'baby shoe ad', 'views': [], 'student_id': 22,
+             'scroll_ups': 0},
+            {'id': 108, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'Shoes on sale', 'views': [],
+             'student_id': 23, 'scroll_ups': 0},
+            {'id': 114, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'selling baby shoes', 'views': [],
+             'student_id': 24, 'scroll_ups': 0},
+            {'id': 120, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'A lost child', 'views': [], 'student_id': 25,
+             'scroll_ups': 0},
+            {'id': 126, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'Story', 'views': [], 'student_id': 26,
+             'scroll_ups': 0},
+            {'id': 132, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'Giving up hope', 'views': [],
+             'student_id': 27, 'scroll_ups': 0},
+            {'id': 138, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': "an infant's death", 'views': [],
+             'student_id': 28, 'scroll_ups': 0}
+        ]
     def test_compute_total_view_time(self):
         """
         Test that the total view time equals the expected values.
@@ -232,27 +198,15 @@ class TestAnalysisMethods(unittest.TestCase):
         """
         Test that the mean view times equal expected values.
         """
+        result = mean_view_time_comparison(self.test_mean_view_time_comparison_student_data)
+        self.assertEqual(result, (.73625, .3807))
+
         result = mean_view_time_comparison(self.default_student_data)
         self.assertEqual(result, (0,0))
+
+
+
 
 if __name__ == '__main__':
     run_analysis()
     unittest.main()  # run the tests
-
-# select responses with negative connotations (sad, miscarriage) when the context
-# was "This is an ad." and find the difference between avg view times of these
-# students' with those of neutral connotations (confused, sale). Our 'hypothesis' is that there
-# might be a statistically significant difference showing students with responses of negative
-# connotations (i.e. got the deeper meaning of text w/o clue from context) had a correlation
-# with spending more time with the text
-
-
-# select students with responses with neutral connotations (confused, sale) when the context was
-# "This is an ad." but had responses with negative connotations when the context was
-# "This is a short story." Subtract the former from latter and take the average. This will tell us
-# about how much time it takes for students to make the deeper connection.
-
-# take average of view time with context of "This is an ad."
-
-
-# take average of view time with context of "This is actually a short story."

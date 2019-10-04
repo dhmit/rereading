@@ -71,7 +71,11 @@ def compute_total_view_time(student_data):
     Given a list of student response dicts,
     return the total time (across all users) spent reading the text
     """
-
+    total_view_time = 0
+    for row in student_data:
+        for view_time in row.get('views'):
+            total_view_time += view_time
+    return total_view_time
 
 def compute_mean_reading_times(student_data):
     """

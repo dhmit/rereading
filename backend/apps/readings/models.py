@@ -91,5 +91,3 @@ class StudentResponse(models.Model):
 
         return literal_eval(self.views)
 
-    def get_question(self):
-

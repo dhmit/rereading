@@ -4,6 +4,7 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
 from .models import StudentResponse
+import math
 
 
 class RereadingAnalysis:
@@ -105,11 +106,11 @@ class RereadingAnalysis:
                 continue
             if len(student_data.views) != 0:
                 number_of_readers += 1
-            for view_time in student_data_dictionary['views']:
+            for view_time in student_data.views:
                 reading_time.append(view_time)
 
         if len(reading_time) != 0:
-            remove_outliers(reading_time)
+            student_data.remove_outliers(reading_time)
 
         view_time = 0
         while view_time < len(reading_time):
@@ -122,7 +123,7 @@ class RereadingAnalysis:
 
         return question, context, mean_time, number_of_readers
 
-    def remove_outliers(reading_time):
+    def remove_outliers(self, reading_time):
         """
         Given a list of times, calculates and removes outliers, which are the data points that
         are outside the interquartile range of the data

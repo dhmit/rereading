@@ -70,7 +70,6 @@ def compute_total_view_time(student_data):
     """
     Given a list of student response dicts,
     return the total time (across all users) spent reading the text
->>>>>>> master
     """
 
 
@@ -99,12 +98,14 @@ def compute_mean_reading_times(student_data):
         if student_id != last_student_id:
             total_participants += 1
             last_student_id = student_id
+
     if total_participants == 0:
         return []
-
     mean_first_response = total_first_response / total_participants
     mean_second_response = total_second_response / total_participants
-    return [total_participants, mean_first_response, mean_second_response]
+    result = [total_participants, mean_first_response, mean_second_response]
+    print(result)
+    return result
 
 
 def run_analysis():
@@ -115,8 +116,6 @@ def run_analysis():
     """
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
-    mean_data = compute_mean_reading_times(student_data)
-    print(mean_data)
     response_groups_freq_dicts = get_response_groups_frequencies(student_data)
     show_response_groups(response_groups_freq_dicts)
     total_view_time = compute_total_view_time(student_data)
@@ -245,6 +244,16 @@ class TestAnalysisMethods(unittest.TestCase):
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
 
+    def test_compute_mean_reading_times(self):
+        """
+        Tests compute_mean_reading_times for correct means for each reading response time
+        """
+        expected = compute_mean_reading_times(self.default_student_data)
+        self.assertEqual(expected, [1, 0.0, 0.0])
+
+        expected = compute_mean_reading_times(self.student_data)
+        self.assertEqual(expected, [30, 7.546366666666666, 2.9542])
+
     def test_response_group_frequencies(self):
         """
         Tests get_response_groups_frequencies returns correct freq dictionaries when passed
@@ -287,19 +296,7 @@ class TestAnalysisMethods(unittest.TestCase):
         default_result = word_time_relations(self.default_student_data)
         self.assertEqual(default_result, default_expected)
 
-    def compute_mean_reading_times(self):
-        """
-        Test the compute_mean_reading_times() function against the test data and an empty dataset.
-        """
-        mean_results = compute_mean_reading_times(self.student_data)
-        self.assertEqual(mean_results, [30, 7.546366666666666, 2.9542])
-
-        mean_results = compute_mean_reading_times(self.default_student_data)
-        self.assertEqual(mean_results, [])
-
 
 if __name__ == '__main__':
     run_analysis()
-
-
-
+    unittest.main()  # run the tests

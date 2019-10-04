@@ -34,3 +34,6 @@ class StoryAdmin(admin.ModelAdmin):
 
 admin.site.register(Story, StoryAdmin)
 admin.site.register(Student, StudentAdmin)
+admin.site.register(StudentResponse)
+admin.site.register(Context)
+admin.site.register(Question)

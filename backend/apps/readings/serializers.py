@@ -4,8 +4,8 @@ in ways that can be transported across the backend/frontend divide, or
 allow the frontend to suggest changes to the backend/database.
 """
 from rest_framework import serializers
-from .models import Story, Question, Context, Student, StudentResponse
 
+from .models import Story, Question, Context, Student, StudentResponse
 
 class StudentResponseSerializer(serializers.ModelSerializer):
     """
@@ -97,3 +97,14 @@ class StorySerializer(serializers.ModelSerializer):
             'contexts',
             'questions',
         )
+
+
+class AnalysisSerializer(serializers.Serializer):
+    """ Serializes analysis class """
+    total_view_time = serializers.ReadOnlyField()
+
+    def create(self, validated_data):
+        """ We will not create new objects using this serializer """
+
+    def update(self, instance, validated_data):
+        """ We will not update data using this serializer """

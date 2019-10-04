@@ -6,6 +6,7 @@ Analysis.py - initial analyses for dhmit/rereading
 from ast import literal_eval
 import csv
 from pathlib import Path
+import unittest
 
 
 def load_data_csv(csv_path: Path):
@@ -27,12 +28,7 @@ def load_data_csv(csv_path: Path):
     return out_data
 
 
-def repeated_prompt_words():
-    """
-    Reports frequencies of exact words from story prompt used in responses. Prints analysis
-    :return: tuple (response_ad, response_story), lists of unique responses to be used in further analysis.
-    """
-    stop_words = ['a', 'and', 'the', 'of', 'an', 'for']
+def fetch_responses():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
     # TODO: do something with student_data that's not just printing it!
@@ -49,12 +45,25 @@ def repeated_prompt_words():
         elif x['question'] == question and x['context'] == "This is actually a short story.":
             response_story += x['response'].split()
 
+    return response_ad, response_story
+
+
+def repeated_prompt_words():
+    """
+    Reports frequencies of exact words from story prompt used in responses. Prints analysis.
+    :return: tuple (response_ad, response_story), lists of unique responses to be used in further analysis.
+    """
+
+    # extracting responses from csv file
+    response_ad, response_story = fetch_responses()
+
     # dictionaries to store frequencies of words in responses based on context given
     # word (string) : frequency (int)
     ad_resp_words = {}
     story_resp_words = {}
 
     # cycling through ad responses
+    stop_words = ['a', 'and', 'the', 'of', 'an', 'for']
     for word in response_ad:
         if word in ad_resp_words:
             ad_resp_words[word] += 1
@@ -72,16 +81,22 @@ def repeated_prompt_words():
     story_vocab_list = ["for", "sale", "baby", "shoes", "never", "worn"]
 
     # for the first question given the context of the ad
-    print("Given text vocab words that occurred in ad-context responses: ")
-    for word in story_vocab_list:
-        if word in ad_resp_words:
-            print(word, ad_resp_words[word])
+    to_delete = []
+    for word in ad_resp_words.keys():
+        if word not in story_vocab_list:
+            to_delete.append(word)
+    for x in to_delete:
+        del ad_resp_words[x]
 
     # for the second question given the context of the story
-    print("Given text vocab words that occurred in story-context responses: ")
-    for word in story_vocab_list:
-        if word in story_resp_words:
-            print(word, story_resp_words[word])
+    to_delete = []
+    for word in story_resp_words.keys():
+        if word not in story_vocab_list:
+            to_delete.append(word)
+    for x in to_delete:
+        del story_resp_words[x]
+
+    # TODO Will add this to frontend to display data collected
 
     # uncomment for most commonly repeated words
 
@@ -97,8 +112,33 @@ def repeated_prompt_words():
     # print("All words in story context responses:")
     # print(story_resp_words)
 
-    return response_ad, response_story
+    return ad_resp_words, story_resp_words
+
+
+class TestAnalysisMethods(unittest.TestCase):
+    """
+    Test cases to make sure things are running properly
+    """
+    def setUp(self):
+        test_data_path = Path('data', 'test_data.csv')
+        self.test_student_data = load_data_csv(test_data_path)
+        self.default_student_data = [  # model default values
+            {
+                'id': 0,
+                'question': '',
+                'context': '',
+                'response': '',
+                'views': [],
+                'student_id': 0,
+                'scroll_ups': 0,
+            }
+        ]
+        sample_csv_path = Path('data', 'rereading_data_2019-09-13.csv')
+        self.student_data = load_data_csv(sample_csv_path)
+
+    def test_repeated_prompt_words(self):
+        pass
 
 
 if __name__ == '__main__':
-    repeated_prompt_words()
+    print(repeated_prompt_words())

@@ -15,7 +15,7 @@ def get_sentiments() -> dict:
 
     :return: dict mapping words to their sentiment scores
     """
-    sentiment_path = Path('rereading', 'analysis', 'data', 'sentiments.txt')
+    sentiment_path = Path('..', 'analysis', 'data', 'sentiments.txt')
 
     sentiments = dict()
     with open(sentiment_path, 'r') as file:
@@ -109,8 +109,8 @@ class RereadingAnalysis:
 
         for response in student_data:
 
-            if question_text in response['question']:
-                words = response['response'].lower().split()
+            if question_text in response.question.text:
+                words = response.response.lower().split()
 
                 # Find the sentiment score for each word, and add it to our data
                 for word in words:

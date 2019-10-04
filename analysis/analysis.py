@@ -57,8 +57,29 @@ def compute_median_view_time(student_data):
         for view_time in row.get('views'):
             list_of_times.append(view_time)
     list_of_times.sort()
-    middle_index = int(len(list_of_times) / 2)
-    return list_of_times[middle_index]
+    if len(list_of_times) == 0:
+        median_view_time = 0
+    else:
+        median_view_time = list_of_times[int(len(list_of_times) / 2)]
+    return median_view_time
+
+
+def compute_mean_response_length(student_data):
+    """
+    Given a list of student response dicts,
+    return the mean character length (across all users) of the response
+
+    :param student_data: list, student response dicts
+    :return: float, median number of characters in the user's response
+    """
+
+    list_of_responses = []
+    for row in student_data:
+        list_of_responses.append(row.get("response"))
+    mean_response_length = 0
+    for response in range(len(list_of_responses)):
+        mean_response_length += len(list_of_responses[response])
+    return mean_response_length / len(list_of_responses)
 
 
 def run_time_analysis_functions(student_data):
@@ -67,6 +88,7 @@ def run_time_analysis_functions(student_data):
 
     print(f'The total view time of all students was {total_view_time}.')
     print(f'The median view time of all students was {median_view_time}.')
+    print(f'The mean response length of all students was {mean_response_length}.')
 
 
 def description_has_relevant_words(story_meaning_description, relevant_words):
@@ -114,6 +136,7 @@ def read_words_from_txt_file(file):
 
 
 def run_relevant_word_analysis(student_data):
+    
     target_context = 'This is actually a short story.'
 
     relevant_words_file = open(RELEVANT_WORDS_FILE_PATH, 'r')
@@ -133,6 +156,9 @@ def run_analysis():
 
 
 class TestAnalysisMethods(unittest.TestCase):
+    """
+    Test cases to make sure things are running properly
+    """
     def setUp(self):
         test_data_path = Path('data', 'test_data.csv')
         self.test_student_data = load_data_csv(test_data_path)
@@ -149,12 +175,31 @@ class TestAnalysisMethods(unittest.TestCase):
         ]
 
     def test_compute_total_view_time(self):
+        """
+        Test that the total view time equals the expected values.
+        """
         total_view_time = compute_total_view_time(self.test_student_data)
         self.assertEqual(total_view_time, 6.385)
 
         # check we don't crash on the defaults from the model!
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
+
+    def test_compute_median_view_time(self):
+        median_view_time = compute_median_view_time(self.test_student_data)
+        self.assertEqual(median_view_time, 2.319)
+
+        # check we don't crash on the defaults from the model!
+        median_view_time = compute_median_view_time(self.default_student_data)
+        self.assertEqual(median_view_time, 0)
+
+    def test_compute_mean_response_length(self):
+        mean_response_length = compute_mean_response_length(self.test_student_data)
+        self.assertEqual(mean_response_length, 5.5)
+
+        # check we don't crash on the defaults from the model!
+        mean_response_length = compute_mean_response_length(self.default_student_data)
+        self.assertEqual(mean_response_length, 0)
 
 
 if __name__ == '__main__':

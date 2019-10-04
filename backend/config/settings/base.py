@@ -132,7 +132,7 @@ STATIC_URL = '/static/'
 # where collectstatic puts static files for production
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
-# where collectstatic LOOKS for static files 
+# where collectstatic looks for static files
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'assets'),
 )

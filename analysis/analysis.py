@@ -40,10 +40,67 @@ def extract_response(student_data, question, context):
     """
     response = []
     for dictionary in student_data:
-        if (dictionary["context"] == context
-                and dictionary["question"] == question):
+        if (
+            not (not (dictionary["context"] == context) or not (
+                dictionary["question"] == question))):
             response.append(dictionary["response"])
     return response
+
+
+def response_and_question_relationship(student_data, question, context):
+    """
+    Takes a dataset, a specific question, and a context
+    Returns the number of times a certain word was responed based on the context and question
+    :param student_data: list, student response dictionaries
+    :param question: str, question of interest
+    :param context: str, context of interest
+    :returns: dictionary with number of views as keys and response frequencies as values
+    """
+    word_response_data = {}
+    for dictionary in student_data:
+        number_of_views = len(dictionary["views"])
+        if dictionary["context"] == context and dictionary["question"] == question:
+            if number_of_views in word_response_data.keys():
+                word_response_data[number_of_views].append(dictionary["response"])
+            elif number_of_views not in word_response_data.keys():
+                word_response_data.update({number_of_views: [dictionary["response"]]})
+    for number_of_views in word_response_data.keys():
+        word_types = []
+        for word in range(len(word_response_data[number_of_views])):
+            word_response_data[number_of_views][word] = word_response_data[number_of_views][
+                word].lower()
+            if not word_response_data[number_of_views][word] in word_types:
+                word_types.append(word_response_data[number_of_views][word])
+        word_quantities = []
+        for word in word_types:
+            quantity = word_response_data[number_of_views].count(word)
+            if [quantity, word] not in word_quantities:
+                word_quantities.append([quantity, word])
+        word_response_data[number_of_views] = word_quantities
+    return word_response_data
+
+
+def print_response_and_question_relationship(student_data):
+    questions = [
+        "In one word, how does this text make you feel?",
+        "In three words or fewer, what is this text about?",
+        "Have you encountered this text before?",
+    ]
+    contexts = [
+        "This is an ad.",
+        "This is actually a short story.",
+    ]
+    for question in questions:
+        for context in contexts:
+            print("For the question:", question)
+            print("With the context:", context)
+            word_response_data = response_and_question_relationship(student_data, question, context)
+            for number_of_views in word_response_data:
+                print("People who reread the text", number_of_views, "times responded:")
+                for word in word_response_data[number_of_views]:
+                    print(word[1], "x" + str(word[0]))
+                #print(word_response_data[number_of_views])
+            print()
 
 
 def extract_views(student_data, question, context):
@@ -57,8 +114,8 @@ def extract_views(student_data, question, context):
     """
     views = []
     for dictionary in student_data:
-        if (dictionary["context"] == context
-                and dictionary["question"] == question):
+        if (
+        not (not (dictionary["context"] == context) or not (dictionary["question"] == question))):
             views.append(len(dictionary["views"]))
     return views
 
@@ -174,6 +231,7 @@ def print_analysis(data):
     :param data: list, student response dicts
     :return: None
     """
+    print_response_and_question_relationship(data)
     print_total_analysis_word_count(data)
     print_total_analysis_views(data)
 
@@ -183,6 +241,11 @@ def run_analysis():
     Runs the whole analysis
     :return: None
     """
+    csv_path = Path('data', 'rereading_data_2019-09-13.csv')
+    student_data = load_data_csv(csv_path)
+    response_and_question_relationship(student_data,
+                                       "In one word, how does this text make you feel?",
+                                       "This is an ad.")
     print_analysis(load_data())
 
 
@@ -229,6 +292,14 @@ class TestAnalysisMethods(unittest.TestCase):
                                     self.test_context)
         count = count_word(response, "sad")
         self.assertEqual(count, 0)
+
+    def test_response_and_question_relationship(self):
+        response_data = response_and_question_relationship(self.test_student_data,
+                                                           self.test_question, self.test_context)
+        self.assertEqual(response_data, {1: [[1, 'sad']]})
+        response_data = response_and_question_relationship(self.default_student_data,
+                                                           self.test_question, self.test_context)
+        self.assertEqual(response_data, {})
 
 
 if __name__ == '__main__':

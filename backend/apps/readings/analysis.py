@@ -30,7 +30,7 @@ def get_responses_for_question(all_responses, question):
     return responses
 
 
-def most_common_response(all_responses, question, context):
+def most_common_response_by_question_and_context(all_responses, question, context):
     """
     Returns a list of the most common response(s) given a set of data, a question,
     and a context.
@@ -77,8 +77,17 @@ class RereadingAnalysis:
         return total_view_time
 
     @property
-    def get_most_common_responses_for_all(self):
+    def most_common_responses(self):
         question = "In one word, how does this text make you feel?"
         context = "This is an ad."
-        most_common_responses = {question: most_common_response(self.responses, question, context)}
+        most_common_responses = [most_common_response_by_question_and_context(
+                self.responses,
+                question,
+                context,
+            )
+        ]
         return most_common_responses
+
+    @property
+    def hello(self):
+        return "hello"

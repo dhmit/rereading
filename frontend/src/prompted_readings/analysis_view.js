@@ -28,7 +28,7 @@ class AnalysisView extends React.Component {
     render() {
         if (this.state.analysis !== null) {
             const {  // object destructuring:
-                total_view_time,
+                total_view_time, most_common_responses
             } = this.state.analysis;
 
             return (
@@ -36,6 +36,9 @@ class AnalysisView extends React.Component {
                     <h1>Analysis of Student Responses</h1>
                     <h3>Total view time</h3>
                     <p>{total_view_time} seconds</p>
+
+                    <h3>Most Common Responses</h3>
+                    <p>{most_common_responses}</p>
                 </div>
             );
         } else {

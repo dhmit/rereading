@@ -298,7 +298,8 @@ def run_analysis():
 
 
 def context_vs_read_time(student_data):
-    """compares average viewtimes, given different context (ad vs story)
+    """
+    compares average viewtimes, given different context (ad vs story)
     :param student_data: list, student response dicts
     :return a tuple of the average ad view and the average story view
     """
@@ -307,57 +308,59 @@ def context_vs_read_time(student_data):
     story_sum = 0
     story_count = 0
 
-    for dicti in student_data:
-        if dicti['context'] == "This is an ad.":
-            if not len(dicti["views"]) == 0:
-                for view in dicti["views"]:
+    for row in student_data:
+        if row['context'] == "This is an ad.":
+            if len(row["views"]) != 0:
+                for view in row["views"]:
                     ad_sum = ad_sum + view
             ad_count += 1
-        elif dicti["context"] == "This is actually a short story.":
-            if not len(dicti["views"]) == 0:
-                for view in dicti["views"]:
+        elif row["context"] == "This is actually a short story.":
+            if len(row["views"]) != 0:
+                for view in row["views"]:
                     story_sum = story_sum + view
             story_count += 1
 
     if ad_count == 0:
-        average_ad_view = 0
+        mean_ad_view = 0
     else:
-        average_ad_view = ad_sum / ad_count
+        mean_ad_view = ad_sum / ad_count
     if story_count == 0:
-        average_story_view = 0
+        mean_story_view = 0
     else:
-        average_story_view = story_sum / story_count
+        mean_story_view = story_sum / story_count
 
-    return average_ad_view, average_story_view
+    return mean_ad_view, mean_story_view
 
 
 def frequency_feelings(student_data):
-    """ :param student_data: list, student response dicts
+    """
+    :param student_data: list, student response dicts
     :return a list of tuples of words that appear more than once, and how often they occur,
-    in order of their frequency"""
+    in order of their frequency
+    """
     feelings = {}
-    for dicti in student_data:
-        if dicti['question'] == "In one word, how does this text make you feel?":
-            lowercaseword = dicti['response'].lower()
-            if feelings.get(lowercaseword, 0) == 0:
-                feelings[lowercaseword] = 1
+    for row in student_data:
+        if row['question'] == "In one word, how does this text make you feel?":
+            lower_case_word = row['response'].lower()
+            if feelings.get(lower_case_word, 0) == 0:
+                feelings[lower_case_word] = 1
             else:
-                feelings[lowercaseword] += 1
+                feelings[lower_case_word] += 1
 
-    frequentwords = []  # list of tuples in the format (frequency, word)
+    frequent_words = []  # list of tuples in the format (frequency, word)
     for word in feelings:
         if feelings[word] > 1:
-            frequentwords.append((word, feelings[word]))
+            frequent_words.append((word, feelings[word]))
 
-    print(frequentwords)
+    print(frequent_words)
 
-    for i in range(len(frequentwords) - 1):
-        for j in range(i + 1, len(frequentwords)):
-            if (frequentwords[i])[1] < (frequentwords[j])[1]:
-                frequentwords[i], frequentwords[j] = frequentwords[j], frequentwords[i]
+    for i in range(len(frequent_words) - 1):
+        for j in range(i + 1, len(frequent_words)):
+            if (frequent_words[i])[1] < (frequent_words[j])[1]:
+                frequent_words[i], frequent_words[j] = frequent_words[j], frequent_words[i]
 
-    print(frequentwords)
-    return frequentwords
+    print(frequent_words)
+    return frequent_words
 
 
 def run_mean_reading_analysis_for_questions(student_data):

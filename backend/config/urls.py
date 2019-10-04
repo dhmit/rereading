@@ -35,4 +35,5 @@ urlpatterns = [
     # React views
     url('student/', render_react_view, {'component_name': 'StudentView'}),
     url('instructor/', render_react_view, {'component_name': 'InstructorView'}),
+    url('analysis/', render_react_view, {'component_name': 'AnalysisView'}),
 ]

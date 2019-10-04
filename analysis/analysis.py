@@ -248,10 +248,10 @@ def run_analysis():
     print(f'The total view time of all students was {total_view_time}.')
 
 
-def run_mean_rereading_analysis_for_questions(student_data):
+def run_mean_reading_analysis_for_questions(student_data):
     """
     Runs the analysis on the data loaded from the CSV file by looking at the average
-    reread time for each question and the context that the question was given in and
+    read time for each question and the context that the question was given in and
     prints it in a nice readable format.
     :return: None
     """
@@ -259,43 +259,43 @@ def run_mean_rereading_analysis_for_questions(student_data):
     question_two = "In three words or fewer, what is this text about?"
     question_three = "Have you encountered this text before?"
 
-    mean_rereading_time_results_data = [
-        mean_rereading_time_for_a_question(student_data, question_one, "ad"),
-        mean_rereading_time_for_a_question(student_data, question_two, "ad"),
-        mean_rereading_time_for_a_question(student_data, question_three, "ad"),
-        mean_rereading_time_for_a_question(student_data, question_one, "short story"),
-        mean_rereading_time_for_a_question(student_data, question_two, "short story"),
-        mean_rereading_time_for_a_question(student_data, question_three, "short story")
+    mean_reading_time_results_data = [
+        mean_reading_time_for_a_question(student_data, question_one, "ad"),
+        mean_reading_time_for_a_question(student_data, question_two, "ad"),
+        mean_reading_time_for_a_question(student_data, question_three, "ad"),
+        mean_reading_time_for_a_question(student_data, question_one, "short story"),
+        mean_reading_time_for_a_question(student_data, question_two, "short story"),
+        mean_reading_time_for_a_question(student_data, question_three, "short story")
     ]
 
-    for rereading_result in mean_rereading_time_results_data:
-        if rereading_result[3] != 0:
-            print(f"Out of those who thought the reading was a(n) {rereading_result[1]}"
-                  f"and were asked {rereading_result[0]}\"")
+    for reading_result in mean_reading_time_results_data:
+        if reading_result[3] != 0:
+            print(f"Out of those who thought the reading was a(n) {reading_result[1]}"
+                  f"and were asked {reading_result[0]}\"")
             print(
-                f"{rereading_result[3]} subject(s) reread the text for an average of "
-                f"{round(rereading_result[2], 3)} seconds.")
+                f"{reading_result[3]} subject(s) read the text for an average of "
+                f"{round(reading_result[2], 3)} seconds.")
         else:
-            print(f"No one who thought the reading was a(n) {rereading_result[1]} and were asked "
-                  f"\"{rereading_result[0]}\" reread the text.")
+            print(f"No one who thought the reading was a(n) {reading_result[1]} and were asked "
+                  f"\"{reading_result[0]}\" read the text.")
         print("")
 
 
-def mean_rereading_time_for_a_question(student_data, question, context):
+def mean_reading_time_for_a_question(student_data, question, context):
     """
-    Given the student response dicts, computes the mean reread time for a
+    Given the student response dicts, computes the mean read time for a
     specific question (given by its keyword) and the context in which it was asked.
-    Returns the question, context, mean reread time, and number of people who reread.
+    Returns the question, context, mean read time, and number of people who read.
     :param student_data: list, student response dicts
     :param question: string, to determine which question was being asked
     :param context: string, what the reader thought the reading was
-    :return: tuple, in order of the question asked (full question), the context, the mean reread
-             time, and the number of people who reread it
+    :return: tuple, in order of the question asked (full question), the context, the mean read
+             time, and the number of people who read it
     """
     mean_time = 0
-    number_of_rereaders = 0
+    number_of_readers = 0
     question_count = 0
-    rereading_time = []
+    reading_time = []
     total_question_view_time = 0
 
     for student_data_dictionary in student_data:
@@ -303,52 +303,52 @@ def mean_rereading_time_for_a_question(student_data, question, context):
                 context != student_data_dictionary['context']:
             continue
         if len(student_data_dictionary['views']) != 0:
-            number_of_rereaders += 1
+            number_of_readers += 1
         for view_time in student_data_dictionary['views']:
-            rereading_time.append(view_time)
+            reading_time.append(view_time)
 
-    if len(rereading_time) != 0:
-        remove_outliers(rereading_time)
+    if len(reading_time) != 0:
+        remove_outliers(reading_time)
 
     view_time = 0
-    while view_time < len(rereading_time):
+    while view_time < len(reading_time):
         question_count += 1
-        total_question_view_time += rereading_time[view_time]
+        total_question_view_time += reading_time[view_time]
         view_time += 1
 
-    if len(rereading_time) != 0:
-        mean_time = round(total_question_view_time / len(rereading_time), 2)
+    if len(reading_time) != 0:
+        mean_time = round(total_question_view_time / len(reading_time), 2)
 
-    return question, context, mean_time, number_of_rereaders
+    return question, context, mean_time, number_of_readers
 
 
-def remove_outliers(rereading_time):
+def remove_outliers(reading_time):
     """
     Given a list of times, calculates and removes outliers, which are the data points that
     are outside the interquartile range of the data
-    :param rereading_time: list, rereading times for a specific question
-    :return: list, rereading times for a specific question with outliers removed
+    :param reading_time: list, reading times for a specific question
+    :return: list, reading times for a specific question with outliers removed
     """
-    rereading_time.sort()
-    quartile_one = rereading_time[math.trunc(len(rereading_time) * 0.25)]
-    quartile_three = rereading_time[math.trunc(len(rereading_time) * 0.75)]
+    reading_time.sort()
+    quartile_one = reading_time[math.trunc(len(reading_time) * 0.25)]
+    quartile_three = reading_time[math.trunc(len(reading_time) * 0.75)]
     interquartile_range = quartile_three - quartile_one
     lower_fence = quartile_one - (1.5 * interquartile_range)
     upper_fence = quartile_three + (1.5 * interquartile_range)
 
     view_time_two = 0
-    while view_time_two < len(rereading_time):
-        if (rereading_time[view_time_two] < lower_fence) \
-                or (rereading_time[view_time_two] > upper_fence):
-            rereading_time.remove(rereading_time[view_time_two])
+    while view_time_two < len(reading_time):
+        if (reading_time[view_time_two] < lower_fence) \
+                or (reading_time[view_time_two] > upper_fence):
+            reading_time.remove(reading_time[view_time_two])
             view_time_two -= 1
         else:
             view_time_two += 1
 
-    return rereading_time
+    return reading_time
 
 
-def mean_rereading_time(data):
+def mean_reading_time(data):
     """
     Takes the data and finds the mean time of all the view times in the data
     :param data: list of responses
@@ -367,7 +367,7 @@ def mean_rereading_time(data):
     return times / count
 
 
-def mean_rereading_time_student(data, student_id):
+def mean_reading_time_student(data, student_id):
     """
     Takes the data and an id and computes the average time overall of the entry with that id
     :param student_id: integer, represents specific id number of student
@@ -388,7 +388,7 @@ def mean_rereading_time_student(data, student_id):
     return times / count
 
 
-def mean_rereading_time_question_context(data, question, context):
+def mean_reading_time_question_context(data, question, context):
     """
     Takes the data, a question, and context and computes the average time of the
     views of this specific context and question
@@ -462,24 +462,6 @@ def word_freq_all(data):
         else:
             qc_dict[response] += 1
     return output
-
-
-def standard_deviation_of_rereading_given_average(data, average):
-    """
-    Takes the data and finds the standard deviation of the time
-    :param data: list of responses
-    :param average: float that represents average time of views
-    :return: float representing the standard deviation
-    """
-    result = 0
-    elements = 0
-    for ele in data:
-        for view in ele["views"]:
-            elements = elements + 1
-            result = result + (view - average) ** 2
-    result = result / (elements - 1)
-    result = result ** (1 / 2)
-    return result
 
 
 def show_response_groups(response_groups_freq_dicts):
@@ -605,50 +587,40 @@ class TestAnalysisMethods(unittest.TestCase):
         sample_csv_path = Path('data', 'rereading_data_2019-09-13.csv')
         self.student_data = load_data_csv(sample_csv_path)
 
-    def test_mean_rereading_time_for_a_question(self):
+    def test_mean_reading_time_for_a_question(self):
         """
-        Tests mean_rereading_time_for_a_question function with many data sets and checks if
+        Tests mean_reading_time_for_a_question function with many data sets and checks if
         the function crashes when it encounters the default data set. Also test many cases with
         all question and context combinations.
         """
-        mean_rereading_data = mean_rereading_time_for_a_question(self.default_student_data, "", "")
+        mean_reading_data = mean_reading_time_for_a_question(self.default_student_data, "", "")
 
         empty_comparison_tuple = ("", "", 0, 0)
-        self.assertEqual(mean_rereading_data, empty_comparison_tuple)
+        self.assertEqual(mean_reading_data, empty_comparison_tuple)
 
         # The expected result times are rounded to 2 decimals here due to Python rounding errors
         # not matching actual rounding.
-        results = mean_rereading_time_for_a_question(self.test_student_data, feel, ads)
+        results = mean_reading_time_for_a_question(self.test_student_data, feel, ads)
         self.assertEqual(results, (feel, ads, round(2.319, 2), 1))
-        results = mean_rereading_time_for_a_question(self.test_student_data, about, ads)
+        results = mean_reading_time_for_a_question(self.test_student_data, about, ads)
         self.assertEqual(results, (about, ads, round(2.945, 2), 1))
-        results = mean_rereading_time_for_a_question(self.test_student_data, encountered, ads)
+        results = mean_reading_time_for_a_question(self.test_student_data, encountered, ads)
         self.assertEqual(results, (encountered, ads, 0, 0))
-        results = mean_rereading_time_for_a_question(self.test_student_data, feel, short_story)
+        results = mean_reading_time_for_a_question(self.test_student_data, feel, short_story)
         self.assertEqual(results, (feel, short_story, round(1.121, 2), 1))
-        results = mean_rereading_time_for_a_question(self.test_student_data, about, short_story)
+        results = mean_reading_time_for_a_question(self.test_student_data, about, short_story)
         self.assertEqual(results, (about, short_story, 0, 0))
-        results = mean_rereading_time_for_a_question(self.test_student_data, encountered,
-                                                     short_story)
+        results = mean_reading_time_for_a_question(self.test_student_data, encountered,
+                                                   short_story)
         self.assertEqual(results, (encountered, short_story, 0, 0))
 
-    def test_mean_rereading_time_for_a_question_two(self):
+    def test_mean_reading_time_for_a_question_reversed(self):
         """
-        Tests mean_rereading_time_for_a_question function with the test data set
+        Tests mean_reading_time_for_a_question function but with the data set reversed
         """
-        mean_time = mean_rereading_time_for_a_question(self.test_student_data,
-                                                       "Have you encountered this text before?",
-                                                       "This is an ad.")
-
-        self.assertEqual(mean_time[0], "Have you encountered this text before?")
-
-    def test_mean_rereading_time_for_a_question_reversed(self):
-        """
-        Tests mean_rereading_time_for_a_question function but with the data set reversed
-        """
-        mean_time = mean_rereading_time_for_a_question(reversed(self.test_student_data),
-                                                       "Have you encountered this text before?",
-                                                       "This is an ad.")
+        mean_time = mean_reading_time_for_a_question(reversed(self.test_student_data),
+                                                     "Have you encountered this text before?",
+                                                     "This is an ad.")
 
         self.assertEqual(mean_time[0], "Have you encountered this text before?")
 
@@ -673,21 +645,21 @@ class TestAnalysisMethods(unittest.TestCase):
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
 
-    def test_mean_rereading_time_question_context(self):
+    def test_mean_reading_time_question_context(self):
         """
         Test the avg_time_context function to see if it can find the avg view times given a question
         and context. Also tests for if the question or context isn't in the data set.
         """
-        avg_time = mean_rereading_time_question_context(self.test_student_data,
-                                                        feel, ads)
+        avg_time = mean_reading_time_question_context(self.test_student_data,
+                                                      feel, ads)
         self.assertAlmostEqual(avg_time, 2.319)
 
-        avg_time = mean_rereading_time_question_context(self.default_student_data_2,
-                                                        feel, short_story)
+        avg_time = mean_reading_time_question_context(self.default_student_data_2,
+                                                      feel, short_story)
         self.assertAlmostEqual(avg_time, 3.1992)
 
-        avg_time = mean_rereading_time_question_context(self.default_student_data,
-                                                        feel, ads)
+        avg_time = mean_reading_time_question_context(self.default_student_data,
+                                                      feel, ads)
         self.assertIsNone(avg_time)
 
     def test_mean_rereading_time_student(self):
@@ -695,16 +667,16 @@ class TestAnalysisMethods(unittest.TestCase):
         Test the avg_time_student and see if given a student_id, the function can return
         the average view times for that student, even if they didn't do any viewing.
         """
-        avg_time = mean_rereading_time_student(self.test_student_data, 15)
+        avg_time = mean_reading_time_student(self.test_student_data, 15)
         self.assertAlmostEqual(avg_time, 2.128333333333)
 
-        avg_time = mean_rereading_time_student(self.default_student_data, 0)
+        avg_time = mean_reading_time_student(self.default_student_data, 0)
         self.assertIsNone(avg_time)
 
-        avg_time = mean_rereading_time_student(self.default_student_data_2, 7)
+        avg_time = mean_reading_time_student(self.default_student_data_2, 7)
         self.assertAlmostEqual(avg_time, 2.2)
 
-        avg_time = mean_rereading_time_student(self.default_student_data_2, 999)
+        avg_time = mean_reading_time_student(self.default_student_data_2, 999)
         self.assertIsNone(avg_time)
 
     def test_mean_rereading_time(self):
@@ -712,13 +684,13 @@ class TestAnalysisMethods(unittest.TestCase):
         Test average_time function for many test cases and see if it returns either the correct
         average time or None if there are no view times in the data set
         """
-        avg_time = mean_rereading_time(self.test_student_data)
+        avg_time = mean_reading_time(self.test_student_data)
         self.assertAlmostEqual(avg_time, 2.128333333333)
 
-        avg_time = mean_rereading_time(self.default_student_data)
+        avg_time = mean_reading_time(self.default_student_data)
         self.assertIsNone(avg_time)
 
-        avg_time = mean_rereading_time(self.default_student_data_2)
+        avg_time = mean_reading_time(self.default_student_data_2)
         self.assertAlmostEqual(avg_time, 2.88266666666)
 
     def test_word_freq_all(self):

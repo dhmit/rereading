@@ -9,6 +9,7 @@ Creates:
 from ast import literal_eval
 import csv
 from pathlib import Path
+from statistics import stdev
 import unittest
 from collections import defaultdict
 
@@ -30,6 +31,97 @@ def load_data_csv(csv_path: Path):
             row = dict(row)
             out_data.append(row)
     return out_data
+
+
+def get_sentiments() -> dict:
+    """
+    Returns a dictionary of sentiment scores, with the keys being the word and the values being
+    their score
+
+    :return: dict mapping words to their sentiment scores
+    """
+    sentiment_path = Path('data', 'sentiments.txt')
+
+    sentiments = dict()
+    with open(sentiment_path, 'r') as file:
+        word = file.readline()
+
+        # We want to handle each word individually, rather than as a whole set
+        while word:
+
+            # This particular file starts lines with '#' for non-sentiment comments, so skip them
+            if word[0] == '#' or word[0] == '\t':
+                word = file.readline()
+                continue
+
+            # All words use tabs to define the different parts of the data
+            attributes = word.split('\t')
+
+            # Pull out the word from the line
+            data = attributes[4]
+            data = data.split('#')
+            new_word = data[0]
+            positive_score = float(attributes[2])
+            negative_score = float(attributes[3])
+
+            # If the word is already in the dictionary, pick the larger value
+            # This is not optimal, but standardizes data
+            if new_word in sentiments:
+                if abs(sentiments[new_word]) > abs(positive_score) and abs(sentiments[new_word]) > \
+                        abs(negative_score):
+                    word = file.readline()
+                    continue
+
+            # Find the largest sentiment score for the word, and define negative sentiments
+            # as negative values (if there's a tie, the sentiment is 0)
+            if positive_score == negative_score:
+                score = 0
+            elif positive_score > negative_score:
+                score = float(positive_score)
+            else:
+                score = -float(negative_score)
+
+            sentiments[new_word] = score
+
+            word = file.readline()
+
+    return sentiments
+
+
+def question_sentiment_analysis(student_data, question_text):
+    """
+    Takes in a list of student response dicts, and a question prompt (or a substring of one) and
+    returns the average sentiment score and standard deviation for all responses to that question
+
+    :param student_data: list of dicts
+    :param question_text: question string or substring
+    :return: tuple in the form (average, standard_dev)
+    """
+
+    sentiments = get_sentiments()
+
+    # Set up data for calculating data
+    num_scores = 0
+    sentiment_sum = 0
+    score_list = list()
+
+    for response in student_data:
+
+        if question_text in response['question']:
+            words = response['response'].lower().split()
+
+            # Find the sentiment score for each word, and add it to our data
+            for word in words:
+                # Ignore the word if it's not in the sentiment dictionary
+                if word in sentiments:
+                    sentiment_sum += sentiments[word]
+                    num_scores += 1
+                    score_list.append(sentiments[word])
+
+    average = sentiment_sum / num_scores
+    standard_dev = stdev(score_list)
+
+    return average, standard_dev
 
 
 def word_time_relations(student_data: list) -> dict:
@@ -82,6 +174,68 @@ def compute_total_view_time(student_data):
         for view_time in row.get('views'):
             total_view_time += view_time
     return total_view_time
+
+
+def get_word_frequency_differences(student_data):
+    """
+    Looks over the data and compares responses from people who have read the text vs.
+    people who have not read the text before this exercise
+    :return: a list of word frequency differences, by increasing order of frequency differences
+    """
+
+    # Iterate through all data, and separate ids of students who have vs. have not read the text
+    yes_id = []
+    no_id = []
+
+    for response in student_data:
+        if 'Have you encountered this text before' in response['question'] \
+                and 'This is an ad.' in response['context']:
+            if 'yes' not in response['response'].lower():
+                no_id.append(response['student_id'])
+            else:
+                yes_id.append(response['student_id'])
+
+    # Iterate through all responses, store words and word frequencies of yes vs. no responses as
+    # keys and values in 2 dictionaries
+
+    yes_responses = dict()
+    no_responses = dict()
+
+    for element in student_data:
+        if 'In one word' in element['question'] and 'This is an ad' in element['context']:
+            response = element['response'].lower()
+            if element['student_id'] in yes_id:
+                if response in yes_responses:
+                    yes_responses[response] += 1
+                else:
+                    yes_responses[response] = 1
+            else:
+                if response in no_responses:
+                    no_responses[response] += 1
+                else:
+                    no_responses[response] = 1
+
+    # Iterate through yes_responses and no_responses, store words and frequency differences as keys
+    # and values of a dictionary
+    diff_responses = dict()
+
+    for word in yes_responses:
+        if word in no_responses:
+            diff_responses[word] = yes_responses[word] - no_responses[word]
+        else:
+            diff_responses[word] = yes_responses[word]
+    for word in no_responses:
+        if word not in yes_responses:
+            diff_responses[word] = - no_responses[word]
+
+    # Convert diff_responses from a dictionary to a list of tuples
+    diff_responses_list = []
+    for word in diff_responses:
+        diff_responses_list.append((word, diff_responses[word]))
+
+    # Order diff_responses and return ordered list
+    ordered_responses = sorted(diff_responses_list, key=lambda x: x[1])
+    return ordered_responses
 
 
 def run_analysis():
@@ -219,6 +373,40 @@ class TestAnalysisMethods(unittest.TestCase):
         # check we don't crash on the defaults from the model!
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
+
+    def test_question_sentiment_analysis(self):
+        """
+        test that the average and standard deviation of test data equals the expected values
+        """
+        single_word_data = question_sentiment_analysis(self.test_student_data, 'one word')
+        self.assertEqual(single_word_data, (-.75, 0))
+
+        three_words_data = question_sentiment_analysis(self.test_student_data, 'three words')
+        self.assertEqual(three_words_data, (0, 0))
+
+    def test_get_sentiments(self):
+        """
+        test that the get_sentiments method returns the correct data for each word
+        """
+
+        sentiments = get_sentiments()
+        competent_score = sentiments['competent']
+        self.assertEqual(competent_score, 0.75)
+
+        inefficient_score = sentiments['inefficient']
+        self.assertEqual(inefficient_score, -0.5)
+
+        length = len(sentiments)
+        self.assertEqual(length, 89631)
+
+    def test_word_frequency_differences(self):
+        """
+        Test the word_frequency_differences function
+        """
+
+        word_frequency_differences = get_word_frequency_differences(self.test_student_data)
+        expected = [('sad', -1)]
+        self.assertEqual(word_frequency_differences, expected)
 
     def test_response_group_frequencies(self):
         """

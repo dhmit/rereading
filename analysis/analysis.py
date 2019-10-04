@@ -235,11 +235,6 @@ def get_word_frequency_differences(student_data):
     return ordered_responses
 
 
-def run_analysis():
-    csv_path = Path('data', 'rereading_data_2019-09-13.csv')
-    student_data = load_data_csv(csv_path)
-    response_groups_freq_dicts = get_response_groups_frequencies(student_data)
-
 def compute_median_view_time(student_data):
     """
      Given a list of student response dicts,
@@ -359,8 +354,21 @@ def run_relevant_word_analysis(student_data):
 def run_analysis():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
+    response_groups_freq_dicts = get_response_groups_frequencies(student_data)
+    show_response_groups(response_groups_freq_dicts)
     run_time_analysis_functions(student_data)
     run_relevant_word_analysis(student_data)
+
+    total_view_time = compute_total_view_time(student_data)
+    print(f'The total view time of all students was {total_view_time}.')
+    print(
+        get_responses_for_question(student_data, "In one word, how does this text make you feel?"))
+    print(most_common_response(
+        student_data,
+        "In one word, how does this text make you feel?",
+        "This is an ad."
+    ))
+
 
 
 def show_response_groups(response_groups_freq_dicts):
@@ -500,6 +508,7 @@ class TestAnalysisMethods(unittest.TestCase):
         # check we don't crash on the defaults from the model!
         mean_response_length = compute_mean_response_length(self.default_student_data)
         self.assertEqual(mean_response_length, 0)
+
     def test_question_sentiment_analysis(self):
         """
         test that the average and standard deviation of test data equals the expected values

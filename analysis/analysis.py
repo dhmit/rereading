@@ -28,6 +28,16 @@ def load_data_csv(csv_path: Path):
     return out_data
 
 
+def sort_reread_count_in_student_data(student_data):
+    '''
+    Given list of student response dicts,
+    return a dictionary of question and context and reread times for each
+    :param student_data: list, student response dicts
+    :return: dictionary of question and context with reread times in list mapped to each question
+    and context combination
+    '''
+
+
 def compute_reread_counts(student_data):
     """"
     Given a list of student response dicts,

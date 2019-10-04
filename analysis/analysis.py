@@ -297,6 +297,72 @@ def run_analysis():
     ))
 
 
+def context_vs_read_time(student_data):
+    """
+    compares average viewtimes, given different context (ad vs story)
+    :param student_data: list, student response dicts
+    :return a tuple of the average ad view and the average story view
+    """
+    ad_sum = 0
+    ad_count = 0
+    story_sum = 0
+    story_count = 0
+
+    for row in student_data:
+        if row['context'] == "This is an ad.":
+            if len(row["views"]) != 0:
+                for view in row["views"]:
+                    ad_sum = ad_sum + view
+            ad_count += 1
+        elif row["context"] == "This is actually a short story.":
+            if len(row["views"]) != 0:
+                for view in row["views"]:
+                    story_sum = story_sum + view
+            story_count += 1
+
+    if ad_count == 0:
+        mean_ad_view = 0
+    else:
+        mean_ad_view = ad_sum / ad_count
+    if story_count == 0:
+        mean_story_view = 0
+    else:
+        mean_story_view = story_sum / story_count
+
+    return mean_ad_view, mean_story_view
+
+
+def frequency_feelings(student_data):
+    """
+    :param student_data: list, student response dicts
+    :return a list of tuples of words that appear more than once, and how often they occur,
+    in order of their frequency
+    """
+    feelings = {}
+    for row in student_data:
+        if row['question'] == "In one word, how does this text make you feel?":
+            lower_case_word = row['response'].lower()
+            if feelings.get(lower_case_word, 0) == 0:
+                feelings[lower_case_word] = 1
+            else:
+                feelings[lower_case_word] += 1
+
+    frequent_words = []  # list of tuples in the format (frequency, word)
+    for word in feelings:
+        if feelings[word] > 1:
+            frequent_words.append((word, feelings[word]))
+
+    print(frequent_words)
+
+    for i in range(len(frequent_words) - 1):
+        for j in range(i + 1, len(frequent_words)):
+            if (frequent_words[i])[1] < (frequent_words[j])[1]:
+                frequent_words[i], frequent_words[j] = frequent_words[j], frequent_words[i]
+
+    print(frequent_words)
+    return frequent_words
+
+
 def run_mean_reading_analysis_for_questions(student_data):
     """
     Runs the analysis on the data loaded from the CSV file by looking at the average
@@ -812,6 +878,30 @@ class TestAnalysisMethods(unittest.TestCase):
 
         length = len(sentiments)
         self.assertEqual(length, 89631)
+
+    def test_context_vs_read_time(self):
+        """
+        test that the context_vs_read_time method returns the expected values
+        """
+        context_vs_read = context_vs_read_time(self.test_student_data)
+        expected = (1.7546666666666664, 0.37366666666666665)
+        self.assertEqual(context_vs_read, expected)
+        # test that it still works with default values
+        context_vs_read = context_vs_read_time(self.default_student_data)
+        expected = (0, 0)
+        self.assertEqual(context_vs_read, expected)
+
+    def test_frequency_feelings(self):
+        """
+        test that frequency_feelings method returns the expected values
+        """
+        frequency_feels = frequency_feelings(self.test_student_data)
+        expected = [("sad", 2)]
+        self.assertEqual(frequency_feels, expected)
+        # test that it works with default values
+        frequency_feels = frequency_feelings(self.default_student_data)
+        expected = []
+        self.assertEqual(frequency_feels, expected)
 
     def test_word_frequency_differences(self):
         """

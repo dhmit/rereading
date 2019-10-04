@@ -42,6 +42,9 @@ class Question(models.Model):
         on_delete=models.CASCADE,
         related_name='questions',
     )
+    
+    def __str__(self):
+        return self.text
 
 
 class Student(models.Model):
@@ -58,7 +61,21 @@ class StudentResponse(models.Model):
     TODO(msc): why are these not links to other models?
     """
     question = models.TextField(default='')
+    question_fk = models.ForeignKey(
+        Question,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='student_responses',
+    )
+
     context = models.TextField(default='')
+    context_fk = models.ForeignKey(
+        Context,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='student_responses',
+    )
+
     response = models.TextField(default='')
     views = models.TextField(default='')  # do not use me directly! see get_parsed_views()
     scroll_ups = models.IntegerField(default=0)

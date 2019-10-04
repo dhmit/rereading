@@ -60,13 +60,13 @@ class StudentResponse(models.Model):
 
     TODO(msc): why are these not links to other models?
     """
-    question_fk = models.ForeignKey(
+    question = models.ForeignKey(
         Question,
         null=True,
         on_delete=models.SET_NULL,
         related_name='student_responses',
     )
-    context_fk = models.ForeignKey(
+    context = models.ForeignKey(
         Context,
         null=True,
         on_delete=models.SET_NULL,

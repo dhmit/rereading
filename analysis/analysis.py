@@ -31,7 +31,7 @@ def load_data_csv(csv_path: Path):
 def compute_reread_counts(student_data):
     """"
     Given a list of student response dicts,
-    return a matrix containing the number of times students had to reread
+    return a dictionary containing the number of times students had to reread
     the text based on the context and question.
     :param student_data: list, student response dicts
     :return: dictionary, each key in dictionary is question and context combination and value is

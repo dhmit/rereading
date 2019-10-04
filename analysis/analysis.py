@@ -9,6 +9,7 @@ from ast import literal_eval
 from pathlib import Path
 from statistics import stdev
 
+
 def load_data_csv(csv_path: Path):
     """
     Takes the path to a csv file, reads it, and returns its
@@ -38,70 +39,38 @@ def sort_reread_count_in_student_data(student_data):
     """
 
 
-def compute_reread_counts(student_data):
+def compute_reread_counts(student_data, question, context):
     """"
     Given a list of student response dicts,
-    return a dictionary containing the number of times students had to reread
-    the text based on the context and question.
+    return a dictionary containing the number of times students had to reread the text
     :param student_data: list, student response dicts
-    :return: dictionary, each key in dictionary is question and context combination and value is
-    the number of rereads with how many students reread the text that many of times
+    :param question: string, question for which reread counts is collected
+    :param context: string, context for which reread counts is collected
+    :return: dictionary, each key in dictionary is the number of times the text was reread
+    and value is the number of students who reread that many times
     """
 
-    compilation_of_contexts_and_question = {
-        "q1_ad": [],
-        "q1_short": [],
-        "q2_ad": [],
-        "q2_short": [],
-        "q3_ad": [],
-        "q3_short": []
-    }
-
-    # For each row in the student data, the loop sorts the number of reread counts into 6 lists
-    # for the six different questions
+    # Collects the reread count for every student id of the provided context and question
+    raw_reread_counts = []
     for row in student_data:
-        # "encountered" signifies the "Have you encountered this text before?" question
-        # "one" signifies the "In one word, how does this make you feel?" question
-        # "three" signifies the "In three words or fewer, what is this text about?" question
-        # "ad" signifies the "This is an ad." context
-        # "short" signifies the "This is a short story." context
+        table_context = row['context']
+        table_question = row['question']
         view_count = len(row['views'])
-        question = row['question']
-        context = row['context']
-        if "ad" in context:
-            if "encountered" in question:
-                compilation_of_contexts_and_question["q1_ad"].append(view_count)
-            elif "one" in question:
-                compilation_of_contexts_and_question["q2_ad"].append(view_count)
-            elif "three" in question:
-                compilation_of_contexts_and_question["q3_ad"].append(view_count)
+        if context in table_context:
+            if question in table_question:
+                raw_reread_counts.append(view_count)
 
-        if "short" in context:
-            if "encountered" in question:
-                compilation_of_contexts_and_question["q1_short"].append(view_count)
-            elif "one" in question:
-                compilation_of_contexts_and_question["q2_short"].append(view_count)
-            elif "three" in question:
-                compilation_of_contexts_and_question["q3_short"].append(view_count)
-
-    # Puts the question and context into keys in the dictionary and updates counts for each
-    # question and context
-    organized_data = {
-        "q1_ad": {},
-        "q1_short": {},
-        "q2_ad": {},
-        "q2_short": {},
-        "q3_ad": {},
-        "q3_short": {}
-    }
-    for question_and_context in compilation_of_contexts_and_question:
-        for entry in compilation_of_contexts_and_question[question_and_context]:
+        # Tallies the raw reread counts into the dictionary to be returned
+        organized_data = {
+            "Reread counts": {},
+        }
+        for entry in raw_reread_counts:
             if entry in organized_data.keys():
-                organized_data[question_and_context][entry] += 1
+                organized_data["Reread counts"][entry] += 1
             else:
-                organized_data[question_and_context].update({entry: 1})
-    print(organized_data)
-    return organized_data
+                organized_data.update({entry: 1})
+        print(organized_data)
+        return organized_data
 
 def get_sentiments() -> dict:
     """
@@ -455,21 +424,14 @@ class TestAnalysisMethods(unittest.TestCase):
         """
         Test that the reread count equals the expected values.
         """
-        total_reread_count = compute_reread_counts(self.test_student_data)
-        self.assertEqual(total_reread_count, {"q1_ad": {0: 1},
-                                              "q1_short": {0: 1},
-                                              "q2_ad": {1: 1},
-                                              "q2_short": {1: 1},
-                                              "q3_ad": {1: 1},
-                                              "q3_short": {0: 1}})
-        total_reread_count = compute_reread_counts(self.default_student_data)
-        self.assertEqual(total_reread_count, {"q1_ad": {},
-                                              "q1_short": {},
-                                              "q2_ad": {},
-                                              "q2_short": {},
-                                              "q3_ad": {},
-                                              "q3_short": {}
+        total_reread_count = compute_reread_counts(self.test_student_data,
+                                                   "In one word, how does this make you feel?",
+                                                   "This is an ad.")
+        self.assertEqual(total_reread_count, {"Reread counts": {
+                                              0: 1, 1: 11, 2: 11, 3: 5, 4: 1, 5: 1}
                                               })
+        total_reread_count = compute_reread_counts(self.default_student_data)
+        self.assertEqual(total_reread_count, {"Reread counts": {}})
 
     def test_question_sentiment_analysis(self):
         """

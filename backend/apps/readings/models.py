@@ -51,7 +51,7 @@ class Student(models.Model):
     """
     A user who reads stories and responds to questions.
     """
-    story = models.TextField(default='')
+    name = models.TextField(default='')
 
 
 class StudentResponse(models.Model):

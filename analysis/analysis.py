@@ -174,7 +174,7 @@ def compute_total_view_time(student_data):
 def mean_view_time_comparison(student_data):
     """
     Calculate the mean view time of both groups (those who had a negative-word response and those
-    did not) for comparison.
+    did not) for comparison. Prints the result.
     :param student_data: a list of dictionaries
     :return: a tuple of floats, the mean view times of negative and neutral
             respectively.
@@ -183,6 +183,7 @@ def mean_view_time_comparison(student_data):
     neutral_total_view_time = 0
     negative_responses = 0
     neutral_responses = 0
+    
     # list of negative words used to separate students' responses
     negative_key_words_list = [
         'miscarriage',
@@ -193,6 +194,7 @@ def mean_view_time_comparison(student_data):
         'deceased',
         'loss'
     ]
+    
     # iterates through all responses in student_data
     for response_dict in student_data:
         is_not_negative = True

@@ -172,6 +172,48 @@ def compute_total_view_time(student_data):
     return total_view_time
 
 
+def get_responses_for_question(student_data, question):
+    """
+    For a certain question, returns the set of responses as a dictionary with keys being the
+    context and values being nested dictionaries containing each response and their frequency.
+    :param student_data: list of OrderedDicts, set of responses
+    :param question: string, question
+    :return: dictionary mapping strings to integers
+    """
+    responses = {}
+    for elem in student_data:
+        student_question = elem['question']
+        student_response = elem['response'].lower()
+        question_context = elem['context']
+        if student_question == question:
+            if question_context not in responses:
+                responses[question_context] = {student_response: 1}
+            else:
+                if student_response in responses[question_context]:
+                    responses[question_context][student_response] += 1
+                else:
+                    responses[question_context][student_response] = 1
+    return responses
+
+
+def most_common_response(student_data, question, context):
+    """
+    Returns a list of the most common response(s) given a set of data, a question, and a context.
+    :param student_data: list of OrderedDicts, student response data
+    :param question: string, question
+    :param context: string, context
+    :return: list of strings
+    """
+    max_response = []
+    response_dict = get_responses_for_question(student_data, question)
+    responses_by_context = response_dict[context]
+    max_response_frequency = max(responses_by_context.values())
+    for response in responses_by_context:
+        if responses_by_context[response] == max_response_frequency:
+            max_response.append(response)
+    return max_response
+
+
 def get_word_frequency_differences(student_data):
     """
     Looks over the data and compares responses from people who have read the text vs.
@@ -235,17 +277,23 @@ def get_word_frequency_differences(student_data):
 
 
 def run_analysis():
-    csv_path = Path("data", "rereading_data_2019-09-13.csv")
+    """
+    Runs the analytical method on the reading data
+    :return: None
+    """
+    csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
-    # TODO: do something with student_data that's not just printing it!
-    average_times = context_vs_read_time(student_data)
-
-    # print(student_data)
-    print(average_times)
+    response_groups_freq_dicts = get_response_groups_frequencies(student_data)
+    show_response_groups(response_groups_freq_dicts)
     total_view_time = compute_total_view_time(student_data)
     print(f'The total view time of all students was {total_view_time}.')
-
-    frequency_feelings(student_data)
+    print(
+        get_responses_for_question(student_data, "In one word, how does this text make you feel?"))
+    print(most_common_response(
+        student_data,
+        "In one word, how does this text make you feel?",
+        "This is an ad."
+    ))
 
 
 def context_vs_read_time(student_data):
@@ -270,8 +318,14 @@ def context_vs_read_time(student_data):
                     story_sum = story_sum + view
             story_count += 1
 
-    average_ad_view = ad_sum / ad_count
-    average_story_view = story_sum / story_count
+    if ad_count == 0:
+        average_ad_view = 0
+    else:
+        average_ad_view = ad_sum / ad_count
+    if story_count == 0:
+        average_story_view = 0
+    else:
+        average_story_view = story_sum / story_count
 
     return average_ad_view, average_story_view
 
@@ -399,6 +453,7 @@ class TestAnalysisMethods(unittest.TestCase):
     """
     Test cases to make sure things are running properly
     """
+
     def setUp(self):
         test_data_path = Path('data', 'test_data.csv')
         self.test_student_data = load_data_csv(test_data_path)
@@ -427,6 +482,21 @@ class TestAnalysisMethods(unittest.TestCase):
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
 
+    def test_common_response(self):
+        """
+        Tests to make sure the function runs properly by checking against known data sets.
+        """
+        most_common_response_value = most_common_response(self.test_student_data,
+                                                          "In one word, how does this text make "
+                                                          "you "
+                                                          "feel?",
+                                                          "This is an ad.")
+        self.assertEqual(most_common_response_value, ['sad'])
+
+        # check we don't crash on the defaults from the model!
+        most_common_response_value = most_common_response(self.default_student_data, '', '')
+        self.assertEqual(most_common_response_value, [''])
+
     def test_question_sentiment_analysis(self):
         """
         test that the average and standard deviation of test data equals the expected values
@@ -451,6 +521,30 @@ class TestAnalysisMethods(unittest.TestCase):
 
         length = len(sentiments)
         self.assertEqual(length, 89631)
+
+    def test_context_vs_read_time(self):
+        """
+        test that the context_vs_read_time method returns the expected values
+        """
+        context_vs_read = context_vs_read_time(self.test_student_data)
+        expected = (1.7546666666666664, 0.37366666666666665)
+        self.assertEqual(context_vs_read, expected)
+        # test that it still works with default values
+        context_vs_read = context_vs_read_time(self.default_student_data)
+        expected = (0, 0)
+        self.assertEqual(context_vs_read, expected)
+
+    def test_frequency_feelings(self):
+        """
+        test that frequency_feelings method returns the expected values
+        """
+        frequency_feels = frequency_feelings(self.test_student_data)
+        expected = [("sad", 2)]
+        self.assertEqual(frequency_feels, expected)
+        # test that it works with default values
+        frequency_feels = frequency_feelings(self.default_student_data)
+        expected = []
+        self.assertEqual(frequency_feels, expected)
 
     def test_word_frequency_differences(self):
         """

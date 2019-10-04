@@ -572,6 +572,13 @@ def find_word_frequency(response_list):
     return freq
 
 
+feel = "In one word, how does this text make you feel?"
+about = "In three words or fewer, what is this text about?"
+encountered = "Have you encountered this text before?"
+ads = "This is an ad."
+short_story = "This is actually a short story."
+
+
 class TestAnalysisMethods(unittest.TestCase):
     """
     Test cases to make sure things are running properly
@@ -609,12 +616,6 @@ class TestAnalysisMethods(unittest.TestCase):
         empty_comparison_tuple = ("", "", 0, 0)
         self.assertEqual(mean_rereading_data, empty_comparison_tuple)
 
-        feel = "In one word, how does this text make you feel?"
-        about = "In three words or fewer, what is this text about?"
-        encountered = "Have you encountered this text before?"
-        ads = "This is an ad."
-        short_story = "This is actually a short story."
-
         # The expected result times are rounded to 2 decimals here due to Python rounding errors
         # not matching actual rounding.
         results = mean_rereading_time_for_a_question(self.test_student_data, feel, ads)
@@ -635,23 +636,21 @@ class TestAnalysisMethods(unittest.TestCase):
         """
         Tests mean_rereading_time_for_a_question function with the test data set
         """
-        mean_rereading_time = mean_rereading_time_for_a_question(self.test_student_data,
-                                                                 "Have you encountered this text "
-                                                                 "before?",
-                                                                 "This is an ad.")
+        mean_time = mean_rereading_time_for_a_question(self.test_student_data,
+                                                       "Have you encountered this text before?",
+                                                       "This is an ad.")
 
-        self.assertEqual(mean_rereading_time[0], "Have you encountered this text before?")
+        self.assertEqual(mean_time[0], "Have you encountered this text before?")
 
     def test_mean_rereading_time_for_a_question_reversed(self):
         """
         Tests mean_rereading_time_for_a_question function but with the data set reversed
         """
-        mean_rereading_time = mean_rereading_time_for_a_question(reversed(self.test_student_data),
-                                                                 "Have you encountered this text "
-                                                                 "before?",
-                                                                 "This is an ad.")
+        mean_time = mean_rereading_time_for_a_question(reversed(self.test_student_data),
+                                                       "Have you encountered this text before?",
+                                                       "This is an ad.")
 
-        self.assertEqual(mean_rereading_time[0], "Have you encountered this text before?")
+        self.assertEqual(mean_time[0], "Have you encountered this text before?")
 
     def test_remove_outliers(self):
         """
@@ -680,18 +679,15 @@ class TestAnalysisMethods(unittest.TestCase):
         and context. Also tests for if the question or context isn't in the data set.
         """
         avg_time = mean_rereading_time_question_context(self.test_student_data,
-            'In one word, how does this text make you feel?',
-            'This is an ad.')
+                                                        feel, ads)
         self.assertAlmostEqual(avg_time, 2.319)
 
         avg_time = mean_rereading_time_question_context(self.default_student_data_2,
-            'In one word, how does this text make you feel?',
-            'This is actually a short story.')
+                                                        feel, short_story)
         self.assertAlmostEqual(avg_time, 3.1992)
 
         avg_time = mean_rereading_time_question_context(self.default_student_data,
-            'In one word, how does this text make you feel?',
-            'This is an ad.')
+                                                        feel, ads)
         self.assertIsNone(avg_time)
 
     def test_mean_rereading_time_student(self):
@@ -830,7 +826,6 @@ class TestAnalysisMethods(unittest.TestCase):
         }
         default_result = word_time_relations(self.default_student_data)
         self.assertEqual(default_result, default_expected)
-
 
 
 if __name__ == '__main__':

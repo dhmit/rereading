@@ -1,0 +1,4 @@
+id,question,context,response,views,student_id,scroll_ups
+0,"In one word, how does this text make you feel?",This is actually a short story.,Sad,"[4.231,1.234,5.231]",15,0
+5,"In one word, how does this text make you feel?",This is actually a short story.,saD,"[2.2,3.1]",7,2
+19,"In one word, how does this text make you feel?",This is an ad.,intrigued,[1.3],7,0

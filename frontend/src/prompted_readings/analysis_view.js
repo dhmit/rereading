@@ -29,6 +29,7 @@ class AnalysisView extends React.Component {
         if (this.state.analysis !== null) {
             const {  // object destructuring:
                 total_view_time,
+                frequency_feelings,
             } = this.state.analysis;
 
             return (
@@ -36,6 +37,14 @@ class AnalysisView extends React.Component {
                     <h1>Analysis of Student Responses</h1>
                     <h3>Total view time</h3>
                     <p>{total_view_time} seconds</p>
+                    <h1>Frequency Feelings</h1>
+                    <table border="1">
+                        <tr>
+                            <th>Word</th>
+                            <th>Frequency</th>
+                        </tr>
+                        {frequency_feelings.map((el, i) => <tr key={i}><td>{el[0]}</td><td>{el[1]}</td></tr>)}
+                    </table>
                 </div>
             );
         } else {

@@ -235,17 +235,18 @@ def get_word_frequency_differences(student_data):
 
 
 def run_analysis():
-    csv_path = Path("data", "rereading_data_2019-09-13.csv")
-    student_data = load_data_csv(csv_path)
-    # TODO: do something with student_data that's not just printing it!
-    average_times = context_vs_read_time(student_data)
+    """
+    Runs the analytical method on the reading data
 
-    # print(student_data)
-    print(average_times)
+    :return: None
+    """
+    csv_path = Path('data', 'rereading_data_2019-09-13.csv')
+    student_data = load_data_csv(csv_path)
+    response_groups_freq_dicts = get_response_groups_frequencies(student_data)
+    show_response_groups(response_groups_freq_dicts)
     total_view_time = compute_total_view_time(student_data)
     print(f'The total view time of all students was {total_view_time}.')
 
-    frequency_feelings(student_data)
 
 
 def context_vs_read_time(student_data):
@@ -270,8 +271,14 @@ def context_vs_read_time(student_data):
                     story_sum = story_sum + view
             story_count += 1
 
-    average_ad_view = ad_sum / ad_count
-    average_story_view = story_sum / story_count
+    if ad_count == 0:
+        average_ad_view = 0
+    else:
+        average_ad_view = ad_sum / ad_count
+    if story_count == 0:
+        average_story_view = 0
+    else:
+        average_story_view = story_sum / story_count
 
     return average_ad_view, average_story_view
 
@@ -451,6 +458,30 @@ class TestAnalysisMethods(unittest.TestCase):
 
         length = len(sentiments)
         self.assertEqual(length, 89631)
+
+    def test_context_vs_read_time(self):
+        """
+        test that the context_vs_read_time method returns the expected values
+        """
+        context_vs_read = context_vs_read_time(self.test_student_data)
+        expected = (1.7546666666666664, 0.37366666666666665)
+        self.assertEqual(context_vs_read, expected)
+        # test that it still works with default values
+        context_vs_read = context_vs_read_time(self.default_student_data)
+        expected =(0,0)
+        self.assertEqual(context_vs_read, expected)
+
+    def test_frequency_feelings(self):
+        """
+        test that frequency_feelings method returns the expected values
+        """
+        frequency_feels = frequency_feelings(self.test_student_data)
+        expected = [("sad", 2)]
+        self.assertEqual(frequency_feels, expected)
+        #test that it works with default values
+        frequency_feels = frequency_feelings(self.default_student_data)
+        expected = []
+        self.assertEqual(frequency_feels, expected)
 
     def test_word_frequency_differences(self):
         """

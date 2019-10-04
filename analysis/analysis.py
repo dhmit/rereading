@@ -2,7 +2,10 @@
 
 Analysis.py - initial analyses for dhmit/rereading
 
+This module is too long, but that's okay for now -- we're shortly going to refactor!
 """
+# pylint: disable=C0302
+
 from ast import literal_eval
 import csv
 from pathlib import Path

@@ -67,7 +67,7 @@ def compute_reread_counts(student_data, question, context):
         for entry in raw_reread_counts:
             if entry in organized_data.keys():
                 organized_data["Reread counts"][entry] += 1
-            else:
+            elif len(raw_reread_counts) != 0:
                 organized_data.update({entry: 1})
         print(organized_data)
         return organized_data
@@ -286,7 +286,7 @@ def run_analysis():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
 
-    reread_counts = compute_reread_counts(student_data)
+    reread_counts = compute_reread_counts(student_data, "In one word", "ad")
     print("Number of times students reread text based on question or context:\n")
     print(reread_counts)
 
@@ -424,26 +424,31 @@ class TestAnalysisMethods(unittest.TestCase):
         """
         Test that the reread count equals the expected values.
         """
-        total_reread_count = compute_reread_counts(self.test_student_data,
-                                                   "In three words or fewer", "This is an ad.")
-        self.assertEqual(total_reread_count, {"Reread counts": {1: 1}})
-        total_reread_count = compute_reread_counts(self.test_student_data,
-                                                   "In one word?", "This is an ad.")
-        self.assertEqual(total_reread_count, {"Reread counts": {1: 1}})
-        total_reread_count = compute_reread_counts(self.test_student_data,
-                                                   "Have you encountered?",  "This is an ad.")
-        self.assertEqual(total_reread_count, {"Reread counts": {0: 1}})
-        total_reread_count = compute_reread_counts(self.test_student_data,
-                                                   "In three words or fewer", "short story")
-        self.assertEqual(total_reread_count, {"Reread counts": {0: 1}})
-        total_reread_count = compute_reread_counts(self.test_student_data,
-                                                   "In one word?", "short story")
-        self.assertEqual(total_reread_count, {"Reread counts": {1: 1}})
-        total_reread_count = compute_reread_counts(self.test_student_data,
-                                                   "Have you encountered?",  "short story")
-        self.assertEqual(total_reread_count, {"Reread counts": {0: 1}})
-        total_reread_count = compute_reread_counts(self.default_student_data)
-        self.assertEqual(total_reread_count, {"Reread counts": {}})
+        total_reread_count2 = compute_reread_counts(self.test_student_data,
+                                                    "In three words or fewer", "This is an ad.")
+        self.assertEqual(total_reread_count2, {"Reread counts": {1: 1}})
+
+        total_reread_count3 = compute_reread_counts(self.test_student_data,
+                                                    "In one word?", "This is an ad.")
+        self.assertEqual(total_reread_count3, {"Reread counts": {1: 1}})
+
+        total_reread_count4 = compute_reread_counts(self.test_student_data,
+                                                    "Have you encountered?",  "This is an ad.")
+        self.assertEqual(total_reread_count4, {"Reread counts": {0: 1}})
+
+        total_reread_count5 = compute_reread_counts(self.test_student_data,
+                                                    "In three words or fewer", "short story")
+        self.assertEqual(total_reread_count5, {"Reread counts": {0: 1}})
+
+        total_reread_count6 = compute_reread_counts(self.test_student_data,
+                                                    "In one word?", "short story")
+        self.assertEqual(total_reread_count6, {"Reread counts": {1: 1}})
+        total_reread_count7 = compute_reread_counts(self.test_student_data,
+                                                    "Have you encountered?",  "short story")
+        self.assertEqual(total_reread_count7, {"Reread counts": {0: 1}})
+
+        total_reread_count1 = compute_reread_counts(self.default_student_data, "", "")
+        self.assertEqual(total_reread_count1, {"Reread counts": {}})
 
     def test_question_sentiment_analysis(self):
         """
@@ -523,5 +528,6 @@ class TestAnalysisMethods(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    run_analysis()
+    print(run_analysis())
     unittest.main()  # run the tests
+

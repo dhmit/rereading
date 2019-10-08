@@ -29,16 +29,6 @@ def load_data_csv(csv_path: Path):
     return out_data
 
 
-def sort_reread_count_in_student_data(student_data):
-    """
-    Given list of student response dicts,
-    return a dictionary of question and context and reread times for each
-    :param student_data: list, student response dicts
-    :return: dictionary of question and context with reread times in list mapped to each question
-    and context combination
-    """
-
-
 def compute_reread_counts(student_data, question, context):
     """"
     Given a list of student response dicts,
@@ -71,6 +61,7 @@ def compute_reread_counts(student_data, question, context):
                 organized_data.update({entry: 1})
         print(organized_data)
         return organized_data
+
 
 def get_sentiments() -> dict:
     """
@@ -107,7 +98,7 @@ def get_sentiments() -> dict:
             # This is not optimal, but standardizes data
             if new_word in sentiments:
                 if abs(sentiments[new_word]) > abs(positive_score) and abs(sentiments[new_word]) > \
-                        abs(negative_score):
+                    abs(negative_score):
                     word = file.readline()
                     continue
 
@@ -228,7 +219,7 @@ def get_word_frequency_differences(student_data):
 
     for response in student_data:
         if 'Have you encountered this text before' in response['question'] \
-                and 'This is an ad.' in response['context']:
+            and 'This is an ad.' in response['context']:
             if 'yes' not in response['response'].lower():
                 no_id.append(response['student_id'])
             else:
@@ -428,8 +419,8 @@ class TestAnalysisMethods(unittest.TestCase):
                                                    "In one word, how does this make you feel?",
                                                    "This is an ad.")
         self.assertEqual(total_reread_count, {"Reread counts": {
-                                              0: 1, 1: 11, 2: 11, 3: 5, 4: 1, 5: 1}
-                                              })
+            0: 1, 1: 11, 2: 11, 3: 5, 4: 1, 5: 1}
+        })
         total_reread_count = compute_reread_counts(self.default_student_data)
         self.assertEqual(total_reread_count, {"Reread counts": {}})
 

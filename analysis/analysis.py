@@ -425,11 +425,23 @@ class TestAnalysisMethods(unittest.TestCase):
         Test that the reread count equals the expected values.
         """
         total_reread_count = compute_reread_counts(self.test_student_data,
-                                                   "In one word, how does this make you feel?",
-                                                   "This is an ad.")
-        self.assertEqual(total_reread_count, {"Reread counts": {
-                                              0: 1, 1: 11, 2: 11, 3: 5, 4: 1, 5: 1}
-                                              })
+                                                   "In three words or fewer", "This is an ad.")
+        self.assertEqual(total_reread_count, {"Reread counts": {1: 1}})
+        total_reread_count = compute_reread_counts(self.test_student_data,
+                                                   "In one word?", "This is an ad.")
+        self.assertEqual(total_reread_count, {"Reread counts": {1: 1}})
+        total_reread_count = compute_reread_counts(self.test_student_data,
+                                                   "Have you encountered?",  "This is an ad.")
+        self.assertEqual(total_reread_count, {"Reread counts": {0: 1}})
+        total_reread_count = compute_reread_counts(self.test_student_data,
+                                                   "In three words or fewer", "short story")
+        self.assertEqual(total_reread_count, {"Reread counts": {0: 1}})
+        total_reread_count = compute_reread_counts(self.test_student_data,
+                                                   "In one word?", "short story")
+        self.assertEqual(total_reread_count, {"Reread counts": {1: 1}})
+        total_reread_count = compute_reread_counts(self.test_student_data,
+                                                   "Have you encountered?",  "short story")
+        self.assertEqual(total_reread_count, {"Reread counts": {0: 1}})
         total_reread_count = compute_reread_counts(self.default_student_data)
         self.assertEqual(total_reread_count, {"Reread counts": {}})
 

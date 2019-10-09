@@ -61,6 +61,7 @@ class AnalysisView extends React.Component {
             const {  // object destructuring:
                 total_view_time,
                 frequency_feelings,
+                context_vs_read_time,
             } = this.state.analysis;
 
             return (
@@ -70,6 +71,9 @@ class AnalysisView extends React.Component {
                     <p>{total_view_time} seconds</p>
                     <h1>Frequency Feelings</h1>
                     <FrequencyFeelingTable feelings={frequency_feelings}/>
+                    <h1>Ad View Time VS Story View Time</h1>
+                    <b>Average Ad Views:</b> {context_vs_read_time[0]} seconds<br/>
+                    <b>Average Story Views:</b> {context_vs_read_time[1]} seconds
                 </div>
             );
         } else {

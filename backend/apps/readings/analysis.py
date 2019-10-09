@@ -65,3 +65,39 @@ class RereadingAnalysis:
 
         # print(frequent_words)
         return frequent_words
+
+    @property
+    def context_vs_read_time(self):
+        """
+        compares average viewtimes, given different context (ad vs story)
+        :return a tuple of the average ad view and the average story view
+        """
+        ad_sum = 0
+        ad_count = 0
+        story_sum = 0
+        story_count = 0
+
+        for response in self.responses:
+            context = response.context.text
+            parsed_views = response.get_parsed_views()
+            if context == "This is an ad.":
+                if len(parsed_views) != 0:
+                    for view in parsed_views:
+                        ad_sum = ad_sum + view
+                ad_count += 1
+            elif context == "This is actually a short story.":
+                if len(parsed_views) != 0:
+                    for view in parsed_views:
+                        story_sum = story_sum + view
+                story_count += 1
+
+        if ad_count == 0:
+            mean_ad_view = 0
+        else:
+            mean_ad_view = ad_sum / ad_count
+        if story_count == 0:
+            mean_story_view = 0
+        else:
+            mean_story_view = story_sum / story_count
+
+        return mean_ad_view, mean_story_view

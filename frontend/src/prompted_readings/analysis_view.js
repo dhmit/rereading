@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 class FrequencyFeelingTable extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {}
     }
 
@@ -29,7 +29,7 @@ is an array so I can use the map function on it.
  */
 FrequencyFeelingTable.propTypes = {
     feelings: PropTypes.array,
-}
+};
 
 class AnalysisView extends React.Component {
     constructor(props) {

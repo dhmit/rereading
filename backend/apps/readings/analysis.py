@@ -69,7 +69,7 @@ class RereadingAnalysis:
     @property
     def context_vs_read_time(self):
         """
-        compares average viewtimes, given different context (ad vs story)
+        compares average view times, given different context (ad vs story)
         :return a tuple of the average ad view and the average story view
         """
         ad_sum = 0

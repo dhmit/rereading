@@ -47,14 +47,14 @@ def fetch_responses(dataset):
     responses_ad = []
     responses_story = []
     question = "In three words or fewer, what is this text about?"
-    for x in dataset:
+    for resp in dataset:
         # removing punctuation and making string lowercase to standardize
-        x['response'] = x['response'].replace('.', '').lower()
-        x['response'] = x['response'].replace(',', '')
-        if x['question'] == question and x['context'] == "This is an ad.":
-            responses_ad += x['response'].split()
-        elif x['question'] == question and x['context'] == "This is actually a short story.":
-            responses_story += x['response'].split()
+        resp['response'] = resp['response'].replace('.', '').lower()
+        resp['response'] = resp['response'].replace(',', '')
+        if resp['question'] == question and resp['context'] == "This is an ad.":
+            responses_ad += resp['response'].split()
+        elif resp['question'] == question and resp['context'] == "This is actually a short story.":
+            responses_story += resp['response'].split()
 
     return responses_ad, responses_story
 
@@ -96,20 +96,14 @@ def repeated_prompt_words(dataset):
     story_vocab_list = ["for", "sale", "baby", "shoes", "never", "worn"]
 
     # for the first question given the context of the ad
-    to_delete = []
-    for word in ad_resp_words.keys():
+    for word in responses_ad:
         if word not in story_vocab_list:
-            to_delete.append(word)
-    for x in to_delete:
-        del ad_resp_words[x]
+            del ad_resp_words[word]
 
     # for the second question given the context of the story
-    to_delete = []
-    for word in story_resp_words.keys():
+    for word in responses_story:
         if word not in story_vocab_list:
-            to_delete.append(word)
-    for x in to_delete:
-        del story_resp_words[x]
+            del story_resp_words[word]
 
     # TODO Will add this to frontend to display data collected
 

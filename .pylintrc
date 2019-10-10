@@ -69,7 +69,8 @@ disable=
     no-else-return,
     too-many-ancestors,
     consider-using-get,
-    chained-comparison
+    chained-comparison,
+    too-many-lines
 
 
 [REPORTS]

@@ -78,16 +78,23 @@ class RereadingAnalysis:
 
     @property
     def most_common_responses(self):
-        question = "In one word, how does this text make you feel?"
-        context = "This is an ad."
-        most_common_responses = [most_common_response_by_question_and_context(
-                self.responses,
-                question,
-                context,
-            )
-        ]
-        return most_common_responses
+        questions = []
+        contexts = []
+        most_common_responses = {}
+        for response in self.responses:
+            if response.question not in questions:
+                questions.append(response.question)
+        for response in self.responses:
+            if response.context not in contexts:
+                questions.append(response.context)
+        for question in questions:
+            for context in contexts:
+                response_by_context = {}
+                response_by_context[context] = most_common_response_by_question_and_context(
+                    self.responses,
+                    question,
+                    context,
+                )
+                most_common_responses[question] = response_by_context
 
-    @property
-    def hello(self):
-        return "hello"
+        return most_common_responses

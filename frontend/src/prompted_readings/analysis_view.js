@@ -38,7 +38,7 @@ class AnalysisView extends React.Component {
                     <p>{total_view_time} seconds</p>
 
                     <h3>Most Common Responses</h3>
-                    <p>{most_common_responses}</p>
+                    <p>{ Object.keys(most_common_responses).map(function(contex))}</p>
                 </div>
             );
         } else {

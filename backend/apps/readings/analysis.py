@@ -42,8 +42,6 @@ class RereadingAnalysis:
         """
         feelings = {}
         for response in self.responses:
-            # print(response)
-            # print(response.question.text)
             if response.question.text == "In one word, how does this text make you feel?":
                 lower_case_word = response.response.lower()
                 if feelings.get(lower_case_word, 0) == 0:
@@ -56,14 +54,11 @@ class RereadingAnalysis:
             if feelings[word] > 1:
                 frequent_words.append((word, feelings[word]))
 
-        # print(frequent_words)
-
         for i in range(len(frequent_words) - 1):
             for j in range(i + 1, len(frequent_words)):
                 if (frequent_words[i])[1] < (frequent_words[j])[1]:
                     frequent_words[i], frequent_words[j] = frequent_words[j], frequent_words[i]
 
-        # print(frequent_words)
         return frequent_words
 
     @property

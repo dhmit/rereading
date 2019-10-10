@@ -12,8 +12,24 @@ class Story(models.Model):
     """
     story_text = models.TextField()
 
-    def __str___(self):
+    def __str__(self):
         return self.story_text
+
+
+class StorySection(models.Model):
+    """
+    Allows the story to be split up between different sections
+    """
+    section = models.TextField()
+
+    story = models.ForeignKey(
+        Story,
+        on_delete=models.CASCADE,
+        related_name='sections',
+    )
+
+    def __str__(self):
+        return self.section
 
 
 class Context(models.Model):

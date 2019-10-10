@@ -5,7 +5,7 @@ allow the frontend to suggest changes to the backend/database.
 """
 from rest_framework import serializers
 
-from .models import Story, Question, Context, Student, StudentResponse
+from .models import Story, Question, Context, Student, StudentResponse, StorySection
 
 class StudentResponseSerializer(serializers.ModelSerializer):
     """
@@ -50,7 +50,7 @@ class StudentSerializer(serializers.ModelSerializer):
 
         fields = (
             'id',
-            'story',
+            # 'story',
             'student_responses',
         )
 
@@ -82,18 +82,33 @@ class ContextSerializer(serializers.ModelSerializer):
         )
 
 
+class StorySectionSerializer(serializers.ModelSerializer):
+    """
+    Serializes a Story Section object
+    """
+    class Meta:
+        model = StorySection
+
+        fields = (
+            'id',
+            'section'
+        )
+
+
 class StorySerializer(serializers.ModelSerializer):
     """
     Serializes a Story, including its questions and contexts.
     """
     contexts = serializers.StringRelatedField(many=True, read_only=True)
     questions = QuestionSerializer(many=True, read_only=True)
+    sections = StorySectionSerializer(many=True, read_only=True)
 
     class Meta:
         model = Story
         fields = (
             'id',
             'story_text',
+            'sections',
             'contexts',
             'questions',
         )

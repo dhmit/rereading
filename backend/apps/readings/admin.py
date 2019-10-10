@@ -4,7 +4,7 @@ Rereading project's "readings" app.
 """
 
 from django.contrib import admin
-from .models import Story, Context, Question, Student, StudentResponse
+from .models import Story, Context, Question, Student, StudentResponse, StorySection
 
 
 class StudentResponseInline(admin.TabularInline):
@@ -27,9 +27,14 @@ class ContextInline(admin.TabularInline):
     extra = 1
 
 
+class StorySectionInline(admin.TabularInline):
+    model = StorySection
+    extra = 1
+
+
 class StoryAdmin(admin.ModelAdmin):
     model = Story
-    inlines = [ContextInline, QuestionInline]
+    inlines = [StorySectionInline, ContextInline, QuestionInline]
 
 
 admin.site.register(Story, StoryAdmin)

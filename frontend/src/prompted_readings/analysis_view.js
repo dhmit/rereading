@@ -1,4 +1,22 @@
 import React from "react";
+import PropTypes from "prop-types";
+
+function SentimentScores(props) {
+    return (
+        <div>
+            <h3>Average Sentiment Among Students</h3>
+            <h5>Positivity Score:</h5>
+            <p>{props.sentiment_average}</p>
+            <h5>Standard Deviation:</h5>
+            <p>{props.sentiment_std}</p>
+        </div>
+    );
+}
+
+SentimentScores.propTypes = {
+    sentiment_average: PropTypes.number,
+    sentiment_std: PropTypes.number,
+};
 
 class AnalysisView extends React.Component {
     constructor(props) {
@@ -17,7 +35,6 @@ class AnalysisView extends React.Component {
     async componentDidMount() {
         try {
             const response = await fetch('/api/analysis/');
-            console.log(response);
             const analysis = await response.json();
             this.setState({analysis});
         } catch (e) {
@@ -30,13 +47,20 @@ class AnalysisView extends React.Component {
         if (this.state.analysis !== null) {
             const {  // object destructuring:
                 total_view_time,
+                question_sentiment_analysis,
             } = this.state.analysis;
 
             return (
                 <div>
-                    <h1>Analysis of Student Responses</h1>
-                    <h3>Total view time</h3>
-                    <p>{total_view_time} seconds</p>
+                    <div>
+                        <h1>Analysis of Student Responses</h1>
+                        <h3>Total view time</h3>
+                        <p>{total_view_time} seconds</p>
+                    </div>
+                    <SentimentScores
+                        sentiment_average={question_sentiment_analysis[0]}
+                        sentiment_std={question_sentiment_analysis[1]}
+                    />
                 </div>
             );
         } else {

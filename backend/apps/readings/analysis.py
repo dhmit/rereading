@@ -124,4 +124,3 @@ class RereadingAnalysis:
         standard_dev = stdev(score_list)
 
         return average, standard_dev
-

@@ -9,6 +9,7 @@ from pathlib import Path
 from statistics import stdev
 import unittest
 
+
 def load_data_csv(csv_path: Path):
     """
     Takes the path to a csv file, reads it, and returns its
@@ -183,7 +184,7 @@ def mean_view_time_comparison(student_data):
     neutral_total_view_time = 0
     negative_responses = 0
     neutral_responses = 0
-    
+
     # list of negative words used to separate students' responses
     negative_key_words_list = [
         'miscarriage',
@@ -194,13 +195,13 @@ def mean_view_time_comparison(student_data):
         'deceased',
         'loss'
     ]
-    
+
     # iterates through all responses in student_data
     for response_dict in student_data:
         is_not_negative = True
         if (response_dict['question'] == 'In three words or fewer, what is this text about?') \
-            and (response_dict['context'] == 'This is an ad.'):
-            response = response_dict['response'].lower()
+                and (response_dict['context'] == 'This is an ad.'):
+            response: str = response_dict['response'].lower()
             print(response_dict)
             # Iterate through negative words checking whether it can be found
             # in the current response. Keeps track of number of responses and
@@ -214,7 +215,6 @@ def mean_view_time_comparison(student_data):
             if is_not_negative:  # only run this if no negative word was found
                 neutral_responses += 1
                 neutral_total_view_time += sum(response_dict['views'])
-
     if negative_responses == 0:
         negative_mean_view_time = 0
     else:
@@ -223,17 +223,14 @@ def mean_view_time_comparison(student_data):
         neutral_mean_view_time = 0
     else:
         neutral_mean_view_time = neutral_total_view_time / neutral_responses
-
     print('People who responded with a negative-word to the neutral ad-context '
-          'read the message for '+ str(round(negative_mean_view_time, 3)) +
+          'read the message for ' + str(round(negative_mean_view_time, 3)) +
           ' seconds on average (mean). People who did not respond with a negative-word to the '
           'neutral ad-context read the text for ' + str(round(neutral_mean_view_time, 3)) +
           ' seconds on average (mean).')
     print('\nThere were ' + str(negative_responses) + ' negative responses and '
           + str(neutral_responses) + ' neutral responses.\n')
-
     return negative_mean_view_time, neutral_mean_view_time
-
 
 
 def run_analysis():
@@ -243,21 +240,16 @@ def run_analysis():
     """
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
-    #    total_view_time = compute_total_view_time(student_data)
-    #    print(f'The total view time of all students was {total_view_time}.')
     mean_view_time_comparison(student_data)
-
     response_groups_freq_dicts = get_response_groups_frequencies(student_data)
     show_response_groups(response_groups_freq_dicts)
     total_view_time = compute_total_view_time(student_data)
     print(f'The total view time of all students was {total_view_time}.')
 
 
-
 def show_response_groups(response_groups_freq_dicts):
     """
     Given response_groups_freq_dicts list of dictionaries, prints the dicts in readable format
-
     :param response_groups_freq_dicts, lists of 4 dicts (one for each response
     group)
     mapping words to frequencies within that response group
@@ -407,6 +399,7 @@ class TestAnalysisMethods(unittest.TestCase):
              'context': 'This is an ad.', 'response': "an infant's death", 'views': [],
              'student_id': 28, 'scroll_ups': 0}
         ]
+
     def test_compute_total_view_time(self):
         """
         Test that the total view time equals the expected values.
@@ -426,9 +419,7 @@ class TestAnalysisMethods(unittest.TestCase):
         self.assertEqual(result, (.73625, .3807))
 
         result = mean_view_time_comparison(self.default_student_data)
-        self.assertEqual(result, (0,0))
-
-
+        self.assertEqual(result, (0, 0))
 
 
 if __name__ == '__main__':

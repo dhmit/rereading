@@ -736,7 +736,7 @@ class TestAnalysisMethods(unittest.TestCase):
 
         expected = compute_mean_reading_times(self.student_data)
         self.assertEqual(expected, [30, 7.546366666666666, 2.9542])
-        
+
     def test_mean_reading_time_question_context(self):
         """
         Test the avg_time_context function to see if it can find the avg view times given a question

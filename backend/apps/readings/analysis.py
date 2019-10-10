@@ -3,9 +3,10 @@
 Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
-from .models import StudentResponse
 from statistics import stdev
 from pathlib import Path
+
+from .models import StudentResponse
 
 
 def get_sentiments() -> dict:

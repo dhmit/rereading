@@ -2,12 +2,16 @@
 
 Analysis.py - initial analyses for dhmit/rereading
 
+This module is too long, but that's okay for now -- we're shortly going to refactor!
 """
+# pylint: disable=C0302
+
 from ast import literal_eval
 import csv
 from pathlib import Path
 from statistics import stdev
 import unittest
+import statistics
 import math
 
 
@@ -288,6 +292,8 @@ def run_analysis():
     show_response_groups(response_groups_freq_dicts)
     total_view_time = compute_total_view_time(student_data)
     print(f'The total view time of all students was {total_view_time}.')
+    print(f'Mean number of revisits per unique question: ', compute_mean_revisits(student_data))
+    print(f'Median number of revisits per unique question: ', compute_median_revisits(student_data))
     print(
         get_responses_for_question(student_data, "In one word, how does this text make you feel?"))
     print(most_common_response(
@@ -295,6 +301,129 @@ def run_analysis():
         "In one word, how does this text make you feel?",
         "This is an ad."
     ))
+
+
+def compute_mean_revisits(data):
+    """
+    Returns the mean count of revisits per question
+
+    :param data: list, student response dict
+    :return: dict, Key = question, string. Value = average number of revisits, float.
+    """
+    results = {}
+
+    # Accumulates the total views and number of responses per unique question
+    for entry in data:
+        question = entry['question']
+        num_views = len(entry['views'])
+        result = results.get(question)
+        if result:
+            view_count, view_sum = result
+            view_count += 1
+            view_sum += num_views
+            results[question] = [view_count, view_sum]
+        else:  # Create a key with starting values
+            results[question] = [1, num_views]
+
+    # Averages the number of revisits per unique question
+    for question in results:
+        total_count, total_views = results[question]
+        views_per_count = total_views / total_count
+        results[question] = round(views_per_count, 2)
+
+    return results
+
+
+def compute_median_revisits(data):
+    """
+    Returns the median count of revisits per unique question
+
+    :param data: list, student responses
+    :return: dict, key = question, string. value = median, int.
+    """
+    results = {}
+
+    # Append number of revisits into a list per unique question
+    for entry in data:
+        question = entry['question']
+        num_views = len(entry['views'])
+        result = results.get(question)
+        if result:
+            result.append(num_views)
+        else:  # Create the key with the list
+            results[question] = [num_views]
+
+    # Compute the median count of revisits per unique question
+    for question in results:
+        results[question] = statistics.median(results[question])
+
+    return results
+
+
+def context_vs_read_time(student_data):
+    """
+    compares average viewtimes, given different context (ad vs story)
+    :param student_data: list, student response dicts
+    :return a tuple of the average ad view and the average story view
+    """
+    ad_sum = 0
+    ad_count = 0
+    story_sum = 0
+    story_count = 0
+
+    for row in student_data:
+        if row['context'] == "This is an ad.":
+            if len(row["views"]) != 0:
+                for view in row["views"]:
+                    ad_sum = ad_sum + view
+            ad_count += 1
+        elif row["context"] == "This is actually a short story.":
+            if len(row["views"]) != 0:
+                for view in row["views"]:
+                    story_sum = story_sum + view
+            story_count += 1
+
+    if ad_count == 0:
+        mean_ad_view = 0
+    else:
+        mean_ad_view = ad_sum / ad_count
+    if story_count == 0:
+        mean_story_view = 0
+    else:
+        mean_story_view = story_sum / story_count
+
+    return mean_ad_view, mean_story_view
+
+
+def frequency_feelings(student_data):
+    """
+    :param student_data: list, student response dicts
+    :return a list of tuples of words that appear more than once, and how often they occur,
+    in order of their frequency
+    """
+    feelings = {}
+    for row in student_data:
+        if row['question'] == "In one word, how does this text make you feel?":
+            lower_case_word = row['response'].lower()
+            if feelings.get(lower_case_word, 0) == 0:
+                feelings[lower_case_word] = 1
+            else:
+                feelings[lower_case_word] += 1
+
+    frequent_words = []  # list of tuples in the format (frequency, word)
+    for word in feelings:
+        if feelings[word] > 1:
+            frequent_words.append((word, feelings[word]))
+
+    print(frequent_words)
+
+    for i in range(len(frequent_words) - 1):
+        for j in range(i + 1, len(frequent_words)):
+            if (frequent_words[i])[1] < (frequent_words[j])[1]:
+                frequent_words[i], frequent_words[j] = frequent_words[j], frequent_words[i]
+
+    print(frequent_words)
+    return frequent_words
 
 
 def run_mean_reading_analysis_for_questions(student_data):
@@ -695,6 +824,34 @@ class TestAnalysisMethods(unittest.TestCase):
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
 
+    def test_compute_mean_revisits(self):
+        """
+        Test that the mean number of revisits equals the expected values.
+        """
+        revisits_per_question = compute_mean_revisits(self.test_student_data)
+        self.assertEqual(revisits_per_question['In one word, how does this text make you feel?'], 1)
+        self.assertEqual(revisits_per_question['In three words or fewer, what is this text '
+                                               'about?'], 0.5)
+        self.assertEqual(revisits_per_question['Have you encountered this text before?'], 0)
+
+        # check we don't crash on the defaults
+        revisits_per_question = compute_mean_revisits(self.default_student_data)
+        self.assertEqual(revisits_per_question[''], 0)
+
+    def test_compute_median_revisits(self):
+        """
+        Tests that the median number of revisits equals the expected values.
+        """
+        revisits_per_question = compute_median_revisits(self.test_student_data)
+        self.assertEqual(revisits_per_question['In one word, how does this text make you feel?'], 1)
+        self.assertEqual(revisits_per_question['In three words or fewer, what is this text '
+                                               'about?'], 0.5)
+        self.assertEqual(revisits_per_question['Have you encountered this text before?'], 0)
+
+        # check we don't crash on the defaults
+        revisits_per_question = compute_mean_revisits(self.default_student_data)
+        self.assertEqual(revisits_per_question[''], 0)
+
     def test_mean_reading_time_question_context(self):
         """
         Test the avg_time_context function to see if it can find the avg view times given a question
@@ -812,6 +969,30 @@ class TestAnalysisMethods(unittest.TestCase):
 
         length = len(sentiments)
         self.assertEqual(length, 89631)
+
+    def test_context_vs_read_time(self):
+        """
+        test that the context_vs_read_time method returns the expected values
+        """
+        context_vs_read = context_vs_read_time(self.test_student_data)
+        expected = (1.7546666666666664, 0.37366666666666665)
+        self.assertEqual(context_vs_read, expected)
+        # test that it still works with default values
+        context_vs_read = context_vs_read_time(self.default_student_data)
+        expected = (0, 0)
+        self.assertEqual(context_vs_read, expected)
+
+    def test_frequency_feelings(self):
+        """
+        test that frequency_feelings method returns the expected values
+        """
+        frequency_feels = frequency_feelings(self.test_student_data)
+        expected = [("sad", 2)]
+        self.assertEqual(frequency_feels, expected)
+        # test that it works with default values
+        frequency_feels = frequency_feelings(self.default_student_data)
+        expected = []
+        self.assertEqual(frequency_feels, expected)
 
     def test_word_frequency_differences(self):
         """

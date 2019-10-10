@@ -36,17 +36,20 @@ def load_data_csv(csv_path: Path):
 
 def fetch_responses(dataset):
     """
-    Extracts text responses to "In three words or fewer, what is this text about?" from given csv file, depending on
-    context given (story vs. ad). Returns lists of words used in question responses.
+    Extracts text responses to "In three words or fewer, what is this text about?" from given csv
+    file, depending on context given (story vs. ad). Returns lists of words used in question
+    responses.
     :param dataset: list of loaded data to analyze
-    :return: response_ad and response_story, lists of strings of all words used in user responses (duplicates included)
+    :return: response_ad and response_story, lists of strings of all words used in user responses
+    (duplicates included)
     """
     # cycling through dataset to find prompt responses, sorting based on context
     responses_ad = []
     responses_story = []
     question = "In three words or fewer, what is this text about?"
     for x in dataset:
-        x['response'] = x['response'].replace('.', '').lower()  # removing punctuation and making string lowercase
+        # removing punctuation and making string lowercase to standardize
+        x['response'] = x['response'].replace('.', '').lower()
         x['response'] = x['response'].replace(',', '')
         if x['question'] == question and x['context'] == "This is an ad.":
             responses_ad += x['response'].split()
@@ -58,10 +61,11 @@ def fetch_responses(dataset):
 
 def repeated_prompt_words(dataset):
     """
-    Calculates frequencies of exact words from story prompt used in ad and story context responses (disregards words
-    not in story prompt).
+    Calculates frequencies of exact words from story prompt used in ad and story context responses
+    (disregards words not in story prompt).
     :param dataset: list of loaded data to analyze
-    :return: Two dictionaries, ad_resp_words and story_resp_words. Key is word, value is frequency among responses.
+    :return: Two dictionaries, ad_resp_words and story_resp_words. Key is word, value is frequency
+    among responses
     """
 
     # extracting responses from csv file
@@ -88,7 +92,7 @@ def repeated_prompt_words(dataset):
             story_resp_words[word] = 1
 
     # list of words in story
-    # TODO for longer story, would want to read it from csv file using list comprehension instead of hardcoding
+    # TODO for longer story, would want to read it from csv file instead of hardcoding
     story_vocab_list = ["for", "sale", "baby", "shoes", "never", "worn"]
 
     # for the first question given the context of the ad
@@ -124,6 +128,8 @@ def repeated_prompt_words(dataset):
     # print(story_resp_words)
 
     return ad_resp_words, story_resp_words
+
+
 def get_sentiments() -> dict:
     """
     Returns a dictionary of sentiment scores, with the keys being the word and the values being
@@ -858,8 +864,8 @@ class TestAnalysisMethods(unittest.TestCase):
 
     def test_fetch_responses(self):
         """
-        Tests that the fetch_responses() function correctly extracts words from different context responses. Tests
-        against test_data.csv and the default dataset.
+        Tests that the fetch_responses() function correctly extracts words from different context
+        responses. Tests against test_data.csv and the default dataset.
         """
         # testing against test_data.csv
         test_ad_responses, test_story_responses = fetch_responses(self.test_student_data)
@@ -879,8 +885,8 @@ class TestAnalysisMethods(unittest.TestCase):
 
     def test_repeated_prompt_words(self):
         """
-        Tests that the repeated_prompt_words() function returns the right repeated word counts for the story text.
-        Tests against test_data.csv and the default dataset.
+        Tests that the repeated_prompt_words() function returns the right repeated word counts for
+        the story text. Tests against test_data.csv and the default dataset.
         """
         # testing against test_data.csv
         test_ad_words, test_story_words = repeated_prompt_words(self.test_student_data)

@@ -2,33 +2,47 @@ import React from "react";
 import PropTypes from 'prop-types';
 
 class FrequencyFeelingTable extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
-
     render() {
-        const feelings = this.props.feelings;
         return (
-            <table border="1">
-                <tbody>
-                    <tr>
-                        <th>Word</th>
-                        <th>Frequency</th>
-                    </tr>
-                    {feelings.map((el, i) => <tr key={i}><td>{el[0]}</td><td>{el[1]}</td></tr>)}
-                </tbody>
-            </table>
+            <div>
+                <h1>Frequency Feelings</h1>
+                <table border="1">
+                    <tbody>
+                        <tr>
+                            <th>Word</th>
+                            <th>Frequency</th>
+                        </tr>
+                        {this.props.feelings.map((el, i) => (
+                            <tr key={i}>
+                                <td>{el[0]}</td><td>{el[1]}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         )
     }
 }
-/*
-This is propTypes, which is used to verify the datatype of a certain variable
-In this case, I am verifying that the variable "feelings" in the FrequencyFeelingTable component
-is an array so I can use the map function on it.
- */
+
 FrequencyFeelingTable.propTypes = {
     feelings: PropTypes.array,
+};
+
+class ContextVsViewTime extends React.Component {
+    render() {
+        const viewTimes = this.props.viewTime.map(time => Math.round(time * 1000) / 1000);
+        return (
+            <div>
+                <h1>Ad View Time VS Story View Time</h1>
+                <p>Average ad view time: {viewTimes[0]} seconds</p>
+                <p>Average story view time: {viewTimes[1]} seconds</p>
+            </div>
+        )
+    }
+}
+
+ContextVsViewTime.propTypes = {
+    viewTime: PropTypes.array,
 };
 
 class AnalysisView extends React.Component {
@@ -38,7 +52,7 @@ class AnalysisView extends React.Component {
             // we initialize analysis to null, so we can check in render() whether
             // we've received a response from the server yet
             analysis: null,
-        }
+        };
     }
 
     /**
@@ -69,11 +83,8 @@ class AnalysisView extends React.Component {
                     <h1>Analysis of Student Responses</h1>
                     <h3>Total view time</h3>
                     <p>{total_view_time} seconds</p>
-                    <h1>Frequency Feelings</h1>
                     <FrequencyFeelingTable feelings={frequency_feelings}/>
-                    <h1>Ad View Time VS Story View Time</h1>
-                    <b>Average Ad Views:</b> {context_vs_read_time[0]} seconds<br/>
-                    <b>Average Story Views:</b> {context_vs_read_time[1]} seconds
+                    <ContextVsViewTime viewTime={context_vs_read_time}/>
                 </div>
             );
         } else {

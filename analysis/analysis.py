@@ -50,6 +50,10 @@ def compute_reread_counts(student_data, question, context):
     and value is the number of students who reread that many times
     """
 
+    # Checks that the question and context are not blank
+    if question == '' or context == '':
+        return {'Reread counts': {}}
+
     # Collects the reread count for every student id of the provided context and question
     raw_reread_counts = []
     for row in student_data:
@@ -60,17 +64,18 @@ def compute_reread_counts(student_data, question, context):
             if question in table_question:
                 raw_reread_counts.append(view_count)
 
-        # Tallies the raw reread counts into the dictionary to be returned
-        organized_data = {
-            "Reread counts": {},
-        }
-        for entry in raw_reread_counts:
-            if entry in organized_data.keys():
-                organized_data["Reread counts"][entry] += 1
-            elif len(raw_reread_counts) != 0:
-                organized_data.update({entry: 1})
-        print(organized_data)
-        return organized_data
+    # Tallies the raw reread counts into the dictionary to be returned
+    organized_data = {
+        "Reread counts": {},
+    }
+    for entry in raw_reread_counts:
+        if entry in organized_data['Reread counts'].keys():
+            organized_data["Reread counts"][entry] += 1
+        elif len(raw_reread_counts) != 0:
+            organized_data['Reread counts'].update({entry: 1})
+
+    return organized_data
+
 
 def get_sentiments() -> dict:
     """
@@ -420,35 +425,37 @@ class TestAnalysisMethods(unittest.TestCase):
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
 
-    def test_compute_reread_count(self):
+    def test_compute_reread_counts(self):
         """
         Test that the reread count equals the expected values.
         """
-        total_reread_count2 = compute_reread_counts(self.test_student_data,
+
+        total_reread_counts = compute_reread_counts(self.test_student_data,
+                                                    "In one word", "This is an ad.")
+        self.assertEqual({"Reread counts": {1: 1}}, total_reread_counts)
+
+        total_reread_counts = compute_reread_counts(self.test_student_data,
                                                     "In three words or fewer", "This is an ad.")
-        self.assertEqual(total_reread_count2, {"Reread counts": {1: 1}})
+        self.assertEqual({"Reread counts": {1: 1}}, total_reread_counts)
 
-        total_reread_count3 = compute_reread_counts(self.test_student_data,
-                                                    "In one word?", "This is an ad.")
-        self.assertEqual(total_reread_count3, {"Reread counts": {1: 1}})
+        total_reread_counts = compute_reread_counts(self.test_student_data,
+                                                    "Have you encountered",  "This is an ad.")
+        self.assertEqual({"Reread counts": {0: 1}}, total_reread_counts)
 
-        total_reread_count4 = compute_reread_counts(self.test_student_data,
-                                                    "Have you encountered?",  "This is an ad.")
-        self.assertEqual(total_reread_count4, {"Reread counts": {0: 1}})
+        total_reread_counts = compute_reread_counts(self.test_student_data,
+                                                    "In one word", "short story")
+        self.assertEqual({"Reread counts": {1: 1}}, total_reread_counts)
 
-        total_reread_count5 = compute_reread_counts(self.test_student_data,
+        total_reread_counts = compute_reread_counts(self.test_student_data,
                                                     "In three words or fewer", "short story")
-        self.assertEqual(total_reread_count5, {"Reread counts": {0: 1}})
+        self.assertEqual({"Reread counts": {0: 1}}, total_reread_counts)
 
-        total_reread_count6 = compute_reread_counts(self.test_student_data,
-                                                    "In one word?", "short story")
-        self.assertEqual(total_reread_count6, {"Reread counts": {1: 1}})
-        total_reread_count7 = compute_reread_counts(self.test_student_data,
-                                                    "Have you encountered?",  "short story")
-        self.assertEqual(total_reread_count7, {"Reread counts": {0: 1}})
+        total_reread_counts = compute_reread_counts(self.test_student_data,
+                                                    "Have you encountered",  "short story")
+        self.assertEqual({"Reread counts": {0: 1}}, total_reread_counts)
 
-        total_reread_count1 = compute_reread_counts(self.default_student_data, "", "")
-        self.assertEqual(total_reread_count1, {"Reread counts": {}})
+        total_reread_counts = compute_reread_counts(self.default_student_data, "", "")
+        self.assertEqual({"Reread counts": {}}, total_reread_counts)
 
     def test_question_sentiment_analysis(self):
         """
@@ -530,4 +537,3 @@ class TestAnalysisMethods(unittest.TestCase):
 if __name__ == '__main__':
     print(run_analysis())
     unittest.main()  # run the tests
-

@@ -881,7 +881,7 @@ class TestAnalysisMethods(unittest.TestCase):
         self.assertEqual({"Reread counts": {1: 1}}, total_reread_counts)
 
         total_reread_counts = compute_reread_counts(self.test_student_data,
-                                                    "Have you encountered",  "This is an ad.")
+                                                    "Have you encountered", "This is an ad.")
         self.assertEqual({"Reread counts": {0: 1}}, total_reread_counts)
 
         total_reread_counts = compute_reread_counts(self.test_student_data,
@@ -893,7 +893,7 @@ class TestAnalysisMethods(unittest.TestCase):
         self.assertEqual({"Reread counts": {0: 1}}, total_reread_counts)
 
         total_reread_counts = compute_reread_counts(self.test_student_data,
-                                                    "Have you encountered",  "short story")
+                                                    "Have you encountered", "short story")
         self.assertEqual({"Reread counts": {0: 1}}, total_reread_counts)
 
         total_reread_counts = compute_reread_counts(self.default_student_data, "", "")

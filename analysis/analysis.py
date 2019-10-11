@@ -310,7 +310,6 @@ def compute_mean_response_length(student_data):
     :param student_data: list, student response dicts
     :return: float, mean number of characters in the user's response
     """
-
     list_of_responses = []
     for row in student_data:
         list_of_responses.append(row.get("response"))

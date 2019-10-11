@@ -31,3 +31,4 @@ class RereadingAnalysis:
             for view_time in response.get_parsed_views():
                 total_view_time += view_time
         return total_view_time
+

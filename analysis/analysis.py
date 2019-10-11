@@ -943,7 +943,8 @@ class TestAnalysisMethods(unittest.TestCase):
         self.student_data = load_data_csv(sample_csv_path)
         test_data_3_path = Path('data', 'test_data_3.csv')
         self.default_student_data_3 = load_data_csv(test_data_3_path)
-        
+
+
         self.feel = "In one word, how does this text make you feel?"
         self.about = "In three words or fewer, what is this text about?"
         self.encountered = "Have you encountered this text before?"

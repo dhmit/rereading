@@ -1337,5 +1337,6 @@ class TestAnalysisMethods(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    run_analysis()
     print(run_analysis())
     unittest.main()  # run the tests

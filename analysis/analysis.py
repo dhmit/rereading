@@ -950,7 +950,12 @@ class TestAnalysisMethods(unittest.TestCase):
         self.short_story = "This is actually a short story."
 
     def test_mean_view_time_comparison(self):
-
+        """
+        Tests mean_view_time_comparison function with two data sets. The first is specific to
+        our function and the second is generic and just an empty set. It tests that it correctly
+        calculates the mean and doesn't break when dividing by 0.
+        :return:
+        """
         total_mean_view_time_comparison = mean_view_time_comparison(self.default_student_data_3)
         self.assertEqual((.73625, .3807), total_mean_view_time_comparison)
         total_mean_view_time_comparison = mean_view_time_comparison(self.default_student_data)

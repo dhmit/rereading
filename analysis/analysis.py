@@ -943,8 +943,6 @@ class TestAnalysisMethods(unittest.TestCase):
         self.student_data = load_data_csv(sample_csv_path)
         test_data_3_path = Path('data', 'test_data_3.csv')
         self.default_student_data_3 = load_data_csv(test_data_3_path)
-
-
         self.feel = "In one word, how does this text make you feel?"
         self.about = "In three words or fewer, what is this text about?"
         self.encountered = "Have you encountered this text before?"
@@ -958,9 +956,6 @@ class TestAnalysisMethods(unittest.TestCase):
         total_mean_view_time_comparison = mean_view_time_comparison(self.default_student_data)
         self.assertEqual((0, 0), total_mean_view_time_comparison)
 
-
-
-
     def test_mean_reading_time_for_a_question(self):
         """
         Tests mean_reading_time_for_a_question function with many data sets and checks if
@@ -968,10 +963,8 @@ class TestAnalysisMethods(unittest.TestCase):
         all question and context combinations.
         """
         mean_reading_data = mean_reading_time_for_a_question(self.default_student_data, "", "")
-
         empty_comparison_tuple = ("", "", 0, 0)
         self.assertEqual(mean_reading_data, empty_comparison_tuple)
-
         # The expected result times are rounded to 2 decimals here due to Python rounding errors
         # not matching actual rounding.
         results = mean_reading_time_for_a_question(self.test_student_data, self.feel, self.ads)

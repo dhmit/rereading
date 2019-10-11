@@ -48,7 +48,7 @@ def compute_reread_counts(student_data, question, context):
 
     # Checks that the question and context are not blank
     if question == '' or context == '':
-        return {'Reread counts': {}}
+        return {}
 
     # Collects the reread count for every student id of the provided context and question
     raw_reread_counts = []
@@ -61,14 +61,12 @@ def compute_reread_counts(student_data, question, context):
                 raw_reread_counts.append(view_count)
 
     # Tallies the raw reread counts into the dictionary to be returned
-    organized_data = {
-        "Reread counts": {},
-    }
+    organized_data = {}
     for entry in raw_reread_counts:
-        if entry in organized_data['Reread counts'].keys():
-            organized_data["Reread counts"][entry] += 1
+        if entry in organized_data.keys():
+            organized_data[entry] += 1
         elif len(raw_reread_counts) != 0:
-            organized_data['Reread counts'].update({entry: 1})
+            organized_data.update({entry: 1})
 
     return organized_data
 
@@ -108,7 +106,7 @@ def get_sentiments() -> dict:
             # This is not optimal, but standardizes data
             if new_word in sentiments:
                 if abs(sentiments[new_word]) > abs(positive_score) and abs(sentiments[new_word]) > \
-                    abs(negative_score):
+                                    abs(negative_score):
                     word = file.readline()
                     continue
 
@@ -271,7 +269,7 @@ def get_word_frequency_differences(student_data):
 
     for response in student_data:
         if 'Have you encountered this text before' in response['question'] \
-            and 'This is an ad.' in response['context']:
+                            and 'This is an ad.' in response['context']:
             if 'yes' not in response['response'].lower():
                 no_id.append(response['student_id'])
             else:
@@ -523,7 +521,7 @@ def mean_reading_time_for_a_question(student_data, question, context):
 
     for student_data_dictionary in student_data:
         if question != student_data_dictionary['question'] or \
-            context != student_data_dictionary['context']:
+                                context != student_data_dictionary['context']:
             continue
         if len(student_data_dictionary['views']) != 0:
             number_of_readers += 1
@@ -562,7 +560,7 @@ def remove_outliers(reading_time):
     view_time_two = 0
     while view_time_two < len(reading_time):
         if (reading_time[view_time_two] < lower_fence) \
-            or (reading_time[view_time_two] > upper_fence):
+                                or (reading_time[view_time_two] > upper_fence):
             reading_time.remove(reading_time[view_time_two])
             view_time_two -= 1
         else:
@@ -1003,30 +1001,30 @@ class TestAnalysisMethods(unittest.TestCase):
 
         total_reread_counts = compute_reread_counts(self.test_student_data,
                                                     "In one word", "This is an ad.")
-        self.assertEqual({"Reread counts": {1: 1}}, total_reread_counts)
+        self.assertEqual({1: 1}, total_reread_counts)
 
         total_reread_counts = compute_reread_counts(self.test_student_data,
                                                     "In three words or fewer", "This is an ad.")
-        self.assertEqual({"Reread counts": {1: 1}}, total_reread_counts)
+        self.assertEqual({1: 1}, total_reread_counts)
 
         total_reread_counts = compute_reread_counts(self.test_student_data,
                                                     "Have you encountered", "This is an ad.")
-        self.assertEqual({"Reread counts": {0: 1}}, total_reread_counts)
+        self.assertEqual({0: 1}, total_reread_counts)
 
         total_reread_counts = compute_reread_counts(self.test_student_data,
                                                     "In one word", "short story")
-        self.assertEqual({"Reread counts": {1: 1}}, total_reread_counts)
+        self.assertEqual({1: 1}, total_reread_counts)
 
         total_reread_counts = compute_reread_counts(self.test_student_data,
                                                     "In three words or fewer", "short story")
-        self.assertEqual({"Reread counts": {0: 1}}, total_reread_counts)
+        self.assertEqual({0: 1}, total_reread_counts)
 
         total_reread_counts = compute_reread_counts(self.test_student_data,
                                                     "Have you encountered", "short story")
-        self.assertEqual({"Reread counts": {0: 1}}, total_reread_counts)
+        self.assertEqual({0: 1}, total_reread_counts)
 
         total_reread_counts = compute_reread_counts(self.default_student_data, "", "")
-        self.assertEqual({"Reread counts": {}}, total_reread_counts)
+        self.assertEqual({}, total_reread_counts)
 
     def test_compute_mean_revisits(self):
         """
@@ -1314,17 +1312,6 @@ class TestAnalysisMethods(unittest.TestCase):
         test that a dictionary of the keys exclusive to two dictionaries is what is expected
         """
         view_times_per_response = compute_view_time_per_response(self.test_student_data)
-        ad_dict = view_times_per_response['This is an ad.']
-        wanted_dict_ad_mn = build_mean_dict(ad_dict)
-        ss_dict = view_times_per_response['This is actually a short story.']
-        wanted_dict_ss_mn = build_mean_dict(ss_dict)
-        exclusive_responses = total_reading_time_exclusive(wanted_dict_ad_mn, wanted_dict_ss_mn)
-        self.assertEqual(exclusive_responses, {
-            'This is an ad.': {},
-            'This is actually a short story.': {},
-        })
-
-        view_times_per_response = compute_view_time_per_response(self.default_student_data)
         ad_dict = view_times_per_response['This is an ad.']
         wanted_dict_ad_mn = build_mean_dict(ad_dict)
         ss_dict = view_times_per_response['This is actually a short story.']

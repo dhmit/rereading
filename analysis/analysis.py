@@ -971,6 +971,12 @@ class TestAnalysisMethods(unittest.TestCase):
         sample_csv_path = Path('data', 'rereading_data_2019-09-13.csv')
         self.student_data = load_data_csv(sample_csv_path)
 
+        self.feel = "In one word, how does this text make you feel?"
+        self.about = "In three words or fewer, what is this text about?"
+        self.encountered = "Have you encountered this text before?"
+        self.ads = "This is an ad."
+        self.short_story = "This is actually a short story."
+
     def test_fetch_responses(self):
         """
         Tests that the fetch_responses() function correctly extracts words from different context

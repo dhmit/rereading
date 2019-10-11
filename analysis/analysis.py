@@ -16,6 +16,7 @@ from statistics import stdev
 from collections import defaultdict
 
 
+
 def load_data_csv(csv_path: Path):
     """
     Takes the path to a csv file, reads it, and returns its
@@ -203,15 +204,49 @@ def compute_total_view_time(student_data):
     """
     Given a list of student response dicts,
     return the total time (across all users) spent reading the text
-
-    :param student_data: list, student response dicts
-    :return: float, the total time all users spent reading the text
     """
     total_view_time = 0
     for row in student_data:
         for view_time in row.get('views'):
             total_view_time += view_time
     return total_view_time
+
+
+def compute_mean_reading_times_each_response(student_data):
+    """
+    For each rereading, compute the mean response time across all students
+    by summing the durations of each round of reading and dividing each sum
+    by the total number of participants.
+    :param student_data: list of OrderedDicts, set of responses
+    :return a list containing 1) total number of participants,
+    2) the mean reading time for the first response, and
+    3) the mean reading time for the second response.
+    """
+    total_first_response = 0
+    total_second_response = 0
+    total_participants = 0
+    last_student_id = -1  # value not present in the data
+    for line in student_data:
+        context = line["context"]
+        question = line["question"]
+        student_id = line["student_id"]
+        if question == "In one word, how does this text make you feel?":
+            if context == 'This is an ad.':
+                for duration in line["views"]:
+                    total_first_response += duration
+            elif context == "This is actually a short story.":
+                for duration in line["views"]:
+                    total_second_response += duration
+        if student_id != last_student_id:
+            total_participants += 1
+            last_student_id = student_id
+
+    if total_participants == 0:
+        return []
+    mean_first_response = total_first_response / total_participants
+    mean_second_response = total_second_response / total_participants
+    result = [total_participants, mean_first_response, mean_second_response]
+    return result
 
 
 def get_responses_for_question(student_data, question):
@@ -1109,6 +1144,17 @@ class TestAnalysisMethods(unittest.TestCase):
         # check we don't crash on the defaults from the model!
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
+
+    def test_compute_mean_reading_times_each_response(self):
+        """
+        Tests compute_mean_reading_times for correct means for each reading response time
+        """
+        expected = compute_mean_reading_times_each_response(self.default_student_data)
+        self.assertEqual(expected, [1, 0.0, 0.0])
+
+        expected = compute_mean_reading_times_each_response(self.student_data)
+        for i in range(3):
+            self.assertAlmostEqual(expected[i], [30, 7.546366666666666, 2.9542][i])
 
     def test_compute_median_view_time(self):
         """

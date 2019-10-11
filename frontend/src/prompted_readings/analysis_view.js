@@ -30,19 +30,31 @@ FrequencyFeelingTable.propTypes = {
 
 class ContextVsViewTime extends React.Component {
     render() {
-        const viewTimes = this.props.viewTime.map(time => Math.round(time * 1000) / 1000);
+        const viewTimesList = Object.entries(this.props.viewTime);
+        const roundedViewTimes = viewTimesList.map(context =>
+            [context[0] , Math.round(context[1] * 1000) / 1000]);
         return (
             <div>
-                <h1>Ad View Time VS Story View Time</h1>
-                <p>Average ad view time: {viewTimes[0]} seconds</p>
-                <p>Average story view time: {viewTimes[1]} seconds</p>
+                <h1>Mean View Times of Different Contexts</h1>
+                <table border="1">
+                    <tr>
+                        <th>Context</th>
+                        <th>Mean View Time (seconds)</th>
+                    </tr>
+                    {roundedViewTimes.map((context, i) => (
+                        <tr key={i}>
+                            <td>{context[0]}</td>
+                            <td>{context[1]}</td>
+                        </tr>
+                    ))}
+                </table>
             </div>
         )
     }
 }
 
 ContextVsViewTime.propTypes = {
-    viewTime: PropTypes.array,
+    viewTime: PropTypes.object,
 };
 
 class AnalysisView extends React.Component {

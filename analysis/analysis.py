@@ -115,6 +115,52 @@ def repeated_prompt_words():
     return ad_resp_words, story_resp_words
 
 
+def test_repeated_prompt_words():
+    """
+    Take the CSV File and analyze the readers' responses based on the two different contexts of the
+    2 questions (this is an ad/this is just a short story); analyze if the total number of unique
+    responses changed as more and more readers' responses are analyzed. Eventually prints out the
+    pattern along with the number of unique word in the text.
+    return: none
+    """
+    csv_path = Path('data', 'rereading_data_2019-09-13.csv')
+    student_data = load_data_csv(csv_path)
+    response_ad = set()
+    response_story = set()
+    unique_word_tracker_ad = []
+    unique_word_tracker_story = []
+    question = "In three words or fewer, what is this text about?"
+
+    for data in student_data:
+        filtered_word_resp = filter(data['response'])
+        if data['question'] == question and data['context'] == "This is an ad.":
+            for word in filtered_word_resp:
+                response_ad.add(word)
+                unique_word_tracker_ad.append(len(response_ad))
+
+        elif data['question'] == question and data['context'] == "This is actually a short story.":
+            for word in filtered_word_resp:
+                response_story.add(word)
+                unique_word_tracker_story.append(len(response_story))
+
+    print("This is the frequency tracker for responses with the story context: ")
+    for num in unique_word_tracker_story:
+        print(str(num)+"" + "*"*num)
+
+    print("This is the frequency tracker for responses with the ad context: ")
+    for num in unique_word_tracker_ad:
+        print(str(num) + "" + "*" * num)
+
+
+def filter(string):
+    """
+    helper method to preprocess the string: remove the stopwords and punctuation
+    return: list of words that are non-stopwords
+    """
+    stop_words_and_punct = ["i", "for", "in", "is", "are", "on", "are", "'s", ".", ","]
+    return [ch for ch in string.lower().split() if ch not in stop_words_and_punct]
+
+
 class TestAnalysisMethods(unittest.TestCase):
     """
     Test cases to make sure things are running properly
@@ -136,9 +182,8 @@ class TestAnalysisMethods(unittest.TestCase):
         sample_csv_path = Path('data', 'rereading_data_2019-09-13.csv')
         self.student_data = load_data_csv(sample_csv_path)
 
-    def test_repeated_prompt_words(self):
-        pass
-
 
 if __name__ == '__main__':
     print(repeated_prompt_words())
+    test_repeated_prompt_words()
+

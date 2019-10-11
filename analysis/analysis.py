@@ -8,7 +8,6 @@ This module is too long, but that's okay for now -- we're shortly going to refac
 
 from ast import literal_eval
 import csv
-from builtins import dict
 from pathlib import Path
 from statistics import stdev
 import unittest
@@ -295,11 +294,11 @@ def compute_median_view_time(student_data):
     for row in student_data:
         for view_time in row.get('views'):
             list_of_times.append(view_time)
-    list_of_times.sort()
-    if len(list_of_times) == 0:
+    if not list_of_times:
         median_view_time = 0
     else:
-        median_view_time = list_of_times[int(len(list_of_times) / 2)]
+        list_of_times.sort()
+        median_view_time = statistics.median(list_of_times)
     return median_view_time
 
 
@@ -356,9 +355,6 @@ def description_has_relevant_words(story_meaning_description, relevant_words):
     return False
 
 
-RELEVANT_WORDS_FILE_PATH = 'data/words_related_to_story.txt'
-
-
 def percent_students_using_relevant_words(student_data, target_context, relevant_words):
     """
     Find the percentage of students that used relevant words in their responses
@@ -377,7 +373,7 @@ def percent_students_using_relevant_words(student_data, target_context, relevant
             if description_has_relevant_words(row.get('response'), relevant_words):
                 number_of_students_using_relevant_words += 1
 
-    if total_students != 0:
+    if not total_students:
         percentage_of_all_students = number_of_students_using_relevant_words / total_students
     else:
         percentage_of_all_students = 0
@@ -390,7 +386,7 @@ def run_relevant_word_analysis(student_data):
     :param student_data: the data to analyze
     """
     target_context = 'This is actually a short story.'
-
+    RELEVANT_WORDS_FILE_PATH = 'data/words_related_to_story.txt'
     relevant_words_file = open(RELEVANT_WORDS_FILE_PATH, 'r')
     untrimmed_relevant_words = relevant_words_file.readlines()
     relevant_words = list(map(lambda s: s.strip(), untrimmed_relevant_words))

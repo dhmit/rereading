@@ -281,6 +281,7 @@ def get_word_frequency_differences(student_data):
     ordered_responses = sorted(diff_responses_list, key=lambda x: x[1])
     return ordered_responses
 
+
 def mean_view_time_comparison(student_data):
     """
     Calculate the mean view time of both groups (those who had a negative-word response and those
@@ -940,56 +941,24 @@ class TestAnalysisMethods(unittest.TestCase):
         self.default_student_data_2 = load_data_csv(test_data_2_path)
         sample_csv_path = Path('data', 'rereading_data_2019-09-13.csv')
         self.student_data = load_data_csv(sample_csv_path)
-        self.test_mean_view_time_comparison_student_data = [
-            {'id': 60, 'question': 'In three words or fewer, what is this text about?',
-             'context': 'This is an ad.', 'response': 'Miscarriage', 'views': [2.945],
-             'student_id': 15, 'scroll_ups': 0},
-            {'id': 66, 'question': 'In three words or fewer, what is this text about?',
-             'context': 'This is an ad.', 'response': 'New baby shoes', 'views': [],
-             'student_id': 16, 'scroll_ups': 0},
-            {'id': 72, 'question': 'In three words or fewer, what is this text about?',
-             'context': 'This is an ad.', 'response': 'Baby shoes', 'views': [3.807],
-             'student_id': 17, 'scroll_ups': 0},
-            {'id': 78, 'question': 'In three words or fewer, what is this text about?',
-             'context': 'This is an ad.', 'response': 'Something for sale', 'views': [],
-             'student_id': 18, 'scroll_ups': 0},
-            {'id': 84, 'question': 'In three words or fewer, what is this text about?',
-             'context': 'This is an ad.', 'response': 'Selling baby shoes', 'views': [],
-             'student_id': 19, 'scroll_ups': 0},
-            {'id': 90, 'question': 'In three words or fewer, what is this text about?',
-             'context': 'This is an ad.', 'response': 'Advertisement', 'views': [],
-             'student_id': 20, 'scroll_ups': 0},
-            {'id': 96, 'question': 'In three words or fewer, what is this text about?',
-             'context': 'This is an ad.', 'response': 'New baby shoes', 'views': [],
-             'student_id': 21, 'scroll_ups': 0},
-            {'id': 102, 'question': 'In three words or fewer, what is this text about?',
-             'context': 'This is an ad.', 'response': 'baby shoe ad', 'views': [], 'student_id': 22,
-             'scroll_ups': 0},
-            {'id': 108, 'question': 'In three words or fewer, what is this text about?',
-             'context': 'This is an ad.', 'response': 'Shoes on sale', 'views': [],
-             'student_id': 23, 'scroll_ups': 0},
-            {'id': 114, 'question': 'In three words or fewer, what is this text about?',
-             'context': 'This is an ad.', 'response': 'selling baby shoes', 'views': [],
-             'student_id': 24, 'scroll_ups': 0},
-            {'id': 120, 'question': 'In three words or fewer, what is this text about?',
-             'context': 'This is an ad.', 'response': 'A lost child', 'views': [], 'student_id': 25,
-             'scroll_ups': 0},
-            {'id': 126, 'question': 'In three words or fewer, what is this text about?',
-             'context': 'This is an ad.', 'response': 'Story', 'views': [], 'student_id': 26,
-             'scroll_ups': 0},
-            {'id': 132, 'question': 'In three words or fewer, what is this text about?',
-             'context': 'This is an ad.', 'response': 'Giving up hope', 'views': [],
-             'student_id': 27, 'scroll_ups': 0},
-            {'id': 138, 'question': 'In three words or fewer, what is this text about?',
-             'context': 'This is an ad.', 'response': "an infant's death", 'views': [],
-             'student_id': 28, 'scroll_ups': 0}
-        ]
-
+        test_data_3_path = Path('data', 'test_data_3.csv')
+        self.default_student_data_3 = load_data_csv(test_data_3_path)
+        
         self.feel = "In one word, how does this text make you feel?"
         self.about = "In three words or fewer, what is this text about?"
         self.encountered = "Have you encountered this text before?"
         self.ads = "This is an ad."
         self.short_story = "This is actually a short story."
+
+    def test_mean_view_time_comparison(self):
+
+        total_mean_view_time_comparison = mean_view_time_comparison(self.default_student_data_3)
+        self.assertEqual((.73625, .3807), total_mean_view_time_comparison)
+        total_mean_view_time_comparison = mean_view_time_comparison(self.default_student_data)
+        self.assertEqual((0, 0), total_mean_view_time_comparison)
+
+
+
 
     def test_mean_reading_time_for_a_question(self):
         """

@@ -11,3 +11,78 @@ Brainstorm Analysis | Parul and Montse
 # "This is an ad." but had responses with negative connotations when the context was
 # "This is a short story." Subtract the former from latter and take the average. This will tell us
 # about how much time it takes for students to make the deeper connection.
+
+
+#self.default_stuent_data should be (0,0)
+
+ test_data_3_path = Path('data', 'test_data_3.csv')
+
+
+    def test_mean_view_time_comparison(self):
+        total_mean_view_time_comparison = mean_view_time_comparison(self.test_data_3_path)
+        self.assertEqual((.73625, .3807),total_mean_view_time_comparison)
+
+        total_mean_view_time_comparison= mean_view_time_comparison(self.default_student_data)
+        self.assertEqual((0,0), total_mean_view_time_comparison)
+
+@ -0,0 +1,15 @@
+id,question,context,response,views,student_id,scroll_ups
+60,"In three words or fewer, what is this text about?",This is an ad.,Miscarriage,[2.945],15,0
+66,"In three words or fewer, what is this text about?",This is an ad.,New baby shoes,[],16,0
+72,"In three words or fewer, what is this text about?",This is an ad.,Baby shoes,[3.807],17,0
+78,"In three words or fewer, what is this text about?",This is an ad.,Something for sale,[],18,0
+84,"In three words or fewer, what is this text about?",This is an ad.,Selling baby shoes,[],19,0
+90,"In three words or fewer, what is this text about?",This is an ad.,Advertisement,[],20,0
+96,"In three words or fewer, what is this text about?",This is an ad.,New baby shoes,[],21,0
+102,"In three words or fewer, what is this text about?",This is an ad.,baby shoe ad,[],22,0
+108,"In three words or fewer, what is this text about?",This is an ad.,Shoes on sale,[],23,0
+114,"In three words or fewer, what is this text about?",This is an ad.,selling baby shoes,[],24,0
+120,"In three words or fewer, what is this text about?",This is an ad.,A lost child,[],25,0
+126,"In three words or fewer, what is this text about?",This is an ad.,Story,[],26,0
+132,"In three words or fewer, what is this text about?",This is an ad.,Giving up hope,[],27,0
+138,"In three words or fewer, what is this text about?",This is an ad.,an infant's death,[],28,0
+
+self.test_mean_view_time_comparison_student_data = [
+            {'id': 60, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'Miscarriage', 'views': [2.945],
+             'student_id': 15, 'scroll_ups': 0},
+            {'id': 66, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'New baby shoes', 'views': [],
+             'student_id': 16, 'scroll_ups': 0},
+            {'id': 72, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'Baby shoes', 'views': [3.807],
+             'student_id': 17, 'scroll_ups': 0},
+            {'id': 78, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'Something for sale', 'views': [],
+             'student_id': 18, 'scroll_ups': 0},
+            {'id': 84, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'Selling baby shoes', 'views': [],
+             'student_id': 19, 'scroll_ups': 0},
+            {'id': 90, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'Advertisement', 'views': [],
+             'student_id': 20, 'scroll_ups': 0},
+            {'id': 96, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'New baby shoes', 'views': [],
+             'student_id': 21, 'scroll_ups': 0},
+            {'id': 102, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'baby shoe ad', 'views': [], 'student_id': 22,
+             'scroll_ups': 0},
+            {'id': 108, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'Shoes on sale', 'views': [],
+             'student_id': 23, 'scroll_ups': 0},
+            {'id': 114, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'selling baby shoes', 'views': [],
+             'student_id': 24, 'scroll_ups': 0},
+            {'id': 120, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'A lost child', 'views': [], 'student_id': 25,
+             'scroll_ups': 0},
+            {'id': 126, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'Story', 'views': [], 'student_id': 26,
+             'scroll_ups': 0},
+            {'id': 132, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': 'Giving up hope', 'views': [],
+             'student_id': 27, 'scroll_ups': 0},
+            {'id': 138, 'question': 'In three words or fewer, what is this text about?',
+             'context': 'This is an ad.', 'response': "an infant's death", 'views': [],
+             'student_id': 28, 'scroll_ups': 0}
+        ]

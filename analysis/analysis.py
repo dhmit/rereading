@@ -995,7 +995,8 @@ class TestAnalysisMethods(unittest.TestCase):
         self.assertEqual(expected, [1, 0.0, 0.0])
 
         expected = compute_mean_reading_times_each_response(self.student_data)
-        self.assertAlmostEqual(expected, [30, 7.546366666666666, 2.9542])
+        for i in range(3):
+            self.assertAlmostEqual(expected[i], [30, 7.546366666666666, 2.9542][i])
 
 
     def test_compute_mean_revisits(self):

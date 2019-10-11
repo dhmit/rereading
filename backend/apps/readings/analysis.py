@@ -32,7 +32,8 @@ class RereadingAnalysis:
                 total_view_time += view_time
         return total_view_time
 
-    def compute_reread_counts(self, question, context):
+    @property
+    def reread_counts(self):
         """"
         Given a list of student response dicts,
         return a dictionary containing the number of times students had to reread the text
@@ -43,9 +44,12 @@ class RereadingAnalysis:
         and value is the number of students who reread that many times
         """
 
-        # Checks that the question and context are not blank
-        if question == '' or context == '':
-            return {}
+        question = "In one word, how does this text make you feel?"
+        context = "This is an ad."
+        #
+        # # Checks that the question and context are not blank
+        # if question == '' or context == '':
+        #     return {}
 
         # Collects the reread count for every student id of the provided context and question
         raw_reread_counts = []
@@ -67,8 +71,4 @@ class RereadingAnalysis:
 
         return organized_data
 
-    @property
-    def reread_counts(self):
-        question = "In one word, how does this text make you feel?"
-        context = "This is an ad."
-        return compute_reread_counts(self, question, context)
+

@@ -45,7 +45,7 @@ jobs:
     - name: Run Django tests
       run: |
         cd backend
-        python manage.py test
+        python manage.py test apps.readings
 
   analysis_tests:
     runs-on: ubuntu-latest

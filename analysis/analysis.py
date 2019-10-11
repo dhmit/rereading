@@ -15,6 +15,7 @@ from pathlib import Path
 from statistics import stdev
 from collections import defaultdict
 
+
 def load_data_csv(csv_path: Path):
     """
     Takes the path to a csv file, reads it, and returns its
@@ -107,7 +108,7 @@ def get_sentiments() -> dict:
             # This is not optimal, but standardizes data
             if new_word in sentiments:
                 if abs(sentiments[new_word]) > abs(positive_score) and abs(sentiments[new_word]) > \
-                        abs(negative_score):
+                    abs(negative_score):
                     word = file.readline()
                     continue
 
@@ -270,7 +271,7 @@ def get_word_frequency_differences(student_data):
 
     for response in student_data:
         if 'Have you encountered this text before' in response['question'] \
-                and 'This is an ad.' in response['context']:
+            and 'This is an ad.' in response['context']:
             if 'yes' not in response['response'].lower():
                 no_id.append(response['student_id'])
             else:
@@ -521,8 +522,8 @@ def mean_reading_time_for_a_question(student_data, question, context):
     total_question_view_time = 0
 
     for student_data_dictionary in student_data:
-        if question != student_data_dictionary['question'] or\
-                context != student_data_dictionary['context']:
+        if question != student_data_dictionary['question'] or \
+            context != student_data_dictionary['context']:
             continue
         if len(student_data_dictionary['views']) != 0:
             number_of_readers += 1
@@ -561,7 +562,7 @@ def remove_outliers(reading_time):
     view_time_two = 0
     while view_time_two < len(reading_time):
         if (reading_time[view_time_two] < lower_fence) \
-                or (reading_time[view_time_two] > upper_fence):
+            or (reading_time[view_time_two] > upper_fence):
             reading_time.remove(reading_time[view_time_two])
             view_time_two -= 1
         else:

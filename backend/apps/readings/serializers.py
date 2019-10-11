@@ -1,6 +1,11 @@
+"""
+Serializers take models or other data structures and present them
+in ways that can be transported across the backend/frontend divide, or
+allow the frontend to suggest changes to the backend/database.
+"""
 from rest_framework import serializers
-from .models import Story, Question, Context, Student, StudentResponse
 
+from .models import Story, Question, Context, Student, StudentResponse
 
 class StudentResponseSerializer(serializers.ModelSerializer):
     """
@@ -21,9 +26,18 @@ class StudentResponseSerializer(serializers.ModelSerializer):
 
 
 class StudentSerializer(serializers.ModelSerializer):
+    """
+    Serializes a student object and responses.
+    """
     student_responses = StudentResponseSerializer(many=True)
 
     def create(self, validated_data):
+        """
+        Create a Student object and its responses
+
+        :param validated_data: dict
+        :return: Student
+        """
         responses_data = validated_data.pop('student_responses')
         student = Student.objects.create(**validated_data)
         for response_data in responses_data:
@@ -42,6 +56,9 @@ class StudentSerializer(serializers.ModelSerializer):
 
 
 class QuestionSerializer(serializers.ModelSerializer):
+    """
+    Serializes a Question object.
+    """
     class Meta:
         model = Question
 
@@ -53,6 +70,9 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 
 class ContextSerializer(serializers.ModelSerializer):
+    """
+    Serializes a Context object.
+    """
     class Meta:
         model = Context
 
@@ -63,6 +83,9 @@ class ContextSerializer(serializers.ModelSerializer):
 
 
 class StorySerializer(serializers.ModelSerializer):
+    """
+    Serializes a Story, including its questions and contexts.
+    """
     contexts = serializers.StringRelatedField(many=True, read_only=True)
     questions = QuestionSerializer(many=True, read_only=True)
 
@@ -70,7 +93,18 @@ class StorySerializer(serializers.ModelSerializer):
         model = Story
         fields = (
             'id',
-            'story',
+            'story_text',
             'contexts',
             'questions',
         )
+
+
+class AnalysisSerializer(serializers.Serializer):
+    """ Serializes analysis class """
+    total_view_time = serializers.ReadOnlyField()
+
+    def create(self, validated_data):
+        """ We will not create new objects using this serializer """
+
+    def update(self, instance, validated_data):
+        """ We will not update data using this serializer """

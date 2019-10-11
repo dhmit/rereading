@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>React demo</title>
+
+        <!-- React -->
+        <script src="ext/react.development.js"></script>
+        <script src="ext/react-dom.development.js"></script>
+        <script src="ext/babel.min.js"></script>
+
+        <!-- jQuery -->
+        <script src="ext/jquery.min.js" type="text/javascript"></script>
+    </head>
+
+    <body>
+
+    <!-- the jQuery way -->
+    <h1>jQuery!</h1>
+    <div id='status_div'>Off</div>
+    <button id='toggle_status_btn'>Turn status on</button>
+
+    <script>
+        class Toggler {
+            constructor() {
+                this.status = $('#status_div');
+                this.toggle_status_btn = $('#toggle_status_btn');
+            }
+
+            start() {
+                this.toggle_status_btn.click(() => this.toggle_status());
+            }
+
+            toggle_status() {
+                if (this.status.text() === 'Off') {
+                    this.status.text('On');
+                    this.toggle_status_btn.text('Turn status off');
+                } else {
+                    this.status.text('Off');
+                    this.toggle_status_btn.text('Turn status on');
+                }
+            }
+        }
+        const toggler = new Toggler();
+        toggler.start();
+    </script>
+
+    <hr>
+
+
+    <h1>React!</h1>
+    <div id="react_root"></div>
+    <script type="text/babel">
+        class ReactToggler extends React.Component {
+            constructor(props){
+                super(props);
+                this.state = {
+                    on: true,
+                    count: 0
+                }
+
+            }
+
+            toggle_status(){
+                this.setState({
+                    on: !this.state.on,
+                    count: this.state.count + 1,
+                    }
+                )
+            }
+
+            render() {
+                return (
+                    <div>
+                        <div>{this.state.on ? 'On' : 'Off'}</div>
+                        <button onClick={() => this.toggle_status()}>Turn status {this.state.on ? 'off' : 'on'}</button>
+                        Hello, {this.props.name}! Toggled {this.state.count} times.
+                    </div>
+
+                );
+            }
+        }
+
+        class MoreTogglers extends React.Component{
+            render(){
+                return(
+                    <div>
+                        <ReactToggler name = "Foo"/>
+                        <ReactToggler name = "Bar"/>
+                    </div>
+                )
+            }
+
+        }
+
+        ReactDOM.render(
+            <MoreTogglers />,
+            document.getElementById('react_root')
+        );
+    </script>
+
+
+    </body>
+</html>

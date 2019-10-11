@@ -1,12 +1,10 @@
-from django.contrib import admin
-from .models import Story, Context, Question, Student, StudentResponse
-
-# Register your models here.
-
 """
 This file controls the administrative interface for the
 Rereading project's "readings" app.
 """
+
+from django.contrib import admin
+from .models import Story, Context, Question, Student, StudentResponse
 
 
 class StudentResponseInline(admin.TabularInline):
@@ -36,3 +34,6 @@ class StoryAdmin(admin.ModelAdmin):
 
 admin.site.register(Story, StoryAdmin)
 admin.site.register(Student, StudentAdmin)
+admin.site.register(StudentResponse)
+admin.site.register(Context)
+admin.site.register(Question)

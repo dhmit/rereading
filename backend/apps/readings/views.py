@@ -3,8 +3,12 @@ These classes describe one way of entering into the web site.
 """
 
 from rest_framework import generics
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
 from .models import Story, Student
-from .serializers import StorySerializer, StudentSerializer
+from .analysis import RereadingAnalysis
+from .serializers import StorySerializer, StudentSerializer, AnalysisSerializer
 
 
 # a ListCreateAPIView lets you view a list of objects or create a new one.
@@ -28,3 +32,13 @@ class ListStory(generics.ListCreateAPIView):
 class DetailStory(generics.RetrieveUpdateDestroyAPIView):
     queryset = Story.objects.all()
     serializer_class = StorySerializer
+
+
+@api_view(['GET'])
+def analysis(request):
+    """
+    Init a RereadingAnalysis, and serialize it to send to the frontend.
+    """
+    analysis_obj = RereadingAnalysis()
+    serializer = AnalysisSerializer(instance=analysis_obj)
+    return Response(serializer.data)

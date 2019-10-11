@@ -373,7 +373,7 @@ def percent_students_using_relevant_words(student_data, target_context, relevant
             if description_has_relevant_words(row.get('response'), relevant_words):
                 number_of_students_using_relevant_words += 1
 
-    if not total_students:
+    if total_students:
         percentage_of_all_students = number_of_students_using_relevant_words / total_students
     else:
         percentage_of_all_students = 0
@@ -386,8 +386,8 @@ def run_relevant_word_analysis(student_data):
     :param student_data: the data to analyze
     """
     target_context = 'This is actually a short story.'
-    RELEVANT_WORDS_FILE_PATH = 'data/words_related_to_story.txt'
-    relevant_words_file = open(RELEVANT_WORDS_FILE_PATH, 'r')
+    relevant_words_file_path = 'data/words_related_to_story.txt'
+    relevant_words_file = open(relevant_words_file_path, 'r')
     untrimmed_relevant_words = relevant_words_file.readlines()
     relevant_words = list(map(lambda s: s.strip(), untrimmed_relevant_words))
 

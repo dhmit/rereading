@@ -163,3 +163,4 @@ webpack-stats-dev.json
 webpack-stats.json
 package-lock.json
 *.swp
+.idea/dataSources.local.xml

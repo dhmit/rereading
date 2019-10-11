@@ -4,6 +4,7 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
 from .models import StudentResponse
+import statistics
 
 
 class RereadingAnalysis:
@@ -31,3 +32,20 @@ class RereadingAnalysis:
             for view_time in response.get_parsed_views():
                 total_view_time += view_time
         return total_view_time
+
+    def compute_median_view_time(self):
+        """
+         Given a list of student response dicts,
+        return the median time (across all users) spent reading the text
+        :return: float, median amount of time users spend reading the text
+        """
+        list_of_times = []
+        for row in self.responses:
+            for view_time in row.get('views'):
+                list_of_times.append(view_time)
+        if not list_of_times:
+            median_view_time = 0
+        else:
+            list_of_times.sort()
+            median_view_time = statistics.median(list_of_times)
+        return median_view_time

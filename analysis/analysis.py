@@ -4,16 +4,16 @@ Analysis.py - initial analyses for dhmit/rereading
 
 This module is too long, but that's okay for now -- we're shortly going to refactor!
 """
-# pylint: disable=C0302
 
-from ast import literal_eval
-import csv
-from pathlib import Path
-from statistics import stdev
-import unittest
-from collections import defaultdict
+# pylint: disable=C0302
 import statistics
 import math
+import csv
+import unittest
+from ast import literal_eval
+from pathlib import Path
+from statistics import stdev
+from collections import defaultdict
 
 
 def load_data_csv(csv_path: Path):
@@ -33,6 +33,42 @@ def load_data_csv(csv_path: Path):
             row = dict(row)
             out_data.append(row)
     return out_data
+
+
+def compute_reread_counts(student_data, question, context):
+    """"
+    Given a list of student response dicts,
+    return a dictionary containing the number of times students had to reread the text
+    :param student_data: list, student response dicts
+    :param question: string, question for which reread counts is collected
+    :param context: string, context for which reread counts is collected
+    :return: dictionary, each key in dictionary is the number of times the text was reread
+    and value is the number of students who reread that many times
+    """
+
+    # Checks that the question and context are not blank
+    if question == '' or context == '':
+        return {}
+
+    # Collects the reread count for every student id of the provided context and question
+    raw_reread_counts = []
+    for row in student_data:
+        table_context = row['context']
+        table_question = row['question']
+        view_count = len(row['views'])
+        if context in table_context:
+            if question in table_question:
+                raw_reread_counts.append(view_count)
+
+    # Tallies the raw reread counts into the dictionary to be returned
+    organized_data = {}
+    for entry in raw_reread_counts:
+        if entry in organized_data.keys():
+            organized_data[entry] += 1
+        elif len(raw_reread_counts) != 0:
+            organized_data.update({entry: 1})
+
+    return organized_data
 
 
 def get_sentiments() -> dict:
@@ -70,7 +106,7 @@ def get_sentiments() -> dict:
             # This is not optimal, but standardizes data
             if new_word in sentiments:
                 if abs(sentiments[new_word]) > abs(positive_score) and abs(sentiments[new_word]) > \
-                        abs(negative_score):
+                                    abs(negative_score):
                     word = file.readline()
                     continue
 
@@ -233,7 +269,7 @@ def get_word_frequency_differences(student_data):
 
     for response in student_data:
         if 'Have you encountered this text before' in response['question'] \
-                and 'This is an ad.' in response['context']:
+                            and 'This is an ad.' in response['context']:
             if 'yes' not in response['response'].lower():
                 no_id.append(response['student_id'])
             else:
@@ -289,8 +325,14 @@ def run_analysis():
     """
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
+
+    reread_counts = compute_reread_counts(student_data, "In one word", "ad")
+    print("Number of times students reread text based on question or context:\n")
+    print(reread_counts)
+
     response_groups_freq_dicts = get_response_groups_frequencies(student_data)
     show_response_groups(response_groups_freq_dicts)
+
     total_view_time = compute_total_view_time(student_data)
     print(f'The total view time of all students was {total_view_time}.')
     print(f'Mean number of revisits per unique question: ', compute_mean_revisits(student_data))
@@ -478,8 +520,8 @@ def mean_reading_time_for_a_question(student_data, question, context):
     total_question_view_time = 0
 
     for student_data_dictionary in student_data:
-        if question != student_data_dictionary['question'] or\
-                context != student_data_dictionary['context']:
+        if question != student_data_dictionary['question'] or \
+                                context != student_data_dictionary['context']:
             continue
         if len(student_data_dictionary['views']) != 0:
             number_of_readers += 1
@@ -518,7 +560,7 @@ def remove_outliers(reading_time):
     view_time_two = 0
     while view_time_two < len(reading_time):
         if (reading_time[view_time_two] < lower_fence) \
-                or (reading_time[view_time_two] > upper_fence):
+                                or (reading_time[view_time_two] > upper_fence):
             reading_time.remove(reading_time[view_time_two])
             view_time_two -= 1
         else:
@@ -952,6 +994,38 @@ class TestAnalysisMethods(unittest.TestCase):
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
 
+    def test_compute_reread_counts(self):
+        """
+        Test that the reread count equals the expected values.
+        """
+
+        total_reread_counts = compute_reread_counts(self.test_student_data,
+                                                    "In one word", "This is an ad.")
+        self.assertEqual({1: 1}, total_reread_counts)
+
+        total_reread_counts = compute_reread_counts(self.test_student_data,
+                                                    "In three words or fewer", "This is an ad.")
+        self.assertEqual({1: 1}, total_reread_counts)
+
+        total_reread_counts = compute_reread_counts(self.test_student_data,
+                                                    "Have you encountered", "This is an ad.")
+        self.assertEqual({0: 1}, total_reread_counts)
+
+        total_reread_counts = compute_reread_counts(self.test_student_data,
+                                                    "In one word", "short story")
+        self.assertEqual({1: 1}, total_reread_counts)
+
+        total_reread_counts = compute_reread_counts(self.test_student_data,
+                                                    "In three words or fewer", "short story")
+        self.assertEqual({0: 1}, total_reread_counts)
+
+        total_reread_counts = compute_reread_counts(self.test_student_data,
+                                                    "Have you encountered", "short story")
+        self.assertEqual({0: 1}, total_reread_counts)
+
+        total_reread_counts = compute_reread_counts(self.default_student_data, "", "")
+        self.assertEqual({}, total_reread_counts)
+
     def test_compute_mean_revisits(self):
         """
         Test that the mean number of revisits equals the expected values.
@@ -1248,18 +1322,8 @@ class TestAnalysisMethods(unittest.TestCase):
             'This is actually a short story.': {},
         })
 
-        view_times_per_response = compute_view_time_per_response(self.default_student_data)
-        ad_dict = view_times_per_response['This is an ad.']
-        wanted_dict_ad_mn = build_mean_dict(ad_dict)
-        ss_dict = view_times_per_response['This is actually a short story.']
-        wanted_dict_ss_mn = build_mean_dict(ss_dict)
-        exclusive_responses = total_reading_time_exclusive(wanted_dict_ad_mn, wanted_dict_ss_mn)
-        self.assertEqual(exclusive_responses, {
-            'This is an ad.': {},
-            'This is actually a short story.': {},
-        })
-
 
 if __name__ == '__main__':
     run_analysis()
+    print(run_analysis())
     unittest.main()  # run the tests

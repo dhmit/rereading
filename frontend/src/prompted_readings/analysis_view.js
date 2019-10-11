@@ -38,7 +38,9 @@ class AnalysisView extends React.Component {
                     <p>{total_view_time} seconds</p>
 
                     <h3>Most Common Responses</h3>
-                    <p></p>
+                    <p>{all_responses.map(resp_obj => resp_obj.question + ' ' +
+                        resp_obj.context + ' Responses:' + resp_obj.answers.map(answer =>
+                        ' ' + answer) + ' ')}</p>
                 </div>
             );
         } else {

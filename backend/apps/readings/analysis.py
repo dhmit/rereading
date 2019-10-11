@@ -76,16 +76,15 @@ class RereadingAnalysis:
                 total_view_time += view_time
         return total_view_time
 
-    @property
-    def most_common_responses(self):
+    def all_responses(self):
         questions = []
         contexts = []
         all_responses = []
         for response in self.responses:
-            if response.question not in questions:
-                questions.append(response.question)
-            if response.context not in contexts:
-                questions.append(response.context)
+            if response.question.text not in questions:
+                questions.append(response.question.text)
+            if response.context.text not in contexts:
+                contexts.append(response.context.text)
         for question in questions:
             for context in contexts:
                 answers = most_common_response_by_question_and_context(
@@ -96,7 +95,7 @@ class RereadingAnalysis:
                 response_by_question_and_context = {
                     'question': question,
                     'context': context,
-                    'response': answers
+                    'answers': answers
                 }
                 all_responses.append(response_by_question_and_context)
 

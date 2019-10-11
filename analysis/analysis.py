@@ -316,7 +316,7 @@ def compute_mean_response_length(student_data):
     for row in student_data:
         list_of_responses.append(row.get("response"))
     mean_response_length = 0
-    for response in range(len(list_of_responses)):
+    for i, response in enumerate(list_of_responses):
         mean_response_length += len(list_of_responses[response])
     return mean_response_length / len(list_of_responses)
 
@@ -402,6 +402,9 @@ def run_relevant_word_analysis(student_data):
 
 
 def run_analysis():
+    """
+    Runs analysis given student data
+    """
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
     response_groups_freq_dicts = get_response_groups_frequencies(student_data)
@@ -1071,6 +1074,9 @@ class TestAnalysisMethods(unittest.TestCase):
         self.assertEqual(total_view_time, 0)
 
     def test_compute_median_view_time(self):
+        """
+        Test that the median view time equals the expected values.
+        """
         median_view_time = compute_median_view_time(self.test_student_data)
         self.assertEqual(median_view_time, 2.319)
 
@@ -1079,6 +1085,9 @@ class TestAnalysisMethods(unittest.TestCase):
         self.assertEqual(median_view_time, 0)
 
     def test_compute_mean_response_length(self):
+        """
+        Test that the mean response length equals the expected values.
+        """
         mean_response_length = compute_mean_response_length(self.test_student_data)
         self.assertEqual(mean_response_length, 5.5)
 
@@ -1249,7 +1258,7 @@ class TestAnalysisMethods(unittest.TestCase):
 
     def test_frequency_feelings(self):
         """
-        test that frequency_feelings method returns the expected values
+        Test that frequency_feelings method returns the expected values
         """
         frequency_feels = frequency_feelings(self.test_student_data)
         expected = [("sad", 2)]
@@ -1311,6 +1320,10 @@ class TestAnalysisMethods(unittest.TestCase):
         self.assertEqual(default_result, default_expected)
 
     def test_description_has_relevant_words(self):
+        """
+        Tests that the relevant word testing method returns True when relevant words are
+        included in a response and False otherwise
+        """
         relevant_words = ["dead", "death", "miscarriage", "killed", "kill", "losing", "loss",
                           "lost", "deceased", "died", "grief", "pregnancy", "pregnant"]
 
@@ -1332,6 +1345,9 @@ class TestAnalysisMethods(unittest.TestCase):
         self.assertFalse(negative_response)
 
     def test_percent_students_using_relevant_words(self):
+        """
+        Tests that the expected number of students are using relevant words.
+        """
         relevant_words = ["dead", "death", "miscarriage", "killed", "kill", "losing", "loss",
                           "lost", "deceased", "died", "grief", "pregnancy", "pregnant"]
         story_context = "This is actually a short story."

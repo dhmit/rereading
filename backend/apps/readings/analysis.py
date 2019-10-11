@@ -45,6 +45,7 @@ class RereadingAnalysis:
         prints it in a nice readable format.
         :return: None
         """
+        self.print_self()
         return self.mean_reading_time_for_a_question(
             "In one word, how does this text make you feel?",
             "ad"
@@ -97,11 +98,11 @@ class RereadingAnalysis:
         question_count = 0
         reading_time = []
         total_question_view_time = 0
-        print("ppppppp")
         student_data = self.responses[:]
-        print("hhfiudsa")
         for response in student_data:
-            print("hi")
+            print(response.question.text)
+            # print(response.context.text)
+            # print(response.get_parsed_views())
             if question != response.question.text or \
                context != response.context.text:
                 continue
@@ -109,7 +110,6 @@ class RereadingAnalysis:
                 number_of_readers += 1
             for view_time in response.get_parsed_views():
                 reading_time.append(view_time)
-        print("hiiii")
         if len(reading_time) != 0:
             student_data.remove_outliers(reading_time)
 
@@ -121,7 +121,6 @@ class RereadingAnalysis:
 
         if len(reading_time) != 0:
             mean_time = round(total_question_view_time / len(reading_time), 2)
-        print("hiiii2")
         return question, context, mean_time, number_of_readers
 
     def remove_outliers(self, reading_time):

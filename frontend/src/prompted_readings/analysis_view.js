@@ -29,13 +29,16 @@ class AnalysisView extends React.Component {
         if (this.state.analysis !== null) {
             const {  // object destructuring:
                 total_view_time,
+                run_mean_reading_analysis_for_questions,
             } = this.state.analysis;
-
+            console.log(run_mean_reading_analysis_for_questions)
             return (
                 <div>
                     <h1>Analysis of Student Responses</h1>
                     <h3>Total view time</h3>
                     <p>{total_view_time} seconds</p>
+                    <h3>Mean view time for question with outliers removed:</h3>
+                    <p>{run_mean_reading_analysis_for_questions}</p>
                 </div>
             );
         } else {

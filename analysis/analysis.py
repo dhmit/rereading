@@ -316,8 +316,8 @@ def compute_mean_response_length(student_data):
     for row in student_data:
         list_of_responses.append(row.get("response"))
     mean_response_length = 0
-    for i, response in enumerate(list_of_responses):
-        mean_response_length += len(list_of_responses[response])
+    for response in list_of_responses:
+        mean_response_length += len(response)
     return mean_response_length / len(list_of_responses)
 
 

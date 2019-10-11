@@ -1,16 +1,28 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-function SentimentScores(props) {
-    return (
-        <div>
-            <h3>Average Sentiment Among Students</h3>
-            <h5>Positivity Score:</h5>
-            <p>{props.sentiment_average}</p>
-            <h5>Standard Deviation:</h5>
-            <p>{props.sentiment_std}</p>
-        </div>
-    );
+class SentimentScores extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            sentiment_average: props.sentiment_average,
+            sentiment_std: props.sentiment_std,
+        }
+
+    }
+
+    render() {
+        return (
+            <div>
+                <h3>Average Sentiment Among Students</h3>
+                <h5>Positivity Score:</h5>
+                <p>{this.state.sentiment_average}</p>
+                <h5>Standard Deviation:</h5>
+                <p>{this.state.sentiment_std}</p>
+            </div>
+        );
+    }
 }
 
 SentimentScores.propTypes = {

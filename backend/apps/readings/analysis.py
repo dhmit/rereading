@@ -3,8 +3,6 @@
 Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
-from django.test import TestCase
-
 from .models import StudentResponse
 
 

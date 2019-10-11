@@ -174,12 +174,16 @@ def compute_total_view_time(student_data):
             total_view_time += view_time
     return total_view_time
 
-def compute_mean_reading_times(student_data):
+
+def compute_mean_reading_times_each_response(student_data):
     """
-    Analyze answer response times by computing a ratio of the response
-    time of the first question to the response time of the second question;
-    if multiple responses are recorded for the same question, add
-    response times first.
+    For each rereading, compute the mean response time across all students
+    by summing the durations of each round of reading and dividing each sum
+    by the total number of participants.
+    :param student_data: list of OrderedDicts, set of responses
+    :return a list containing 1) total number of participants,
+    2) the mean reading time for the first response, and
+    3) the mean reading time for the second response.
     """
     total_first_response = 0
     total_second_response = 0
@@ -205,7 +209,6 @@ def compute_mean_reading_times(student_data):
     mean_first_response = total_first_response / total_participants
     mean_second_response = total_second_response / total_participants
     result = [total_participants, mean_first_response, mean_second_response]
-    print(result)
     return result
 
 
@@ -856,15 +859,17 @@ class TestAnalysisMethods(unittest.TestCase):
         total_view_time = compute_total_view_time(self.default_student_data)
         self.assertEqual(total_view_time, 0)
 
-    def test_compute_mean_reading_times(self):
+    def test_compute_mean_reading_times_each_response(self):
         """
         Tests compute_mean_reading_times for correct means for each reading response time
         """
-        expected = compute_mean_reading_times(self.default_student_data)
+        expected = compute_mean_reading_times_each_response(self.default_student_data)
         self.assertEqual(expected, [1, 0.0, 0.0])
 
-        expected = compute_mean_reading_times(self.student_data)
-        self.assertEqual(expected, [30, 7.546366666666666, 2.9542])
+        expected = compute_mean_reading_times_each_response(self.student_data)
+        self.assertAlmostEqual(expected, [30, 7.546366666666666, 2.9542])
+
+
     def test_compute_mean_revisits(self):
         """
         Test that the mean number of revisits equals the expected values.

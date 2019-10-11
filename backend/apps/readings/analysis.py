@@ -80,21 +80,24 @@ class RereadingAnalysis:
     def most_common_responses(self):
         questions = []
         contexts = []
-        most_common_responses = {}
+        all_responses = []
         for response in self.responses:
             if response.question not in questions:
                 questions.append(response.question)
-        for response in self.responses:
             if response.context not in contexts:
                 questions.append(response.context)
         for question in questions:
             for context in contexts:
-                response_by_context = {}
-                response_by_context[context] = most_common_response_by_question_and_context(
+                answers = most_common_response_by_question_and_context(
                     self.responses,
                     question,
                     context,
                 )
-                most_common_responses[question] = response_by_context
+                response_by_question_and_context = {
+                    'question': question,
+                    'context': context,
+                    'response': answers
+                }
+                all_responses.append(response_by_question_and_context)
 
-        return most_common_responses
+        return all_responses

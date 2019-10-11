@@ -43,7 +43,7 @@ class RereadingAnalysis:
         Runs the analysis on the data loaded from the CSV file by looking at the average
         read time for each question and the context that the question was given in and
         prints it in a nice readable format.
-        :return: None
+        :return: the info wed like to put on js
         """
         return self.mean_reading_time_for_a_question(
             "In one word, how does this text make you feel?",
@@ -126,7 +126,14 @@ class RereadingAnalysis:
             print(total_question_view_time)
             print(reading_time)
             mean_time = round(total_question_view_time / len(reading_time), 2)
-        return question, context, mean_time, number_of_readers
+
+        return "Question: "+question+ "Context: "+context+" Mean time with outliers " \
+                                                          "removed: "+str(mean_time)+" Total " \
+                                                                                     "number " \
+                                                                                  "of " \
+                                                                               "readers: "+ \
+                                                                               str(
+                                                                                   number_of_readers)
 
     def remove_outliers(self, reading_time):
         """

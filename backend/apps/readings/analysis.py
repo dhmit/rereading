@@ -19,7 +19,6 @@ class RereadingAnalysis:
         """ On initialization, we load all of the StudentResponses from the db """
         self.responses = StudentResponse.objects.all()
 
-    @property
     def total_view_time(self):
         """
         Queries the db for all StudentResponses,

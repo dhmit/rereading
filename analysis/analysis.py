@@ -353,10 +353,124 @@ def get_word_frequency_differences(student_data):
     return ordered_responses
 
 
-def run_analysis():
+def compute_median_view_time(student_data):
     """
+     Given a list of student response dicts,
+    return the median time (across all users) spent reading the text
+
+    :param student_data: list, student response dicts
+    :return: float, median amount of time users spend reading the text
+    """
+    list_of_times = []
+    for row in student_data:
+        for view_time in row.get('views'):
+            list_of_times.append(view_time)
+    if not list_of_times:
+        median_view_time = 0
+    else:
+        list_of_times.sort()
+        median_view_time = statistics.median(list_of_times)
+    return median_view_time
+
+
+def compute_mean_response_length(student_data):
+    """
+    Given a list of student response dicts,
+    return the mean character length (across all users) of the response
+
+    :param student_data: list, student response dicts
+    :return: float, mean number of characters in the user's response
+    """
+
+    list_of_responses = []
+    for row in student_data:
+        list_of_responses.append(row.get("response"))
+    mean_response_length = 0
+    for response in list_of_responses:
+        mean_response_length += len(response)
+    return mean_response_length / len(list_of_responses)
+
+
+def run_time_analysis_functions(student_data):
+    """
+    Runs analysis functions related to the time students took to read the passage
+    :param student_data: the data to analyze
     Runs the analytical method on the reading data
     :return: None
+    """
+    median_view_time = compute_median_view_time(student_data)
+    total_view_time = compute_total_view_time(student_data)
+    mean_response_length = compute_mean_response_length(student_data)
+    print(f'The total view time of all students was {total_view_time}.')
+    print(f'The median view time of all students was {median_view_time}.')
+    print(f'The mean response length of all students was {mean_response_length} characters.')
+
+
+def description_has_relevant_words(story_meaning_description, relevant_words):
+    """
+    Determine if the user's description contains a word relevant to the story's meaning
+    :param story_meaning_description: The three word description of the story that the user supplied
+    :param relevant_words: a list of words which show an understanding of the story's meaning
+    :return True if the description contains one of the relevant words or relevant_words is empty.
+        False otherwise
+    """
+    if len(relevant_words) == 0:
+        return True
+
+    lowercase_relevant_words = list(map(lambda s: s.lower(), relevant_words))
+    words_used_in_description = story_meaning_description.lower().split(' ')
+
+    for word in lowercase_relevant_words:
+        if word.lower() in words_used_in_description:
+            return True
+    return False
+
+
+def percent_students_using_relevant_words(student_data, target_context, relevant_words):
+    """
+    Find the percentage of students that used relevant words in their responses
+    :param student_data: the data to analyze
+    :param target_context: the context (e.g. "This is an ad") to take responses from
+    :param relevant_words: a list of words which show an understanding of the story's meaning
+    :return: The percentage [0.00, 1.00] of students that used relevant words in their
+    responses. 0 if there are no responses.
+    """
+    number_of_students_using_relevant_words = 0
+    total_students = 0
+    for row in student_data:
+        if (row.get('context') == target_context and
+                row.get('question') == 'In three words or fewer, what is this text about?'):
+            total_students += 1
+            if description_has_relevant_words(row.get('response'), relevant_words):
+                number_of_students_using_relevant_words += 1
+
+    if total_students:
+        percentage_of_all_students = number_of_students_using_relevant_words / total_students
+    else:
+        percentage_of_all_students = 0
+    return percentage_of_all_students
+
+
+def run_relevant_word_analysis(student_data):
+    """
+    Runs analysis functions related to the relevancy of words students wrote in their responses
+    :param student_data: the data to analyze
+    """
+    target_context = 'This is actually a short story.'
+    relevant_words_file_path = 'data/words_related_to_story.txt'
+    relevant_words_file = open(relevant_words_file_path, 'r')
+    untrimmed_relevant_words = relevant_words_file.readlines()
+    relevant_words = list(map(lambda s: s.strip(), untrimmed_relevant_words))
+
+    relevant_words_used_percent = percent_students_using_relevant_words(
+        student_data, target_context, relevant_words)
+    print(f'{relevant_words_used_percent * 100}% of students used words related to '
+          f'the story\'s intended meaning.')
+
+
+def run_analysis():
+    """
+    Runs analysis given student data
     """
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
@@ -367,6 +481,8 @@ def run_analysis():
 
     response_groups_freq_dicts = get_response_groups_frequencies(student_data)
     show_response_groups(response_groups_freq_dicts)
+    run_time_analysis_functions(student_data)
+    run_relevant_word_analysis(student_data)
 
     total_view_time = compute_total_view_time(student_data)
     print(f'The total view time of all students was {total_view_time}.')
@@ -556,7 +672,7 @@ def mean_reading_time_for_a_question(student_data, question, context):
 
     for student_data_dictionary in student_data:
         if question != student_data_dictionary['question'] or \
-                                context != student_data_dictionary['context']:
+                context != student_data_dictionary['context']:
             continue
         if len(student_data_dictionary['views']) != 0:
             number_of_readers += 1
@@ -1040,6 +1156,28 @@ class TestAnalysisMethods(unittest.TestCase):
         for i in range(3):
             self.assertAlmostEqual(expected[i], [30, 7.546366666666666, 2.9542][i])
 
+    def test_compute_median_view_time(self):
+        """
+        Test that the median view time equals the expected values.
+        """
+        median_view_time = compute_median_view_time(self.test_student_data)
+        self.assertEqual(median_view_time, 2.319)
+
+        # check we don't crash on the defaults from the model!
+        median_view_time = compute_median_view_time(self.default_student_data)
+        self.assertEqual(median_view_time, 0)
+
+    def test_compute_mean_response_length(self):
+        """
+        Test that the mean response length equals the expected values.
+        """
+        mean_response_length = compute_mean_response_length(self.test_student_data)
+        self.assertEqual(mean_response_length, 5.5)
+
+        # check we don't crash on the defaults from the model!
+        mean_response_length = compute_mean_response_length(self.default_student_data)
+        self.assertEqual(mean_response_length, 0)
+
     def test_compute_reread_counts(self):
         """
         Test that the reread count equals the expected values.
@@ -1235,7 +1373,7 @@ class TestAnalysisMethods(unittest.TestCase):
 
     def test_frequency_feelings(self):
         """
-        test that frequency_feelings method returns the expected values
+        Test that frequency_feelings method returns the expected values
         """
         frequency_feels = frequency_feelings(self.test_student_data)
         expected = [("sad", 2)]
@@ -1295,6 +1433,57 @@ class TestAnalysisMethods(unittest.TestCase):
         }
         default_result = word_time_relations(self.default_student_data)
         self.assertEqual(default_result, default_expected)
+
+    def test_description_has_relevant_words(self):
+        """
+        Tests that the relevant word testing method returns True when relevant words are
+        included in a response and False otherwise
+        """
+        relevant_words = ["dead", "death", "miscarriage", "killed", "kill", "losing", "loss",
+                          "lost", "deceased", "died", "grief", "pregnancy", "pregnant"]
+
+        empty_list_response = description_has_relevant_words("description", [])
+        self.assertTrue(empty_list_response)
+
+        single_word_positive_response = description_has_relevant_words("died", relevant_words)
+        self.assertTrue(single_word_positive_response)
+
+        capitalization_positive_response = description_has_relevant_words("MiScArrIAGe",
+                                                                          relevant_words)
+        self.assertTrue(capitalization_positive_response)
+
+        multi_word_positive_response = description_has_relevant_words("losing a baby",
+                                                                      relevant_words)
+        self.assertTrue(multi_word_positive_response)
+
+        negative_response = description_has_relevant_words("irrelevant words", relevant_words)
+        self.assertFalse(negative_response)
+
+    def test_percent_students_using_relevant_words(self):
+        """
+        Tests that the expected number of students are using relevant words.
+        """
+        relevant_words = ["dead", "death", "miscarriage", "killed", "kill", "losing", "loss",
+                          "lost", "deceased", "died", "grief", "pregnancy", "pregnant"]
+        story_context = "This is actually a short story."
+        calculated_percent_story = percent_students_using_relevant_words(self.test_student_data,
+                                                                         story_context,
+                                                                         relevant_words)
+        self.assertEqual(calculated_percent_story, 1.00)
+        default_percent_story = percent_students_using_relevant_words(self.default_student_data,
+                                                                      story_context,
+                                                                      relevant_words)
+        self.assertEqual(default_percent_story, 0)
+
+        ad_context = "This is an ad."
+        calculated_percent_ad = percent_students_using_relevant_words(self.test_student_data,
+                                                                      ad_context,
+                                                                      relevant_words)
+        self.assertEqual(calculated_percent_ad, 1.00)
+        default_percent_ad = percent_students_using_relevant_words(self.default_student_data,
+                                                                   ad_context,
+                                                                   relevant_words)
+        self.assertEqual(default_percent_ad, 0)
 
     def test_compute_view_time_per_response(self):
         """

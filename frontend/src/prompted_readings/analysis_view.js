@@ -26,6 +26,7 @@ class AnalysisView extends React.Component {
     }
 
     render() {
+
         if (this.state.analysis !== null) {
             const {  // object destructuring:
                 total_view_time,

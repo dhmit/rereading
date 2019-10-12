@@ -45,10 +45,29 @@ class RereadingAnalysis:
         prints it in a nice readable format.
         :return: the info wed like to put on js
         """
-        return self.mean_reading_time_for_a_question(
-            "In one word, how does this text make you feel?",
-            "This is an ad."
-            )
+
+        question_one = "In one word, how does this text make you feel?"
+        question_two = "In three words or fewer, what is this text about?"
+        question_three = "Have you encountered this text before?"
+        context_one = "This is an ad."
+        context_two = "This is actually a short story."
+
+        mean_reading_time_results_data = [
+            self.mean_reading_time_for_a_question(question_one, context_one),
+            ", \n",
+            self.mean_reading_time_for_a_question(question_two, context_one),
+            self.mean_reading_time_for_a_question(question_three, context_one),
+            self.mean_reading_time_for_a_question(question_one, context_two),
+            self.mean_reading_time_for_a_question(question_two, context_two),
+            self.mean_reading_time_for_a_question(question_three, context_two)
+        ]
+
+        return mean_reading_time_results_data
+
+        # return self.mean_reading_time_for_a_question(
+        #     "In one word, how does this text make you feel?",
+        #     "This is an ad."
+        #     )
 
         """
 
@@ -99,19 +118,14 @@ class RereadingAnalysis:
         total_question_view_time = 0
         student_data = self.responses[:]
         for response in student_data:
-            # print(response.question.text)
-            # print(response.context.text)
-            #print(response.get_parsed_views())
             if question != response.question.text or \
                context != response.context.text:
                 continue
             if len(response.get_parsed_views()) != 0:
                 number_of_readers += 1
             for view_time in response.get_parsed_views():
-                # print("hi",view_time)
                 reading_time.append(view_time)
 
-        #print(reading_time)
         if len(reading_time) != 0:
             self.remove_outliers(reading_time)
 
@@ -120,20 +134,12 @@ class RereadingAnalysis:
             question_count += 1
             total_question_view_time += reading_time[view_time]
             view_time += 1
-        print(total_question_view_time)
 
         if len(reading_time) != 0:
-            print(total_question_view_time)
-            print(reading_time)
             mean_time = round(total_question_view_time / len(reading_time), 2)
 
         return "Question: "+question+ "Context: "+context+" Mean time with outliers " \
-                                                          "removed: "+str(mean_time)+" Total " \
-                                                                                     "number " \
-                                                                                  "of " \
-                                                                               "readers: "+ \
-                                                                               str(
-                                                                                   number_of_readers)
+                "removed: "+str(mean_time)+" Total number of readers: "+ str(number_of_readers)
 
     def remove_outliers(self, reading_time):
         """

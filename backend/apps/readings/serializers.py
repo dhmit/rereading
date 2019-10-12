@@ -104,8 +104,12 @@ class AnalysisSerializer(serializers.Serializer):
     total_view_time = serializers.ReadOnlyField()
     run_mean_reading_analysis_for_questions = serializers.ReadOnlyField()
 
+    # run_mean_reading_analysis_for_questions = serializers.ListField(child=serializers.CharField())
+
+
     def create(self, validated_data):
         """ We will not create new objects using this serializer """
 
     def update(self, instance, validated_data):
         """ We will not update data using this serializer """
+

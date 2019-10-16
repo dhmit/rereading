@@ -3,8 +3,8 @@
 Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
-from .models import StudentResponse
 import statistics
+from .models import StudentResponse
 
 
 class RereadingAnalysis:

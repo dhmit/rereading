@@ -16,7 +16,6 @@ from statistics import stdev
 from collections import defaultdict
 
 
-
 def load_data_csv(csv_path: Path):
     """
     Takes the path to a csv file, reads it, and returns its
@@ -412,7 +411,6 @@ def mean_view_time_comparison(student_data):
     print('\nThere were ' + str(negative_responses) + ' negative responses and '
           + str(neutral_responses) + ' neutral responses.\n')
     return negative_mean_view_time, neutral_mean_view_time
-
 
 
 def compute_median_view_time(student_data):

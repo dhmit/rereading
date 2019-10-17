@@ -57,7 +57,7 @@ confidence=
 
 disable=
     cyclic-import,  # we use these inside functions when there's a deep problem.
-    locally-disabled,  # hopefully will know what we're doing
+    locally-disabled,  # we will check these manually
     fixme,  # known
     superfluous-parens,  # sometimes clarifies code
     no-member,  # important, but too many false positives
@@ -70,7 +70,8 @@ disable=
     too-many-ancestors,
     consider-using-get,
     chained-comparison,
-    too-many-lines
+    trailing-newlines,  # no big deal
+    too-many-lines  # RYAAN -- are you sure on this?
 
 
 [REPORTS]

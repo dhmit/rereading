@@ -3,7 +3,7 @@
 Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
-from statistics import stdev
+import statistics
 from pathlib import Path
 
 from .models import StudentResponse
@@ -107,7 +107,6 @@ class RereadingAnalysis:
         """ On initialization, we load all of the StudentResponses from the db """
         self.responses = StudentResponse.objects.all()
 
-    @property
     def total_view_time(self):
         """
         Queries the db for all StudentResponses,
@@ -154,3 +153,20 @@ class RereadingAnalysis:
         standard_dev = stdev(score_list)
 
         return average, standard_dev
+        
+    def compute_median_view_time(self):
+        """
+         Given a list of student response dicts,
+        return the median time (across all users) spent reading the text
+        :return: float, median amount of time users spend reading the text
+        """
+        list_of_times = []
+        for row in self.responses:
+            for view_time in row.get('views'):
+                list_of_times.append(view_time)
+        if not list_of_times:
+            median_view_time = 0
+        else:
+            list_of_times.sort()
+            median_view_time = statistics.median(list_of_times)
+        return median_view_time

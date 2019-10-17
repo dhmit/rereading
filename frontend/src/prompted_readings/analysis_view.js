@@ -60,6 +60,7 @@ class AnalysisView extends React.Component {
             const {  // object destructuring:
                 total_view_time,
                 question_sentiment_analysis,
+                compute_median_view_time,
             } = this.state.analysis;
 
             return (
@@ -68,6 +69,7 @@ class AnalysisView extends React.Component {
                         <h1>Analysis of Student Responses</h1>
                         <h3>Total view time</h3>
                         <p>{total_view_time} seconds</p>
+                        <p>{compute_median_view_time}</p>
                     </div>
                     <SentimentScores
                         sentiment_average={question_sentiment_analysis[0]}

@@ -186,22 +186,30 @@ Question.propTypes = {
 /**
  * Generates and returns a single row for the Question component
  */
-function QuestionResponse(props) {
-    // This line below is NOT something we do in this lab: we will learn soon how to fix it.
+class QuestionResponse extends React.Component {
 
-    // noinspection JSUnresolvedVariable
-    return (
-        <tr>
-            <td>{props.student.id}</td>
-            <td>{props.student.student_responses[props.prompt].response}</td>
-            <td>{props.student.student_responses[props.prompt].views}</td>
-            <td>{props.student.student_responses[props.prompt].scroll_ups}</td>
-        </tr>
-    );
+    constructor(props) {
+        super(props);
+        this.state = {
+            student: props.student,
+            student_response: props.student.student_responses[props.prompt_num],
+        }
+    }
+
+    render() {
+        return (
+            <tr>
+                <td>{this.state.student.id}</td>
+                <td>{this.state.student_response.response}</td>
+                <td>{this.state.student_response.views}</td>
+                <td>{this.state.student_response.scroll_ups}</td>
+            </tr>
+        );
+    }
 }
 QuestionResponse.propTypes = {
     student: PropTypes.object,
-    prompt: PropTypes.number,
+    prompt_num: PropTypes.number,
 };
 
 /**

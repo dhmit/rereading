@@ -6,7 +6,7 @@ class FrequencyFeelingTable extends React.Component {
         return (
             <div>
                 <h1>Frequency Feelings</h1>
-                <table border="1">
+                <table border="1" cellPadding="5">
                     <tbody>
                         <tr>
                             <th>Word</th>
@@ -36,17 +36,19 @@ class ContextVsViewTime extends React.Component {
         return (
             <div>
                 <h1>Mean View Times of Different Contexts</h1>
-                <table border="1">
-                    <tr>
-                        <th>Context</th>
-                        <th>Mean View Time (seconds)</th>
-                    </tr>
-                    {roundedViewTimes.map((context, i) => (
-                        <tr key={i}>
-                            <td>{context[0]}</td>
-                            <td>{context[1]}</td>
+                <table border="1" cellPadding="5">
+                    <tbody>
+                        <tr>
+                            <th>Context</th>
+                            <th>Mean View Time (seconds)</th>
                         </tr>
-                    ))}
+                        {roundedViewTimes.map((context, i) => (
+                            <tr key={i}>
+                                <td>{context[0]}</td>
+                                <td>{context[1]}</td>
+                            </tr>
+                        ))}
+                    </tbody>
                 </table>
             </div>
         )
@@ -90,15 +92,16 @@ class AnalysisView extends React.Component {
                 context_vs_read_time,
                 compute_median_view_time,
             } = this.state.analysis;
-
             return (
-                <div>
+                <div style={{padding: '20px'}}>
                     <h1>Analysis of Student Responses</h1>
                     <h3>Total view time</h3>
                     <p>{total_view_time} seconds</p>
                     <FrequencyFeelingTable feelings={frequency_feelings}/>
+                    <br/>
                     <ContextVsViewTime viewTime={context_vs_read_time}/>
-                    <p>{compute_median_view_time}</p>
+                    <br/><br/>
+                    <p><b>Median View Time: </b>{compute_median_view_time}</p>
                 </div>
             );
         } else {
@@ -109,4 +112,8 @@ class AnalysisView extends React.Component {
     }
 }
 
+export {
+    ContextVsViewTime,
+    FrequencyFeelingTable
+}
 export default AnalysisView;

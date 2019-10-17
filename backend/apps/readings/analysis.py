@@ -103,7 +103,6 @@ class RereadingAnalysis:
         return "Question: "+question+ " Context: "+context+" Mean time with outliers " \
             "removed: "+str(mean_time)+" Total number of readers: "+ str(number_of_readers)
 
-    @property
     def remove_outliers(self, reading_time):
         """
         Given a list of times, calculates and removes outliers, which are the data points that

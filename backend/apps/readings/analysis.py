@@ -54,7 +54,6 @@ class RereadingAnalysis:
 
         mean_reading_time_results_data = [
             self.mean_reading_time_for_a_question(question_one, context_one),
-            ", \n",
             self.mean_reading_time_for_a_question(question_two, context_one),
             self.mean_reading_time_for_a_question(question_three, context_one),
             self.mean_reading_time_for_a_question(question_one, context_two),
@@ -138,7 +137,7 @@ class RereadingAnalysis:
         if len(reading_time) != 0:
             mean_time = round(total_question_view_time / len(reading_time), 2)
 
-        return "Question: "+question+ "Context: "+context+" Mean time with outliers " \
+        return "Question: "+question+ " Context: "+context+" Mean time with outliers " \
                 "removed: "+str(mean_time)+" Total number of readers: "+ str(number_of_readers)
 
     def remove_outliers(self, reading_time):

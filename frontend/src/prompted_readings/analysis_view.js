@@ -25,6 +25,8 @@ class AnalysisView extends React.Component {
         }
     }
 
+    function
+
     render() {
 
         if (this.state.analysis !== null) {
@@ -38,7 +40,10 @@ class AnalysisView extends React.Component {
                     <h1>Analysis of Student Responses</h1>
                     <h3>Total view time</h3>
                     <p>{total_view_time} seconds</p>
-                    <p>{run_mean_reading_analysis_for_questions}</p>
+                    <h3>Mean Reading Time for Questions</h3>
+                    {run_mean_reading_analysis_for_questions.map((i,k) =>
+                        <p key = {k}>{i}</p>
+                    )}
                 </div>
             );
         } else {

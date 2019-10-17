@@ -73,46 +73,65 @@ function QuestionView(props) {
     // Sorts each student response by the context and question that they are answering
     // TODO: clean this up!
     for (let i = 0; i < students.length; i++) {
-        let student = students[i];
-        for (const prompt in student.student_responses) {
-            if (!Object.prototype.hasOwnProperty.call(student.student_responses, prompt)) {
-                continue;
-            }
-            let question = student.student_responses[prompt].question;
-            let context = student.student_responses[prompt].context;
-            if (Object.prototype.hasOwnProperty.call(questions, context)) {
-                // The context is already in the list
-                if (Object.prototype.hasOwnProperty.call(questions[context], question)) {
-                    // The question is already in the context's list
-                    questions[context][question].push([i, prompt]);
-                } else {  // The context/question pairing doesn't exist yet
-                    questions[context][question] = [[i, prompt]];
+
+        const student = students[i];
+        const student_responses = student.student_responses;
+
+        // Iterate through all of the responses the student provided
+        for (let response_num = 0; response_num < student_responses.length; response_num++) {
+
+            const response = student_responses[response_num];
+            const question = response.question;
+            const context = response.context;
+
+            // We have already added the context to our questions object
+            if (questions.hasOwnProperty(context)) {
+
+                const context_pairing = questions[context];
+
+                // The question is already in the context's list, so add the student
+                if (context_pairing.hasOwnProperty(question)) {
+                    context_pairing[question].push([i, response_num]);
+
+                // The context/question pairing doesn't exist yet
+                } else {
+                    context_pairing[question] = [[i, response_num]];
                 }
-            } else {  // The context doesn't exist yet, add it to the list
+
+            // The context doesn't exist yet, so add it to the questions object
+            } else {
                 questions[context] = {};
-                questions[context][question] = [[i, prompt]];
+                questions[context][question] = [[i, response_num]];
             }
         }
     }
 
     // Create sections on the page dedicated to each Context/Question pairing
     const questionsToView = [];
-    for (const context in questions) {
-        if (!Object.prototype.hasOwnProperty.call(questions, context)) {
+    console.log(questions);
+
+    // context_num is not guaranteed to start with 0
+    for (let context_num in questions) {
+
+        if (!questions.hasOwnProperty(context_num)) {
             continue;
         }
 
-        for (const question in questions[context]) {
-            if (!Object.prototype.hasOwnProperty.call(questions[context], question)) {
+        const context_pairing = questions[context_num];
+
+        for (let question in context_pairing) {
+
+            if (!context_pairing.hasOwnProperty(question)) {
                 continue;
             }
+
             questionsToView.push(
                 <Question
-                    context={context}
+                    context={context_num}
                     question={question}
-                    indices={questions[context][question]}
+                    indices={context_pairing[question]}
                     students={students}
-                    key={context}
+                    key={context_num}
                 />
             );
         }
@@ -254,7 +273,8 @@ class InstructorView extends React.Component {
 
     render() {
         if (this.state.loaded) {  // Only do this if we have the data! Otherwise breaks :(
-            let tempStudents = [...this.state.students];
+            let tempStudents = this.state.students;
+            console.log(tempStudents);
             let students;
 
             if (this.state.sortBy === 'story') { // If we're sorting by story

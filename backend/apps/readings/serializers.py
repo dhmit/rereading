@@ -51,7 +51,7 @@ class StudentSerializer(serializers.ModelSerializer):
 
         fields = (
             'id',
-            'story',
+            # 'story',
             'student_responses',
         )
 

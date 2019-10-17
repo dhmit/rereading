@@ -108,17 +108,14 @@ function QuestionView(props) {
 
     // Create sections on the page dedicated to each Context/Question pairing
     const questionsToView = [];
-    console.log(questions);
 
     // context_num is not guaranteed to start with 0
     for (let context_num in questions) {
-
         if (!questions.hasOwnProperty(context_num)) {
             continue;
         }
 
         const context_pairing = questions[context_num];
-
         for (let question in context_pairing) {
 
             if (!context_pairing.hasOwnProperty(question)) {
@@ -152,28 +149,45 @@ QuestionView.propTypes = {
  *
  * Requires 'indices' property to display
  */
-function Question(props) {
-    const responses = props.indices.map(index => (
-        <QuestionResponse student={props.students[index[0]]} prompt_num={index[1]} key={index[0]}/>
-    ));
+class Question extends React.Component {
 
-    return (
-        <div>
-            <div><h2>Context: {props.context}</h2></div>
-            <div><h2>Question: {props.question}</h2></div>
-            <table className="table striped bordered hover responsive">
-                <thead>
-                    <tr>
-                        <td><b>Student</b></td>
-                        <td><b>Response</b></td>
-                        <td><b>Views</b></td>
-                        <td><b>Scrolls</b></td>
-                    </tr>
-                </thead>
-                <tbody>{responses}</tbody>
-            </table>
-        </div>
-    );
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            context: props.context,
+            question: props.question,
+            students: props.students,
+            indices: props.indices,
+        };
+    }
+
+    render() {
+        const responses = this.state.indices.map(index => (
+            <QuestionResponse
+                student={this.state.students[index[0]]}
+                prompt_num={index[1]}
+                key={index[0]}/>
+        ));
+
+        return (
+            <div>
+                <div><h2>Context: {this.state.context}</h2></div>
+                <div><h2>Question: {this.state.question}</h2></div>
+                <table className="table striped bordered hover responsive">
+                    <thead>
+                        <tr>
+                            <td><b>Student</b></td>
+                            <td><b>Response</b></td>
+                            <td><b>Views</b></td>
+                            <td><b>Scrolls</b></td>
+                        </tr>
+                    </thead>
+                    <tbody>{responses}</tbody>
+                </table>
+            </div>
+        );
+    }
 }
 Question.propTypes = {
     indices: PropTypes.array.isRequired,
@@ -193,7 +207,7 @@ class QuestionResponse extends React.Component {
         this.state = {
             student: props.student,
             student_response: props.student.student_responses[props.prompt_num],
-        }
+        };
     }
 
     render() {
@@ -282,7 +296,6 @@ class InstructorView extends React.Component {
     render() {
         if (this.state.loaded) {  // Only do this if we have the data! Otherwise breaks :(
             let tempStudents = this.state.students;
-            console.log(tempStudents);
             let students;
 
             if (this.state.sortBy === 'story') { // If we're sorting by story

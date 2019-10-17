@@ -7,6 +7,7 @@ from rest_framework import serializers
 
 from .models import Story, Question, Context, Student, StudentResponse
 
+
 class StudentResponseSerializer(serializers.ModelSerializer):
     """
     A serializer makes it possible to view a database Django model
@@ -104,6 +105,7 @@ class AnalysisSerializer(serializers.Serializer):
     total_view_time = serializers.ReadOnlyField()
     frequency_feelings = serializers.ReadOnlyField()
     context_vs_read_time = serializers.ReadOnlyField()
+    compute_median_view_time = serializers.ReadOnlyField()
 
     def create(self, validated_data):
         """ We will not create new objects using this serializer """

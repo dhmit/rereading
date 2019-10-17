@@ -88,6 +88,7 @@ class AnalysisView extends React.Component {
                 total_view_time,
                 frequency_feelings,
                 context_vs_read_time,
+                compute_median_view_time,
             } = this.state.analysis;
 
             return (
@@ -97,6 +98,7 @@ class AnalysisView extends React.Component {
                     <p>{total_view_time} seconds</p>
                     <FrequencyFeelingTable feelings={frequency_feelings}/>
                     <ContextVsViewTime viewTime={context_vs_read_time}/>
+                    <p>{compute_median_view_time}</p>
                 </div>
             );
         } else {

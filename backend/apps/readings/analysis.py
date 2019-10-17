@@ -3,7 +3,8 @@
 Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
-from .models import StudentResponse, Question
+from .models import StudentResponse, Question, Context
+import itertools
 
 
 class RereadingAnalysis:
@@ -18,11 +19,20 @@ class RereadingAnalysis:
     def __init__(self):
         """ On initialization, we load all of the StudentResponses from the db """
         self.responses = StudentResponse.objects.all()
+
+        """ Retrieve all possible questions and turn it into a list """
         list_of_dict_of_questions = Question.objects.values('text')
         merged_dicts = {}
         for key in list_of_dict_of_questions[0].keys():
-            merged_dicts[key] = tuple(dict[key] for dict in list_of_dict_of_questions)
+            merged_dicts[key] = list(dict[key] for dict in list_of_dict_of_questions)
         self.questions = merged_dicts.get('text')
+
+        """ Retrieve all possible contexts, and turn it into a list"""
+        list_of_dict_of_contexts = Context.objects.values('text')
+        merged_dicts = {}
+        for key in list_of_dict_of_contexts[0].keys():
+            merged_dicts[key] = list(dict[key] for dict in list_of_dict_of_contexts)
+        self.contexts = merged_dicts.get('text')
 
     def total_view_time(self):
         """
@@ -77,13 +87,26 @@ class RereadingAnalysis:
         question = "In one word, how does this text make you feel?"
         context = "This is an ad."
 
-        # questions = []
-        # context = []
-        # for question in self.questions.values():
-        #     questions.append(question)
+        questions_and_contexts = [ self.questions, self.contexts]
+
+        question_context_combinations = []
+        for element in itertools.product(*questions_and_contexts):
+            question_context_combinations.append(element)
+
+        counter = 0
+        results = {}
+        for question_context_combination in question_context_combinations:
+            question, context = question_context_combination
+            if results.get(question):
+                results[question][context] =  self.compute_reread_counts(question, context)
+            else:  # Initialize question with a dictionary
+                results[question] = {}
+                results[question][context] = self.compute_reread_counts(question, context)
+
+            counter += 1
 
         # return self.compute_reread_counts(questions[0], context)
-        return self.questions
+        return results
 
 
 

@@ -6,8 +6,8 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 import statistics
 from pathlib import Path
 
-from .models import StudentResponse
 from config.settings.base import PROJECT_ROOT
+from .models import StudentResponse
 
 
 def compare_abs_value(val1, val2):
@@ -80,8 +80,8 @@ def get_sentiments() -> dict:
             # Define the new_word and sentiment score only if it exists
             if not sentiment:
                 continue
-            else:
-                new_word, score = sentiment
+
+            new_word, score = sentiment
 
             # If the word is already defined, skip the current line if the sentiment is lower
             if new_word in sentiments:
@@ -150,10 +150,10 @@ class RereadingAnalysis:
                         score_list.append(sentiments[word])
 
         average = sentiment_sum / num_scores
-        standard_dev = stdev(score_list)
+        standard_dev = statistics.stdev(score_list)
 
         return average, standard_dev
-        
+
     def compute_median_view_time(self):
         """
          Given a list of student response dicts,

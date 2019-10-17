@@ -32,15 +32,28 @@ class AnalysisView extends React.Component {
             } = this.state.analysis;
 
             return (
-                <div>
+                <div style = {{padding: '1em'}}>
                     <h1>Analysis of Student Responses</h1>
                     <h3>Total view time</h3>
                     <p>{total_view_time} seconds</p>
 
                     <h3>Most Common Responses</h3>
-                    <p>{all_responses.map(resp_obj => resp_obj.question + ' ' +
-                        resp_obj.context + ' Responses:' + resp_obj.answers.map(answer =>
-                        ' ' + answer) + ' ')}</p>
+                    <table border="1" bordercolor="#d0d0d0" cellPadding="7">
+                        <tbody>
+                            <tr>
+                                <th>Question</th>
+                                <th>Context</th>
+                                <th>Most common response(s)</th>
+                            </tr>
+                            {all_responses.map((resp_obj, i) =>
+                                <tr key={i}>
+                                    <td>{resp_obj.question}</td>
+                                    <td>{resp_obj.context}</td>
+                                    <td>{resp_obj.answers.map(answer => ' ' + answer + ' ')}</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
                 </div>
             );
         } else {

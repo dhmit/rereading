@@ -3,7 +3,7 @@
 Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
-from .models import StudentResponse
+from .models import StudentResponse, Question
 
 
 class RereadingAnalysis:
@@ -18,6 +18,11 @@ class RereadingAnalysis:
     def __init__(self):
         """ On initialization, we load all of the StudentResponses from the db """
         self.responses = StudentResponse.objects.all()
+        list_of_dict_of_questions = Question.objects.values('text')
+        merged_dicts = {}
+        for key in list_of_dict_of_questions[0].keys():
+            merged_dicts[key] = tuple(dict[key] for dict in list_of_dict_of_questions)
+        self.questions = merged_dicts.get('text')
 
     def total_view_time(self):
         """
@@ -32,8 +37,7 @@ class RereadingAnalysis:
                 total_view_time += view_time
         return total_view_time
 
-    @property
-    def reread_counts(self):
+    def compute_reread_counts(self, question, context):
         """"
         Given a list of student response dicts,
         return a dictionary containing the number of times students had to reread the text
@@ -44,12 +48,9 @@ class RereadingAnalysis:
         and value is the number of students who reread that many times
         """
 
-        question = "In one word, how does this text make you feel?"
-        context = "This is an ad."
-        #
-        # # Checks that the question and context are not blank
-        # if question == '' or context == '':
-        #     return {}
+        # Checks that the question and context are not blank
+        if question == '' or context == '':
+            return {}
 
         # Collects the reread count for every student id of the provided context and question
         raw_reread_counts = []
@@ -70,5 +71,21 @@ class RereadingAnalysis:
                 organized_data.update({entry: 1})
 
         return organized_data
+
+    @property
+    def reread_counts(self):
+        question = "In one word, how does this text make you feel?"
+        context = "This is an ad."
+
+        # questions = []
+        # context = []
+        # for question in self.questions.values():
+        #     questions.append(question)
+
+        # return self.compute_reread_counts(questions[0], context)
+        return self.questions
+
+
+
 
 

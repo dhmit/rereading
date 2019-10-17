@@ -63,48 +63,11 @@ class RereadingAnalysis:
 
         return mean_reading_time_results_data
 
-        # return self.mean_reading_time_for_a_question(
-        #     "In one word, how does this text make you feel?",
-        #     "This is an ad."
-        #     )
-
-        """
-
-
-        question_one = "In one word, how does this text make you feel?"
-        question_two = "In three words or fewer, what is this text about?"
-        question_three = "Have you encountered this text before?"
-
-        hello = self.response.get_context()
-
-        mean_reading_time_results_data = [
-            mean_reading_time_for_a_question(self.responses.get_parsed_views(), question_one, "ad"),
-            mean_reading_time_for_a_question(self.responses, question_two, "ad"),
-            mean_reading_time_for_a_question(self.responses, question_three, "ad"),
-            mean_reading_time_for_a_question(self.responses, question_one, "short story"),
-            mean_reading_time_for_a_question(self.responses, question_two, "short story"),
-            mean_reading_time_for_a_question(self.responses, question_three, "short story")
-        ]
-
-        for reading_result in mean_reading_time_results_data:
-            if reading_result[3] != 0:
-                print(f"Out of those who thought the reading was a(n) {reading_result[1]}"
-                      f"and were asked {reading_result[0]}\"")
-                print(
-                    f"{reading_result[3]} subject(s) read the text for an average of "
-                    f"{round(reading_result[2], 3)} seconds.")
-            else:
-                print(f"No one who thought the reading was a(n) {reading_result[1]} and were asked "
-                      f"\"{reading_result[0]}\" read the text.")
-            print("")
-    """
-
     def mean_reading_time_for_a_question(self, question, context):
         """
         Given the student response dicts, computes the mean read time for a
         specific question (given by its keyword) and the context in which it was asked.
         Returns the question, context, mean read time, and number of people who read.
-        :param student_data: list, student response dicts
         :param question: string, to determine which question was being asked
         :param context: string, what the reader thought the reading was
         :return: tuple, in order of the question asked (full question), the context,
@@ -138,8 +101,9 @@ class RereadingAnalysis:
             mean_time = round(total_question_view_time / len(reading_time), 2)
 
         return "Question: "+question+ " Context: "+context+" Mean time with outliers " \
-                "removed: "+str(mean_time)+" Total number of readers: "+ str(number_of_readers)
+            "removed: "+str(mean_time)+" Total number of readers: "+ str(number_of_readers)
 
+    @property
     def remove_outliers(self, reading_time):
         """
         Given a list of times, calculates and removes outliers, which are the data points that

@@ -7,6 +7,7 @@ from rest_framework import serializers
 
 from .models import Story, Question, Context, Student, StudentResponse
 
+
 class StudentResponseSerializer(serializers.ModelSerializer):
     """
     A serializer makes it possible to view a database Django model
@@ -106,10 +107,8 @@ class AnalysisSerializer(serializers.Serializer):
 
     # run_mean_reading_analysis_for_questions = serializers.ListField(child=serializers.CharField())
 
-
     def create(self, validated_data):
         """ We will not create new objects using this serializer """
 
     def update(self, instance, validated_data):
         """ We will not update data using this serializer """
-

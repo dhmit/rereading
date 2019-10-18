@@ -442,7 +442,7 @@ def get_word_frequency_differences(student_data):
 def mean_view_time_comparison(student_data):
     """
     Calculate the mean view time of both groups (those who had a negative-word response and those
-    did not) for comparison. Prints the result.
+    did not) for comparison.
     :param student_data: a list of dictionaries
     :return: a tuple of floats, the mean view times of negative and neutral
             respectively.
@@ -469,7 +469,6 @@ def mean_view_time_comparison(student_data):
         if (response_dict['question'] == 'In three words or fewer, what is this text about?') \
                 and (response_dict['context'] == 'This is an ad.'):
             response: str = response_dict['response'].lower()
-            print(response_dict)
             # Iterate through negative words checking whether it can be found
             # in the current response. Keeps track of number of responses and
             # total times.

@@ -30,6 +30,7 @@ class AnalysisView extends React.Component {
             const {  // object destructuring:
                 total_view_time,
                 compute_median_view_time,
+                mean_view_time_comparison,
             } = this.state.analysis;
 
             return (
@@ -38,6 +39,9 @@ class AnalysisView extends React.Component {
                     <h3>Total view time</h3>
                     <p>{total_view_time} seconds</p>
                     <p>{compute_median_view_time}</p>
+                    <h3>Comparing the mean view times of negative response versus neutral
+                    response readers</h3>
+
                 </div>
             );
         } else {

@@ -50,7 +50,7 @@ def extract_response(student_data, question, context):
 def response_and_question_relationship(student_data, question, context):
     """
     Takes a dataset, a specific question, and a context
-    Returns the number of times a certain word was responed based on the context and question
+    Returns the number of times a certain word was responded based on the context and question
     :param student_data: list, student response dictionaries
     :param question: str, question of interest
     :param context: str, context of interest
@@ -99,7 +99,6 @@ def print_response_and_question_relationship(student_data):
                 print("People who reread the text", number_of_views, "times responded:")
                 for word in word_response_data[number_of_views]:
                     print(word[1], "x" + str(word[0]))
-                #print(word_response_data[number_of_views])
             print()
 
 
@@ -115,7 +114,8 @@ def extract_views(student_data, question, context):
     views = []
     for dictionary in student_data:
         if (
-        not (not (dictionary["context"] == context) or not (dictionary["question"] == question))):
+            not (not (dictionary["context"] == context) or not (
+                dictionary["question"] == question))):
             views.append(len(dictionary["views"]))
     return views
 
@@ -216,6 +216,59 @@ def print_total_analysis_views(student_data):
     print_analysis_views(student_data, "In three words or fewer, what is this text about?")
 
 
+def determine_average_total_rereading_time(data, question=None, context=None):
+    """
+        Takes a dataset, a specific question, and a context
+        Returns the average of the total rereading time of each person
+        :param data: list, student response dictionaries
+        :param question: str, question of interest (optional)
+        :param context: str, context of interest (optional)
+        *If a question or context is specified, only responses that have the specified question
+        and/or context will be averaged
+        :returns: float to 4 decimal places, The average total rereading time of each person
+        """
+    total_rereading_times = []
+    # Adds the total rereading time of a person to a list if the response data matches the
+    # specified params
+    for response in data:
+        if ((question == response["question"] and context == response["context"]) or
+            (question == response["question"] and context is None) or
+            (question is None and context == response["context"]) or
+            (question is None and context is None)):
+            response_rereading_times = response["views"]
+            total_rereading_times.append(sum(response_rereading_times))
+    # Return 0 if no total rereading times are collected
+    if len(total_rereading_times) == 0:
+        average_total_rereading_time = 0
+    else:
+        # Average of collected totals
+        average_total_rereading_time = round(sum(total_rereading_times) /
+                                             len(total_rereading_times), 4)
+    return average_total_rereading_time
+
+
+def print_determine_average_total_rereading_time(data, question=None, context=None):
+    """
+    Prints the average total rereading time
+    Optional params of question and context to specify responses to use in the average
+    :param data: list, student response dicts
+    :param question: str, question of interest (optional)
+    :param context: str, context of interest (optional)
+    :return: None
+    """
+    average_total_rereading_time = determine_average_total_rereading_time(data, question, context)
+    if question is None and context is None:
+        print("The average total rereading time is:", end=" ")
+    elif question is not None and context is None:
+        print(f"For the question \'{question},\' the average total rereading time is:", end=" ")
+    elif question is None and context is not None:
+        print(f"For the context \'{context},\' the average total rereading time is:", end=" ")
+    elif question is not None and context is not None:
+        print(f"For the question \'{question},\' and the context \'{context},\' "
+              f"the average total rereading time is:", end=" ")
+    print(average_total_rereading_time)
+
+
 def load_data():
     """
     Loads data from csv file
@@ -234,6 +287,7 @@ def print_analysis(data):
     print_response_and_question_relationship(data)
     print_total_analysis_word_count(data)
     print_total_analysis_views(data)
+    print_determine_average_total_rereading_time(data)
 
 
 def run_analysis():
@@ -241,11 +295,7 @@ def run_analysis():
     Runs the whole analysis
     :return: None
     """
-    csv_path = Path('data', 'rereading_data_2019-09-13.csv')
-    student_data = load_data_csv(csv_path)
-    response_and_question_relationship(student_data,
-                                       "In one word, how does this text make you feel?",
-                                       "This is an ad.")
+    print("HERE:", determine_average_total_rereading_time(load_data()))
     print_analysis(load_data())
 
 
@@ -300,6 +350,28 @@ class TestAnalysisMethods(unittest.TestCase):
         response_data = response_and_question_relationship(self.default_student_data,
                                                            self.test_question, self.test_context)
         self.assertEqual(response_data, {})
+
+    def test_determine_average_total_rereading_time(self):
+        # Neither Question or Context specified
+        average_total_rereading_time = determine_average_total_rereading_time(
+            self.test_student_data)
+        self.assertEqual(average_total_rereading_time, 1.0642)
+        # Only Question specified
+        average_total_rereading_time = determine_average_total_rereading_time(
+            self.test_student_data, self.test_question)
+        self.assertEqual(average_total_rereading_time, 1.7200)
+        # Only Context specified
+        average_total_rereading_time = determine_average_total_rereading_time(
+            self.test_student_data, None, self.test_context)
+        self.assertEqual(average_total_rereading_time, 1.7547)
+        # Question and Context specified
+        average_total_rereading_time = determine_average_total_rereading_time(
+            self.test_student_data, self.test_question, self.test_context)
+        self.assertEqual(average_total_rereading_time, 2.3190)
+        # Test with default student data
+        average_total_rereading_time = determine_average_total_rereading_time(
+            self.default_student_data)
+        self.assertEqual(average_total_rereading_time, 0)
 
 
 if __name__ == '__main__':

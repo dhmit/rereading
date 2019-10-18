@@ -31,6 +31,7 @@ class AnalysisView extends React.Component {
             const {  // object destructuring:
                 total_view_time,
                 run_mean_reading_analysis_for_questions,
+                compute_median_view_time,
             } = this.state.analysis;
             //console.log(run_mean_reading_analysis_for_questions)
             return (
@@ -42,6 +43,7 @@ class AnalysisView extends React.Component {
                     {run_mean_reading_analysis_for_questions.map((i,k) =>
                         <p key = {k}>{i}</p>
                     )}
+                    <p>{compute_median_view_time}</p>
                 </div>
             );
         } else {

@@ -31,7 +31,6 @@ class AnalysisView extends React.Component {
                 total_view_time,
                 compute_median_view_time,
             } = this.state.analysis;
-
             return (
                 <div>
                     <h1>Analysis of Student Responses</h1>

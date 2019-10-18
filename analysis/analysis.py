@@ -249,6 +249,55 @@ def compute_mean_reading_times_each_response(student_data):
     return result
 
 
+def compute_reading_times_stdev(student_data):
+    total_first_response = 0
+    total_second_response = 0
+    last_student_id = -1  # value not present in the data
+    views1 = []
+    views2 = []
+    for line in student_data:
+        context = line["context"]
+        question = line["question"]
+        student_id = line["student_id"]
+        if question == "In one word, how does this text make you feel?":
+            if context == 'This is an ad.':
+                for duration in line["views"]:
+                    total_first_response += duration
+                    views1.append(duration)
+            elif context == "This is actually a short story.":
+                for duration in line["views"]:
+                    total_second_response += duration
+                    views2.append(duration)
+        if student_id != last_student_id:
+            total_participants += 1
+            last_student_id = student_id
+    if total_participants == 0 or views1 == [] or views2 == []:
+        return []
+    mean_first_response = total_first_response / total_participants
+    mean_second_response = total_second_response / total_participants
+    stdev1 = statistics.pstdev(views1)  # may have to use notation of statistics.stdev instead
+    stdev2 = statistics.pstdev(views2)  # may have to use notation of statistics.stdev instead
+    lower_outliers1 = []
+    upper_outliers1 = []
+    lower_outliers2 = []
+    upper_outliers2 = []
+    for value in views1:
+        if value < (mean_first_response - 2*stdev1):
+            lower_outliers1.append(value)
+        if value > (mean_first_response + 2*stdev1):
+            upper_outliers1.append(value)
+    for value in views2:
+        if value < (mean_second_response - 2*stdev2):
+            lower_outliers2.append(value)
+        if value > (mean_second_response + 2*stdev2):
+            upper_outliers2.append(value)
+    result = ["lower outliers for reading 1: " + str(lower_outliers1),
+              "upper outliers for reading 1: " + str(upper_outliers1),
+              "lower outliers for reading 2: " + str(lower_outliers2),
+              "upper outliers for reading 2: " + str(upper_outliers2)]
+    print(result)
+    return result
+
 def get_responses_for_question(student_data, question):
     """
     For a certain question, returns the set of responses as a dictionary with keys being the
@@ -1039,6 +1088,10 @@ class TestAnalysisMethods(unittest.TestCase):
         expected = compute_mean_reading_times_each_response(self.student_data)
         for i in range(3):
             self.assertAlmostEqual(expected[i], [30, 7.546366666666666, 2.9542][i])
+
+
+    def test_compute_reading_times_stdev(self):
+        expected = compute_reading_times_stdev(self.student_data)
 
     def test_compute_reread_counts(self):
         """

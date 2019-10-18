@@ -490,13 +490,6 @@ def mean_view_time_comparison(student_data):
         neutral_mean_view_time = 0
     else:
         neutral_mean_view_time = neutral_total_view_time / neutral_responses
-    print('People who responded with a negative-word to the neutral ad-context '
-          'read the message for ' + str(round(negative_mean_view_time, 3)) +
-          ' seconds on average (mean). People who did not respond with a negative-word to the '
-          'neutral ad-context read the text for ' + str(round(neutral_mean_view_time, 3)) +
-          ' seconds on average (mean).')
-    print('\nThere were ' + str(negative_responses) + ' negative responses and '
-          + str(neutral_responses) + ' neutral responses.\n')
     return negative_mean_view_time, neutral_mean_view_time
 
 

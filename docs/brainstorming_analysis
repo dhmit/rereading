@@ -86,3 +86,11 @@ self.test_mean_view_time_comparison_student_data = [
              'context': 'This is an ad.', 'response': "an infant's death", 'views': [],
              'student_id': 28, 'scroll_ups': 0}
         ]
+
+print('People who responded with a negative-word to the neutral ad-context '
+          'read the message for ' + str(round(negative_mean_view_time, 3)) +
+          ' seconds on average (mean). People who did not respond with a negative-word to the '
+          'neutral ad-context read the text for ' + str(round(neutral_mean_view_time, 3)) +
+          ' seconds on average (mean).')
+    print('\nThere were ' + str(negative_responses) + ' negative responses and '
+          + str(neutral_responses) + ' neutral responses.\n')

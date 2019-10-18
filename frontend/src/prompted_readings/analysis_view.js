@@ -28,7 +28,9 @@ class AnalysisView extends React.Component {
     render() {
         if (this.state.analysis !== null) {
             const {  // object destructuring:
-                total_view_time, all_responses
+                total_view_time,
+                all_responses,
+                compute_median_view_time,
             } = this.state.analysis;
 
             return (
@@ -54,6 +56,7 @@ class AnalysisView extends React.Component {
                             )}
                         </tbody>
                     </table>
+                    <p>{compute_median_view_time}</p>
                 </div>
             );
         } else {

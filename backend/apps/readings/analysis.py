@@ -94,10 +94,10 @@ class RereadingAnalysis:
         responses. 0 if there are no responses.
         """
 
-        def row_has_correct_context_and_question(row):
+        def row_has_correct_context_and_question(row_data):
             # Helper method to filter out irrelevant response data
-            return row.context.text == target_context and \
-                   row.question.text == 'In three words or fewer, what is this text about?'
+            return row_data.context.text == target_context and \
+                   row_data.question.text == 'In three words or fewer, what is this text about?'
 
         number_of_students_using_relevant_words = 0
 
@@ -120,7 +120,6 @@ class RereadingAnalysis:
         :return: The percentage [0.00, 1.00] of students that used relevant words in their
         responses. 0 if there are no responses.
         """
-        context = 'This is an ad.'
 
         context = 'This is an ad.'
         relevant_words = ["dead", "death", "miscarriage", "killed", "kill", "losing", "loss",

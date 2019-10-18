@@ -575,10 +575,10 @@ def percent_students_using_relevant_words(student_data, target_context, relevant
     responses. 0 if there are no responses.
     """
 
-    def row_has_correct_context_and_question(row):
+    def row_has_correct_context_and_question(row_data):
         # Helper method to filter out irrelevant response data
-        return row.get('context') == target_context and \
-               row.get('question') == 'In three words or fewer, what is this text about?'
+        return row_data.get('context') == target_context and \
+               row_data.get('question') == 'In three words or fewer, what is this text about?'
 
     number_of_students_using_relevant_words = 0
 

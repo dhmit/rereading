@@ -54,7 +54,6 @@ class RereadingAnalysis:
         """"
         Given a list of student response dicts,
         return a dictionary containing the number of times students had to reread the text
-        :param student_data: list, student response dicts
         :param question: string, question for which reread counts is collected
         :param context: string, context for which reread counts is collected
         :return: dictionary, each key in dictionary is the number of times the text was reread
@@ -68,9 +67,9 @@ class RereadingAnalysis:
         # Collects the reread count for every student id of the provided context and question
         raw_reread_counts = []
         for row in self.responses:
-            table_context = row['context']
-            table_question = row['question']
-            view_count = len(row['views'])
+            table_context = row.context
+            table_question = row.question
+            view_count = len(row.views)
             if context in table_context:
                 if question in table_question:
                     raw_reread_counts.append(view_count)

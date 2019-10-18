@@ -1,4 +1,35 @@
 import React from "react";
+import PropTypes from 'prop-types';
+
+class CommonResponses extends React.Component {
+    render() {
+        return (
+            <div>
+                <h3>Most Common Responses</h3>
+                <table>
+                    <tbody>
+                        <tr>
+                            <th>Question</th>
+                            <th>Context</th>
+                            <th>Most common response(s)</th>
+                        </tr>
+                        {this.props.responses.map((resp_obj, i) =>
+                            <tr key={i}>
+                                <td>{resp_obj.question}</td>
+                                <td>{resp_obj.context}</td>
+                                <td>{resp_obj.answers.map(answer => ' ' + answer + ' ')}</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+        );
+    }
+}
+
+CommonResponses.propTypes = {
+    responses: PropTypes.array,
+};
 
 class AnalysisView extends React.Component {
     constructor(props) {
@@ -34,28 +65,12 @@ class AnalysisView extends React.Component {
             } = this.state.analysis;
 
             return (
-                <div style = {{padding: '1em'}}>
+                <div>
                     <h1>Analysis of Student Responses</h1>
                     <h3>Total view time</h3>
                     <p>{total_view_time} seconds</p>
 
-                    <h3>Most Common Responses</h3>
-                    <table border="1" bordercolor="#d0d0d0" cellPadding="7">
-                        <tbody>
-                            <tr>
-                                <th>Question</th>
-                                <th>Context</th>
-                                <th>Most common response(s)</th>
-                            </tr>
-                            {all_responses.map((resp_obj, i) =>
-                                <tr key={i}>
-                                    <td>{resp_obj.question}</td>
-                                    <td>{resp_obj.context}</td>
-                                    <td>{resp_obj.answers.map(answer => ' ' + answer + ' ')}</td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+                    <CommonResponses responses={all_responses} />
                     <p>{compute_median_view_time}</p>
                 </div>
             );
@@ -67,4 +82,5 @@ class AnalysisView extends React.Component {
     }
 }
 
+export { CommonResponses }
 export default AnalysisView;

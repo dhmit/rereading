@@ -4,31 +4,31 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
 import statistics
+from collections import Counter
+
 from .models import StudentResponse
 
 
-def get_responses_for_question(all_responses, question):
+def get_responses_for_question(all_responses, question, context):
     """
-    For a certain question, returns the set of responses as a dictionary with keys being the
-    context and values being nested dictionaries containing each response and their frequency.
+    For a certain question and context, returns the set of responses as a dictionary with keys
+    being the response and values being the frequency.
     :param all_responses: QuerySet of all student responses
     :param question: string, question
+    :param context: string, context
     :return: dictionary mapping strings to integers
     """
-    responses = {}
-    for response in all_responses:
-        student_question = response.question.text
-        student_answer = response.response.lower()
-        question_context = response.context.text
-        if student_question == question:
-            if question_context not in responses:
-                responses[question_context] = {student_answer: 1}
-            else:
-                if student_answer in responses[question_context]:
-                    responses[question_context][student_answer] += 1
-                else:
-                    responses[question_context][student_answer] = 1
-    return responses
+    responses_frequency = Counter()
+    response_list = []
+    for student_response in all_responses:
+        student_question = student_response.question.text
+        student_context = student_response.context.text
+        student_answer = student_response.response.lower()
+        if student_question == question and student_context == context:
+            response_list.append(student_answer)
+    for answer in response_list:
+        responses_frequency[answer] += 1
+    return responses_frequency
 
 
 def most_common_response_by_question_and_context(all_responses, question, context):
@@ -41,11 +41,10 @@ def most_common_response_by_question_and_context(all_responses, question, contex
     :return: list of strings
     """
     max_response = []
-    response_dict = get_responses_for_question(all_responses, question)
-    responses_by_context = response_dict[context]
-    max_response_frequency = max(responses_by_context.values())
-    for response in responses_by_context:
-        if responses_by_context[response] == max_response_frequency:
+    response_dict = get_responses_for_question(all_responses, question, context)
+    max_response_frequency = max(response_dict.values())
+    for response in response_dict:
+        if response_dict[response] == max_response_frequency:
             max_response.append(response)
     return max_response
 
@@ -77,6 +76,11 @@ class RereadingAnalysis:
         return total_view_time
 
     def all_responses(self):
+        """
+        Given a list of student response dicts, returns the most common responses for each
+        question and in each context.
+        :return: list of dictionaries storing each question, context, and most common answers
+        """
         questions = []
         contexts = []
         all_responses = []
@@ -109,7 +113,7 @@ class RereadingAnalysis:
         """
         list_of_times = []
         for row in self.responses:
-            for view_time in row.get('views'):
+            for view_time in row.get_parsed_views():
                 list_of_times.append(view_time)
         if not list_of_times:
             median_view_time = 0

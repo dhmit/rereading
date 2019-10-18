@@ -35,6 +35,93 @@ def load_data_csv(csv_path: Path):
     return out_data
 
 
+def clean_resp_strings(dataset):
+    """
+    Removes punctuation from responses in dataset and makes all characters lowercase.
+    :param dataset: list of dictionaries, where each dictionary is one response (csv row)
+    :return: a copy of dataset with no punctuation and all characters lowercase in the
+    value keyed by 'response'
+    """
+    clean_dataset = []
+    for resp in dataset:
+        clean_dataset.append(resp)
+
+    for clean_resp in clean_dataset:
+        clean_resp['response'] = clean_resp['response'].replace('.', '').lower()
+        clean_resp['response'] = clean_resp['response'].replace(',', '')
+
+    return clean_dataset
+
+
+def extract_responses_by_context(dataset):
+    """
+    Extracts text responses to "In three words or fewer, what is this text about?" from given csv
+    file, depending on context given (story vs. ad). Returns lists of words used in question
+    responses. Also removes duplicates.
+    :param dataset: list of dictionaries, where each dictionary is one response (csv row)
+    :return: response_ad and response_story, lists of strings of all words used in user responses
+    (duplicates included)
+    """
+    # cycling through dataset to find prompt responses, sorting based on context
+    responses_ad = []
+    responses_story = []
+    question = "In three words or fewer, what is this text about?"
+
+    # removing punctuation and making lowercase
+    clean_dataset = clean_resp_strings(dataset)  # removing punctuation and making lowercase
+    for resp in clean_dataset:
+        if resp['question'] == question and resp['context'] == "This is an ad.":
+            responses_ad += resp['response'].split()
+        elif resp['question'] == question and resp['context'] == "This is actually a short story.":
+            responses_story += resp['response'].split()
+
+    return responses_ad, responses_story
+
+
+def repeated_prompt_words(responses):
+    """
+    Calculates frequencies of exact words from story prompt used in responses (disregards words
+    not in story prompt).
+    :param responses: list of words used in a set of responses
+    :return: A dictionary, resp_words. Key is a word from the prompt, value is its frequency among
+    responses
+    """
+    # dictionary to store frequencies of words in responses
+    resp_words = {}
+
+    # cycling through responses
+    stop_words = ['a', 'and', 'the', 'of', 'an', 'for']
+    for word in responses:
+        print(word)
+        if word in resp_words:
+            resp_words[word] += 1
+        elif word not in stop_words:
+            resp_words[word] = 1
+
+    # list of words in story
+    # TODO for longer story, would want to read it from csv file instead of hardcoding
+    story_vocab_list = ["for", "sale", "baby", "shoes", "never", "worn"]
+
+    # eliminating all words not in prompt
+    for word in responses:
+        if word not in story_vocab_list and word in resp_words:
+            del resp_words[word]
+
+    # TODO Will add this to frontend to display data collected
+
+    # uncomment for most commonly repeated word
+
+    # print("Most commonly repeated words in response:")
+    # print(max(resp_words.items(), key=lambda item: item[1]))
+
+    # uncomment for complete list of words used in responses (unsorted)
+
+    # print("All words in responses:")
+    # print(resp_words)
+
+    return resp_words
+
+
 def compute_reread_counts(student_data, question, context):
     """"
     Given a list of student response dicts,
@@ -1152,6 +1239,63 @@ class TestAnalysisMethods(unittest.TestCase):
         self.assertEqual((.73625, .3807), total_mean_view_time_comparison)
         total_mean_view_time_comparison = mean_view_time_comparison(self.default_student_data)
         self.assertEqual((0, 0), total_mean_view_time_comparison)
+
+    def test_extract_responses_by_context(self):
+        """
+        Tests that the extract_responses_by_context() function correctly extracts words from
+        different context responses. Tests against test_data.csv and the default dataset.
+        """
+        # testing against test_data.csv
+        test_ad_resp, test_story_resp = extract_responses_by_context(self.test_student_data)
+        expected_ad_resp = ["miscarriage"]
+        expected_story_resp = ["miscarriage"]
+
+        self.assertEqual(test_ad_resp, expected_ad_resp)
+        self.assertEqual(test_story_resp, expected_story_resp)
+
+        # testing against default dataset
+        test_ad_resp, test_story_resp = extract_responses_by_context(self.default_student_data)
+        expected_ad_resp = []
+        expected_story_resp = []
+
+        self.assertEqual(test_ad_resp, expected_ad_resp)
+        self.assertEqual(test_story_resp, expected_story_resp)
+
+    def test_repeated_prompt_words(self):
+        """
+        Tests that the repeated_prompt_words() function returns the right repeated word counts for
+        the story text. Tests against test_data.csv, the default dataset, and the small student
+        dataset.
+        """
+        # testing against test_data.csv
+        test_ad_resp, test_story_resp = extract_responses_by_context(self.test_student_data)
+        test_ad_words = repeated_prompt_words(test_ad_resp)
+        test_story_words = repeated_prompt_words(test_story_resp)
+        expected_ad_words = {}
+        expected_story_words = {}
+
+        self.assertEqual(test_ad_words, expected_ad_words)
+        self.assertEqual(test_story_words, expected_story_words)
+
+        # testing against default dataset
+        test_ad_resp, test_story_resp = extract_responses_by_context(self.default_student_data)
+        test_ad_words = repeated_prompt_words(test_ad_resp)
+        test_story_words = repeated_prompt_words(test_story_resp)
+        expected_ad_words = {}
+        expected_story_words = {}
+
+        self.assertEqual(test_ad_words, expected_ad_words)
+        self.assertEqual(test_story_words, expected_story_words)
+
+        # testing against small rereading dataset
+        test_ad_resp, test_story_resp = extract_responses_by_context(self.student_data)
+        test_ad_words = repeated_prompt_words(test_ad_resp)
+        test_story_words = repeated_prompt_words(test_story_resp)
+        expected_ad_words = {'baby': 9, 'shoes': 12, 'sale': 4}
+        expected_story_words = {'baby': 4, 'shoes': 6, 'sale': 2}
+
+        self.assertEqual(test_ad_words, expected_ad_words)
+        self.assertEqual(test_story_words, expected_story_words)
 
     def test_mean_reading_time_for_a_question(self):
         """

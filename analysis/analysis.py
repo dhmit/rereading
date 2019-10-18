@@ -553,7 +553,7 @@ def description_has_relevant_words(story_meaning_description, relevant_words):
     :return True if the description contains one of the relevant words or relevant_words is empty.
         False otherwise
     """
-    if len(relevant_words) == 0:
+    if not relevant_words:
         return True
 
     lowercase_relevant_words = list(map(lambda s: s.lower(), relevant_words))
@@ -603,7 +603,7 @@ def run_relevant_word_analysis(student_data):
 
     relevant_words_used_percent = percent_students_using_relevant_words(
         student_data, target_context, relevant_words)
-    print(f'{relevant_words_used_percent * 100}% of students used words related to '
+    print(f'{round(relevant_words_used_percent * 100)}% of students used words related to '
           f'the story\'s intended meaning.')
 
 

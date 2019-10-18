@@ -106,6 +106,9 @@ class AnalysisSerializer(serializers.Serializer):
     compute_median_view_time = serializers.ReadOnlyField()
     compute_mean_response_length = serializers.ReadOnlyField()
 
+    percent_students_using_relevant_words_in_ad_context = serializers.ReadOnlyField()
+    percent_students_using_relevant_words_in_story_context = serializers.ReadOnlyField()
+
     def create(self, validated_data):
         """ We will not create new objects using this serializer """
 

@@ -31,6 +31,8 @@ class AnalysisView extends React.Component {
                 total_view_time,
                 compute_median_view_time,
                 compute_mean_response_length,
+                percent_students_using_relevant_words_in_ad_context,
+                percent_students_using_relevant_words_in_story_context
             } = this.state.analysis;
 
             return (
@@ -40,6 +42,12 @@ class AnalysisView extends React.Component {
                     <p>{total_view_time} seconds</p>
                     <p>{compute_median_view_time} seconds</p>
                     <p>{compute_mean_response_length}</p>
+                    <h3>Students Using relevant words in ad context</h3>
+                    <p>{Math.round(
+                        percent_students_using_relevant_words_in_ad_context * 100)}%</p>
+                    <h3>Students Using relevant words in short story context</h3>
+                    <p>{Math.round(
+                        percent_students_using_relevant_words_in_story_context * 100)}%</p>
                 </div>
             );
         } else {

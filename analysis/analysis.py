@@ -252,6 +252,7 @@ def compute_mean_reading_times_each_response(student_data):
 def compute_reading_times_stdev(student_data):
     total_first_response = 0
     total_second_response = 0
+    total_participants = 0
     last_student_id = -1  # value not present in the data
     views1 = []
     views2 = []

@@ -4,7 +4,7 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
 import statistics
-from .models import StudentResponse
+from .models import StudentResponse, Context
 
 
 class RereadingAnalysis:
@@ -57,22 +57,21 @@ class RereadingAnalysis:
 
     def context_vs_read_time(self):
         """
-        Compares average view times, of all contexts
-        :return a tuple of the average ad view and the average story view
+        Compares mean view times, of all contexts
+        :return a tuple of the mean ad view and the mean story view
         """
 
-        total_contexts_view_times = {}
+        all_contexts = Context.objects.all()
+        total_contexts_view_times = {context.text: {
+                                                "total_view_time": 0,
+                                                "count": 0
+                                              }
+                                     for context in all_contexts}
         for response in self.responses:
             context = response.context.text
-            if context not in total_contexts_view_times:
-                total_contexts_view_times[context] = {
-                    "total_view_time": sum(response.get_parsed_views()),
-                    "count": 1
-                }
-            else:
-                total_contexts_view_times[context]["total_view_time"] += \
-                    sum(response.get_parsed_views())
-                total_contexts_view_times[context]["count"] += 1
+            total_contexts_view_times[context]["total_view_time"] += \
+                sum(response.get_parsed_views())
+            total_contexts_view_times[context]["count"] += 1
 
         # For each context in total_contexts_view_time, calculate the average view time
         average_context_view_times = {context:
@@ -83,7 +82,7 @@ class RereadingAnalysis:
 
     def compute_median_view_time(self):
         """
-         Given a list of student response dicts,
+        Given a list of student response dicts,
         return the median time (across all users) spent reading the text
         :return: float, median amount of time users spend reading the text
         """

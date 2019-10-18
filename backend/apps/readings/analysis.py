@@ -84,6 +84,18 @@ class RereadingAnalysis:
         return False
 
     @staticmethod
+    def get_relevant_words():
+        """
+        Gets the relevant words from data/words_related_to_story.txt
+        :return: a list containing all relevant words
+        """
+        relevant_words_file_path = 'data/words_related_to_story.txt'
+        with open(relevant_words_file_path, 'r') as relevant_words_file:
+            untrimmed_relevant_words = relevant_words_file.readlines()
+            relevant_words = list(map(lambda s: s.strip(), untrimmed_relevant_words))
+        return relevant_words
+
+    @staticmethod
     def percent_students_using_relevant_words(student_data, target_context, relevant_words):
         """
         Find the percentage of students that used relevant words in their responses
@@ -122,8 +134,7 @@ class RereadingAnalysis:
         """
 
         context = 'This is an ad.'
-        relevant_words = ["dead", "death", "miscarriage", "killed", "kill", "losing", "loss",
-                          "lost", "deceased", "died", "grief", "pregnancy", "pregnant"]
+        relevant_words = RereadingAnalysis.get_relevant_words()
         percentage = RereadingAnalysis.percent_students_using_relevant_words(self.responses,
                                                                              context,
                                                                              relevant_words)
@@ -136,8 +147,7 @@ class RereadingAnalysis:
         responses. 0 if there are no responses.
         """
         context = 'This is actually a short story.'
-        relevant_words = ["dead", "death", "miscarriage", "killed", "kill", "losing", "loss",
-                          "lost", "deceased", "died", "grief", "pregnancy", "pregnant"]
+        relevant_words = RereadingAnalysis.get_relevant_words()
         percentage = RereadingAnalysis.percent_students_using_relevant_words(self.responses,
                                                                              context,
                                                                              relevant_words)

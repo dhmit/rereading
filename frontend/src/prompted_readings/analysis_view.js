@@ -102,6 +102,8 @@ class AnalysisView extends React.Component {
                     <ContextVsViewTime viewTime={context_vs_read_time}/>
                     <br/><br/>
                     <p><b>Median View Time: </b>{compute_median_view_time}</p>
+                    <p>Total view time: {total_view_time} seconds</p>
+                    <p>Median view time: {compute_median_view_time} seconds</p>
                 </div>
             );
         } else {

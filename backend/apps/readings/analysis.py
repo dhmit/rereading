@@ -43,20 +43,22 @@ class RereadingAnalysis:
         :return: the info wed like to put on js
         """
 
-        question_one = "In one word, how does this text make you feel?"
-        question_two = "In three words or fewer, what is this text about?"
-        question_three = "Have you encountered this text before?"
-        context_one = "This is an ad."
-        context_two = "This is actually a short story."
+        questions = []
+        contexts = []
+        student_data = self.responses[:]
+        for response in student_data:
+            if response.question.text not in questions:
+                questions.append(response.question.text)
+            if response.context.text not in contexts:
+                contexts.append(response.context.text)
 
-        mean_reading_time_results_data = [
-            self.mean_reading_time_for_a_question(question_one, context_one),
-            self.mean_reading_time_for_a_question(question_two, context_one),
-            self.mean_reading_time_for_a_question(question_three, context_one),
-            self.mean_reading_time_for_a_question(question_one, context_two),
-            self.mean_reading_time_for_a_question(question_two, context_two),
-            self.mean_reading_time_for_a_question(question_three, context_two)
-        ]
+
+        mean_reading_time_results_data = []
+
+        for question in questions:
+            for context in contexts:
+                mean_reading_time_results_data.append(self.mean_reading_time_for_a_question(
+                    question, context))
 
         return mean_reading_time_results_data
 

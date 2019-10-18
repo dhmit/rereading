@@ -34,9 +34,6 @@ class RereadingAnalysis:
                 total_view_time += view_time
         return total_view_time
 
-    def print_self(self):
-        print(self.responses)
-
     @property
     def run_mean_reading_analysis_for_questions(self):
         """
@@ -83,12 +80,12 @@ class RereadingAnalysis:
             if question != response.question.text or \
                context != response.context.text:
                 continue
-            if len(response.get_parsed_views()) != 0:
+            if response.get_parsed_views():
                 number_of_readers += 1
             for view_time in response.get_parsed_views():
                 reading_time.append(view_time)
 
-        if len(reading_time) != 0:
+        if reading_time:
             self.remove_outliers(reading_time)
 
         view_time = 0
@@ -97,11 +94,13 @@ class RereadingAnalysis:
             total_question_view_time += reading_time[view_time]
             view_time += 1
 
-        if len(reading_time) != 0:
+        if reading_time:
             mean_time = round(total_question_view_time / len(reading_time), 2)
 
-        return "Question: " + question + " Context: "+context+" Mean time with outliers " \
-            "removed: " + str(mean_time) + " Total number of readers: " + str(number_of_readers)
+        # return "Question: " + question + " Context: "+context+" Mean time with outliers " \
+        #        "removed: " + str(mean_time) + " Total number of readers: " + str(number_of_readers)
+
+        return [question, context, mean_time, number_of_readers]
 
     def remove_outliers(self, reading_time):
         """
@@ -111,22 +110,19 @@ class RereadingAnalysis:
         :return: list, reading times for a specific question with outliers removed
         """
         reading_time.sort()
+        reading_time_no_outliers = []
         quartile_one = reading_time[math.trunc(len(reading_time) * 0.25)]
         quartile_three = reading_time[math.trunc(len(reading_time) * 0.75)]
         interquartile_range = quartile_three - quartile_one
         lower_fence = quartile_one - (1.5 * interquartile_range)
         upper_fence = quartile_three + (1.5 * interquartile_range)
 
-        view_time_two = 0
-        while view_time_two < len(reading_time):
-            if (reading_time[view_time_two] < lower_fence) \
-                    or (reading_time[view_time_two] > upper_fence):
-                reading_time.remove(reading_time[view_time_two])
-                view_time_two -= 1
-            else:
-                view_time_two += 1
+        for time in reading_time:
+            if (time > lower_fence) \
+                    or (time < upper_fence):
+                reading_time_no_outliers.append(time)
 
-        return reading_time
+        return reading_time_no_outliers
 
     def compute_median_view_time(self):
         """
@@ -136,7 +132,7 @@ class RereadingAnalysis:
         """
         list_of_times = []
         for row in self.responses:
-            for view_time in row.get('views'):
+            for view_time in row.get_parsed_views():
                 list_of_times.append(view_time)
         if not list_of_times:
             median_view_time = 0

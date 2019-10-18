@@ -33,7 +33,6 @@ class AnalysisView extends React.Component {
                 run_mean_reading_analysis_for_questions,
                 compute_median_view_time,
             } = this.state.analysis;
-            //console.log(run_mean_reading_analysis_for_questions)
             return (
                 <div>
                     <h1>Analysis of Student Responses</h1>

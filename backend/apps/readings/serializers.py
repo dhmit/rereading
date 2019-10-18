@@ -105,7 +105,6 @@ class AnalysisSerializer(serializers.Serializer):
     total_view_time = serializers.ReadOnlyField()
     run_mean_reading_analysis_for_questions = serializers.ReadOnlyField()
 
-    # run_mean_reading_analysis_for_questions = serializers.ListField(child=serializers.CharField())
     compute_median_view_time = serializers.ReadOnlyField()
 
     def create(self, validated_data):

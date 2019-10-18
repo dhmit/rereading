@@ -441,56 +441,59 @@ def get_word_frequency_differences(student_data):
 
 def mean_view_time_comparison(student_data):
     """
-    Calculate the mean view time of both groups (those who had a negative-word response and those
-    did not) for comparison. Prints the result.
+    Calculate the mean view time of three groups (those who had a negative-word response, a
+    neutral-word response, and a positive-word response) for comparison.
     :param student_data: a list of dictionaries
-    :return: a tuple of floats, the mean view times of negative and neutral
+    :return: a tuple of floats, the mean view times of negative, neutral, and positive
             respectively.
     """
     negative_total_view_time = 0
     neutral_total_view_time = 0
+    positive_total_view_time = 0
     negative_responses = 0
     neutral_responses = 0
-
-    # list of negative words used to separate students' responses
-    negative_key_words_list = [
-        'miscarriage',
-        'lost child',
-        'death',
-        'grief',
-        'giving up hope',
-        'deceased',
-        'loss'
-    ]
+    positive_responses = 0
 
     # iterates through all responses in student_data
     for response_dict in student_data:
-        is_not_negative = True
         if (response_dict['question'] == 'In three words or fewer, what is this text about?') \
                 and (response_dict['context'] == 'This is an ad.'):
             response: str = response_dict['response'].lower()
-            print(response_dict)
-            # Iterate through negative words checking whether it can be found
-            # in the current response. Keeps track of number of responses and
-            # total times.
-            for word in negative_key_words_list:
-                if word in response:
-                    negative_responses += 1
-                    negative_total_view_time += sum(response_dict['views'])
-                    is_not_negative = False
-                    break
-            if is_not_negative:  # only run this if no negative word was found
+            dict_sentiments= get_sentiments()
+            response_list = response.split()
+            response_sentiment_list = []
+            for word in response_list:
+                if word in dict_sentiments:
+                    response_sentiment_list.append(dict_sentiments[word])
+                else:
+                    response_sentiment_list.append(0)
+            sentiment_score = max(response_sentiment_list, key=abs)
+            if sentiment_score < 0:
+                negative_responses +=1
+                negative_total_view_time += sum(response_dict['views'])
+            elif sentiment_score > 0:
+                positive_responses += 1
+                positive_total_view_time += sum(response_dict['views'])
+            else:
                 neutral_responses += 1
                 neutral_total_view_time += sum(response_dict['views'])
+
     if negative_responses == 0:
         negative_mean_view_time = 0
     else:
         negative_mean_view_time = negative_total_view_time / negative_responses
+    if positive_responses == 0:
+        positive_mean_view_time = 0
+    else:
+        positive_mean_view_time = positive_total_view_time / positive_responses
     if neutral_responses == 0:
         neutral_mean_view_time = 0
     else:
         neutral_mean_view_time = neutral_total_view_time / neutral_responses
-    return negative_mean_view_time, neutral_mean_view_time
+    print(negative_responses)
+    print(neutral_responses)
+    print(positive_responses)
+    return negative_mean_view_time, neutral_mean_view_time, positive_mean_view_time
 
 
 def compute_median_view_time(student_data):

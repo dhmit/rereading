@@ -32,7 +32,7 @@ class RereadingAnalysis:
         for response in self.responses:
             for view_time in response.get_parsed_views():
                 total_view_time += view_time
-        return total_view_time
+        return round(total_view_time, 2)
 
     def compute_median_view_time(self):
         """
@@ -49,7 +49,7 @@ class RereadingAnalysis:
         else:
             list_of_times.sort()
             median_view_time = statistics.median(list_of_times)
-        return median_view_time
+        return round(median_view_time, 2)
 
     def compute_mean_response_length(self):
         """
@@ -61,7 +61,7 @@ class RereadingAnalysis:
         mean_response_length = 0
         for response in list_of_responses:
             mean_response_length += len(response)
-        return mean_response_length / len(list_of_responses)
+        return round(mean_response_length / len(list_of_responses), 2)
 
     @staticmethod
     def description_has_relevant_words(story_meaning_description, relevant_words):

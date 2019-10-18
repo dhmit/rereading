@@ -61,3 +61,48 @@ class RereadingAnalysis:
         for response in list_of_responses:
             mean_response_length += len(response)
         return mean_response_length / len(list_of_responses)
+
+    @staticmethod
+    def description_has_relevant_words(story_meaning_description, relevant_words):
+        """
+        Determine if the user's description contains a word relevant to the story's meaning
+        :param story_meaning_description: The three word description of the story that the user supplied
+        :param relevant_words: a list of words which show an understanding of the story's meaning
+        :return True if the description contains one of the relevant words or relevant_words is empty.
+            False otherwise
+        """
+        if not relevant_words:
+            return True
+
+        lowercase_relevant_words = list(map(lambda s: s.lower(), relevant_words))
+        words_used_in_description = story_meaning_description.lower().split(' ')
+
+        for word in lowercase_relevant_words:
+            if word.lower() in words_used_in_description:
+                return True
+        return False
+
+    def percent_students_using_relevant_words(self, target_context, relevant_words):
+        """
+        Find the percentage of students that used relevant words in their responses
+        :param student_data: the data to analyze
+        :param target_context: the context (e.g. "This is an ad") to take responses from
+        :param relevant_words: a list of words which show an understanding of the story's meaning
+        :return: The percentage [0.00, 1.00] of students that used relevant words in their
+        responses. 0 if there are no responses.
+        """
+        number_of_students_using_relevant_words = 0
+        total_students = 0
+        for row in self.responses:
+            if (row.get('context') == target_context and
+                    row.get('question') == 'In three words or fewer, what is this text about?'):
+                total_students += 1
+                if RereadingAnalysis.description_has_relevant_words(row.get('response'),
+                                                                    relevant_words):
+                    number_of_students_using_relevant_words += 1
+
+        if total_students:
+            percentage_of_all_students = number_of_students_using_relevant_words / total_students
+        else:
+            percentage_of_all_students = 0
+        return percentage_of_all_students

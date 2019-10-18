@@ -25,8 +25,6 @@ class AnalysisView extends React.Component {
         }
     }
 
-    function
-
     render() {
 
         if (this.state.analysis !== null) {
@@ -34,7 +32,7 @@ class AnalysisView extends React.Component {
                 total_view_time,
                 run_mean_reading_analysis_for_questions,
             } = this.state.analysis;
-            console.log(run_mean_reading_analysis_for_questions)
+            //console.log(run_mean_reading_analysis_for_questions)
             return (
                 <div>
                     <h1>Analysis of Student Responses</h1>

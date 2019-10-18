@@ -90,4 +90,3 @@ class StudentResponse(models.Model):
         """
 
         return literal_eval(self.views)
-

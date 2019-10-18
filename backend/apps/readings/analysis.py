@@ -100,8 +100,8 @@ class RereadingAnalysis:
         if len(reading_time) != 0:
             mean_time = round(total_question_view_time / len(reading_time), 2)
 
-        return "Question: "+question+ " Context: "+context+" Mean time with outliers " \
-            "removed: "+str(mean_time)+" Total number of readers: "+ str(number_of_readers)
+        return "Question: " + question + " Context: "+context+" Mean time with outliers " \
+            "removed: " + str(mean_time) + " Total number of readers: " + str(number_of_readers)
 
     def remove_outliers(self, reading_time):
         """

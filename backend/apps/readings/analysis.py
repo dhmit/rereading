@@ -89,13 +89,12 @@ class RereadingAnalysis:
         for resp in clean_dataset:
             if resp['question'] == question and resp['context'] == "This is an ad.":
                 responses_ad += resp['response'].split()
-            elif resp['question'] == question and resp[
-                'context'] == "This is actually a short story.":
+            elif resp['question'] == question and resp['context'] == "This is actually a short story.":
                 responses_story += resp['response'].split()
 
         return responses_ad, responses_story
 
-    def repeated_prompt_words(responses):
+    def repeated_prompt_words(self, responses):
         """
         Calculates frequencies of exact words from story prompt used in responses (disregards words
         not in story prompt).

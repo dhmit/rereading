@@ -35,9 +35,8 @@ class AnalysisView extends React.Component {
             return (
                 <div>
                     <h1>Analysis of Student Responses</h1>
-                    <h3>Total view time</h3>
-                    <p>{total_view_time} seconds</p>
-                    <p>{compute_median_view_time}</p>
+                    <p>Total view time: {total_view_time} seconds</p>
+                    <p>Median view time: {compute_median_view_time} seconds</p>
                 </div>
             );
         } else {

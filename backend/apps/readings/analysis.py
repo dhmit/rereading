@@ -67,10 +67,10 @@ class RereadingAnalysis:
     def description_has_relevant_words(story_meaning_description, relevant_words):
         """
         Determine if the user's description contains a word relevant to the story's meaning
-        :param story_meaning_description: The three word description of the story that the user supplied
+        :param story_meaning_description: The user's three word description of the story
         :param relevant_words: a list of words which show an understanding of the story's meaning
-        :return True if the description contains one of the relevant words or relevant_words is empty.
-            False otherwise
+        :return True if the description contains one of the relevant words or relevant_words is
+        empty. False otherwise
         """
         if not relevant_words:
             return True
@@ -93,18 +93,53 @@ class RereadingAnalysis:
         :return: The percentage [0.00, 1.00] of students that used relevant words in their
         responses. 0 if there are no responses.
         """
-        number_of_students_using_relevant_words = 0
-        total_students = 0
-        for row in student_data:
-            if (row.get('context') == target_context and
-                    row.get('question') == 'In three words or fewer, what is this text about?'):
-                total_students += 1
-                if RereadingAnalysis.description_has_relevant_words(row.get('response'),
-                                                                    relevant_words):
-                    number_of_students_using_relevant_words += 1
 
-        if total_students:
-            percentage_of_all_students = number_of_students_using_relevant_words / total_students
+        def row_has_correct_context_and_question(row):
+            # Helper method to filter out irrelevant response data
+            return row.context.text == target_context and \
+                   row.question.text == 'In three words or fewer, what is this text about?'
+
+        number_of_students_using_relevant_words = 0
+
+        filtered_student_data = list(filter(row_has_correct_context_and_question, student_data))
+        for row in filtered_student_data:
+            if RereadingAnalysis.description_has_relevant_words(row.response,
+                                                                relevant_words):
+                number_of_students_using_relevant_words += 1
+
+        if filtered_student_data:
+            percentage_of_all_students = \
+                number_of_students_using_relevant_words / len(filtered_student_data)
         else:
             percentage_of_all_students = 0
         return percentage_of_all_students
+
+    def percent_students_using_relevant_words_in_ad_context(self):
+        """
+        Find the percentage of students that used relevant words in the ad context
+        :return: The percentage [0.00, 1.00] of students that used relevant words in their
+        responses. 0 if there are no responses.
+        """
+        context = 'This is an ad.'
+
+        context = 'This is an ad.'
+        relevant_words = ["dead", "death", "miscarriage", "killed", "kill", "losing", "loss",
+                          "lost", "deceased", "died", "grief", "pregnancy", "pregnant"]
+        percentage = RereadingAnalysis.percent_students_using_relevant_words(self.responses,
+                                                                             context,
+                                                                             relevant_words)
+        return percentage
+
+    def percent_students_using_relevant_words_in_story_context(self):
+        """
+        Find the percentage of students that used relevant words in the short story context
+        :return: The percentage [0.00, 1.00] of students that used relevant words in their
+        responses. 0 if there are no responses.
+        """
+        context = 'This is actually a short story.'
+        relevant_words = ["dead", "death", "miscarriage", "killed", "kill", "losing", "loss",
+                          "lost", "deceased", "died", "grief", "pregnancy", "pregnant"]
+        percentage = RereadingAnalysis.percent_students_using_relevant_words(self.responses,
+                                                                             context,
+                                                                             relevant_words)
+        return percentage

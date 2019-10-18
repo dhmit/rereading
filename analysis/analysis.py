@@ -569,22 +569,27 @@ def percent_students_using_relevant_words(student_data, target_context, relevant
     """
     Find the percentage of students that used relevant words in their responses
     :param student_data: the data to analyze
-    :param target_context: the context (e.g. "This is an ad") to take responses from
+    :param target_context: the context (e.g. 'This is an ad') to take responses from
     :param relevant_words: a list of words which show an understanding of the story's meaning
     :return: The percentage [0.00, 1.00] of students that used relevant words in their
     responses. 0 if there are no responses.
     """
-    number_of_students_using_relevant_words = 0
-    total_students = 0
-    for row in student_data:
-        if (row.get('context') == target_context and
-                row.get('question') == 'In three words or fewer, what is this text about?'):
-            total_students += 1
-            if description_has_relevant_words(row.get('response'), relevant_words):
-                number_of_students_using_relevant_words += 1
 
-    if total_students:
-        percentage_of_all_students = number_of_students_using_relevant_words / total_students
+    def row_has_correct_context_and_question(row):
+        # Helper method to filter out irrelevant response data
+        return row.get('context') == target_context and \
+               row.get('question') == 'In three words or fewer, what is this text about?'
+
+    number_of_students_using_relevant_words = 0
+
+    filtered_student_data = list(filter(row_has_correct_context_and_question, student_data))
+    for row in filtered_student_data:
+        if description_has_relevant_words(row.get('response'), relevant_words):
+            number_of_students_using_relevant_words += 1
+
+    if filtered_student_data:
+        percentage_of_all_students = \
+            number_of_students_using_relevant_words / len(filtered_student_data)
     else:
         percentage_of_all_students = 0
     return percentage_of_all_students

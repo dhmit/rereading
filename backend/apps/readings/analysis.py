@@ -4,6 +4,7 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
 import statistics
+
 from .models import StudentResponse
 
 
@@ -82,18 +83,19 @@ class RereadingAnalysis:
                 return True
         return False
 
-    def percent_students_using_relevant_words(self, target_context, relevant_words):
+    @staticmethod
+    def percent_students_using_relevant_words(student_data, target_context, relevant_words):
         """
         Find the percentage of students that used relevant words in their responses
         :param student_data: the data to analyze
-        :param target_context: the context (e.g. "This is an ad") to take responses from
+        :param target_context: the context (e.g. 'This is an ad') to take responses from
         :param relevant_words: a list of words which show an understanding of the story's meaning
         :return: The percentage [0.00, 1.00] of students that used relevant words in their
         responses. 0 if there are no responses.
         """
         number_of_students_using_relevant_words = 0
         total_students = 0
-        for row in self.responses:
+        for row in student_data:
             if (row.get('context') == target_context and
                     row.get('question') == 'In three words or fewer, what is this text about?'):
                 total_students += 1

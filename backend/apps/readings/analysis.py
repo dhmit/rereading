@@ -136,7 +136,7 @@ class RereadingAnalysis:
         """
         list_of_times = []
         for row in self.responses:
-            for view_time in row.get('views'):
+            for view_time in row.get_parsed_views():
                 list_of_times.append(view_time)
         if not list_of_times:
             median_view_time = 0

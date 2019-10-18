@@ -63,10 +63,11 @@ class RereadingAnalysis:
 
         all_contexts = Context.objects.all()
         total_contexts_view_times = {context.text: {
-                                                "total_view_time": 0,
-                                                "count": 0
-                                              }
-                                     for context in all_contexts}
+            "total_view_time": 0,
+            "count": 0
+            }
+            for context in all_contexts}
+        
         for response in self.responses:
             context = response.context.text
             total_contexts_view_times[context]["total_view_time"] += \

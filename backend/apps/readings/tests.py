@@ -21,3 +21,9 @@ class AnalysisTests(TestCase):
         """ tests for total_view_time method of RereadingAnalysis """
         total_view_time = self.analyzer.total_view_time()
         self.assertEqual(0, total_view_time)
+
+    def test_repeated_prompt_words(self):
+        """Tests the all_contexts_repeated_prompt_words method of RereadingAnalysis"""
+        ad_repeated_words, story_repeated_words = self.analyzer.all_contexts_repeated_prompt_words()
+        self.assertEqual({}, ad_repeated_words)
+        self.assertEqual({}, story_repeated_words)

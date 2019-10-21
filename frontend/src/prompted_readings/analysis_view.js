@@ -30,6 +30,7 @@ class AnalysisView extends React.Component {
             const {  // object destructuring:
                 total_view_time,
                 compute_median_view_time,
+                all_contexts_repeated_prompt_words,
             } = this.state.analysis;
 
             return (
@@ -38,6 +39,8 @@ class AnalysisView extends React.Component {
                     <h3>Total view time</h3>
                     <p>{total_view_time} seconds</p>
                     <p>{compute_median_view_time}</p>
+                    <h3>Words in responses repeated from prompt</h3>
+                    <p>{all_contexts_repeated_prompt_words}</p>
                 </div>
             );
         } else {

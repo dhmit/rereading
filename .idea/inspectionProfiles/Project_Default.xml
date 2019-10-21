@@ -3,10 +3,15 @@
     <option name="myName" value="Project Default" />
     <inspection_tool class="DuplicatedCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <Languages>
-        <language minSize="52" name="Python" />
+        <language minSize="120" name="JavaScript" />
+        <language minSize="120" name="Python" />
+        <language minSize="120" name="TypeScript" />
+        <language minSize="120" name="ActionScript" />
       </Languages>
     </inspection_tool>
+    <inspection_tool class="ES6ConvertRequireIntoImport" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="PyMethodMayBeStaticInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoredIdentifiers">
         <list>

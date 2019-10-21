@@ -36,11 +36,20 @@ class AnalysisView extends React.Component {
                 <div className={"container"}>
                     <nav className={"navbar navbar-expand-lg"}>
                         <div className={"navbar-nav"}>
-                            <a className={"nav-link nav-item text-dark font-weight-bold"} href={"#"}>Overview</a>
-                            <a className={"nav-link nav-item text-dark font-weight-bold"} href={"#"}>Analysis</a>
+                            <a
+                                className={"nav-link nav-item text-dark font-weight-bold"}
+                                href={"#"}
+                            >Overview</a>
+                            <a
+                                className={"nav-link nav-item text-dark font-weight-bold"}
+                                href={"#"}
+                            >Analysis</a>
                         </div>
                     </nav>
-                    <h1 className={"text-center display-4"} id={"page-title"}>Analysis of Student Responses</h1>
+                    <h1
+                        className={"text-center display-4"}
+                        id={"page-title"}
+                    >Analysis of Student Responses</h1>
                     <h3>Total view time</h3>
                     <p>Total view time: {total_view_time} seconds</p>
                     <p>Median view time: {compute_median_view_time} seconds</p>

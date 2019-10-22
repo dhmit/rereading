@@ -439,6 +439,60 @@ def get_word_frequency_differences(student_data):
     return ordered_responses
 
 
+def mean_view_time_comparison(student_data):
+    """
+    Calculate the mean view time of both groups (those who had a negative-word response and those
+    did not) for comparison. Prints the result.
+    :param student_data: a list of dictionaries
+    :return: a tuple of floats, the mean view times of negative and neutral
+            respectively.
+    """
+    negative_total_view_time = 0
+    neutral_total_view_time = 0
+    negative_responses = 0
+    neutral_responses = 0
+
+    # list of negative words used to separate students' responses
+    negative_key_words_list = [
+        'miscarriage',
+        'lost child',
+        'death',
+        'grief',
+        'giving up hope',
+        'deceased',
+        'loss'
+    ]
+
+    # iterates through all responses in student_data
+    for response_dict in student_data:
+        is_not_negative = True
+        if (response_dict['question'] == 'In three words or fewer, what is this text about?') \
+                and (response_dict['context'] == 'This is an ad.'):
+            response: str = response_dict['response'].lower()
+            print(response_dict)
+            # Iterate through negative words checking whether it can be found
+            # in the current response. Keeps track of number of responses and
+            # total times.
+            for word in negative_key_words_list:
+                if word in response:
+                    negative_responses += 1
+                    negative_total_view_time += sum(response_dict['views'])
+                    is_not_negative = False
+                    break
+            if is_not_negative:  # only run this if no negative word was found
+                neutral_responses += 1
+                neutral_total_view_time += sum(response_dict['views'])
+    if negative_responses == 0:
+        negative_mean_view_time = 0
+    else:
+        negative_mean_view_time = negative_total_view_time / negative_responses
+    if neutral_responses == 0:
+        neutral_mean_view_time = 0
+    else:
+        neutral_mean_view_time = neutral_total_view_time / neutral_responses
+    return negative_mean_view_time, neutral_mean_view_time
+
+
 def compute_median_view_time(student_data):
     """
      Given a list of student response dicts,
@@ -560,6 +614,7 @@ def run_analysis():
     """
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
+    mean_view_time_comparison(student_data)
 
     reread_counts = compute_reread_counts(student_data, "In one word", "ad")
     print("Number of times students reread text based on question or context:\n")
@@ -925,7 +980,6 @@ def word_freq_all(data):
 def show_response_groups(response_groups_freq_dicts):
     """
     Given response_groups_freq_dicts list of dictionaries, prints the dicts in readable format
-
     :param response_groups_freq_dicts, lists of 4 dicts (one for each response
     group)
     mapping words to frequencies within that response group
@@ -1159,12 +1213,25 @@ class TestAnalysisMethods(unittest.TestCase):
         self.default_student_data_2 = load_data_csv(test_data_2_path)
         sample_csv_path = Path('data', 'rereading_data_2019-09-13.csv')
         self.student_data = load_data_csv(sample_csv_path)
-
+        test_data_3_path = Path('data', 'test_data_3.csv')
+        self.default_student_data_3 = load_data_csv(test_data_3_path)
         self.feel = "In one word, how does this text make you feel?"
         self.about = "In three words or fewer, what is this text about?"
         self.encountered = "Have you encountered this text before?"
         self.ads = "This is an ad."
         self.short_story = "This is actually a short story."
+
+    def test_mean_view_time_comparison(self):
+        """
+        Tests mean_view_time_comparison function with two data sets. The first is specific to
+        our function and the second is generic and just an empty set. It tests that it correctly
+        calculates the mean and doesn't break when dividing by 0.
+        :return:
+        """
+        total_mean_view_time_comparison = mean_view_time_comparison(self.default_student_data_3)
+        self.assertEqual((.73625, .3807), total_mean_view_time_comparison)
+        total_mean_view_time_comparison = mean_view_time_comparison(self.default_student_data)
+        self.assertEqual((0, 0), total_mean_view_time_comparison)
 
     def test_extract_responses_by_context(self):
         """
@@ -1230,10 +1297,8 @@ class TestAnalysisMethods(unittest.TestCase):
         all question and context combinations.
         """
         mean_reading_data = mean_reading_time_for_a_question(self.default_student_data, "", "")
-
         empty_comparison_tuple = ("", "", 0, 0)
         self.assertEqual(mean_reading_data, empty_comparison_tuple)
-
         # The expected result times are rounded to 2 decimals here due to Python rounding errors
         # not matching actual rounding.
         results = mean_reading_time_for_a_question(self.test_student_data, self.feel, self.ads)

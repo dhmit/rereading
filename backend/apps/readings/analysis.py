@@ -32,7 +32,7 @@ class RereadingAnalysis:
         for response in self.responses:
             for view_time in response.get_parsed_views():
                 total_view_time += view_time
-        return total_view_time
+        return round(total_view_time)
 
     def compute_median_view_time(self):
         """
@@ -49,7 +49,7 @@ class RereadingAnalysis:
         else:
             list_of_times.sort()
             median_view_time = statistics.median(list_of_times)
-        return median_view_time
+        return round(median_view_time)
 
     # def unique_responses(self):
     #     contexts = list(self.responses.context.distinct())

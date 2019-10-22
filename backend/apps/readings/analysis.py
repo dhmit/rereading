@@ -118,7 +118,7 @@ class RereadingAnalysis:
         for response in self.responses:
             for view_time in response.get_parsed_views():
                 total_view_time += view_time
-        return total_view_time
+        return round(total_view_time)
 
     def question_sentiment_analysis(self):
 
@@ -162,11 +162,11 @@ class RereadingAnalysis:
         """
         list_of_times = []
         for row in self.responses:
-            for view_time in row.get('views'):
+            for view_time in row.get_parsed_views():
                 list_of_times.append(view_time)
         if not list_of_times:
             median_view_time = 0
         else:
             list_of_times.sort()
             median_view_time = statistics.median(list_of_times)
-        return median_view_time
+        return round(median_view_time)

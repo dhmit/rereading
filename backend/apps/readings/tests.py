@@ -30,3 +30,16 @@ class AnalysisTests(TestCase):
         # Currently it is the default data, so there should be nothing there
         self.assertEqual({}, mean_read_times)
 
+    def test_frequency_feelings(self):
+        """
+        Tests for frequency_feelings method of Rereading Analysis
+        """
+        frequency_feelings = self.analyzer.frequency_feelings()
+        self.assertEqual([], frequency_feelings)
+
+    def test_compute_median_view_time(self):
+        """
+        Tests for compute_median_view_time method of Rereading Analysis
+        """
+        median_view_time = self.analyzer.compute_median_view_time()
+        self.assertEqual(0, median_view_time)

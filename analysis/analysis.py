@@ -122,16 +122,16 @@ def repeated_prompt_words():
     return ad_resp_words, story_resp_words
 
 
-def test_repeated_prompt_words():
+def unique_word_pattern(student_data):
     """
     Take the CSV File and analyze the readers' responses based on the two different contexts of the
     2 questions (this is an ad/this is just a short story); analyze if the total number of unique
     responses changed as more and more readers' responses are analyzed. Eventually prints out the
     pattern along with the number of unique word in the text.
-    return: none
+    :param student_data
+    :return 2 lists of sets specifying unique responses at each point in time as a user
+    submits a response
     """
-    csv_path = Path('data', 'rereading_data_2019-09-13.csv')
-    student_data = load_data_csv(csv_path)
     response_ad = set()
     response_story = set()
     unique_word_tracker_ad = []
@@ -141,22 +141,18 @@ def test_repeated_prompt_words():
     for data in student_data:
         filtered_word_resp = filter(data['response'])
         if data['question'] == question and data['context'] == "This is an ad.":
-            for word in filtered_word_resp:
-                response_ad.add(word)
-                unique_word_tracker_ad.append(len(response_ad))
-
+            word_set = response_ad
+            histogram = unique_word_tracker_ad
         elif data['question'] == question and data['context'] == "This is actually a short story.":
-            for word in filtered_word_resp:
-                response_story.add(word)
-                unique_word_tracker_story.append(len(response_story))
+            word_set = response_story
+            histogram = unique_word_tracker_story
+        else:
+            continue
+        for word in filtered_word_resp:
+            word_set.add(word)
+        histogram.append(set(word_set))
 
-    print("This is the frequency tracker for responses with the story context: ")
-    for num in unique_word_tracker_story:
-        print(str(num)+"" + "*"*num)
-
-    print("This is the frequency tracker for responses with the ad context: ")
-    for num in unique_word_tracker_ad:
-        print(str(num) + "" + "*" * num)
+    return unique_word_tracker_story, unique_word_tracker_ad
 
 
 def filter(string):
@@ -435,7 +431,8 @@ def run_analysis():
         "In one word, how does this text make you feel?",
         "This is an ad."
     ))
-    test_repeated_prompt_words()
+    print(unique_word_pattern(student_data)[0])
+    print(unique_word_pattern(student_data)[1])
 
 
 def compute_mean_revisits(data):
@@ -1021,6 +1018,21 @@ class TestAnalysisMethods(unittest.TestCase):
         self.ads = "This is an ad."
         self.short_story = "This is actually a short story."
 
+    def test_unique_words_response(self):
+        # first check: empty dataset
+        total_unique_words_story, total_unique_words_ad = unique_word_pattern(self.default_student_data)
+        set_unique_words_story = len(total_unique_words_story)
+        set_unique_words_ad = len(total_unique_words_ad)
+        self.assertEqual(set_unique_words_story, 0)
+        self.assertEqual(set_unique_words_ad, 0)
+
+        # second check: smaller dataset
+        unique_words_story1, unique_words_ads1 = unique_word_pattern(self.test_student_data)
+        set_unique_words_story1 = len(unique_words_story1)
+        set_unique_words_ad1 = len(unique_words_ads1)
+        self.assertEqual(set_unique_words_story1, 1)
+        self.assertEqual(set_unique_words_ad1, 1)
+
     def test_mean_reading_time_for_a_question(self):
         """
         Tests mean_reading_time_for_a_question function with many data sets and checks if
@@ -1397,3 +1409,4 @@ class TestAnalysisMethods(unittest.TestCase):
 if __name__ == '__main__':
     run_analysis()
     unittest.main()  # run the tests
+

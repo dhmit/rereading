@@ -10,11 +10,11 @@ from config.settings.base import PROJECT_ROOT
 from .models import StudentResponse
 
 
-def compare_abs_value(val1, val2):
+def max_abs(val1, val2):
     """
     Compares the absolute value of the values, returning the larger of the two values
 
-    In the event of a tie, returns 0
+    In the event of a tie, returns the absolute value
 
     :param val1: int, positive or negative
     :param val2: int, positive or negative
@@ -23,12 +23,7 @@ def compare_abs_value(val1, val2):
     abs_1 = abs(val1)
     abs_2 = abs(val2)
 
-    if abs_1 > abs_2:
-        return val1
-    if abs_2 > abs_1:
-        return val2
-    else:
-        return 0
+    return max(abs_1, abs_2)
 
 
 def get_sentiments_from_word(word_line):
@@ -55,8 +50,8 @@ def get_sentiments_from_word(word_line):
     negative_score = -float(attributes[3])
 
     # Find the largest sentiment score for the word, and define negative sentiments
-    # as negative values (if there's a tie, the sentiment is 0)
-    score = compare_abs_value(positive_score, negative_score)
+    # as negative values (if there's a tie, the sentiment is the absolute value)
+    score = max_abs(positive_score, negative_score)
 
     return new_word, score
 
@@ -86,7 +81,7 @@ def get_sentiments() -> dict:
             # If the word is already defined, skip the current line if the sentiment is lower
             if new_word in sentiments:
                 old_sentiment = sentiments[new_word]
-                if compare_abs_value(old_sentiment, score) == old_sentiment:
+                if max_abs(old_sentiment, score) == old_sentiment:
                     continue
 
             sentiments[new_word] = score

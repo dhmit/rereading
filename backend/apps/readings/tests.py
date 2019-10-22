@@ -21,3 +21,12 @@ class AnalysisTests(TestCase):
         """ tests for total_view_time method of RereadingAnalysis """
         total_view_time = self.analyzer.total_view_time()
         self.assertEqual(0, total_view_time)
+
+    def test_context_vs_read_time(self):
+        """
+        Tests for context_vs_read_time method of Rereading Analysis
+        """
+        mean_read_times = self.analyzer.context_vs_read_time()
+        # Currently it is the default data, so there should be nothing there
+        self.assertEqual({}, mean_read_times)
+

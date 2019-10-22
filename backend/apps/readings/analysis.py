@@ -35,7 +35,7 @@ class RereadingAnalysis:
 
     def frequency_feelings(self):
         """
-        Compute the frequencies of a word in a specific question. Not sensitive to case.
+        Compute the frequencies of all the responses. Not sensitive to case.
         :return a list of tuples of words that appear more than once, and how often they occur,
         in order of their frequency
         """
@@ -57,8 +57,9 @@ class RereadingAnalysis:
 
     def context_vs_read_time(self):
         """
-        Compares mean view times, of all contexts
-        :return a tuple of the mean ad view and the mean story view
+        Compares mean view times of all contexts
+        :return a dictionary where the context is the key and the mean view time for that context
+        is the value
         """
 
         all_contexts = Context.objects.all()

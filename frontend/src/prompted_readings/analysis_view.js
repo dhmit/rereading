@@ -110,17 +110,14 @@ class AnalysisView extends React.Component {
                         className={"text-center display-4"}
                         id={"page-title"}
                     >Analysis of Student Responses</h1>
-                    <h3>Total view time</h3>
-                     <h1>Analysis of Student Responses</h1>
-                    <h3>Total view time</h3>
-                    <p>{total_view_time} seconds</p>
+                    <h1>Total view time</h1>
+                    <p>Total view time: {total_view_time} seconds</p>
+                    <h1>Median View Time</h1>
+                    <p>Median view time: {compute_median_view_time} seconds</p>
                     <FrequencyFeelingTable feelings={frequency_feelings}/>
                     <br/>
                     <ContextVsViewTime viewTime={context_vs_read_time}/>
-                    <br/><br/>
-                    <p><b>Median View Time: </b>{compute_median_view_time}</p>
-                    <p>Total view time: {total_view_time} seconds</p>
-                    <p>Median view time: {compute_median_view_time} seconds</p>
+                    <br/>
                 </div>
             );
         } else {

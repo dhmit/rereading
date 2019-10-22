@@ -1267,9 +1267,10 @@ class TestAnalysisMethods(unittest.TestCase):
         """
                 Tests unique_words_pattern function with two data sets. The first is
                 the default empty dataset and the second is test_data2 which is a small dataset.
-                 It tests that it correctly appends the lists of unique words to both
+                 This function tests that it correctly appends the lists of unique words to both
                  ads response and story response lists the total unique words in each
-                 timestamp.
+                 timestamp. Future testing is suggested using larger datasets.
+                 
                 """
         # first check: empty dataset
         unique_words_story, unique_words_ad = unique_word_pattern(self.default_student_data)

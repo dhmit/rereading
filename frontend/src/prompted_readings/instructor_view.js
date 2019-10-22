@@ -110,11 +110,13 @@ function QuestionView(props) {
     const questionsToView = [];
 
     // context_num is not guaranteed to start with 0
+    let question_key;
     for (let context_num in questions) {
         if (!questions.hasOwnProperty(context_num)) {
             continue;
         }
 
+        // Identify the given context/question for this group of responses
         const context_pairing = questions[context_num];
         for (let question in context_pairing) {
 
@@ -122,13 +124,16 @@ function QuestionView(props) {
                 continue;
             }
 
+            // question_key will be a string of the form 'cnqx' where n and x are integers
+            // representing the context and question respectively
+            question_key = 'c' + String(context_num) + 'q' + String(question);
             questionsToView.push(
                 <Question
                     context={context_num}
                     question={question}
                     indices={context_pairing[question]}
                     students={students}
-                    key={context_num}
+                    key={question_key}
                 />
             );
         }
@@ -151,29 +156,18 @@ QuestionView.propTypes = {
  */
 class Question extends React.Component {
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            context: props.context,
-            question: props.question,
-            students: props.students,
-            indices: props.indices,
-        };
-    }
-
     render() {
-        const responses = this.state.indices.map(index => (
+        const responses = this.props.indices.map(index => (
             <QuestionResponse
-                student={this.state.students[index[0]]}
+                student={this.props.students[index[0]]}
                 prompt_num={index[1]}
                 key={index[0]}/>
         ));
 
         return (
             <div>
-                <div><h2>Context: {this.state.context}</h2></div>
-                <div><h2>Question: {this.state.question}</h2></div>
+                <div><h2>Context: {this.props.context}</h2></div>
+                <div><h2>Question: {this.props.question}</h2></div>
                 <table className="table striped bordered hover responsive">
                     <thead>
                         <tr>
@@ -204,9 +198,13 @@ class QuestionResponse extends React.Component {
 
     constructor(props) {
         super(props);
+
+        const student_response = props.student.student_responses[props.prompt_num];
         this.state = {
             student: props.student,
-            student_response: props.student.student_responses[props.prompt_num],
+            response: student_response.response,
+            views: student_response.views,
+            scroll_ups: student_response.scroll_ups,
         };
     }
 
@@ -214,9 +212,9 @@ class QuestionResponse extends React.Component {
         return (
             <tr>
                 <td>{this.state.student.id}</td>
-                <td>{this.state.student_response.response}</td>
-                <td>{this.state.student_response.views}</td>
-                <td>{this.state.student_response.scroll_ups}</td>
+                <td>{this.state.response}</td>
+                <td>{this.state.views}</td>
+                <td>{this.state.scroll_ups}</td>
             </tr>
         );
     }
@@ -253,6 +251,7 @@ class InstructorView extends React.Component {
         try {
             const res = await fetch('/api/add-response/');
             const students = await res.json();
+            console.log(students);
             const sortBy = this.state.sortBy;
             this.setState({
                 students,

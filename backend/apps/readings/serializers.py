@@ -51,7 +51,7 @@ class StudentSerializer(serializers.ModelSerializer):
 
         fields = (
             'id',
-            'story',
+            # 'story',
             'student_responses',
         )
 
@@ -104,6 +104,7 @@ class AnalysisSerializer(serializers.Serializer):
     """ Serializes analysis class """
     total_view_time = serializers.ReadOnlyField()
     compute_median_view_time = serializers.ReadOnlyField()
+#    unique_responses = serializers.ReadOnlyField()
 
     def create(self, validated_data):
         """ We will not create new objects using this serializer """

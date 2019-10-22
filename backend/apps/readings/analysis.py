@@ -3,6 +3,7 @@
 Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
+
 import statistics
 from .models import StudentResponse
 
@@ -41,7 +42,7 @@ class RereadingAnalysis:
         """
         list_of_times = []
         for row in self.responses:
-            for view_time in row.get('views'):
+            for view_time in row.get_parsed_views():
                 list_of_times.append(view_time)
         if not list_of_times:
             median_view_time = 0
@@ -49,3 +50,25 @@ class RereadingAnalysis:
             list_of_times.sort()
             median_view_time = statistics.median(list_of_times)
         return median_view_time
+
+    # def unique_responses(self):
+    #     contexts = list(self.responses.context.distinct())
+    #     unique_response_dict = {}
+    #     # separate the unique responses by context
+    #     for item in contexts:
+    #         context_responses = list(self.responses.response.distinct().filter(
+    #                                  context__icontains=item))
+    #         unique_response_dict[item] = context_responses
+    #     # find the intersection between all contexts
+    #     common_responses = []
+    #     for value in unique_response_dict.values():
+    #         for element in value:
+    #             if element not in common_responses:
+    #                 common_responses.append(element)
+    #     # find the difference between all contexts
+    #     for value in unique_response_dict.values():
+    #         it_list = value[:]
+    #         for element in it_list:
+    #             if element in common_responses:
+    #                 value.delete(element)
+    #     return unique_response_dict

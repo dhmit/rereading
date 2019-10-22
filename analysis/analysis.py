@@ -14,8 +14,6 @@ from ast import literal_eval
 from pathlib import Path
 from statistics import stdev
 from collections import defaultdict
-import statistics
-import math
 
 
 def load_data_csv(csv_path: Path):
@@ -36,11 +34,6 @@ def load_data_csv(csv_path: Path):
             out_data.append(row)
     return out_data
 
-
-def fetch_responses():
-    csv_path = Path('data', 'rereading_data_2019-09-13.csv')
-    student_data = load_data_csv(csv_path)
-    # TODO: do something with student_data that's not just printing it!
 def clean_resp_strings(dataset):
     """
     Removes punctuation from responses in dataset and makes all characters lowercase.
@@ -163,10 +156,6 @@ def compute_reread_counts(student_data, question, context):
 
     return organized_data
 
-
-    return ad_resp_words, story_resp_words
-
-
 def unique_word_pattern(student_data):
     """
     Take the CSV File and analyze the readers' responses based on the two different contexts of the
@@ -184,7 +173,7 @@ def unique_word_pattern(student_data):
     question = "In three words or fewer, what is this text about?"
 
     for data in student_data:
-        filtered_word_resp = filter(data['response'])
+        filtered_word_resp = filter_words(data['response'])
         if data['question'] == question and data['context'] == "This is an ad.":
             word_set = response_ad
             histogram = unique_word_tracker_ad
@@ -200,7 +189,7 @@ def unique_word_pattern(student_data):
     return unique_word_tracker_story, unique_word_tracker_ad
 
 
-def filter(string):
+def filter_words(string):
     """
     helper method to preprocess the string: remove the stopwords and punctuation
     return: list of words that are non-stopwords
@@ -1274,11 +1263,18 @@ class TestAnalysisMethods(unittest.TestCase):
         self.ads = "This is an ad."
         self.short_story = "This is actually a short story."
 
-    def test_unique_words_response(self):
+    def test_unique_words_pattern(self):
+        """
+                Tests unique_words_pattern function with two data sets. The first is
+                the default empty dataset and the second is test_data2 which is a small dataset.
+                 It tests that it correctly appends the lists of unique words to both
+                 ads response and story response lists the total unique words in each
+                 timestamp.
+                """
         # first check: empty dataset
-        total_unique_words_story, total_unique_words_ad = unique_word_pattern(self.default_student_data)
-        set_unique_words_story = len(total_unique_words_story)
-        set_unique_words_ad = len(total_unique_words_ad)
+        unique_words_story, unique_words_ad = unique_word_pattern(self.default_student_data)
+        set_unique_words_story = len(unique_words_story)
+        set_unique_words_ad = len(unique_words_ad)
         self.assertEqual(set_unique_words_story, 0)
         self.assertEqual(set_unique_words_ad, 0)
 

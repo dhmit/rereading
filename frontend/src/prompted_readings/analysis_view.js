@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from 'prop-types';
 
-class FrequencyFeelingTable extends React.Component {
+export class FrequencyFeelingTable extends React.Component {
     render() {
         return (
             <div>
@@ -27,7 +27,7 @@ FrequencyFeelingTable.propTypes = {
     feelings: PropTypes.array,
 };
 
-class ContextVsViewTime extends React.Component {
+export class ContextVsViewTime extends React.Component {
     render() {
         const viewTimesList = Object.entries(this.props.viewTime);
         const roundedViewTimes = viewTimesList.map(context =>
@@ -57,7 +57,7 @@ ContextVsViewTime.propTypes = {
     viewTime: PropTypes.object,
 };
 
-class SentimentScores extends React.Component {
+export class SentimentScores extends React.Component {
     render() {
         return (
             <div>
@@ -75,7 +75,7 @@ SentimentScores.propTypes = {
     sentiment_std: PropTypes.number,
 };
 
-class AnalysisView extends React.Component {
+export class AnalysisView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -149,8 +149,3 @@ class AnalysisView extends React.Component {
     }
 }
 
-export {
-    ContextVsViewTime,
-    FrequencyFeelingTable
-}
-export default AnalysisView;

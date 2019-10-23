@@ -23,7 +23,6 @@ class FrequencyFeelingTable extends React.Component {
         )
     }
 }
-
 FrequencyFeelingTable.propTypes = {
     feelings: PropTypes.array,
 };
@@ -54,9 +53,25 @@ class ContextVsViewTime extends React.Component {
         )
     }
 }
-
 ContextVsViewTime.propTypes = {
     viewTime: PropTypes.object,
+
+class SentimentScores extends React.Component {
+    render() {
+        return (
+            <div>
+                <h3>Average Sentiment Among Students</h3>
+                <h5>Positivity Score:</h5>
+                <p>{this.props.sentiment_average}</p>
+                <h5>Standard Deviation:</h5>
+                <p>{this.props.sentiment_std}</p>
+            </div>
+        );
+    }
+}
+SentimentScores.propTypes = {
+    sentiment_average: PropTypes.number,
+    sentiment_std: PropTypes.number,
 };
 
 class AnalysisView extends React.Component {
@@ -90,6 +105,7 @@ class AnalysisView extends React.Component {
                 total_view_time,
                 frequency_feelings,
                 context_vs_read_time,
+                question_sentiment_analysis,
                 compute_median_view_time,
             } = this.state.analysis;
             return (
@@ -118,6 +134,10 @@ class AnalysisView extends React.Component {
                     <br/>
                     <ContextVsViewTime viewTime={context_vs_read_time}/>
                     <br/>
+                    <SentimentScores
+                        sentiment_average={question_sentiment_analysis[0]}
+                        sentiment_std={question_sentiment_analysis[1]}
+                    />
                 </div>
             );
         } else {

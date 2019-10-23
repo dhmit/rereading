@@ -105,6 +105,7 @@ class AnalysisSerializer(serializers.Serializer):
     total_view_time = serializers.ReadOnlyField()
     frequency_feelings = serializers.ReadOnlyField()
     context_vs_read_time = serializers.ReadOnlyField()
+    question_sentiment_analysis = serializers.ReadOnlyField()
     compute_median_view_time = serializers.ReadOnlyField()
 
     def create(self, validated_data):

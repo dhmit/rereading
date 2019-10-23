@@ -2,9 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './student_view';
 import {
-  FrequencyFeelingTable, 
-  ContextVsViewTime,
-  SentimentScores,
+    FrequencyFeelingTable, 
+    ContextVsViewTime,
+    SentimentScores,
 } from "./analysis_view";
 
 it('renders without crashing', () => {

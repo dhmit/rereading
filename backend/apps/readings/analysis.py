@@ -107,7 +107,8 @@ def remove_outliers(data):
     upper_fence = quartile_three + (1.5 * interquartile_range)
 
     for time in data:
-        if (time > lower_fence) or (time < upper_fence):
+        if (time > lower_fence) and (time < upper_fence):
+            print(time)
             data_no_outliers.append(time)
 
     return data_no_outliers
@@ -244,7 +245,6 @@ class RereadingAnalysis:
                 mean_reading_time_results_data.append(self.mean_reading_time_for_a_question(
                     question, context))
 
-        print(mean_reading_time_results_data)
         return mean_reading_time_results_data
 
     def mean_reading_time_for_a_question(self, question, context):
@@ -284,6 +284,27 @@ class RereadingAnalysis:
             mean_time = round(total_question_view_time / len(reading_time), 2)
 
         return [question, context, mean_time, number_of_readers]
+
+    # def remove_outliers(self, data):
+    #     """
+    #     Given a list of times, calculates and removes outliers, which are the data points that
+    #     are outside the interquartile range of the data
+    #     :param data: list, reading times for a specific question
+    #     :return: list, reading times for a specific question with outliers removed
+    #     """
+    #     data.sort()
+    #     data_no_outliers = []
+    #     quartile_one = data[math.trunc(len(data) * 0.25)]
+    #     quartile_three = data[math.trunc(len(data) * 0.75)]
+    #     interquartile_range = quartile_three - quartile_one
+    #     lower_fence = quartile_one - (1.5 * interquartile_range)
+    #     upper_fence = quartile_three + (1.5 * interquartile_range)
+    #
+    #     for time in data:
+    #         if (time > lower_fence) or (time < upper_fence):
+    #             data_no_outliers.append(time)
+
+        # return data_no_outliers
 
     def compute_median_view_time(self):
         """

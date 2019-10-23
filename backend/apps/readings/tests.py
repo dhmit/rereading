@@ -58,5 +58,6 @@ class AnalysisTests(TestCase):
         outliers_data_1 = [-100, -50, 1, 2, 3, 4, 5, 100]
         outliers_data_2 = [1, 2, 3, 4, 5]
 
-        remove_outliers(outliers_data_1)
-        self.assertEqual(outliers_data_1, outliers_data_2)
+        outliers_data_3 = remove_outliers(outliers_data_1)
+        print(outliers_data_3)
+        self.assertEqual(outliers_data_3, outliers_data_2)

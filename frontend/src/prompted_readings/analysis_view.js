@@ -75,6 +75,24 @@ SentimentScores.propTypes = {
     sentiment_std: PropTypes.number,
 };
 
+export class MeanReadingTimesForQuestions extends React.Component {
+    render() {
+        return (
+            <div>
+                {this.props.mean_reading_times_for_questions.map((i,k) =>
+                    <p key = {k}>
+                            Question: {i[0]} Context: {i[1]} Mean time without outliers: {i[2]}
+                            Total number of readers: {i[3]}
+                    </p>
+                )}
+            </div>
+        );
+    }
+}
+MeanReadingTimesForQuestions.propTypes = {
+    mean_reading_times_for_questions: PropTypes.array,
+};
+
 export class AnalysisView extends React.Component {
     constructor(props) {
         super(props);
@@ -101,8 +119,6 @@ export class AnalysisView extends React.Component {
     }
 
     render() {
-
-
         if (this.state.analysis !== null) {
             const {  // object destructuring:
                 total_view_time,
@@ -113,18 +129,6 @@ export class AnalysisView extends React.Component {
                 compute_median_view_time,
             } = this.state.analysis;
             return (
-                <div>
-                    <h1>Analysis of Student Responses</h1>
-                    <h3>Total view time</h3>
-                    <p>{total_view_time} seconds</p>
-                    <h3>Mean Reading Time for Questions</h3>
-                    {run_mean_reading_analysis_for_questions.map((i,k) =>
-                        <p key = {k}>
-                            Question: {i[0]} Context: {i[1]} Mean time without outliers: {i[2]}
-                            Total number of readers: {i[3]}
-                        </p>
-                    )}
-                    <p>{compute_median_view_time}</p>
                 <div className={"container"}>
                     <nav className={"navbar navbar-expand-lg"}>
                         <div className={"navbar-nav"}>
@@ -144,6 +148,10 @@ export class AnalysisView extends React.Component {
                     >Analysis of Student Responses</h1>
                     <h1>Total view time</h1>
                     <p>Total view time: {total_view_time} seconds</p>
+                    <h3>Mean Reading Time for Questions</h3>
+                    <MeanReadingTimesForQuestions
+                        mean_reading_times_for_questions={run_mean_reading_analysis_for_questions}
+                    />
                     <h1>Median View Time</h1>
                     <p>Median view time: {compute_median_view_time} seconds</p>
                     <FrequencyFeelingTable feelings={frequency_feelings}/>

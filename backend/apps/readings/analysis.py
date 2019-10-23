@@ -4,7 +4,6 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
 import statistics
-from .models import StudentResponse
 import math
 
 from pathlib import Path
@@ -90,6 +89,29 @@ def get_sentiments() -> dict:
             sentiments[new_word] = score
 
     return sentiments
+
+
+def remove_outliers(data):
+    """
+    Given a list of times, calculates and removes outliers, which are the data points that
+    are outside the interquartile range of the data
+    :param data: list, reading times for a specific question
+    :return: list, reading times for a specific question with outliers removed
+    """
+    data.sort()
+    data_no_outliers = []
+    quartile_one = data[math.trunc(len(data) * 0.25)]
+    quartile_three = data[math.trunc(len(data) * 0.75)]
+    interquartile_range = quartile_three - quartile_one
+    lower_fence = quartile_one - (1.5 * interquartile_range)
+    upper_fence = quartile_three + (1.5 * interquartile_range)
+
+    for time in data:
+        if (time > lower_fence) or (time < upper_fence):
+            data_no_outliers.append(time)
+
+    return data_no_outliers
+
 
 class RereadingAnalysis:
     """
@@ -215,7 +237,6 @@ class RereadingAnalysis:
             if response.context.text not in contexts:
                 contexts.append(response.context.text)
 
-
         mean_reading_time_results_data = []
 
         for question in questions:
@@ -223,6 +244,7 @@ class RereadingAnalysis:
                 mean_reading_time_results_data.append(self.mean_reading_time_for_a_question(
                     question, context))
 
+        print(mean_reading_time_results_data)
         return mean_reading_time_results_data
 
     def mean_reading_time_for_a_question(self, question, context):
@@ -242,8 +264,7 @@ class RereadingAnalysis:
         total_question_view_time = 0
         student_data = self.responses[:]
         for response in student_data:
-            if question != response.question.text or \
-               context != response.context.text:
+            if question != response.question.text or context != response.context.text:
                 continue
             if response.get_parsed_views():
                 number_of_readers += 1
@@ -251,7 +272,7 @@ class RereadingAnalysis:
                 reading_time.append(view_time)
 
         if reading_time:
-            self.remove_outliers(reading_time)
+            remove_outliers(reading_time)
 
         view_time = 0
         while view_time < len(reading_time):
@@ -263,28 +284,6 @@ class RereadingAnalysis:
             mean_time = round(total_question_view_time / len(reading_time), 2)
 
         return [question, context, mean_time, number_of_readers]
-
-    def remove_outliers(self, reading_time):
-        """
-        Given a list of times, calculates and removes outliers, which are the data points that
-        are outside the interquartile range of the data
-        :param reading_time: list, reading times for a specific question
-        :return: list, reading times for a specific question with outliers removed
-        """
-        reading_time.sort()
-        reading_time_no_outliers = []
-        quartile_one = reading_time[math.trunc(len(reading_time) * 0.25)]
-        quartile_three = reading_time[math.trunc(len(reading_time) * 0.75)]
-        interquartile_range = quartile_three - quartile_one
-        lower_fence = quartile_one - (1.5 * interquartile_range)
-        upper_fence = quartile_three + (1.5 * interquartile_range)
-
-        for time in reading_time:
-            if (time > lower_fence) \
-                    or (time < upper_fence):
-                reading_time_no_outliers.append(time)
-
-        return reading_time_no_outliers
 
     def compute_median_view_time(self):
         """

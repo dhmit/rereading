@@ -107,7 +107,7 @@ def remove_outliers(data):
     upper_fence = quartile_three + (1.5 * interquartile_range)
 
     for time in data:
-        if (time > lower_fence) and (time < upper_fence):
+        if (time >= lower_fence) and (time <= upper_fence):
             data_no_outliers.append(time)
 
     return data_no_outliers

@@ -55,6 +55,7 @@ class ContextVsViewTime extends React.Component {
 }
 ContextVsViewTime.propTypes = {
     viewTime: PropTypes.object,
+};
 
 class SentimentScores extends React.Component {
     render() {

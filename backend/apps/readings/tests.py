@@ -49,7 +49,7 @@ class AnalysisTests(TestCase):
         Test for mean_reading_time_for_a_question method of Rereading Analysis
         """
         mean_reading_time_for_a_question = self.analyzer.mean_reading_time_for_a_question("", "")
-        self.assertEqual([], mean_reading_time_for_a_question)
+        self.assertEqual(["", "", 0, 0], mean_reading_time_for_a_question)
 
     def test_remove_outliers(self):
         """

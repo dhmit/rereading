@@ -271,7 +271,7 @@ class RereadingAnalysis:
                 reading_time.append(view_time)
 
         if reading_time:
-            remove_outliers(reading_time)
+            reading_time = remove_outliers(reading_time)
 
         view_time = 0
         while view_time < len(reading_time):

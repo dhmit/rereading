@@ -1,4 +1,25 @@
 import React from "react";
+import PropTypes from "prop-types";
+
+class SentimentScores extends React.Component {
+
+    render() {
+        return (
+            <div>
+                <h3>Average Sentiment Among Students</h3>
+                <h5>Positivity Score:</h5>
+                <p>{this.props.sentiment_average}</p>
+                <h5>Standard Deviation:</h5>
+                <p>{this.props.sentiment_std}</p>
+            </div>
+        );
+    }
+}
+
+SentimentScores.propTypes = {
+    sentiment_average: PropTypes.number,
+    sentiment_std: PropTypes.number,
+};
 
 class AnalysisView extends React.Component {
     constructor(props) {
@@ -29,6 +50,7 @@ class AnalysisView extends React.Component {
         if (this.state.analysis !== null) {
             const {  // object destructuring:
                 total_view_time,
+                question_sentiment_analysis,
                 compute_median_view_time,
             } = this.state.analysis;
 
@@ -53,6 +75,10 @@ class AnalysisView extends React.Component {
                     <h3>Total view time</h3>
                     <p>Total view time: {total_view_time} seconds</p>
                     <p>Median view time: {compute_median_view_time} seconds</p>
+                    <SentimentScores
+                        sentiment_average={question_sentiment_analysis[0]}
+                        sentiment_std={question_sentiment_analysis[1]}
+                    />
                 </div>
             );
         } else {

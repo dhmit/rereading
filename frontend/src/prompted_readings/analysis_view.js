@@ -1,8 +1,63 @@
 import React from "react";
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
-class SentimentScores extends React.Component {
+export class FrequencyFeelingTable extends React.Component {
+    render() {
+        return (
+            <div>
+                <h1>Frequency Feelings</h1>
+                <table border="1" cellPadding="5">
+                    <tbody>
+                        <tr>
+                            <th>Word</th>
+                            <th>Frequency</th>
+                        </tr>
+                        {this.props.feelings.map((el, i) => (
+                            <tr key={i}>
+                                <td>{el[0]}</td><td>{el[1]}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        )
+    }
+}
+FrequencyFeelingTable.propTypes = {
+    feelings: PropTypes.array,
+};
 
+export class ContextVsViewTime extends React.Component {
+    render() {
+        const viewTimesList = Object.entries(this.props.viewTime);
+        const roundedViewTimes = viewTimesList.map(context =>
+            [context[0] , Math.round(context[1] * 1000) / 1000]);
+        return (
+            <div>
+                <h1>Mean View Times of Different Contexts</h1>
+                <table border="1" cellPadding="5">
+                    <tbody>
+                        <tr>
+                            <th>Context</th>
+                            <th>Mean View Time (seconds)</th>
+                        </tr>
+                        {roundedViewTimes.map((context, i) => (
+                            <tr key={i}>
+                                <td>{context[0]}</td>
+                                <td>{context[1]}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        )
+    }
+}
+ContextVsViewTime.propTypes = {
+    viewTime: PropTypes.object,
+};
+
+export class SentimentScores extends React.Component {
     render() {
         return (
             <div>
@@ -15,20 +70,19 @@ class SentimentScores extends React.Component {
         );
     }
 }
-
 SentimentScores.propTypes = {
     sentiment_average: PropTypes.number,
     sentiment_std: PropTypes.number,
 };
 
-class AnalysisView extends React.Component {
+export class AnalysisView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             // we initialize analysis to null, so we can check in render() whether
             // we've received a response from the server yet
             analysis: null,
-        }
+        };
     }
 
     /**
@@ -50,10 +104,11 @@ class AnalysisView extends React.Component {
         if (this.state.analysis !== null) {
             const {  // object destructuring:
                 total_view_time,
+                frequency_feelings,
+                context_vs_read_time,
                 question_sentiment_analysis,
                 compute_median_view_time,
             } = this.state.analysis;
-
             return (
                 <div className={"container"}>
                     <nav className={"navbar navbar-expand-lg"}>
@@ -72,9 +127,14 @@ class AnalysisView extends React.Component {
                         className={"text-center display-4"}
                         id={"page-title"}
                     >Analysis of Student Responses</h1>
-                    <h3>Total view time</h3>
+                    <h1>Total view time</h1>
                     <p>Total view time: {total_view_time} seconds</p>
+                    <h1>Median View Time</h1>
                     <p>Median view time: {compute_median_view_time} seconds</p>
+                    <FrequencyFeelingTable feelings={frequency_feelings}/>
+                    <br/>
+                    <ContextVsViewTime viewTime={context_vs_read_time}/>
+                    <br/>
                     <SentimentScores
                         sentiment_average={question_sentiment_analysis[0]}
                         sentiment_std={question_sentiment_analysis[1]}
@@ -89,4 +149,3 @@ class AnalysisView extends React.Component {
     }
 }
 
-export default AnalysisView;

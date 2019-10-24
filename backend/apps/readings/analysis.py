@@ -316,7 +316,6 @@ class RereadingAnalysis:
             list_of_times.sort()
             median_view_time = statistics.median(list_of_times)
         return median_view_time
-
     def compute_reread_counts(self, question, context):
         """"
         Given a list of student response dicts,
@@ -354,7 +353,10 @@ class RereadingAnalysis:
 
     @property
     def reread_counts(self):
-        questions_and_contexts = [self.questions, self.contexts]
+        question = "In one word, how does this text make you feel?"
+        context = "This is an ad."
+
+        questions_and_contexts = [ self.questions, self.contexts]
 
         question_context_combinations = []
         for element in itertools.product(*questions_and_contexts):
@@ -363,9 +365,9 @@ class RereadingAnalysis:
         counter = 0
         results = {}
         for question_context_combination in question_context_combinations:
-            question, context = question_context_combinations
+            question, context = question_context_combination
             if results.get(question):
-                results[question][context] = self.compute_reread_counts(question, context)
+                results[question][context] =  self.compute_reread_counts(question, context)
             else:  # Initialize question with a dictionary
                 results[question] = {}
                 results[question][context] = self.compute_reread_counts(question, context)

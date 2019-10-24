@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 
 const document = {
     title: "The Pigs",
@@ -59,7 +59,9 @@ const document = {
     ]
 };
 
-class TextSegments extends React.Component {
+
+
+class ReadingView extends React.Component {
 
     constructor(props){
         super(props);
@@ -70,13 +72,14 @@ class TextSegments extends React.Component {
 
     changeSegment (changeNum) {
         const newNum = this.state.segmentNum + changeNum;
-        if (newNum >= 0 && newNum < this.props.data.segments.length){
+        // document will be replaced by actual data
+        if (newNum >= 0 && newNum < document.segments.length){
             this.setState({segmentNum: newNum});
         }
     }
 
     render() {
-        const data = this.props.data;
+        const data = document;
         return (
             <div className={"container"}>
                 <h1>{data.title}</h1>
@@ -85,20 +88,6 @@ class TextSegments extends React.Component {
                 <p>{data.segments[this.state.segmentNum].text}</p>
                 <button onClick = {() => this.changeSegment(-1)}>Back</button>
                 <button onClick = {() => this.changeSegment(1)}>Next</button>
-            </div>
-        )
-    }
-}
-
-TextSegments.propTypes = {
-    data: PropTypes.object,
-};
-
-class ReadingView extends React.Component {
-    render() {
-        return (
-            <div className={"container"}>
-                <TextSegments data={document}/>
             </div>
         );
     }

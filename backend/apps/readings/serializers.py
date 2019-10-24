@@ -51,7 +51,7 @@ class StudentSerializer(serializers.ModelSerializer):
 
         fields = (
             'id',
-            'story',
+            # 'story',
             'student_responses',
         )
 
@@ -103,6 +103,10 @@ class StorySerializer(serializers.ModelSerializer):
 class AnalysisSerializer(serializers.Serializer):
     """ Serializes analysis class """
     total_view_time = serializers.ReadOnlyField()
+    run_mean_reading_analysis_for_questions = serializers.ReadOnlyField()
+    frequency_feelings = serializers.ReadOnlyField()
+    context_vs_read_time = serializers.ReadOnlyField()
+    question_sentiment_analysis = serializers.ReadOnlyField()
     compute_median_view_time = serializers.ReadOnlyField()
     compute_mean_response_length = serializers.ReadOnlyField()
 

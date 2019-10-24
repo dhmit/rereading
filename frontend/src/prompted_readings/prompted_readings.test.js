@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import CommonResponses from './analysis_view';
 import {
     FrequencyFeelingTable,
     ContextVsViewTime,
     SentimentScores,
     MeanReadingTimesForQuestions,
+    CommonResponses,
 } from "./analysis_view";
 
 it('renders without crashing', () => {

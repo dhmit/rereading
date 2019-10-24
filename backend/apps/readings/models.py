@@ -65,6 +65,14 @@ class SegmentQuestion(models.Model):
 
 
 class SegmentQuestionResponse(models.Model):
+    """
+    Response to a SegmentQuestion
+    TODO: This might be a bit half-baked; it currently doesn't conveniently
+          reference the StudentSegmentData. I wanted each segment to be able
+          to have multiple Questions and Contexts, but that adds a bit of
+          complexity to this design... (RA 2019-10-24)
+
+    """
     question = models.ForeignKey(
         SegmentQuestion,
         on_delete=models.CASCADE,

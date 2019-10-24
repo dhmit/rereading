@@ -1,6 +1,25 @@
 import React from "react";
 import PropTypes from 'prop-types';
 
+class SingleValueAnalysis extends React.Component {
+    render() {
+        return(
+            <div>
+                <strong>{this.props.header} :</strong>
+                <p className={"d-block d-md-inline"}> {this.props.value} {this.props.unit}</p>
+            </div>
+        );
+    }
+}
+SingleValueAnalysis.propTypes = {
+    header: PropTypes.string,
+    value: PropTypes.oneOfType([
+        PropTypes.number,
+        PropTypes.string,
+    ]),
+    unit: PropTypes.string,
+};
+
 export class FrequencyFeelingTable extends React.Component {
     render() {
         return (
@@ -20,7 +39,7 @@ export class FrequencyFeelingTable extends React.Component {
                     </tbody>
                 </table>
             </div>
-        )
+        );
     }
 }
 FrequencyFeelingTable.propTypes = {
@@ -62,10 +81,15 @@ export class SentimentScores extends React.Component {
         return (
             <div>
                 <h3>Average Sentiment Among Students</h3>
-                <h5>Positivity Score:</h5>
-                <p>{this.props.sentiment_average}</p>
-                <h5>Standard Deviation:</h5>
-                <p>{this.props.sentiment_std}</p>
+                <SingleValueAnalysis
+                    header = {"Positivity Score"}
+                    value = {this.props.sentiment_average}
+                />
+
+                <SingleValueAnalysis
+                    header = {"Standard Deviation:"}
+                    value = {this.props.sentiment_std}
+                />
             </div>
         );
     }
@@ -147,18 +171,27 @@ export class AnalysisView extends React.Component {
                         id={"page-title"}
                     >Analysis of Student Responses</h1>
                     <h1>Total view time</h1>
-                    <p>Total view time: {total_view_time} seconds</p>
+                    <SingleValueAnalysis
+                        header = {"Total view time"}
+                        value = {total_view_time}
+                        unit = {"seconds"}
+                    />
                     <h3>Mean Reading Time for Questions</h3>
                     <MeanReadingTimesForQuestions
                         mean_reading_times_for_questions={run_mean_reading_analysis_for_questions}
                     />
                     <h1>Median View Time</h1>
-                    <p>Median view time: {compute_median_view_time} seconds</p>
+                    <SingleValueAnalysis
+                        header = {"Median view time"}
+                        value = {compute_median_view_time}
+                        unit = {"seconds"}
+                    />
                     <FrequencyFeelingTable feelings={frequency_feelings}/>
                     <br/>
                     <ContextVsViewTime viewTime={context_vs_read_time}/>
                     <br/>
                     <SentimentScores
+
                         sentiment_average={question_sentiment_analysis[0]}
                         sentiment_std={question_sentiment_analysis[1]}
                     />

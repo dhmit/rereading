@@ -453,13 +453,12 @@ def mean_view_time_comparison(student_data):
     negative_responses = 0
     neutral_responses = 0
     positive_responses = 0
-
     # iterates through all responses in student_data
     for response_dict in student_data:
         if (response_dict['question'] == 'In three words or fewer, what is this text about?') \
                 and (response_dict['context'] == 'This is an ad.'):
             response: str = response_dict['response'].lower()
-            dict_sentiments= get_sentiments()
+            dict_sentiments = get_sentiments()
             response_list = response.split()
             response_sentiment_list = []
             for word in response_list:
@@ -468,8 +467,9 @@ def mean_view_time_comparison(student_data):
                 else:
                     response_sentiment_list.append(0)
             sentiment_score = max(response_sentiment_list, key=abs)
+            print(sentiment_score)
             if sentiment_score < 0:
-                negative_responses +=1
+                negative_responses += 1
                 negative_total_view_time += sum(response_dict['views'])
             elif sentiment_score > 0:
                 positive_responses += 1
@@ -477,7 +477,6 @@ def mean_view_time_comparison(student_data):
             else:
                 neutral_responses += 1
                 neutral_total_view_time += sum(response_dict['views'])
-
     if negative_responses == 0:
         negative_mean_view_time = 0
     else:
@@ -490,9 +489,6 @@ def mean_view_time_comparison(student_data):
         neutral_mean_view_time = 0
     else:
         neutral_mean_view_time = neutral_total_view_time / neutral_responses
-    print(negative_responses)
-    print(neutral_responses)
-    print(positive_responses)
     return negative_mean_view_time, neutral_mean_view_time, positive_mean_view_time
 
 
@@ -618,7 +614,6 @@ def run_analysis():
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
     mean_view_time_comparison(student_data)
-
     reread_counts = compute_reread_counts(student_data, "In one word", "ad")
     print("Number of times students reread text based on question or context:\n")
     print(reread_counts)
@@ -1229,12 +1224,14 @@ class TestAnalysisMethods(unittest.TestCase):
         Tests mean_view_time_comparison function with two data sets. The first is specific to
         our function and the second is generic and just an empty set. It tests that it correctly
         calculates the mean and doesn't break when dividing by 0.
+        Comment: this Function uses the Sentiment dictionary, such that 'miscarriage' is considered
+        a neutral response and 'Giving up hope' is considered a positive response
         :return:
         """
         total_mean_view_time_comparison = mean_view_time_comparison(self.default_student_data_3)
-        self.assertEqual((.73625, .3807), total_mean_view_time_comparison)
+        self.assertEqual((0.0, 0.9645714285714285, 0.0), total_mean_view_time_comparison)
         total_mean_view_time_comparison = mean_view_time_comparison(self.default_student_data)
-        self.assertEqual((0, 0), total_mean_view_time_comparison)
+        self.assertEqual((0, 0, 0), total_mean_view_time_comparison)
 
     def test_extract_responses_by_context(self):
         """

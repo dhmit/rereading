@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import CommonResponses from './analysis_view';
-import App from './student_view';
 import {
     FrequencyFeelingTable,
     ContextVsViewTime,

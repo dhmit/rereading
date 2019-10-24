@@ -4,11 +4,8 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
 import statistics
-from collections import Counter
-
-from .models import StudentResponse
 import math
-
+from collections import Counter
 from pathlib import Path
 
 from config.settings.base import PROJECT_ROOT

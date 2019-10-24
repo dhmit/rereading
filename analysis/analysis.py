@@ -193,7 +193,7 @@ def get_sentiments() -> dict:
             # This is not optimal, but standardizes data
             if new_word in sentiments:
                 if abs(sentiments[new_word]) > abs(positive_score) and abs(sentiments[new_word]) > \
-                    abs(negative_score):
+                                    abs(negative_score):
                     word = file.readline()
                     continue
 
@@ -390,7 +390,7 @@ def get_word_frequency_differences(student_data):
 
     for response in student_data:
         if 'Have you encountered this text before' in response['question'] \
-            and 'This is an ad.' in response['context']:
+                            and 'This is an ad.' in response['context']:
             if 'yes' not in response['response'].lower():
                 no_id.append(response['student_id'])
             else:
@@ -579,7 +579,7 @@ def percent_students_using_relevant_words(student_data, target_context, relevant
     total_students = 0
     for row in student_data:
         if (row.get('context') == target_context and
-            row.get('question') == 'In three words or fewer, what is this text about?'):
+                row.get('question') == 'In three words or fewer, what is this text about?'):
             total_students += 1
             if description_has_relevant_words(row.get('response'), relevant_words):
                 number_of_students_using_relevant_words += 1
@@ -813,7 +813,7 @@ def mean_reading_time_for_a_question(student_data, question, context):
 
     for student_data_dictionary in student_data:
         if question != student_data_dictionary['question'] or \
-            context != student_data_dictionary['context']:
+                context != student_data_dictionary['context']:
             continue
         if len(student_data_dictionary['views']) != 0:
             number_of_readers += 1
@@ -852,7 +852,7 @@ def remove_outliers(reading_time):
     view_time_two = 0
     while view_time_two < len(reading_time):
         if (reading_time[view_time_two] < lower_fence) \
-            or (reading_time[view_time_two] > upper_fence):
+                                or (reading_time[view_time_two] > upper_fence):
             reading_time.remove(reading_time[view_time_two])
             view_time_two -= 1
         else:

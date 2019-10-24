@@ -8,7 +8,6 @@ import statistics
 import math
 
 from pathlib import Path
-from .models import StudentResponse
 from config.settings.base import PROJECT_ROOT
 from .models import StudentResponse, Context
 
@@ -138,7 +137,6 @@ class RereadingAnalysis:
         for response in self.responses:
             for view_time in response.get_parsed_views():
                 total_view_time += view_time
-        return round(total_view_time, 2)
         return round(total_view_time)
 
     def frequency_feelings(self):

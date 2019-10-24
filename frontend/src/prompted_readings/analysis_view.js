@@ -185,6 +185,7 @@ export class AnalysisView extends React.Component {
                     />
                     <h1>Median View Time</h1>
                     <p>Median view time: {compute_median_view_time} seconds</p>
+                    <CommonResponses responses={all_responses} />
                     <FrequencyFeelingTable feelings={frequency_feelings}/>
                     <br/>
                     <ContextVsViewTime viewTime={context_vs_read_time}/>
@@ -193,7 +194,7 @@ export class AnalysisView extends React.Component {
                         sentiment_average={question_sentiment_analysis[0]}
                         sentiment_std={question_sentiment_analysis[1]}
                     />
-                    <CommonResponses responses={all_responses} />
+
                 </div>
             );
         } else {

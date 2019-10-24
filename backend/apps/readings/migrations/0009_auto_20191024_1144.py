@@ -5,6 +5,9 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
+    # For sqlite -- prevent from running in a transaction bc that breaks the renaming
+    # see https://docs.djangoproject.com/en/2.2/howto/writing-migrations/#non-atomic-migrations
+    atomic = False
 
     dependencies = [
         ('readings', '0008_auto_20191004_1339'),

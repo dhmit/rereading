@@ -11,6 +11,19 @@ from .analysis import RereadingAnalysis
 from .serializers import StorySerializer, StudentSerializer, AnalysisSerializer
 
 
+@api_view(['GET'])
+def reading_view(request, doc_id):
+    """
+    Send a document with its associated segments, questions, prompts, etc.
+    to the frontend
+    """
+    # TODO(ra): implement me!
+
+
+################################################################################
+# Prototype views
+# The API endpoints below were for the prototype from summer 2019
+################################################################################
 class ListStudent(generics.ListCreateAPIView):
     """ View a list of students of create a new one """
     queryset = Student.objects.all()

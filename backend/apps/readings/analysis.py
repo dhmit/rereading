@@ -4,6 +4,8 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
 import statistics
+import math
+
 from pathlib import Path
 
 from config.settings.base import PROJECT_ROOT
@@ -87,6 +89,28 @@ def get_sentiments() -> dict:
             sentiments[new_word] = score
 
     return sentiments
+
+
+def remove_outliers(data):
+    """
+    Given a list of times, calculates and removes outliers, which are the data points that
+    are outside the interquartile range of the data
+    :param data: list, reading times for a specific question
+    :return: list, reading times for a specific question with outliers removed
+    """
+    data.sort()
+    data_no_outliers = []
+    quartile_one = data[math.trunc(len(data) * 0.25)]
+    quartile_three = data[math.trunc(len(data) * 0.75)]
+    interquartile_range = quartile_three - quartile_one
+    lower_fence = quartile_one - (1.5 * interquartile_range)
+    upper_fence = quartile_three + (1.5 * interquartile_range)
+
+    for time in data:
+        if (time >= lower_fence) and (time <= upper_fence):
+            data_no_outliers.append(time)
+
+    return data_no_outliers
 
 
 class RereadingAnalysis:
@@ -194,6 +218,71 @@ class RereadingAnalysis:
         standard_dev = statistics.stdev(score_list)
 
         return average, standard_dev
+
+    @property
+    def run_mean_reading_analysis_for_questions(self):
+        """
+        Runs the analysis on the data loaded from the CSV file by looking at the average
+        read time for each question and the context that the question was given in and
+        prints it in a nice readable format.
+        :return: the info wed like to put on js
+        """
+
+        questions = []
+        contexts = []
+        student_data = self.responses[:]
+        for response in student_data:
+            if response.question.text not in questions:
+                questions.append(response.question.text)
+            if response.context.text not in contexts:
+                contexts.append(response.context.text)
+
+        mean_reading_time_results_data = []
+
+        for question in questions:
+            for context in contexts:
+                mean_reading_time_results_data.append(self.mean_reading_time_for_a_question(
+                    question, context))
+
+        return mean_reading_time_results_data
+
+    def mean_reading_time_for_a_question(self, question, context):
+        """
+        Given the student response dicts, computes the mean read time for a
+        specific question (given by its keyword) and the context in which it was asked.
+        Returns the question, context, mean read time, and number of people who read.
+        :param question: string, to determine which question was being asked
+        :param context: string, what the reader thought the reading was
+        :return: tuple, in order of the question asked (full question), the context,
+        the mean read time, and the number of people who read it
+        """
+        mean_time = 0
+        number_of_readers = 0
+        question_count = 0
+        reading_time = []
+        total_question_view_time = 0
+        student_data = self.responses[:]
+        for response in student_data:
+            if question != response.question.text or context != response.context.text:
+                continue
+            if response.get_parsed_views():
+                number_of_readers += 1
+            for view_time in response.get_parsed_views():
+                reading_time.append(view_time)
+
+        if reading_time:
+            reading_time = remove_outliers(reading_time)
+
+        view_time = 0
+        while view_time < len(reading_time):
+            question_count += 1
+            total_question_view_time += reading_time[view_time]
+            view_time += 1
+
+        if reading_time:
+            mean_time = round(total_question_view_time / len(reading_time), 2)
+
+        return [question, context, mean_time, number_of_readers]
 
     def compute_median_view_time(self):
         """

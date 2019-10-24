@@ -75,6 +75,24 @@ SentimentScores.propTypes = {
     sentiment_std: PropTypes.number,
 };
 
+export class MeanReadingTimesForQuestions extends React.Component {
+    render() {
+        return (
+            <div>
+                {this.props.mean_reading_times_for_questions.map((i,k) =>
+                    <p key = {k}>
+                            Question: {i[0]} Context: {i[1]} Mean time without outliers: {i[2]}
+                            Total number of readers: {i[3]}
+                    </p>
+                )}
+            </div>
+        );
+    }
+}
+MeanReadingTimesForQuestions.propTypes = {
+    mean_reading_times_for_questions: PropTypes.array,
+};
+
 export class AnalysisView extends React.Component {
     constructor(props) {
         super(props);
@@ -104,6 +122,7 @@ export class AnalysisView extends React.Component {
         if (this.state.analysis !== null) {
             const {  // object destructuring:
                 total_view_time,
+                run_mean_reading_analysis_for_questions,
                 frequency_feelings,
                 context_vs_read_time,
                 question_sentiment_analysis,
@@ -129,6 +148,10 @@ export class AnalysisView extends React.Component {
                     >Analysis of Student Responses</h1>
                     <h1>Total view time</h1>
                     <p>Total view time: {total_view_time} seconds</p>
+                    <h3>Mean Reading Time for Questions</h3>
+                    <MeanReadingTimesForQuestions
+                        mean_reading_times_for_questions={run_mean_reading_analysis_for_questions}
+                    />
                     <h1>Median View Time</h1>
                     <p>Median view time: {compute_median_view_time} seconds</p>
                     <FrequencyFeelingTable feelings={frequency_feelings}/>
@@ -148,4 +171,3 @@ export class AnalysisView extends React.Component {
         }
     }
 }
-

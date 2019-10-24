@@ -6,45 +6,42 @@ from ast import literal_eval
 from django.db import models
 
 
-class Story(models.Model):
+class Document(models.Model):
     """
-    A single story with its text.
+    A single document (story, novel, etc.) for reading.
+    This model holds the metadata for the story.
+    The text itself is stored in the Segment model, which holds
+    one text segment and its sequence within the document.
     """
-    story_text = models.TextField()
-
-    def __str___(self):
-        return self.story_text
-
-
-class Context(models.Model):
-    """
-    The Context in which a story is read.
-    """
-    text = models.TextField()
-    story = models.ForeignKey(
-        Story,
-        on_delete=models.CASCADE,
-        related_name='contexts',
+    title = models.CharField(
+        max_length=255,
     )
 
-    def __str__(self):
-        return self.text
-
-
-class Question(models.Model):
-    """
-    A question about a Story.
-    """
-    text = models.TextField()
-    word_limit = models.IntegerField()
-    story = models.ForeignKey(
-        Story,
-        on_delete=models.CASCADE,
-        related_name='questions',
+    author = models.CharField(
+        blank=True,
+        max_length=255,
     )
 
-    def __str__(self):
-        return self.text
+
+class Segment(models.Model):
+    """
+    A segment of a Document.
+    """
+    text = models.TextField(default='')
+    sequence = models.IntegerField()  # position of this segment in the doc
+
+    document = models.ForeignKey(
+        Document,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name='segments',
+    )
+
+    class Meta:
+        # see: https://docs.djangoproject.com/en/2.2/ref/models/options/#unique-together
+        unique_together = [
+            ['document', 'sequence'],
+        ]
 
 
 class Student(models.Model):
@@ -54,20 +51,159 @@ class Student(models.Model):
     name = models.TextField(default='')
 
 
-class StudentResponse(models.Model):
+class SegmentQuestion(models.Model):
     """
-    The response of a student to a question given a context.
+    A model that represents a question about a given segment
+    """
+    text = models.TextField()
+    response_word_limit = models.IntegerField()
+    segment = models.ForeignKey(
+        Segment,
+        on_delete=models.CASCADE,
+        related_name='questions'
+    )
 
-    TODO(msc): why are these not links to other models?
+
+class SegmentQuestionResponse(models.Model):
+    """
+    Response to a SegmentQuestion
+    TODO: This might be a bit half-baked; it currently doesn't conveniently
+          reference the StudentSegmentData. I wanted each segment to be able
+          to have multiple Questions and Contexts, but that adds a bit of
+          complexity to this design... (RA 2019-10-24)
+
     """
     question = models.ForeignKey(
-        Question,
+        SegmentQuestion,
+        on_delete=models.CASCADE,
+        related_name='responses'
+    )
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,
+    )
+    response = models.TextField(blank=True)
+
+
+class SegmentContext(models.Model):
+    """
+    A model representing a given context provided to a document segment
+    """
+    text = models.TextField()
+    segment = models.ForeignKey(
+        Segment,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name='contexts'
+    )
+
+
+class StudentReadingData(models.Model):
+    """
+    A model to capture the data for a single reading by a student
+    """
+    student = models.ForeignKey(
+        Student,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name='reading_data'
+    )
+
+    document = models.ForeignKey(
+        Document,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name='reading_data'
+    )
+
+
+class StudentSegmentData(models.Model):
+    """
+    A model to capture data per segment (timing, scrolls, etc.)
+    """
+    segment = models.ForeignKey(
+        Segment,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name='segment_data'
+    )
+
+    reading_data = models.ForeignKey(
+        StudentReadingData,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name='segment_data'
+    )
+    views = models.TextField(default='[]')
+    scroll_ups = models.IntegerField(default=0)
+
+    def get_parsed_views(self):
+        """
+        Views are stored as a string representing JSON data, so it needs to be converted
+        into a Python object before much can be done with it.
+        """
+
+        return literal_eval(self.views)
+
+
+################################################################################
+# PROTOTYPING MODELS
+# The models below were in use for the summer prototype and initial development
+# of the rereading app.
+################################################################################
+class StoryPrototype(models.Model):
+    """
+    A single story with its text.
+    """
+    story_text = models.TextField()
+
+    def __str___(self):
+        return self.story_text
+
+
+class ContextPrototype(models.Model):
+    """
+    The Context in which a story is read.
+    """
+    text = models.TextField()
+    story = models.ForeignKey(
+        StoryPrototype,
+        on_delete=models.CASCADE,
+        related_name='contexts',
+    )
+
+    def __str__(self):
+        return self.text
+
+
+class QuestionPrototype(models.Model):
+    """
+    A question about a Story.
+    """
+    text = models.TextField()
+    word_limit = models.IntegerField()
+    story = models.ForeignKey(
+        StoryPrototype,
+        on_delete=models.CASCADE,
+        related_name='questions',
+    )
+
+    def __str__(self):
+        return self.text
+
+
+class StudentResponsePrototype(models.Model):
+    """
+    The response of a student to a question given a context.
+    """
+    question = models.ForeignKey(
+        QuestionPrototype,
         null=True,
         on_delete=models.SET_NULL,
         related_name='student_responses',
     )
     context = models.ForeignKey(
-        Context,
+        ContextPrototype,
         null=True,
         on_delete=models.SET_NULL,
         related_name='student_responses',

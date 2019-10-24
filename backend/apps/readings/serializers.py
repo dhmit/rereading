@@ -110,6 +110,7 @@ class StorySerializer(serializers.ModelSerializer):
 class AnalysisSerializer(serializers.Serializer):
     """ Serializes analysis class """
     total_view_time = serializers.ReadOnlyField()
+    all_responses = serializers.ReadOnlyField()
     run_mean_reading_analysis_for_questions = serializers.ReadOnlyField()
     frequency_feelings = serializers.ReadOnlyField()
     context_vs_read_time = serializers.ReadOnlyField()

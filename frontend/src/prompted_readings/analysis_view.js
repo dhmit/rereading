@@ -79,12 +79,24 @@ export class MeanReadingTimesForQuestions extends React.Component {
     render() {
         return (
             <div>
-                {this.props.mean_reading_times_for_questions.map((i,k) =>
-                    <p key = {k}>
-                            Question: {i[0]} Context: {i[1]} Mean time without outliers: {i[2]}
-                            Total number of readers: {i[3]}
-                    </p>
-                )}
+                <table border="1" cellPadding="5">
+                    <tbody>
+                        <tr>
+                            <th>Question</th>
+                            <th>Context</th>
+                            <th>Mean Time (s)</th>
+                            <th>Readers</th>
+                        </tr>
+                        {this.props.mean_reading_times_for_questions.map((i,k) =>
+                            <tr key = {k}>
+                                <td>{i[0]}</td>
+                                <td>{i[1]}</td>
+                                <td>{i[2]}</td>
+                                <td>{i[3]}</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
             </div>
         );
     }

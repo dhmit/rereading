@@ -10,6 +10,11 @@ from .models import (
 )
 
 
+################################################################################
+# Prototyping Serializers
+# Serializers below were for the summer prototype
+# and initial analysis prototyping
+################################################################################
 class StudentResponseSerializer(serializers.ModelSerializer):
     """
     A serializer makes it possible to view a database Django model

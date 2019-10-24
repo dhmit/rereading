@@ -9,7 +9,7 @@ from django.db import models
 class Document(models.Model):
     """
     A single document (story, novel, etc.) for reading.
-    This model holds the _metadata_ for the story.
+    This model holds the metadata for the story.
     The text itself is stored in the Segment model, which holds
     one text segment and its sequence within the document.
     """
@@ -28,7 +28,7 @@ class Segment(models.Model):
     A segment of a Document.
     """
     text = models.TextField(default='')
-    sequence = models.IntegerField()
+    sequence = models.IntegerField()  # position of this segment in the doc
 
     document = models.ForeignKey(
         Document,
@@ -37,33 +37,11 @@ class Segment(models.Model):
         related_name='segments',
     )
 
-
-class SegmentQuestion(models.Model):
-    """
-    A model that represents a question about a given segment
-    """
-
-    text = models.TextField()
-    response_word_limit = models.IntegerField()
-    segment = models.ForeignKey(
-        Segment,
-        on_delete=models.CASCADE,
-        related_name='questions'
-    )
-
-
-class SegmentContext(models.Model):
-    """
-    A model representing a given context provided to a document segment
-    """
-
-    text = models.TextField()
-    segment = models.ForeignKey(
-        Segment,
-        null=False,
-        on_delete=models.CASCADE,
-        related_name='contexts'
-    )
+    class Meta:
+        # see: https://docs.djangoproject.com/en/2.2/ref/models/options/#unique-together
+        unique_together = [
+            ['document', 'sequence'],
+        ]
 
 
 class Student(models.Model):
@@ -73,11 +51,49 @@ class Student(models.Model):
     name = models.TextField(default='')
 
 
+class SegmentQuestion(models.Model):
+    """
+    A model that represents a question about a given segment
+    """
+    text = models.TextField()
+    response_word_limit = models.IntegerField()
+    segment = models.ForeignKey(
+        Segment,
+        on_delete=models.CASCADE,
+        related_name='questions'
+    )
+
+
+class SegmentQuestionResponse(models.Model):
+    question = models.ForeignKey(
+        SegmentQuestion,
+        on_delete=models.CASCADE,
+        related_name='responses'
+    )
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,
+    )
+    response = models.TextField(blank=True)
+
+
+class SegmentContext(models.Model):
+    """
+    A model representing a given context provided to a document segment
+    """
+    text = models.TextField()
+    segment = models.ForeignKey(
+        Segment,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name='contexts'
+    )
+
+
 class StudentReadingData(models.Model):
     """
     A model to capture the data for a single reading by a student
     """
-
     student = models.ForeignKey(
         Student,
         null=False,
@@ -97,16 +113,8 @@ class StudentSegmentData(models.Model):
     """
     A model to capture data per segment (timing, scrolls, etc.)
     """
-
-    question = models.ForeignKey(
-        SegmentQuestion,
-        null=False,
-        on_delete=models.CASCADE,
-        related_name='segment_data'
-    )
-
-    context = models.ForeignKey(
-        SegmentContext,
+    segment = models.ForeignKey(
+        Segment,
         null=False,
         on_delete=models.CASCADE,
         related_name='segment_data'
@@ -118,15 +126,6 @@ class StudentSegmentData(models.Model):
         on_delete=models.CASCADE,
         related_name='segment_data'
     )
-
-    segment = models.ForeignKey(
-        Segment,
-        null=False,
-        on_delete=models.CASCADE,
-        related_name='segment_data'
-    )
-
-    response = models.TextField(default='')
     views = models.TextField(default='[]')
     scroll_ups = models.IntegerField(default=0)
 

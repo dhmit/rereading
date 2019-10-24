@@ -63,7 +63,7 @@ ContextVsViewTime.propTypes = {
 
 export class RereadCountsAnalysis extends React.Component {
     render() {
-        const compute_reread_counts = Object.entries(this.props.compute_reread_counts);
+        const get_reread_counts = Object.entries(this.props.reread_counts);
         return (
             <div>
                 <h1>Analysis of Reread Counts</h1>
@@ -80,23 +80,23 @@ export class RereadCountsAnalysis extends React.Component {
                         </tr>
                         <tr>
                             <th>{self.context[0]}</th>
-                            <td>{compute_reread_counts(self.questions[0],self.contexts[0])[0]}</td>
-                            <td>{compute_reread_counts(self.questions[0],self.contexts[0])[1]}</td>
-                            <td>{compute_reread_counts(self.questions[0],self.contexts[0])[2]}</td>
-                            <td>{compute_reread_counts(self.questions[0],self.contexts[0])[3]}</td>
-                            <td>{compute_reread_counts(self.questions[0],self.contexts[0])[4]}</td>
-                            <td>{compute_reread_counts(self.questions[0],self.contexts[0])[5]}</td>
-                            <td>{compute_reread_counts(self.questions[0],self.contexts[0])[6]}</td>
+                            <td>{get_reread_counts(self.questions[0],self.contexts[0])[0]}</td>
+                            <td>{get_reread_counts(self.questions[0],self.contexts[0])[1]}</td>
+                            <td>{get_reread_counts(self.questions[0],self.contexts[0])[2]}</td>
+                            <td>{get_reread_counts(self.questions[0],self.contexts[0])[3]}</td>
+                            <td>{get_reread_counts(self.questions[0],self.contexts[0])[4]}</td>
+                            <td>{get_reread_counts(self.questions[0],self.contexts[0])[5]}</td>
+                            <td>{get_reread_counts(self.questions[0],self.contexts[0])[6]}</td>
                         </tr>
                         <tr>
                             <th>{self.context[1]}</th>
-                            <td>{compute_reread_counts(self.questions[0],self.contexts[1])[0]}</td>
-                            <td>{compute_reread_counts(self.questions[0],self.contexts[1])[1]}</td>
-                            <td>{compute_reread_counts(self.questions[0],self.contexts[1])[2]}</td>
-                            <td>{compute_reread_counts(self.questions[0],self.contexts[1])[3]}</td>
-                            <td>{compute_reread_counts(self.questions[0],self.contexts[1])[4]}</td>
-                            <td>{compute_reread_counts(self.questions[0],self.contexts[1])[5]}</td>
-                            <td>{compute_reread_counts(self.questions[0],self.contexts[1])[6]}</td>
+                            <td>{get_reread_counts(self.questions[0],self.contexts[1])[0]}</td>
+                            <td>{get_reread_counts(self.questions[0],self.contexts[1])[1]}</td>
+                            <td>{get_reread_counts(self.questions[0],self.contexts[1])[2]}</td>
+                            <td>{get_reread_counts(self.questions[0],self.contexts[1])[3]}</td>
+                            <td>{get_reread_counts(self.questions[0],self.contexts[1])[4]}</td>
+                            <td>{get_reread_counts(self.questions[0],self.contexts[1])[5]}</td>
+                            <td>{get_reread_counts(self.questions[0],self.contexts[1])[6]}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -105,7 +105,7 @@ export class RereadCountsAnalysis extends React.Component {
     }
 }
 RereadCountsAnalysis.propTypes = {
-    compute_reread_counts: PropTypes.object,
+    reread_counts: PropTypes.object,
 };
 
 

@@ -38,6 +38,34 @@ class Segment(models.Model):
     )
 
 
+class SegmentQuestion(models.Model):
+    """
+    A model that represents a question about a given segment
+    """
+
+    text = models.TextField()
+    response_word_limit = models.IntegerField()
+    segment = models.ForeignKey(
+        Segment,
+        on_delete=models.CASCADE,
+        related_name='questions'
+    )
+
+
+class SegmentContext(models.Model):
+    """
+    A model representing a given context provided to a document segment
+    """
+
+    text = models.TextField()
+    segment = models.ForeignKey(
+        Segment,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name='contexts'
+    )
+
+
 class Student(models.Model):
     """
     A user who reads stories and responds to questions.
@@ -50,10 +78,65 @@ class StudentReadingData(models.Model):
     A model to capture the data for a single reading by a student
     """
 
+    student = models.ForeignKey(
+        Student,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name='reading_data'
+    )
+
+    document = models.ForeignKey(
+        Document,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name='reading_data'
+    )
+
+
 class StudentSegmentData(models.Model):
     """
     A model to capture data per segment (timing, scrolls, etc.)
     """
+
+    question = models.ForeignKey(
+        SegmentQuestion,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name='segment_data'
+    )
+
+    context = models.ForeignKey(
+        SegmentContext,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name='segment_data'
+    )
+
+    reading_data = models.ForeignKey(
+        StudentReadingData,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name='segment_data'
+    )
+
+    segment = models.ForeignKey(
+        Segment,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name='segment_data'
+    )
+
+    response = models.TextField(default='')
+    views = models.TextField(default='[]')
+    scroll_ups = models.IntegerField(default=0)
+
+    def get_parsed_views(self):
+        """
+        Views are stored as a string representing JSON data, so it needs to be converted
+        into a Python object before much can be done with it.
+        """
+
+        return literal_eval(self.views)
 
 
 ################################################################################

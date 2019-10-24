@@ -203,5 +203,3 @@ export class AnalysisView extends React.Component {
         }
     }
 }
-
-export default AnalysisView;

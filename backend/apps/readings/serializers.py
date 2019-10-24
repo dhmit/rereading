@@ -5,7 +5,9 @@ allow the frontend to suggest changes to the backend/database.
 """
 from rest_framework import serializers
 
-from .models import Story, Question, Context, Student, StudentResponse
+from .models import (
+    StoryPrototype, QuestionPrototype, ContextPrototype, Student, StudentResponsePrototype
+)
 
 
 class StudentResponseSerializer(serializers.ModelSerializer):
@@ -14,7 +16,7 @@ class StudentResponseSerializer(serializers.ModelSerializer):
     on the web, such as React
     """
     class Meta:
-        model = StudentResponse
+        model = StudentResponsePrototype
 
         fields = (
             'id',
@@ -42,7 +44,7 @@ class StudentSerializer(serializers.ModelSerializer):
         responses_data = validated_data.pop('student_responses')
         student = Student.objects.create(**validated_data)
         for response_data in responses_data:
-            StudentResponse.objects.create(student=student, **response_data)
+            StudentResponsePrototype.objects.create(student=student, **response_data)
 
         return student
 
@@ -61,7 +63,7 @@ class QuestionSerializer(serializers.ModelSerializer):
     Serializes a Question object.
     """
     class Meta:
-        model = Question
+        model = QuestionPrototype
 
         fields = (
             'id',
@@ -75,7 +77,7 @@ class ContextSerializer(serializers.ModelSerializer):
     Serializes a Context object.
     """
     class Meta:
-        model = Context
+        model = ContextPrototype
 
         fields = (
             'id',
@@ -91,7 +93,7 @@ class StorySerializer(serializers.ModelSerializer):
     questions = QuestionSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Story
+        model = StoryPrototype
         fields = (
             'id',
             'story_text',

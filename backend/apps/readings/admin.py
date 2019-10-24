@@ -4,11 +4,13 @@ Rereading project's "readings" app.
 """
 
 from django.contrib import admin
-from .models import Story, Context, Question, Student, StudentResponse
+from .models import (
+    StoryPrototype, ContextPrototype, QuestionPrototype, Student, StudentResponsePrototype
+)
 
 
 class StudentResponseInline(admin.TabularInline):
-    model = StudentResponse
+    model = StudentResponsePrototype
     extra = 1
 
 
@@ -18,22 +20,22 @@ class StudentAdmin(admin.ModelAdmin):
 
 
 class QuestionInline(admin.TabularInline):
-    model = Question
+    model = QuestionPrototype
     extra = 1
 
 
 class ContextInline(admin.TabularInline):
-    model = Context
+    model = ContextPrototype
     extra = 1
 
 
 class StoryAdmin(admin.ModelAdmin):
-    model = Story
+    model = StoryPrototype
     inlines = [ContextInline, QuestionInline]
 
 
-admin.site.register(Story, StoryAdmin)
+admin.site.register(StoryPrototype, StoryAdmin)
 admin.site.register(Student, StudentAdmin)
-admin.site.register(StudentResponse)
-admin.site.register(Context)
-admin.site.register(Question)
+admin.site.register(StudentResponsePrototype)
+admin.site.register(ContextPrototype)
+admin.site.register(QuestionPrototype)

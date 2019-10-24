@@ -6,45 +6,36 @@ from ast import literal_eval
 from django.db import models
 
 
-class Story(models.Model):
+class Document(models.Model):
     """
-    A single story with its text.
+    A single document (story, novel, etc.) for reading.
+    This model holds the _metadata_ for the story.
+    The text itself is stored in the Segment model, which holds
+    one text segment and its sequence within the document.
     """
-    story_text = models.TextField()
-
-    def __str___(self):
-        return self.story_text
-
-
-class Context(models.Model):
-    """
-    The Context in which a story is read.
-    """
-    text = models.TextField()
-    story = models.ForeignKey(
-        Story,
-        on_delete=models.CASCADE,
-        related_name='contexts',
+    title = models.CharField(
+        max_length=255,
     )
 
-    def __str__(self):
-        return self.text
-
-
-class Question(models.Model):
-    """
-    A question about a Story.
-    """
-    text = models.TextField()
-    word_limit = models.IntegerField()
-    story = models.ForeignKey(
-        Story,
-        on_delete=models.CASCADE,
-        related_name='questions',
+    author = models.CharField(
+        blank=True,
+        max_length=255,
     )
 
-    def __str__(self):
-        return self.text
+
+class Segment(models.Model):
+    """
+    A segment of a Document.
+    """
+    text = models.TextField(default='')
+    sequence = models.IntegerField()
+
+    document = models.ForeignKey(
+        Document,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name='segments',
+    )
 
 
 class Student(models.Model):
@@ -54,20 +45,75 @@ class Student(models.Model):
     name = models.TextField(default='')
 
 
-class StudentResponse(models.Model):
+class StudentReadingData(models.Model):
+    """
+    A model to capture the data for a single reading by a student
+    """
+
+class StudentSegmentData(models.Model):
+    """
+    A model to capture data per segment (timing, scrolls, etc.)
+    """
+
+
+################################################################################
+# PROTOTYPING MODELS
+# The models below were in use for the summer prototype and initial development
+# of the rereading app.
+################################################################################
+class StoryPrototype(models.Model):
+    """
+    A single story with its text.
+    """
+    story_text = models.TextField()
+
+    def __str___(self):
+        return self.story_text
+
+
+class ContextPrototype(models.Model):
+    """
+    The Context in which a story is read.
+    """
+    text = models.TextField()
+    story = models.ForeignKey(
+        StoryPrototype,
+        on_delete=models.CASCADE,
+        related_name='contexts',
+    )
+
+    def __str__(self):
+        return self.text
+
+
+class QuestionPrototype(models.Model):
+    """
+    A question about a Story.
+    """
+    text = models.TextField()
+    word_limit = models.IntegerField()
+    story = models.ForeignKey(
+        StoryPrototype,
+        on_delete=models.CASCADE,
+        related_name='questions',
+    )
+
+    def __str__(self):
+        return self.text
+
+
+class StudentResponsePrototype(models.Model):
     """
     The response of a student to a question given a context.
-
-    TODO(msc): why are these not links to other models?
     """
     question = models.ForeignKey(
-        Question,
+        QuestionPrototype,
         null=True,
         on_delete=models.SET_NULL,
         related_name='student_responses',
     )
     context = models.ForeignKey(
-        Context,
+        ContextPrototype,
         null=True,
         on_delete=models.SET_NULL,
         related_name='student_responses',

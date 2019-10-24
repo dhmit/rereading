@@ -23,7 +23,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         recit_path = Path(PROJECT_ROOT) / 'analysis' / 'data' / 'recitatif.txt'
 
-        with open(recit_path) as recit_file:
+        with open(recit_path, encoding='utf-8') as recit_file:
             recit_text = recit_file.readlines()
 
         recit_doc = Document(

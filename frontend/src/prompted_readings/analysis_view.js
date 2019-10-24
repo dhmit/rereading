@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from 'prop-types';
 
-class CommonResponses extends React.Component {
+export class CommonResponses extends React.Component {
     render() {
         return (
             <div>
@@ -204,5 +204,4 @@ export class AnalysisView extends React.Component {
     }
 }
 
-export { CommonResponses }
 export default AnalysisView;

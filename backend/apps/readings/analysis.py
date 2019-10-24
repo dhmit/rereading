@@ -9,7 +9,7 @@ from collections import Counter
 from pathlib import Path
 
 from config.settings.base import PROJECT_ROOT
-from .models import StudentResponse, Context
+from .models import StudentResponsePrototype, ContextPrototype
 
 
 def max_abs(val1, val2):
@@ -164,7 +164,7 @@ class RereadingAnalysis:
 
     def __init__(self):
         """ On initialization, we load all of the StudentResponses from the db """
-        self.responses = StudentResponse.objects.all()
+        self.responses = StudentResponsePrototype.objects.all()
 
     def total_view_time(self):
         """
@@ -237,7 +237,7 @@ class RereadingAnalysis:
         :return a dictionary where the context is the key and the mean view time for that context
         is the value
         """
-        all_contexts = Context.objects.all()
+        all_contexts = ContextPrototype.objects.all()
         total_contexts_view_times = {context.text: {
             "total_view_time": 0,
             "count": 0

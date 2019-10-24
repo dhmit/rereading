@@ -3,7 +3,7 @@
 import os
 import sys
 
-
+# pylint: disable=import-outside-toplevel
 def main():
     """Main start Django function"""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.dev')

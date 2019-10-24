@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 class SingleValueAnalysis extends React.Component {
     render() {
         return(
-            <div>
-                <strong>{this.props.header} :</strong>
-                <p className={"d-block d-md-inline"}> {this.props.value} {this.props.unit}</p>
+            <div className={"row"}>
+                <strong className={"col-2"}>{this.props.header} </strong>
+                <p className={"col-2 mb-1 text-left d-block d-md-inline"}> {this.props.value} {this.props.unit}</p>
             </div>
         );
     }
@@ -20,24 +20,52 @@ SingleValueAnalysis.propTypes = {
     unit: PropTypes.string,
 };
 
+class TabularAnalysis extends React.Component{
+    render() {
+        // Create an array of indices based on the length of the header array
+        let range = n => Array.from(Array(n).keys())
+        let indices = range(this.props.headers.length)
+
+        return(
+            <div>
+                <h3 className={"mt-4"}> {this.props.title} </h3>
+                <table border={"1"} cellPadding={"5"}>
+                    <tbody>
+                        <tr>
+                            {/* Auto generate the headers */}
+                            {this.props.headers.map( (header, k) => (
+                                <th className={"p-2"} key={k}>{header}</th>)
+                            )}
+                        </tr>
+                        {this.props.data.map( (entry, k) => (
+                            <tr key={k}>
+                                {indices.map( (index, k) => (
+                                    <td className={"p-2"} key={k}> {entry[index]} </td>)
+                                )}
+                            </tr>)
+                        )}
+                    </tbody>
+                </table>
+            </div>
+        );
+    }
+}
+TabularAnalysis.propTypes = {
+    headers: PropTypes.array,
+    data: PropTypes.array,
+    title: PropTypes.string,
+
+}
+
 export class FrequencyFeelingTable extends React.Component {
     render() {
         return (
             <div>
-                <h1>Frequency Feelings</h1>
-                <table border="1" cellPadding="5">
-                    <tbody>
-                        <tr>
-                            <th>Word</th>
-                            <th>Frequency</th>
-                        </tr>
-                        {this.props.feelings.map((el, i) => (
-                            <tr key={i}>
-                                <td>{el[0]}</td><td>{el[1]}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                <TabularAnalysis
+                    title = { "Frequency Feelings"}
+                    headers = {["Word","Frequency"]}
+                    data = {this.props.feelings}
+                />
             </div>
         );
     }
@@ -53,21 +81,11 @@ export class ContextVsViewTime extends React.Component {
             [context[0] , Math.round(context[1] * 1000) / 1000]);
         return (
             <div>
-                <h1>Mean View Times of Different Contexts</h1>
-                <table border="1" cellPadding="5">
-                    <tbody>
-                        <tr>
-                            <th>Context</th>
-                            <th>Mean View Time (seconds)</th>
-                        </tr>
-                        {roundedViewTimes.map((context, i) => (
-                            <tr key={i}>
-                                <td>{context[0]}</td>
-                                <td>{context[1]}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                <TabularAnalysis
+                    title = {"Mean View Times of Different Contexts"}
+                    headers = {["Context","Mean View Time (seconds)"]}
+                    data = {roundedViewTimes}
+                />
             </div>
         )
     }
@@ -80,14 +98,13 @@ export class SentimentScores extends React.Component {
     render() {
         return (
             <div>
-                <h3>Average Sentiment Among Students</h3>
                 <SingleValueAnalysis
-                    header = {"Positivity Score"}
+                    header = {"Average Positivity Score"}
                     value = {this.props.sentiment_average}
                 />
 
                 <SingleValueAnalysis
-                    header = {"Standard Deviation:"}
+                    header = {"Standard Deviation of Positivity Score"}
                     value = {this.props.sentiment_std}
                 />
             </div>
@@ -102,14 +119,11 @@ SentimentScores.propTypes = {
 export class MeanReadingTimesForQuestions extends React.Component {
     render() {
         return (
-            <div>
-                {this.props.mean_reading_times_for_questions.map((i,k) =>
-                    <p key = {k}>
-                            Question: {i[0]} Context: {i[1]} Mean time without outliers: {i[2]}
-                            Total number of readers: {i[3]}
-                    </p>
-                )}
-            </div>
+            <TabularAnalysis
+                title = {"Mean Reading Time for Questions"}
+                headers={["Question","Context","Mean time without outliers", "Total number of readers"]}
+                data = {this.props.mean_reading_times_for_questions}
+            />
         );
     }
 }
@@ -167,34 +181,28 @@ export class AnalysisView extends React.Component {
                         </div>
                     </nav>
                     <h1
-                        className={"text-center display-4"}
+                        className={"text-center display-4 mb-4"}
                         id={"page-title"}
                     >Analysis of Student Responses</h1>
-                    <h1>Total view time</h1>
                     <SingleValueAnalysis
                         header = {"Total view time"}
                         value = {total_view_time}
                         unit = {"seconds"}
                     />
-                    <h3>Mean Reading Time for Questions</h3>
-                    <MeanReadingTimesForQuestions
-                        mean_reading_times_for_questions={run_mean_reading_analysis_for_questions}
-                    />
-                    <h1>Median View Time</h1>
                     <SingleValueAnalysis
                         header = {"Median view time"}
                         value = {compute_median_view_time}
                         unit = {"seconds"}
                     />
-                    <FrequencyFeelingTable feelings={frequency_feelings}/>
-                    <br/>
-                    <ContextVsViewTime viewTime={context_vs_read_time}/>
-                    <br/>
                     <SentimentScores
-
                         sentiment_average={question_sentiment_analysis[0]}
                         sentiment_std={question_sentiment_analysis[1]}
                     />
+                    <MeanReadingTimesForQuestions
+                        mean_reading_times_for_questions={run_mean_reading_analysis_for_questions}
+                    />
+                    <FrequencyFeelingTable feelings={frequency_feelings}/>
+                    <ContextVsViewTime viewTime={context_vs_read_time}/>
                 </div>
             );
         } else {

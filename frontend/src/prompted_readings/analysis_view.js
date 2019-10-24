@@ -160,13 +160,6 @@ export class AnalysisView extends React.Component {
                 compute_median_view_time,
             } = this.state.analysis;
             return (
-                <div>
-                    <h1>Analysis of Student Responses</h1>
-                    <h3>Total view time</h3>
-                    <p>{total_view_time} seconds</p>
-                    <CommonResponses responses={all_responses} />
-                    <p>{compute_median_view_time}</p>
-              
                 <div className={"container"}>
                     <nav className={"navbar navbar-expand-lg"}>
                         <div className={"navbar-nav"}>
@@ -200,6 +193,7 @@ export class AnalysisView extends React.Component {
                         sentiment_average={question_sentiment_analysis[0]}
                         sentiment_std={question_sentiment_analysis[1]}
                     />
+                    <CommonResponses responses={all_responses} />
                 </div>
             );
         } else {

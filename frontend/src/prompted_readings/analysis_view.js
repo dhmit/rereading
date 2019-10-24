@@ -132,13 +132,6 @@ export class AnalysisView extends React.Component {
                 percent_students_using_relevant_words_in_story_context
             } = this.state.analysis;
             return (
-                <div>
-                    <h1>Analysis of Student Responses</h1>
-                    <h3>Students using relevant words</h3>
-                    <p>Ad context: {Math.round(
-                        percent_students_using_relevant_words_in_ad_context * 100)}%</p>
-                    <p>Short story context: {Math.round(
-                        percent_students_using_relevant_words_in_story_context * 100)}%</p>
                 <div className={"container"}>
                     <nav className={"navbar navbar-expand-lg"}>
                         <div className={"navbar-nav"}>
@@ -158,6 +151,8 @@ export class AnalysisView extends React.Component {
                     >Analysis of Student Responses</h1>
                     <h1>Total view time</h1>
                     <p>Total view time: {total_view_time} seconds</p>
+                    <h1>Mean Response Length</h1>
+                    <p>Mean Response Length: {compute_mean_response_length} seconds</p>
                     <h3>Mean Reading Time for Questions</h3>
                     <MeanReadingTimesForQuestions
                         mean_reading_times_for_questions={run_mean_reading_analysis_for_questions}
@@ -172,6 +167,12 @@ export class AnalysisView extends React.Component {
                         sentiment_average={question_sentiment_analysis[0]}
                         sentiment_std={question_sentiment_analysis[1]}
                     />
+                    <h3>Students using relevant words</h3>
+                    <p>Ad context: {Math.round(
+                        percent_students_using_relevant_words_in_ad_context * 100)}%</p>
+                    <p>Short story context: {Math.round(
+                        percent_students_using_relevant_words_in_story_context * 100)}%</p>
+
                 </div>
             );
         } else {

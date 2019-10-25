@@ -27,9 +27,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # API endpoints
-    path('api/', readings_views.ListDocument.as_view()),
+    path('api/documents/', readings_views.ListDocument.as_view()),
     path('api/add-response/', readings_views.ListStudent.as_view()),
-    path('api/<int:pk>/', readings_views.DetailDocument.as_view()),
+    path('api/documents/<int:pk>/', readings_views.DetailDocument.as_view()),
     path('api/analysis/', readings_views.analysis),
 
     # Prototyping API endpoints

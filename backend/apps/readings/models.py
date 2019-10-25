@@ -22,13 +22,26 @@ class Document(models.Model):
         max_length=255,
     )
 
+    def __len__(self):
+        """
+        The length of a document is the number of segments
+        ... maybe this should be total wordcount instead?
+        """
+        return self.segments.count()
+
+    def __str__(self):
+        """ string representation of this class """
+        return f'Document: {self.title} by {self.author}'
+
 
 class Segment(models.Model):
     """
     A segment of a Document.
     """
     text = models.TextField(default='')
-    sequence = models.IntegerField()  # position of this segment in the doc
+    # We 1-index sequence so we don't have to increment whenever we display this to
+    # users in the frontend
+    sequence = models.IntegerField(default=1)  # position of this segment in the doc
 
     document = models.ForeignKey(
         Document,
@@ -36,6 +49,17 @@ class Segment(models.Model):
         on_delete=models.CASCADE,
         related_name='segments',
     )
+
+    def __len__(self):
+        """ Length of a segment is the word count
+            (Just split by whitespace -- not doing anything fancy...)
+        """
+        return len(self.text.split())
+
+    def __str__(self):
+        segment_count = len(self.document)
+        doc_title = self.document.title
+        return f'{doc_title} - Segment {self.sequence} of {segment_count}'
 
     class Meta:
         # see: https://docs.djangoproject.com/en/2.2/ref/models/options/#unique-together

@@ -411,8 +411,8 @@ class RereadingAnalysis:
         """
         relevant_words_file_path = 'data/words_related_to_story.txt'
         with open(relevant_words_file_path, 'r') as relevant_words_file:
-            untrimmed_relevant_words = relevant_words_file.readlines()
-            relevant_words = list(map(lambda s: s.strip(), untrimmed_relevant_words))
+            unstripped_relevant_words = relevant_words_file.readlines()
+            relevant_words = list(map(lambda s: s.strip(), unstripped_relevant_words))
         return relevant_words
 
     @staticmethod

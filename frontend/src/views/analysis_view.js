@@ -190,7 +190,6 @@ export class AnalysisView extends React.Component {
         if (this.state.analysis !== null) {
             const {  // object destructuring:
                 total_view_time,
-                all_responses,
                 run_mean_reading_analysis_for_questions,
                 frequency_feelings,
                 context_vs_read_time,

@@ -1,5 +1,5 @@
 import React from "react";
-import {TimeIt} from "../common";
+import {TimeIt, handleStoryScroll} from "../common";
 // import PropTypes from 'prop-types';
 
 // This is a document object hardcoded here for prototyping,
@@ -9,7 +9,7 @@ const document = {
     prompts: ["the author is alive", "the book was written during the cold war"],
     segments: [
         {
-            text: "The little pig built a house.",
+            text: "The little pig built a house",
             seq: 0,
             prompts: ["this is an ad"],
             questions: [
@@ -70,6 +70,9 @@ class ReadingView extends React.Component {
             segmentNum: 0,
             timer: null,
             segmentReadTimes: [],
+            scrollTop: 0,
+            scroll_ups: 0,
+            scrolling_up: false,
         }
     }
 
@@ -105,7 +108,6 @@ class ReadingView extends React.Component {
             segmentReadTimes.push([]);
         }
         this.setState({segmentReadTimes,});
-        console.log(this.state.segmentReadTimes);
     }
 
     /**
@@ -115,11 +117,12 @@ class ReadingView extends React.Component {
     render() {
         const data = document;
         return (
-            <div className={"container"}>
+            <div className={"container"} onScroll={(e) =>
+            {this.setState(handleStoryScroll(e, this.state))}}>
                 <h1>{data.title}</h1>
                 <p><b>Prompts: </b>{data.prompts.map(el => "[" + el + "] ")}</p>
                 <p>Segment Number: {this.state.segmentNum + 1}</p>
-                <p>{data.segments[this.state.segmentNum].text}</p>
+                <p style={{fontSize: "300px"}}>{data.segments[this.state.segmentNum].text}</p>
                 {this.state.segmentNum > 0 ?
                     <button onClick = {() => this.changeSegment(-1)}>Back</button> :
                     ""}

@@ -87,7 +87,7 @@ export function handleStoryScroll(e, state) {
     } else if (scrollTop > prev_scroll && scrolling_up) {
         scrolling_up = false;
     }
-
+    console.log(state);
     // For use with the setState function
     return {scrollTop: scrollTop, scroll_ups: scroll_ups, scrolling_up: scrolling_up};
 }

@@ -61,16 +61,16 @@ def response_and_question_relationship(student_data, question, context):
         number_of_views = len(dictionary["views"])
         if dictionary["context"] == context and dictionary["question"] == question:
             if number_of_views in word_response_data.keys():
-                word_response_data[number_of_views].append(dictionary["response"])
+                word_response_data[number_of_views].append(dictionary["response"].lower())
             elif number_of_views not in word_response_data.keys():
-                word_response_data.update({number_of_views: [dictionary["response"]]})
+                word_response_data.update({number_of_views: [dictionary["response"].lower()]})
+    # Determine the number of different words to quantify
     for number_of_views in word_response_data.keys():
         word_types = []
         for word in range(len(word_response_data[number_of_views])):
-            word_response_data[number_of_views][word] = word_response_data[number_of_views][
-                word].lower()
-            if not word_response_data[number_of_views][word] in word_types:
+            if word_response_data[number_of_views][word] not in word_types:
                 word_types.append(word_response_data[number_of_views][word])
+        # Quantify number of discrete words in the dictionary
         word_quantities = []
         for word in word_types:
             quantity = word_response_data[number_of_views].count(word)

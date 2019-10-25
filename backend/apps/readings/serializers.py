@@ -126,7 +126,6 @@ class DocumentSerializer(serializers.ModelSerializer):
     """
     Serializes Document metadata and associated segments
     """
-
     segments = SegmentSerializer(many=True, read_only=True)
 
     class Meta:

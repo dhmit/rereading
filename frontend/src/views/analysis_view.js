@@ -1,35 +1,6 @@
 import React from "react";
 import PropTypes from 'prop-types';
 
-export class CommonResponses extends React.Component {
-    render() {
-        return (
-            <div>
-                <h3>Most Common Responses</h3>
-                <table>
-                    <tbody>
-                        <tr>
-                            <th>Question</th>
-                            <th>Context</th>
-                            <th>Most common response(s)</th>
-                        </tr>
-                        {this.props.responses.map((resp_obj, i) =>
-                            <tr key={i}>
-                                <td>{resp_obj.question}</td>
-                                <td>{resp_obj.context}</td>
-                                <td>{resp_obj.answers.map(answer => ' ' + answer + ' ')}</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
-        );
-    }
-}
-
-CommonResponses.propTypes = {
-    responses: PropTypes.array,
-};
 
 export class SingleValueAnalysis extends React.Component {
     render() {
@@ -85,7 +56,23 @@ TabularAnalysis.propTypes = {
     data: PropTypes.array,
     title: PropTypes.string,
 
+};
+
+export class CommonResponses extends React.Component {
+    render() {
+        return (
+            <TabularAnalysis
+                title={"Most Common Responses"}
+                data={this.props.responses}
+                headers={["Question","Context","Answers"]}
+            />
+        );
+    }
 }
+
+CommonResponses.propTypes = {
+    responses: PropTypes.array,
+};
 
 export class FrequencyFeelingTable extends React.Component {
     render() {
@@ -233,6 +220,7 @@ export class AnalysisView extends React.Component {
                     />
                     <FrequencyFeelingTable feelings={frequency_feelings}/>
                     <ContextVsViewTime viewTime={context_vs_read_time}/>
+
                 </div>
             );
         } else {

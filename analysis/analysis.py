@@ -34,6 +34,7 @@ def load_data_csv(csv_path: Path):
             out_data.append(row)
     return out_data
 
+
 def clean_resp_strings(dataset):
     """
     Removes punctuation from responses in dataset and makes all characters lowercase.
@@ -156,15 +157,16 @@ def compute_reread_counts(student_data, question, context):
 
     return organized_data
 
+
 def unique_word_pattern(student_data):
     """
-    Take the CSV File and analyze the readers' responses based on the two different contexts of the
-    2 questions (this is an ad/this is just a short story); analyze if the total number of unique
-    responses changed as more and more readers' responses are analyzed. Eventually prints out the
-    pattern along with the number of unique word in the text.
+    Take the list of dictionaries as a parameter and analyze the readers' responses based on the
+    two different contexts of the 2 questions (this is an ad/this is just a short story); analyze if
+    the total number of unique responses changed as more and more readers' responses are
+    analyzed. Will be used for future analysis and visualization on the webapp
     :param student_data
-    :return 2 lists of sets specifying unique responses at each point in time as a user
-    submits a response
+    :return 2 lists of sets specifying unique responses at each point in time as a user submits a
+    response
     """
     response_ad = set()
     response_story = set()
@@ -1265,26 +1267,25 @@ class TestAnalysisMethods(unittest.TestCase):
 
     def test_unique_words_pattern(self):
         """
-                Tests unique_words_pattern function with two data sets. The first is
-                the default empty dataset and the second is test_data2 which is a small dataset.
-                 This function tests that it correctly appends the lists of unique words to both
-                 ads response and story response lists the total unique words in each
-                 timestamp. Future testing is suggested using larger datasets.
-                 
-                """
+        Tests unique_words_pattern function with two data sets. The first is the default empty
+        dataset and the second is test_data2 which is a small dataset. This function tests
+        that it correctly appends the lists of unique words to both ads response and story
+        response lists the total unique words in each timestamp. Future testing is suggested
+        using larger datasets.
+        """
         # first check: empty dataset
         unique_words_story, unique_words_ad = unique_word_pattern(self.default_student_data)
         set_unique_words_story = len(unique_words_story)
         set_unique_words_ad = len(unique_words_ad)
         self.assertEqual(set_unique_words_story, 0)
         self.assertEqual(set_unique_words_ad, 0)
-
         # second check: smaller dataset
         unique_words_story1, unique_words_ads1 = unique_word_pattern(self.test_student_data)
         set_unique_words_story1 = len(unique_words_story1)
         set_unique_words_ad1 = len(unique_words_ads1)
         self.assertEqual(set_unique_words_story1, 1)
         self.assertEqual(set_unique_words_ad1, 1)
+
     def test_mean_view_time_comparison(self):
         """
         Tests mean_view_time_comparison function with two data sets. The first is specific to

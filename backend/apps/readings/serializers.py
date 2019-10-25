@@ -5,16 +5,23 @@ allow the frontend to suggest changes to the backend/database.
 """
 from rest_framework import serializers
 
-from .models import Story, Question, Context, Student, StudentResponse
+from .models import (
+    StoryPrototype, QuestionPrototype, ContextPrototype, Student, StudentResponsePrototype
+)
 
 
+################################################################################
+# Prototyping Serializers
+# Serializers below were for the summer prototype
+# and initial analysis prototyping
+################################################################################
 class StudentResponseSerializer(serializers.ModelSerializer):
     """
     A serializer makes it possible to view a database Django model
     on the web, such as React
     """
     class Meta:
-        model = StudentResponse
+        model = StudentResponsePrototype
 
         fields = (
             'id',
@@ -42,7 +49,7 @@ class StudentSerializer(serializers.ModelSerializer):
         responses_data = validated_data.pop('student_responses')
         student = Student.objects.create(**validated_data)
         for response_data in responses_data:
-            StudentResponse.objects.create(student=student, **response_data)
+            StudentResponsePrototype.objects.create(student=student, **response_data)
 
         return student
 
@@ -51,7 +58,7 @@ class StudentSerializer(serializers.ModelSerializer):
 
         fields = (
             'id',
-            'story',
+            # 'story',
             'student_responses',
         )
 
@@ -61,7 +68,7 @@ class QuestionSerializer(serializers.ModelSerializer):
     Serializes a Question object.
     """
     class Meta:
-        model = Question
+        model = QuestionPrototype
 
         fields = (
             'id',
@@ -75,7 +82,7 @@ class ContextSerializer(serializers.ModelSerializer):
     Serializes a Context object.
     """
     class Meta:
-        model = Context
+        model = ContextPrototype
 
         fields = (
             'id',
@@ -91,7 +98,7 @@ class StorySerializer(serializers.ModelSerializer):
     questions = QuestionSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Story
+        model = StoryPrototype
         fields = (
             'id',
             'story_text',
@@ -103,6 +110,11 @@ class StorySerializer(serializers.ModelSerializer):
 class AnalysisSerializer(serializers.Serializer):
     """ Serializes analysis class """
     total_view_time = serializers.ReadOnlyField()
+    all_responses = serializers.ReadOnlyField()
+    run_mean_reading_analysis_for_questions = serializers.ReadOnlyField()
+    frequency_feelings = serializers.ReadOnlyField()
+    context_vs_read_time = serializers.ReadOnlyField()
+    question_sentiment_analysis = serializers.ReadOnlyField()
     compute_median_view_time = serializers.ReadOnlyField()
     mean_view_time_comparison = serializers.ReadOnlyField()
 

@@ -1,10 +1,5 @@
 import React from "react";
-import PropTypes from 'prop-types';
-import {
-    CommonResponses, ContextVsViewTime,
-    FrequencyFeelingTable,
-    MeanReadingTimesForQuestions, SentimentScores
-} from "./analysis_view";
+// import PropTypes from 'prop-types';
 
 export class DocumentAnalysisView extends React.Component {
     constructor(props) {
@@ -22,7 +17,7 @@ export class DocumentAnalysisView extends React.Component {
      */
     async componentDidMount() {
         try {
-            const response = await fetch('/api/analysis/');
+            const response = await fetch('/api/document_analysis/');
             const analysis = await response.json();
             this.setState({analysis});
         } catch (e) {
@@ -33,9 +28,9 @@ export class DocumentAnalysisView extends React.Component {
 
     render() {
         if (this.state.analysis !== null) {
-            const {
-
-            } = this.state.analysis;
+            // const {
+            //
+            // } = this.state.analysis;
             return (
                 <div className={"container"}>
                     <nav className={"navbar navbar-expand-lg"}>
@@ -54,7 +49,7 @@ export class DocumentAnalysisView extends React.Component {
                         className={"text-center display-4"}
                         id={"page-title"}
                     >Analysis of Student Responses</h1>
-
+                    <p>Analysis of Recitatif</p>
                 </div>
             );
         } else {

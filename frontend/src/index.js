@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import StudentView from './prompted_readings/student_view';
 import InstructorView from './prompted_readings/instructor_view';
 import {AnalysisView} from './prompted_readings/analysis_view';
+import {DocumentAnalysisView} from "./prompted_readings/document_analytics_view";
 
 window.app_modules = {
     React,  // Make React accessible from the base template
@@ -15,4 +16,5 @@ window.app_modules = {
     StudentView,
     InstructorView,
     AnalysisView,
+    DocumentAnalysisView,
 };

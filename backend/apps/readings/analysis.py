@@ -415,60 +415,56 @@ class RereadingAnalysis:
             relevant_words = list(map(lambda s: s.strip(), unstripped_relevant_words))
         return relevant_words
 
-    @staticmethod
-    def percent_students_using_relevant_words(student_data, target_context, relevant_words):
+    def get_number_of_unique_students(self):
         """
-        Find the percentage of students that used relevant words in their responses
-        :param student_data: the data to analyze
-        :param target_context: the context (e.g. 'This is an ad') to take responses from
-        :param relevant_words: a list of words which show an understanding of the story's meaning
-        :return: The percentage [0.00, 1.00] of students that used relevant words in their
-        responses. 0 if there are no responses.
+        Count the number of unique students that gave responses
+        :return: the number of unique students that gave responses
         """
+        unique_students = set()
+        for row in self.responses:
+            unique_students.add(row.student)
+        return len(unique_students)
 
-        def row_has_correct_context_and_question(row_data):
-            # Helper method to filter out irrelevant response data
-            return row_data.context.text == target_context and \
-                   row_data.question.text == 'In three words or fewer, what is this text about?'
-
-        number_of_students_using_relevant_words = 0
-
-        filtered_student_data = list(filter(row_has_correct_context_and_question, student_data))
-        for row in filtered_student_data:
-            if RereadingAnalysis.description_has_relevant_words(row.response,
-                                                                relevant_words):
-                number_of_students_using_relevant_words += 1
-
-        if filtered_student_data:
-            percentage_of_all_students = \
-                number_of_students_using_relevant_words / len(filtered_student_data)
-        else:
-            percentage_of_all_students = 0
-        return percentage_of_all_students
-
-    def percent_students_using_relevant_words_in_ad_context(self):
+    def students_using_relevant_words_by_context_and_question(self):
         """
-        Find the percentage of students that used relevant words in the ad context
-        :return: The percentage [0.00, 1.00] of students that used relevant words in their
-        responses. 0 if there are no responses.
+        Return a dictionary whose keys are context strings and whose
+        values are themselves dictionaries whose keys are question strings and whose values are
+        integers that represent the number of students who used relevant words.
+        :return: the return type explained in the function description
         """
-
-        context = 'This is an ad.'
         relevant_words = RereadingAnalysis.get_relevant_words()
-        percentage = RereadingAnalysis.percent_students_using_relevant_words(self.responses,
-                                                                             context,
-                                                                             relevant_words)
-        return percentage
 
-    def percent_students_using_relevant_words_in_story_context(self):
+        context_question_count_map = {}
+
+        for row in self.responses:
+            if not RereadingAnalysis.description_has_relevant_words(row.response, relevant_words):
+                continue
+
+            context = row.context.text
+            question = row.question.text
+            if context not in context_question_count_map:
+                context_question_count_map[context] = {}
+            if question not in context_question_count_map[context]:
+                context_question_count_map[context][question] = 0
+            context_question_count_map[context][question] += 1
+
+        return context_question_count_map
+
+    def percent_using_relevant_words_by_context_and_question(self):
         """
-        Find the percentage of students that used relevant words in the short story context
-        :return: The percentage [0.00, 1.00] of students that used relevant words in their
-        responses. 0 if there are no responses.
+        Return a dictionary whose keys are Context objects and whose
+        values are themselves dictionaries whose keys are Question objects and whose values are
+        floats [0.00, 1.00] that represent the percentage of students using relevant words.
+        :return: The return type explained in the function description.
         """
-        context = 'This is actually a short story.'
-        relevant_words = RereadingAnalysis.get_relevant_words()
-        percentage = RereadingAnalysis.percent_students_using_relevant_words(self.responses,
-                                                                             context,
-                                                                             relevant_words)
-        return percentage
+        student_count = RereadingAnalysis.get_number_of_unique_students(self.responses)
+
+        context_question_count_map = self.students_using_relevant_words_by_context_and_question()
+
+        context_question_percent_map = {}
+        for context, questions in context_question_count_map:
+            context_question_percent_map[context] = {}
+            for question, count in questions:
+                context_question_percent_map[context][question] = count / student_count
+
+        return context_question_percent_map

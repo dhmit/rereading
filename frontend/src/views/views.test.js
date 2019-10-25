@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './student_view';
 import {
     FrequencyFeelingTable,
     ContextVsViewTime,
@@ -8,11 +7,29 @@ import {
     MeanReadingTimesForQuestions,
     SingleValueAnalysis,
     TabularAnalysis,
+    CommonResponses,
 } from "./analysis_view";
 
 it('renders without crashing', () => {
     const div = document.createElement('div');
-    ReactDOM.render(<App />, div);
+    const test = [
+        {
+            "question": "In one word, how does this text make you feel?",
+            "context": "This is an ad.",
+            "answers": [
+                "sad",
+                "confused"
+            ]
+        },
+        {
+            "question": "In one word, how does this text make you feel?",
+            "context": "This is actually a short story.",
+            "answers": [
+                "sad"
+            ]
+        },
+    ]
+    ReactDOM.render(<CommonResponses responses={test} />, div);
     ReactDOM.unmountComponentAtNode(div);
 });
 

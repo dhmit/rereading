@@ -170,7 +170,7 @@ export class AnalysisView extends React.Component {
                 context_vs_read_time,
                 question_sentiment_analysis,
                 compute_median_view_time,
-                unique_responses,
+                // unique_responses,
             } = this.state.analysis;
             return (
                 <div className={"container"}>
@@ -192,8 +192,8 @@ export class AnalysisView extends React.Component {
                     >Analysis of Student Responses</h1>
                     <h1>Total view time</h1>
                     <p>Total view time: {total_view_time} seconds</p>
-                    <h1>Unique Responses</h1>
-                    <p>Unique Responses: {unique_responses[1]}</p>
+                    {/*<h1>Unique Responses</h1>*/}
+                    {/*<p>Unique Responses: {unique_responses}</p>*/}
                     <h3>Mean Reading Time for Questions</h3>
                     <MeanReadingTimesForQuestions
                         mean_reading_times_for_questions={run_mean_reading_analysis_for_questions}

@@ -116,7 +116,7 @@ class AnalysisSerializer(serializers.Serializer):
     context_vs_read_time = serializers.ReadOnlyField()
     question_sentiment_analysis = serializers.ReadOnlyField()
     compute_median_view_time = serializers.ReadOnlyField()
-    unique_responses = serializers.ReadOnlyField()
+    # unique_responses = serializers.ReadOnlyField()
 
     def create(self, validated_data):
         """ We will not create new objects using this serializer """

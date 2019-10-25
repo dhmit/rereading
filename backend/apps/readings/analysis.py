@@ -290,6 +290,36 @@ class RereadingAnalysis:
 
         return average, standard_dev
 
+    # def unique_responses(self):
+    #     all_contexts = list(ContextPrototype.objects.all().values_list("text"))
+    #     # for response in self.responses:
+    #     #     context = response.context.text
+    #     unique_response_dict = {}
+    #     # separate the unique responses by context
+    #     for item in all_contexts:
+    #         key = item.values("text")
+    #         context_responses = list(self.responses.distinct().filter(
+    #                                  context__icontains=key).values("response"))
+    #         unique_response_dict[key] = context_responses
+    #     # find the intersection between all contexts
+    #     common_responses = []
+    #     i = 0
+    #     for val in unique_response_dict.values():
+    #         if i is 1:
+    #             common_responses = val
+    #         else:
+    #             for entry in val:
+    #                 if entry not in common_responses:
+    #                     common_responses.remove(entry)
+    #         i += 1
+    #     # find the difference between all contexts
+    #     for value in unique_response_dict.values():
+    #         iterator = value[:]
+    #         for entry in iterator:
+    #             if entry in common_responses:
+    #                 value.remove(entry)
+    #     return 5
+
     @property
     def run_mean_reading_analysis_for_questions(self):
         """
@@ -371,33 +401,3 @@ class RereadingAnalysis:
             list_of_times.sort()
             median_view_time = statistics.median(list_of_times)
         return round(median_view_time)
-
-    def unique_responses(self):
-        all_contexts = list(ContextPrototype.objects.all().values_list("text"))
-        # for response in self.responses:
-        #     context = response.context.text
-        unique_response_dict = {}
-        # separate the unique responses by context
-        for item in all_contexts:
-            key = item.values("text")
-            context_responses = list(self.responses.distinct().filter(
-                                     context__icontains=key).values("response"))
-            unique_response_dict[key] = context_responses
-        # find the intersection between all contexts
-        common_responses = []
-        i = 0
-        for val in unique_response_dict.values():
-            if i is 1:
-                common_responses = val
-            else:
-                for entry in val:
-                    if entry not in common_responses:
-                        common_responses.remove(entry)
-            i += 1
-        # find the difference between all contexts
-        for value in unique_response_dict.values():
-            iterator = value[:]
-            for entry in iterator:
-                if entry in common_responses:
-                    value.remove(entry)
-        return unique_response_dict.keys()

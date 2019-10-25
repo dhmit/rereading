@@ -1,6 +1,36 @@
 import React from "react";
 import PropTypes from 'prop-types';
 
+export class CommonResponses extends React.Component {
+    render() {
+        return (
+            <div>
+                <h3>Most Common Responses</h3>
+                <table>
+                    <tbody>
+                        <tr>
+                            <th>Question</th>
+                            <th>Context</th>
+                            <th>Most common response(s)</th>
+                        </tr>
+                        {this.props.responses.map((resp_obj, i) =>
+                            <tr key={i}>
+                                <td>{resp_obj.question}</td>
+                                <td>{resp_obj.context}</td>
+                                <td>{resp_obj.answers.map(answer => ' ' + answer + ' ')}</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+        );
+    }
+}
+
+CommonResponses.propTypes = {
+    responses: PropTypes.array,
+};
+
 export class FrequencyFeelingTable extends React.Component {
     render() {
         return (
@@ -122,12 +152,24 @@ export class MeanReadingTimesForQuestions extends React.Component {
     render() {
         return (
             <div>
-                {this.props.mean_reading_times_for_questions.map((i,k) =>
-                    <p key = {k}>
-                            Question: {i[0]} Context: {i[1]} Mean time without outliers: {i[2]}
-                            Total number of readers: {i[3]}
-                    </p>
-                )}
+                <table border="1" cellPadding="5">
+                    <tbody>
+                        <tr>
+                            <th>Question</th>
+                            <th>Context</th>
+                            <th>Mean Time (s)</th>
+                            <th>Readers</th>
+                        </tr>
+                        {this.props.mean_reading_times_for_questions.map((i,k) =>
+                            <tr key = {k}>
+                                <td>{i[0]}</td>
+                                <td>{i[1]}</td>
+                                <td>{i[2]}</td>
+                                <td>{i[3]}</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
             </div>
         );
     }
@@ -165,6 +207,7 @@ export class AnalysisView extends React.Component {
         if (this.state.analysis !== null) {
             const {  // object destructuring:
                 total_view_time,
+                all_responses,
                 run_mean_reading_analysis_for_questions,
                 frequency_feelings,
                 context_vs_read_time,
@@ -197,6 +240,7 @@ export class AnalysisView extends React.Component {
                     />
                     <h1>Median View Time</h1>
                     <p>Median view time: {compute_median_view_time} seconds</p>
+                    <CommonResponses responses={all_responses} />
                     <FrequencyFeelingTable feelings={frequency_feelings}/>
                     <br/>
                     <ContextVsViewTime viewTime={context_vs_read_time}/>
@@ -205,6 +249,7 @@ export class AnalysisView extends React.Component {
                         sentiment_average={question_sentiment_analysis[0]}
                         sentiment_std={question_sentiment_analysis[1]}
                     />
+
                 </div>
 
 

@@ -5,8 +5,12 @@ export class SingleValueAnalysis extends React.Component {
     render() {
         return(
             <div className={"row"}>
-                <strong className={"col-2"}>{this.props.header} </strong>
-                <p className={"col-2 mb-1 text-left d-block d-md-inline"}> {this.props.value} {this.props.unit}</p>
+                <strong className={"col-2"}>
+                    {this.props.header}
+                </strong>
+                <p className={"col-2 mb-1 text-left d-block d-md-inline"}>
+                    {this.props.value} {this.props.unit}
+                </p>
             </div>
         );
     }
@@ -137,7 +141,12 @@ export class MeanReadingTimesForQuestions extends React.Component {
         return (
             <TabularAnalysis
                 title = {"Mean Reading Time for Questions"}
-                headers={["Question","Context","Mean time without outliers", "Total number of readers"]}
+                headers={[
+                    "Question",
+                    "Context",
+                    "Mean time without outliers",
+                    "Total number of readers",
+                ]}
                 data = {this.props.mean_reading_times_for_questions}
             />
         );

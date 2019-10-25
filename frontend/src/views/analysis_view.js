@@ -193,7 +193,7 @@ export class AnalysisView extends React.Component {
                     <h1>Total view time</h1>
                     <p>Total view time: {total_view_time} seconds</p>
                     <h1>Unique Responses</h1>
-                    <p>Unique Responses: {unique_responses}</p>
+                    <p>Unique Responses: {unique_responses[1]}</p>
                     <h3>Mean Reading Time for Questions</h3>
                     <MeanReadingTimesForQuestions
                         mean_reading_times_for_questions={run_mean_reading_analysis_for_questions}

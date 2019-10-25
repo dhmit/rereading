@@ -373,23 +373,31 @@ class RereadingAnalysis:
         return round(median_view_time)
 
     def unique_responses(self):
-        all_contexts = Context.objects.all()
+        all_contexts = list(ContextPrototype.objects.all().values_list("text"))
         # for response in self.responses:
         #     context = response.context.text
         unique_response_dict = {}
         # separate the unique responses by context
         for item in all_contexts:
-            context_responses = self.responses.response.distinct().filter(
-                                     context__icontains=item)
-            unique_response_dict[item] = context_responses
+            key = item.values("text")
+            context_responses = list(self.responses.distinct().filter(
+                                     context__icontains=key).values("response"))
+            unique_response_dict[key] = context_responses
         # find the intersection between all contexts
-        common_responses = unique_response_dict.keys()[1]
-        for value in unique_response_dict.values():
-            if value is unique_response_dict.values()[1]:
-                continue
-            common_responses = common_responses.intersection(value)
+        common_responses = []
+        i = 0
+        for val in unique_response_dict.values():
+            if i is 1:
+                common_responses = val
+            else:
+                for entry in val:
+                    if entry not in common_responses:
+                        common_responses.remove(entry)
+            i += 1
         # find the difference between all contexts
         for value in unique_response_dict.values():
-            value = value.difference(common_responses)
-            list(value)
-        return unique_response_dict[1]
+            iterator = value[:]
+            for entry in iterator:
+                if entry in common_responses:
+                    value.remove(entry)
+        return unique_response_dict.keys()

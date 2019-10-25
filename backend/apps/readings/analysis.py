@@ -301,6 +301,33 @@ class RereadingAnalysis:
             median_view_time = statistics.median(list_of_times)
         return median_view_time
 
+    @property
+    def run_compute_reread_counts(self):
+        """
+        Runs the analysis on the data loaded from the CSV file by looking at the reread count for
+        each question and the context that the question was given in and
+        prints it in a nice readable format.
+        :return: the info wed like to put on js
+        """
+
+        questions = []
+        contexts = []
+        student_data = self.responses[:]
+        for response in student_data:
+            if response.question.text not in questions:
+                questions.append(response.question.text)
+            if response.context.text not in contexts:
+                contexts.append(response.context.text)
+
+        compute_reread_counts_data = []
+
+        for question in questions:
+            for context in contexts:
+                compute_reread_counts_data.append(self.compute_reread_counts(
+                    question, context))
+
+        return compute_reread_counts_data
+
     def compute_reread_counts(self, question, context):
         """"
         Given a list of student response dicts,

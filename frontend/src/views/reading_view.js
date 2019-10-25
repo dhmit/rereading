@@ -1,6 +1,8 @@
 import React from "react";
 // import PropTypes from 'prop-types';
 
+// This is a document object hardcoded here for prototyping,
+// to be replaced with an object fetched via API call once that's ready
 const document = {
     title: "The Pigs",
     prompts: ["the author is alive", "the book was written during the cold war"],
@@ -62,7 +64,6 @@ const document = {
 
 
 class ReadingView extends React.Component {
-
     constructor(props){
         super(props);
         this.state = {

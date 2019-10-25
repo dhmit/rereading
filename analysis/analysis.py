@@ -160,8 +160,8 @@ def compute_reread_counts(student_data, question, context):
 
 def get_sentiments() -> dict:
     """
-    Returns a dictionary of sentiment scores, with the keys being the word and the values being
-    their score
+    Returns a dictionary of sentiment scores, with the keys being the word
+    and the values being their score
 
     :return: dict mapping words to their sentiment scores
     """

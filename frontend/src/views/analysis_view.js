@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from 'prop-types';
 
-
 export class SingleValueAnalysis extends React.Component {
     render() {
         return(
@@ -24,13 +23,13 @@ SingleValueAnalysis.propTypes = {
 export class TabularAnalysis extends React.Component{
     render() {
         // Create an array of indices based on the length of the header array
-        let range = n => Array.from(Array(n).keys())
-        let indices = range(this.props.headers.length)
+        let range = n => Array.from(Array(n).keys());
+        let indices = range(this.props.headers.length);
 
         return(
             <div>
                 <h3 className={"mt-4"}> {this.props.title} </h3>
-                <table border={"1"} cellPadding={"5"}>
+                <table className={"table table-bordered"}>
                     <tbody>
                         <tr>
                             {/* Auto generate the headers */}

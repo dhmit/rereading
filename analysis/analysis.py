@@ -156,16 +156,17 @@ def compute_reread_counts(student_data, question, context):
 
     return organized_data
 
+
 def unique_word_pattern(student_data):
     """
     Take the list of dictionaries and analyze the readers' responses based on the two different
-    contexts of the 2 questions (this is an ad/this is just a short story); analyze if the total 
-    number of unique responses changed as more and more readers' responses are analyzed. 
+    contexts of the 2 questions (this is an ad/this is just a short story); analyze if the total
+    number of unique responses changed as more and more readers' responses are analyzed.
     Eventually prints out the pattern along with the number of unique word in the text.
+
     :param student_data
     :return 2 lists of sets specifying unique responses at each point in time as a user
     submits a response
-    
     """
     response_ad = set()
     response_story = set()
@@ -1277,8 +1278,8 @@ class TestAnalysisMethods(unittest.TestCase):
         self.encountered = "Have you encountered this text before?"
         self.ads = "This is an ad."
         self.short_story = "This is actually a short story."
-       
-      
+
+
     def test_unique_words_pattern(self):
         """
         Tests unique_words_pattern function with two data sets. The first is
@@ -1287,7 +1288,7 @@ class TestAnalysisMethods(unittest.TestCase):
         ads response and story response lists the total unique words in each
         timestamp. Future testing is suggested using larger datasets.
         """
-      
+
         # first check: empty dataset
         unique_words_story, unique_words_ad = unique_word_pattern(self.default_student_data)
         set_unique_words_story = len(unique_words_story)
@@ -1302,7 +1303,7 @@ class TestAnalysisMethods(unittest.TestCase):
         self.assertEqual(set_unique_words_story1, 1)
         self.assertEqual(set_unique_words_ad1, 1)
 
-        
+
     def test_mean_view_time_sentiment_comparison(self):
         """
         Tests mean_view_time_sentiment_comparison function with two data sets. The first is

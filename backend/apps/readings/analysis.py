@@ -379,7 +379,6 @@ class RereadingAnalysis:
         prints it in a nice readable format.
         :return: the info wed like to put on js
         """
-
         questions = []
         contexts = []
         student_data = self.responses[:]
@@ -415,8 +414,8 @@ class RereadingAnalysis:
         # Collects the reread count for every student id of the provided context and question
         raw_reread_counts = []
         for row in self.responses:
-            table_context = row.context
-            table_question = row.question
+            table_context = row.context.text
+            table_question = row.question.text
             view_count = len(row.views)
             if context in table_context:
                 if question in table_question:
@@ -424,10 +423,24 @@ class RereadingAnalysis:
 
         # Tallies the raw reread counts into the dictionary to be returned
         organized_data = {}
+        mean_reread_count = 0
+        sum_of_views = 0
+        student_count = 0
+
         for entry in raw_reread_counts:
             if entry in organized_data.keys():
                 organized_data[entry] += 1
             elif len(raw_reread_counts) != 0:
                 organized_data.update({entry: 1})
 
-        return organized_data
+        for entry in organized_data.keys():
+            sum_of_views += entry * organized_data[entry]
+            student_count += organized_data[entry]
+
+        if student_count == 0:
+            return 0
+        else:
+            mean_reread_count = round(sum_of_views / student_count, 2)
+
+        print(organized_data)
+        return question, context, mean_reread_count, student_count

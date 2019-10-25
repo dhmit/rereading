@@ -1,4 +1,5 @@
 import React from "react";
+import {TimeIt} from "../common";
 // import PropTypes from 'prop-types';
 
 // This is a document object hardcoded here for prototyping,
@@ -62,12 +63,24 @@ const document = {
 };
 
 
-
 class ReadingView extends React.Component {
     constructor(props){
         super(props);
         this.state = {
             segmentNum: 0,
+            timer: null,
+            timeList: [],
+        }
+    }
+
+    restartTimer(firstTime) {
+        const timer = new TimeIt();
+        this.setState({timer});
+        if (!firstTime) {
+            const timeList = this.state.timeList;
+            const time = this.state.timer.stop();
+            timeList.push(time);
+            this.setState({timeList,});
         }
     }
 
@@ -76,7 +89,12 @@ class ReadingView extends React.Component {
         // document will be replaced by actual data
         if (newNum >= 0 && newNum < document.segments.length){
             this.setState({segmentNum: newNum});
+            this.restartTimer(false);
         }
+    }
+
+    componentDidMount() {
+        this.restartTimer(true);
     }
 
     render() {
@@ -95,3 +113,4 @@ class ReadingView extends React.Component {
 }
 
 export default ReadingView;
+

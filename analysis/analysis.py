@@ -34,7 +34,6 @@ def load_data_csv(csv_path: Path):
             out_data.append(row)
     return out_data
 
-
 def clean_resp_strings(dataset):
     """
     Removes punctuation from responses in dataset and makes all characters lowercase.
@@ -156,6 +155,48 @@ def compute_reread_counts(student_data, question, context):
             organized_data.update({entry: 1})
 
     return organized_data
+
+def unique_word_pattern(student_data):
+    """
+    Take the list of dictionaries and analyze the readers' responses based on the two different
+    contexts of the 2 questions (this is an ad/this is just a short story); analyze if the total 
+    number of unique responses changed as more and more readers' responses are analyzed. 
+    Eventually prints out the pattern along with the number of unique word in the text.
+    :param student_data
+    :return 2 lists of sets specifying unique responses at each point in time as a user
+    submits a response
+    
+    """
+    response_ad = set()
+    response_story = set()
+    unique_word_tracker_ad = []
+    unique_word_tracker_story = []
+    question = "In three words or fewer, what is this text about?"
+
+    for data in student_data:
+        filtered_word_resp = filter_words(data['response'])
+        if data['question'] == question and data['context'] == "This is an ad.":
+            word_set = response_ad
+            histogram = unique_word_tracker_ad
+        elif data['question'] == question and data['context'] == "This is actually a short story.":
+            word_set = response_story
+            histogram = unique_word_tracker_story
+        else:
+            continue
+        for word in filtered_word_resp:
+            word_set.add(word)
+        histogram.append(set(word_set))
+
+    return unique_word_tracker_story, unique_word_tracker_ad
+
+
+def filter_words(string):
+    """
+    helper method to preprocess the string: remove the stopwords and punctuation
+    return: list of words that are non-stopwords
+    """
+    stop_words_and_punct = ["i", "for", "in", "is", "are", "on", "are", "'s", ".", ","]
+    return [ch for ch in string.lower().split() if ch not in stop_words_and_punct]
 
 
 def get_sentiments() -> dict:
@@ -439,6 +480,75 @@ def get_word_frequency_differences(student_data):
     return ordered_responses
 
 
+def mean_view_time_sentiment_comparison(student_data):
+    """
+    Calculate the mean view time of three groups (those who had a negative-word response, a
+    neutral-word response, and a positive-word response) for comparison.
+    :param student_data: a list of dictionaries
+    :return: a tuple of floats, the mean view times of negative, neutral, and positive
+            respectively.
+    """
+    negative_total_view_time = 0
+    neutral_total_view_time = 0
+    positive_total_view_time = 0
+    negative_responses = 0
+    neutral_responses = 0
+    positive_responses = 0
+    for response_dict in student_data:
+        if (response_dict['question'] == 'In three words or fewer, what is this text about?') \
+                and (response_dict['context'] == 'This is an ad.'):
+            response: str = response_dict['response'].lower()
+            response_rank = sentiment_of_a_response(response)
+            if response_rank == -1:
+                negative_responses += 1
+                negative_total_view_time += sum(response_dict['views'])
+            elif response_rank == 1:
+                positive_responses += 1
+                positive_total_view_time += sum(response_dict['views'])
+            else:
+                neutral_responses += 1
+                neutral_total_view_time += sum(response_dict['views'])
+    if negative_responses == 0:
+        negative_mean_view_time = 0
+    else:
+        negative_mean_view_time = negative_total_view_time / negative_responses
+    if positive_responses == 0:
+        positive_mean_view_time = 0
+    else:
+        positive_mean_view_time = positive_total_view_time / positive_responses
+    if neutral_responses == 0:
+        neutral_mean_view_time = 0
+    else:
+        neutral_mean_view_time = neutral_total_view_time / neutral_responses
+    return negative_mean_view_time, neutral_mean_view_time, positive_mean_view_time
+
+
+def sentiment_of_a_response(response):
+    """
+    Calculate the sentiment score for each word in a response and takes the extreme-most
+    score across all words in teh response to determine whether the response is negative,
+    neutral, or positive
+    :param response: a string
+    :return: an int -1, 0, or 1 corresponding to whether the response is deemed negative,
+    neutral, or positive
+    """
+    dict_sentiments = get_sentiments()
+    response_list = response.split()
+    response_sentiment_list = []
+    for word in response_list:
+        if word in dict_sentiments:
+            response_sentiment_list.append(dict_sentiments[word])
+        else:
+            response_sentiment_list.append(0)
+    sentiment_score = max(response_sentiment_list, key=abs)
+    if sentiment_score < 0:
+        return -1
+    elif sentiment_score > 0:
+        return 1
+    else:
+        return 0
+
+
 def compute_median_view_time(student_data):
     """
      Given a list of student response dicts,
@@ -560,7 +670,7 @@ def run_analysis():
     """
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
-
+    mean_view_time_sentiment_comparison(student_data)
     reread_counts = compute_reread_counts(student_data, "In one word", "ad")
     print("Number of times students reread text based on question or context:\n")
     print(reread_counts)
@@ -581,6 +691,8 @@ def run_analysis():
         "In one word, how does this text make you feel?",
         "This is an ad."
     ))
+    print(unique_word_pattern(student_data)[0])
+    print(unique_word_pattern(student_data)[1])
 
 
 def compute_mean_revisits(data):
@@ -925,7 +1037,6 @@ def word_freq_all(data):
 def show_response_groups(response_groups_freq_dicts):
     """
     Given response_groups_freq_dicts list of dictionaries, prints the dicts in readable format
-
     :param response_groups_freq_dicts, lists of 4 dicts (one for each response
     group)
     mapping words to frequencies within that response group
@@ -1159,12 +1270,55 @@ class TestAnalysisMethods(unittest.TestCase):
         self.default_student_data_2 = load_data_csv(test_data_2_path)
         sample_csv_path = Path('data', 'rereading_data_2019-09-13.csv')
         self.student_data = load_data_csv(sample_csv_path)
-
+        test_data_3_path = Path('data', 'test_data_3.csv')
+        self.default_student_data_3 = load_data_csv(test_data_3_path)
         self.feel = "In one word, how does this text make you feel?"
         self.about = "In three words or fewer, what is this text about?"
         self.encountered = "Have you encountered this text before?"
         self.ads = "This is an ad."
         self.short_story = "This is actually a short story."
+       
+      
+    def test_unique_words_pattern(self):
+        """
+        Tests unique_words_pattern function with two data sets. The first is
+        the default empty dataset and the second is test_data2 which is a small dataset.
+        This function tests that it correctly appends the lists of unique words to both
+        ads response and story response lists the total unique words in each
+        timestamp. Future testing is suggested using larger datasets.
+        """
+      
+        # first check: empty dataset
+        unique_words_story, unique_words_ad = unique_word_pattern(self.default_student_data)
+        set_unique_words_story = len(unique_words_story)
+        set_unique_words_ad = len(unique_words_ad)
+        self.assertEqual(set_unique_words_story, 0)
+        self.assertEqual(set_unique_words_ad, 0)
+
+        # second check: smaller dataset
+        unique_words_story1, unique_words_ads1 = unique_word_pattern(self.test_student_data)
+        set_unique_words_story1 = len(unique_words_story1)
+        set_unique_words_ad1 = len(unique_words_ads1)
+        self.assertEqual(set_unique_words_story1, 1)
+        self.assertEqual(set_unique_words_ad1, 1)
+
+        
+    def test_mean_view_time_sentiment_comparison(self):
+        """
+        Tests mean_view_time_sentiment_comparison function with two data sets. The first is
+        specific to
+        our function and the second is generic and just an empty set. It tests that it correctly
+        calculates the mean and doesn't break when dividing by 0.
+        Comment: this Function uses the Sentiment dictionary, such that 'miscarriage' is considered
+        a neutral response and 'Giving up hope' is considered a positive response
+        :return:
+        """
+        total_mean_view_time_sentiment_comparison = mean_view_time_sentiment_comparison(
+            self.default_student_data_3)
+        self.assertEqual((0.0, 0.9645714285714285, 0.0), total_mean_view_time_sentiment_comparison)
+        total_mean_view_time_sentiment_comparison = mean_view_time_sentiment_comparison(
+            self.default_student_data)
+        self.assertEqual((0, 0, 0), total_mean_view_time_sentiment_comparison)
 
     def test_extract_responses_by_context(self):
         """
@@ -1230,10 +1384,8 @@ class TestAnalysisMethods(unittest.TestCase):
         all question and context combinations.
         """
         mean_reading_data = mean_reading_time_for_a_question(self.default_student_data, "", "")
-
         empty_comparison_tuple = ("", "", 0, 0)
         self.assertEqual(mean_reading_data, empty_comparison_tuple)
-
         # The expected result times are rounded to 2 decimals here due to Python rounding errors
         # not matching actual rounding.
         results = mean_reading_time_for_a_question(self.test_student_data, self.feel, self.ads)

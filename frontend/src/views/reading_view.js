@@ -41,11 +41,12 @@ class ReadingView extends React.Component {
             return (
                 <div className={"container"}>
                     <h1 className={"display-4 py-3 pr-3"}>{data.title}</h1>
-                    <p><b>Prompts: </b>{data.prompts.map(el => "[" + el + "] ")}</p>
                     <p>Segment Number: {this.state.segmentNum + 1}</p>
-                    <p>{data.segments[this.state.segmentNum].text}</p>
-                    <button className={"btn btn-outline-dark mr-2"} onClick = {() => this.changeSegment(-1)}>Back</button>
-                    <button className={"btn btn-outline-dark"} onClick = {() => this.changeSegment(1)}>Next</button>
+                    <div className={"row"}>
+                        <p className={"col-12 col-md-8"}>{data.segments[this.state.segmentNum].text}</p>
+                    </div>
+                    <button className={"btn btn-outline-dark mr-2"} onClick={() => this.changeSegment(-1)}>Back</button>
+                    <button className={"btn btn-outline-dark"} onClick={() => this.changeSegment(1)}>Next</button>
                 </div>
             );
         } else {

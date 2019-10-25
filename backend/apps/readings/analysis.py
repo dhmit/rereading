@@ -3,7 +3,6 @@
 Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
-from .models import StudentResponse, Question, Context
 import itertools
 import statistics
 import math
@@ -11,7 +10,7 @@ from collections import Counter
 from pathlib import Path
 
 from config.settings.base import PROJECT_ROOT
-from .models import StudentResponsePrototype, ContextPrototype
+from .models import StudentResponsePrototype, ContextPrototype, QuestionPrototype
 
 
 def max_abs(val1, val2):
@@ -169,14 +168,14 @@ class RereadingAnalysis:
         self.responses = StudentResponsePrototype.objects.all()
 
         """ Retrieve all possible questions and turn it into a list """
-        list_of_dict_of_questions = Question.objects.values('text')
+        list_of_dict_of_questions = QuestionPrototype.objects.values('text')
         merged_dicts = {}
         for key in list_of_dict_of_questions[0].keys():
             merged_dicts[key] = list(dict[key] for dict in list_of_dict_of_questions)
         self.questions = merged_dicts.get('text')
 
         """ Retrieve all possible contexts, and turn it into a list"""
-        list_of_dict_of_contexts = Context.objects.values('text')
+        list_of_dict_of_contexts = ContextPrototype.objects.values('text')
         merged_dicts = {}
         for key in list_of_dict_of_contexts[0].keys():
             merged_dicts[key] = list(dict[key] for dict in list_of_dict_of_contexts)
@@ -446,6 +445,4 @@ class RereadingAnalysis:
 
         # return self.compute_reread_counts(questions[0], context)
         return results
-
-
         return round(median_view_time)

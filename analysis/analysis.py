@@ -439,58 +439,73 @@ def get_word_frequency_differences(student_data):
     return ordered_responses
 
 
-def mean_view_time_comparison(student_data):
+def mean_view_time_sentiment_comparison(student_data):
     """
-    Calculate the mean view time of both groups (those who had a negative-word response and those
-    did not) for comparison. Prints the result.
+    Calculate the mean view time of three groups (those who had a negative-word response, a
+    neutral-word response, and a positive-word response) for comparison.
     :param student_data: a list of dictionaries
-    :return: a tuple of floats, the mean view times of negative and neutral
+    :return: a tuple of floats, the mean view times of negative, neutral, and positive
             respectively.
     """
     negative_total_view_time = 0
     neutral_total_view_time = 0
+    positive_total_view_time = 0
     negative_responses = 0
     neutral_responses = 0
-
-    # list of negative words used to separate students' responses
-    negative_key_words_list = [
-        'miscarriage',
-        'lost child',
-        'death',
-        'grief',
-        'giving up hope',
-        'deceased',
-        'loss'
-    ]
-
-    # iterates through all responses in student_data
+    positive_responses = 0
     for response_dict in student_data:
-        is_not_negative = True
         if (response_dict['question'] == 'In three words or fewer, what is this text about?') \
                 and (response_dict['context'] == 'This is an ad.'):
             response: str = response_dict['response'].lower()
-            print(response_dict)
-            # Iterate through negative words checking whether it can be found
-            # in the current response. Keeps track of number of responses and
-            # total times.
-            for word in negative_key_words_list:
-                if word in response:
-                    negative_responses += 1
-                    negative_total_view_time += sum(response_dict['views'])
-                    is_not_negative = False
-                    break
-            if is_not_negative:  # only run this if no negative word was found
+            response_rank = sentiment_of_a_response(response)
+            if response_rank == -1:
+                negative_responses += 1
+                negative_total_view_time += sum(response_dict['views'])
+            elif response_rank == 1:
+                positive_responses += 1
+                positive_total_view_time += sum(response_dict['views'])
+            else:
                 neutral_responses += 1
                 neutral_total_view_time += sum(response_dict['views'])
     if negative_responses == 0:
         negative_mean_view_time = 0
     else:
         negative_mean_view_time = negative_total_view_time / negative_responses
+    if positive_responses == 0:
+        positive_mean_view_time = 0
+    else:
+        positive_mean_view_time = positive_total_view_time / positive_responses
     if neutral_responses == 0:
         neutral_mean_view_time = 0
     else:
         neutral_mean_view_time = neutral_total_view_time / neutral_responses
-    return negative_mean_view_time, neutral_mean_view_time
+    return negative_mean_view_time, neutral_mean_view_time, positive_mean_view_time
+
+
+def sentiment_of_a_response(response):
+    """
+    Calculate the sentiment score for each word in a response and takes the extreme-most
+    score across all words in teh response to determine whether the response is negative,
+    neutral, or positive
+    :param response: a string
+    :return: an int -1, 0, or 1 corresponding to whether the response is deemed negative,
+    neutral, or positive
+    """
+    dict_sentiments = get_sentiments()
+    response_list = response.split()
+    response_sentiment_list = []
+    for word in response_list:
+        if word in dict_sentiments:
+            response_sentiment_list.append(dict_sentiments[word])
+        else:
+            response_sentiment_list.append(0)
+    sentiment_score = max(response_sentiment_list, key=abs)
+    if sentiment_score < 0:
+        return -1
+    elif sentiment_score > 0:
+        return 1
+    else:
+        return 0
 
 
 def compute_median_view_time(student_data):
@@ -614,8 +629,7 @@ def run_analysis():
     """
     csv_path = Path('data', 'rereading_data_2019-09-13.csv')
     student_data = load_data_csv(csv_path)
-    mean_view_time_comparison(student_data)
-
+    mean_view_time_sentiment_comparison(student_data)
     reread_counts = compute_reread_counts(student_data, "In one word", "ad")
     print("Number of times students reread text based on question or context:\n")
     print(reread_counts)
@@ -1221,17 +1235,22 @@ class TestAnalysisMethods(unittest.TestCase):
         self.ads = "This is an ad."
         self.short_story = "This is actually a short story."
 
-    def test_mean_view_time_comparison(self):
+    def test_mean_view_time_sentiment_comparison(self):
         """
-        Tests mean_view_time_comparison function with two data sets. The first is specific to
+        Tests mean_view_time_sentiment_comparison function with two data sets. The first is
+        specific to
         our function and the second is generic and just an empty set. It tests that it correctly
         calculates the mean and doesn't break when dividing by 0.
+        Comment: this Function uses the Sentiment dictionary, such that 'miscarriage' is considered
+        a neutral response and 'Giving up hope' is considered a positive response
         :return:
         """
-        total_mean_view_time_comparison = mean_view_time_comparison(self.default_student_data_3)
-        self.assertEqual((.73625, .3807), total_mean_view_time_comparison)
-        total_mean_view_time_comparison = mean_view_time_comparison(self.default_student_data)
-        self.assertEqual((0, 0), total_mean_view_time_comparison)
+        total_mean_view_time_sentiment_comparison = mean_view_time_sentiment_comparison(
+            self.default_student_data_3)
+        self.assertEqual((0.0, 0.9645714285714285, 0.0), total_mean_view_time_sentiment_comparison)
+        total_mean_view_time_sentiment_comparison = mean_view_time_sentiment_comparison(
+            self.default_student_data)
+        self.assertEqual((0, 0, 0), total_mean_view_time_sentiment_comparison)
 
     def test_extract_responses_by_context(self):
         """

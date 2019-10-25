@@ -69,32 +69,43 @@ class ReadingView extends React.Component {
         this.state = {
             segmentNum: 0,
             timer: null,
-            timeList: [],
+            segmentReadTimes: [],
         }
     }
 
+    /**
+     * segmentReadTimes is a array of arrays. The index of each array
+     * corresponds to the segment number of the segments and is updated
+     * with a new time every time the buttons are clicked
+     */
     restartTimer(firstTime) {
+        if (!firstTime) {
+            const segmentReadTimes = this.state.segmentReadTimes;
+            const time = this.state.timer.stop();
+            segmentReadTimes[this.state.segmentNum].push(time);
+            this.setState({segmentReadTimes,});
+        }
         const timer = new TimeIt();
         this.setState({timer});
-        if (!firstTime) {
-            const timeList = this.state.timeList;
-            const time = this.state.timer.stop();
-            timeList.push(time);
-            this.setState({timeList,});
-        }
     }
 
     changeSegment (changeNum) {
-        const newNum = this.state.segmentNum + changeNum;
+        const segmentNum = this.state.segmentNum + changeNum;
         // document will be replaced by actual data
-        if (newNum >= 0 && newNum < document.segments.length){
-            this.setState({segmentNum: newNum});
+        if (segmentNum >= 0 && segmentNum < document.segments.length){
             this.restartTimer(false);
+            this.setState({segmentNum,});
         }
     }
 
     componentDidMount() {
         this.restartTimer(true);
+        let segmentReadTimes = this.state.segmentReadTimes;
+        for (let i = 0; i < document.segments.length; i++){
+            segmentReadTimes.push([]);
+        }
+        this.setState({segmentReadTimes,});
+        console.log(this.state.segmentReadTimes);
     }
 
     /**

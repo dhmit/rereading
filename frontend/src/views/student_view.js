@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { getCookie } from '../common'
 import './student_view.css';
-import {TimeIt} from '../common'
+import {TimeIt, handleStoryScroll} from '../common'
 
 
 /**
@@ -394,31 +394,6 @@ class StudentView extends React.Component {
         this.setState({show_go_back: false, show_response:true});
     }
 
-    /**
-     * For large enough stories, this function logs how many times the user scrolls up to
-     * read a previous portion of the story
-     *
-     * Note: This only tracks the number of times scrolled up, and not when the user scrolls
-     * down to "advance" the story
-     */
-    handleStoryScroll(e) {
-        const scrollTop = e.target.scrollTop;
-        const prev_scroll = this.state.scrollTop;
-        let scroll_ups = this.state.scroll_ups;
-        let scrolling_up = this.state.scrolling_up;
-
-        // If the user is scrolling up, log it
-        if (scrollTop < prev_scroll && !scrolling_up) {
-            scroll_ups++;
-            scrolling_up = true;
-        } else if (scrollTop > prev_scroll && scrolling_up) {
-            scrolling_up = false;
-        }
-
-        this.setState({scrollTop, scroll_ups, scrolling_up});
-    }
-
-
     render() {
         let response;
 
@@ -428,7 +403,7 @@ class StudentView extends React.Component {
                     <Story
                         story_text={this.state.story_text}
                         onClick={() => this.storyButtonClick()}
-                        onScroll={(e) => this.handleStoryScroll(e)}
+                        onScroll={(e) => {this.setState(handleStoryScroll(e, this.state))}}
                     />
                 );
             } else if (this.state.show_context) {

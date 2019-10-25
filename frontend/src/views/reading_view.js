@@ -1,13 +1,29 @@
 import React from "react";
 // import PropTypes from 'prop-types';
 
+// THIS IS JUST FOR PROTOTYPING
+// DELETE ME as soon as these data are included in the API endpoint
+const PROMPTS_PROTOTYPE = ["this is an ad"];
+const QUESTIONS_PROTOTYPE = [
+    {
+        question: "question_test",
+        is_free_response: true,
+        choices: [],
+    },
+    {
+        question: "question_test2",
+        is_free_response: false,
+        choices: ["yes", "no"],
+    },
+];
+
 
 class ReadingView extends React.Component {
     constructor(props){
         super(props);
         this.state = {
             segmentNum: 0,
-            showing: false,
+            show_analysis: false,
             document: null,
         }
     }
@@ -25,61 +41,71 @@ class ReadingView extends React.Component {
 
     }
 
-    changeSegment (changeNum) {
-        const newNum = this.state.segmentNum + changeNum;
+    prevSegment () {
         // document will be replaced by actual data
-        if (newNum >= 0 && newNum < this.state.document.segments.length){
-            this.setState({segmentNum: newNum});
-        }
-        if (this.state.showing === true) {
-            this.setState({showing: !this.state.showing});
+        if (this.state.segmentNum > 1){
+            this.setState({segmentNum: this.state.segmentNum-1});
         }
     }
 
-    // addAnnotation (startIndex, endIndex) {
-    //
-    // }
+    nextSegment () {
+        // document will be replaced by actual data
+        const length = this.state.document.segments.length;
+        if (this.state.segmentNum < length){
+            if (this.state.show_analysis === false) {
+                this.setState({show_analysis: true});
+            } else {
+                this.setState({show_analysis: false, segmentNum: this.state.segmentNum+1});
+            }
+        }
+    }
+
 
     render() {
         const data = this.state.document;
 
         if (data) {
-            const questions = data.segments[this.state.segmentNum].questions;
+            const questions = QUESTIONS_PROTOTYPE; // replace me with this.state.document.whatever
+            const prompts = PROMPTS_PROTOTYPE; // replace me with this.state.document.whatever
             const segment = data.segments[this.state.segmentNum].text;
 
             return (
                 <div className={"container"}>
                     <h1>{data.title}</h1>
-                    <p>Segment Number: {this.state.segmentNum + 1}</p>
-                    <p>{segment}</p>
-                    <button onClick = {() => this.changeSegment(-1)}>Back</button>
-                    <button onClick = {() => this.changeSegment(1)}>Next</button>
-                    <button onClick = {() => this.setState({ showing: !this.state.showing })}>
-                        Toggle analysis view</button>
-
-
-                    { this.state.showing &&
-                        <div className={"analysis"}>
-                            <p><b>Prompts: </b>{data.prompts.map(el => "[" + el + "] ")}</p>
-                            <p><b>Questions: </b>{questions.map(el => "[" + el.question + "] ")}</p>
+                    <div className={"row"}>
+                        <div className={"col-9"}>
+                            <p>Segment Number: {this.state.segmentNum + 1}</p>
                             <p>{segment}</p>
-                            <p><b>Add an annotation: </b><input
-                                type="text"
-                                value={this.state.value}
-                                onChange={this.handleChange}
-                            /><button>Submit</button></p>
+                            <button onClick = {() => this.prevSegment()}>
+                                Back
+                            </button>
+                            <button onClick = {() => this.nextSegment()}>
+                                Next
+                            </button>
                         </div>
-                    }
+
+                        { this.state.show_analysis &&
+                            <div className={"analysis col-3"}>
+                                <p><b>Prompts: </b>{prompts.map(el => "[" + el + "] ")}</p>
+                                <p><b>Questions: </b>{questions.map(el => "[" + el.question + "] ")}</p>
+                                <p><b>Add an annotation: </b><input
+                                    type="text"
+                                    value={this.state.value}
+                                    onChange={this.handleChange}
+                                /><button>Submit</button></p>
+                            </div>
+                        }
+                    </div>
                 </div>
                 /* idea: maybe show the text again and allow highlighting and annotation (which
                    would show on mouse hover using popover
                  */
             );
-          } else {
-              return (
-                  <div>Loading!</div>
-              );
-          }
+        } else {
+            return (
+                <div>Loading!</div>
+            );
+        }
     }
 }
 

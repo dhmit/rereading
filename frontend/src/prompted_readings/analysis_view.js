@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from 'prop-types';
 
-class SingleValueAnalysis extends React.Component {
+export class SingleValueAnalysis extends React.Component {
     render() {
         return(
             <div className={"row"}>
@@ -20,7 +20,7 @@ SingleValueAnalysis.propTypes = {
     unit: PropTypes.string,
 };
 
-class TabularAnalysis extends React.Component{
+export class TabularAnalysis extends React.Component{
     render() {
         // Create an array of indices based on the length of the header array
         let range = n => Array.from(Array(n).keys())

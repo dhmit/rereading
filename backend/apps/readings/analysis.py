@@ -302,24 +302,24 @@ class RereadingAnalysis:
             median_view_time = statistics.median(list_of_times)
         return round(median_view_time)
 
-    # def unique_responses(self):
-    #     contexts = list(self.responses.context.distinct())
-    #     unique_response_dict = {}
-    #     # separate the unique responses by context
-    #     for item in contexts:
-    #         context_responses = list(self.responses.response.distinct().filter(
-    #                                  context__icontains=item))
-    #         unique_response_dict[item] = context_responses
-    #     # find the intersection between all contexts
-    #     common_responses = []
-    #     for value in unique_response_dict.values():
-    #         for element in value:
-    #             if element not in common_responses:
-    #                 common_responses.append(element)
-    #     # find the difference between all contexts
-    #     for value in unique_response_dict.values():
-    #         it_list = value[:]
-    #         for element in it_list:
-    #             if element in common_responses:
-    #                 value.delete(element)
-    #     return unique_response_dict
+    def unique_responses(self):
+        all_contexts = Context.objects.all()
+        # for response in self.responses:
+        #     context = response.context.text
+        unique_response_dict = {}
+        # separate the unique responses by context
+        for item in all_contexts:
+            context_responses = self.responses.response.distinct().filter(
+                                     context__icontains=item)
+            unique_response_dict[item] = context_responses
+        # find the intersection between all contexts
+        common_responses = unique_response_dict.keys()[1]
+        for value in unique_response_dict.values():
+            if value is unique_response_dict.values()[1]:
+                continue
+            common_responses = common_responses.intersection(value)
+        # find the difference between all contexts
+        for value in unique_response_dict.values():
+            value = value.difference(common_responses)
+            list(value)
+        return unique_response_dict[1]

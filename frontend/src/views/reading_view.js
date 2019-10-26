@@ -43,7 +43,7 @@ class ReadingView extends React.Component {
 
     prevSegment () {
         // document will be replaced by actual data
-        if (this.state.segmentNum > 1){
+        if (this.state.segmentNum > 0){
             this.setState({segmentNum: this.state.segmentNum-1});
         }
     }

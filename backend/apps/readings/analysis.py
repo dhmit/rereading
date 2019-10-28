@@ -437,6 +437,8 @@ class RereadingAnalysis:
         context_question_count_map = {}
 
         for row in self.responses:
+            context = row.context.text
+            question = row.question.text
             if context not in context_question_count_map:
                 context_question_count_map[context] = {}
             if question not in context_question_count_map[context]:
@@ -444,9 +446,6 @@ class RereadingAnalysis:
 
             if not RereadingAnalysis.description_has_relevant_words(row.response, relevant_words):
                 continue
-
-            context = row.context.text
-            question = row.question.text
 
             context_question_count_map[context][question] += 1
 

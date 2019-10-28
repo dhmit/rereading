@@ -437,23 +437,25 @@ class RereadingAnalysis:
         context_question_count_map = {}
 
         for row in self.responses:
+            if context not in context_question_count_map:
+                context_question_count_map[context] = {}
+            if question not in context_question_count_map[context]:
+                context_question_count_map[context][question] = 0
+
             if not RereadingAnalysis.description_has_relevant_words(row.response, relevant_words):
                 continue
 
             context = row.context.text
             question = row.question.text
-            if context not in context_question_count_map:
-                context_question_count_map[context] = {}
-            if question not in context_question_count_map[context]:
-                context_question_count_map[context][question] = 0
+
             context_question_count_map[context][question] += 1
 
         return context_question_count_map
 
     def percent_using_relevant_words_by_context_and_question(self):
         """
-        Return a dictionary whose keys are Context objects and whose
-        values are themselves dictionaries whose keys are Question objects and whose values are
+        Return a dictionary whose keys are context strings and whose
+        values are themselves dictionaries whose keys are question strings and whose values are
         floats [0.00, 1.00] that represent the percentage of students using relevant words.
         :return: The return type explained in the function description.
         """

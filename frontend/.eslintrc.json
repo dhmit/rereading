@@ -18,7 +18,7 @@
         "camelcase": ["off"],
         "indent": ["error", 4],
         "line-endings": ["off"],
-        "max-len": ["warn", {
+        "max-len": ["error", {
             "code": 100,
             "ignoreUrls": true
         }],

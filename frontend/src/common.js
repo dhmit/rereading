@@ -75,11 +75,10 @@ TimeIt.propTypes = {
  * down to "advance" the story
  */
 export function handleStoryScroll(e, state) {
-    const scrollTop = e.target.scrollTop;
+    const scrollTop = e.target.scrollingElement.scrollTop;
     const prev_scroll = state.scrollTop;
     let scroll_ups = state.scroll_ups;
     let scrolling_up = state.scrolling_up;
-
     // If the user is scrolling up, log it
     if (scrollTop < prev_scroll && !scrolling_up) {
         scroll_ups++;
@@ -87,7 +86,6 @@ export function handleStoryScroll(e, state) {
     } else if (scrollTop > prev_scroll && scrolling_up) {
         scrolling_up = false;
     }
-    console.log(state);
     // For use with the setState function
     return {scrollTop: scrollTop, scroll_ups: scroll_ups, scrolling_up: scrolling_up};
 }

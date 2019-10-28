@@ -92,7 +92,7 @@ class ReadingView extends React.Component {
         this.setState({timer});
     }
 
-    changeSegment (changeNum) {
+    changeSegment(changeNum) {
         const segmentNum = this.state.segmentNum + changeNum;
         // document will be replaced by actual data
         if (segmentNum >= 0 && segmentNum < document.segments.length){
@@ -101,6 +101,11 @@ class ReadingView extends React.Component {
         }
     }
 
+    // We have the big arrow notation here to bind "this" to this function
+    handleScroll = (e) => {
+        this.setState(handleStoryScroll(e, this.state));
+    };
+
     componentDidMount() {
         this.restartTimer(true);
         let segmentReadTimes = this.state.segmentReadTimes;
@@ -108,6 +113,8 @@ class ReadingView extends React.Component {
             segmentReadTimes.push([]);
         }
         this.setState({segmentReadTimes,});
+        // This will allow the scroll detector to work
+        window.addEventListener('scroll', this.handleScroll, true);
     }
 
     /**
@@ -117,12 +124,11 @@ class ReadingView extends React.Component {
     render() {
         const data = document;
         return (
-            <div className={"container"} onScroll={(e) =>
-            {this.setState(handleStoryScroll(e, this.state))}}>
+            <div className={"container"}>
                 <h1>{data.title}</h1>
                 <p><b>Prompts: </b>{data.prompts.map(el => "[" + el + "] ")}</p>
                 <p>Segment Number: {this.state.segmentNum + 1}</p>
-                <p style={{fontSize: "300px"}}>{data.segments[this.state.segmentNum].text}</p>
+                <p>{data.segments[this.state.segmentNum].text}</p>
                 {this.state.segmentNum > 0 ?
                     <button onClick = {() => this.changeSegment(-1)}>Back</button> :
                     ""}

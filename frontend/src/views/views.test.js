@@ -5,6 +5,8 @@ import {
     ContextVsViewTime,
     SentimentScores,
     MeanReadingTimesForQuestions,
+    SingleValueAnalysis,
+    TabularAnalysis,
     CommonResponses,
 } from "./analysis_view";
 
@@ -71,5 +73,30 @@ it('MeanReadingTimesForQuestions renders without crashing', () => {
     ];
     ReactDOM.render(<MeanReadingTimesForQuestions
         mean_reading_times_for_questions={test_data} />, div);
+    ReactDOM.unmountComponentAtNode(div);
+});
+
+it('SingleValueAnalysis renders without crashing', () => {
+    const div = document.createElement('div');
+    const test_data = 32;
+    ReactDOM.render(<SingleValueAnalysis
+        header={"Total view time"}
+        value={test_data}
+        unit={"seconds"}/>, div);
+    ReactDOM.unmountComponentAtNode(div);
+
+});
+
+it('TabularData renders without crashing', () => {
+    const div = document.createElement('div');
+    const test_data = [
+        ["happy", 30],
+        ["surprised", 15],
+    ];
+    ReactDOM.render(<TabularAnalysis
+        headers={["word",'frequency']}
+        data={test_data}
+        title={"responses"}
+    />, div);
     ReactDOM.unmountComponentAtNode(div);
 });

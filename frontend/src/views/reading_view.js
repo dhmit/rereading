@@ -23,7 +23,7 @@ class ReadingView extends React.Component {
         super(props);
         this.state = {
             segmentNum: 0,
-            show_analysis: false,
+            rereading: false,  // we alternate reading and rereading
             document: null,
         }
     }
@@ -49,13 +49,14 @@ class ReadingView extends React.Component {
     }
 
     nextSegment () {
-        // document will be replaced by actual data
         const length = this.state.document.segments.length;
         if (this.state.segmentNum < length){
-            if (this.state.show_analysis === false) {
-                this.setState({show_analysis: true});
+            if (this.state.rereading) {
+                // If we're already rereading, move to the next segment
+                this.setState({rereading: false, segmentNum: this.state.segmentNum+1});
             } else {
-                this.setState({show_analysis: false, segmentNum: this.state.segmentNum+1});
+                // Otherwise, move on to the rereading layout
+                this.setState({rereading: true});
             }
         }
     }
@@ -80,14 +81,16 @@ class ReadingView extends React.Component {
                                 Back
                             </button>
                             <button onClick = {() => this.nextSegment()}>
-                                Next
+                                {this.state.rereading ? 'Next' : 'Reread'}
                             </button>
                         </div>
 
-                        { this.state.show_analysis &&
+                        {this.state.rereading &&
                             <div className={"analysis col-3"}>
                                 <p><b>Prompts: </b>{prompts.map(el => "[" + el + "] ")}</p>
-                                <p><b>Questions: </b>{questions.map(el => "[" + el.question + "] ")}</p>
+                                <p><b>Questions: </b>
+                                    {questions.map(el => "[" + el.question + "] ")}
+                                </p>
                                 <p><b>Add an annotation: </b><input
                                     type="text"
                                     value={this.state.value}
@@ -97,9 +100,6 @@ class ReadingView extends React.Component {
                         }
                     </div>
                 </div>
-                /* idea: maybe show the text again and allow highlighting and annotation (which
-                   would show on mouse hover using popover
-                 */
             );
         } else {
             return (

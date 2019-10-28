@@ -15,16 +15,16 @@ export class DocumentAnalysisView extends React.Component {
      * This function is fired once this component has loaded into the DOM.
      * We send a request to the backend for the analysis data.
      */
-    async componentDidMount() {
-        try {
-            const response = await fetch('/api/document_analysis/');
-            const analysis = await response.json();
-            this.setState({analysis});
-        } catch (e) {
-            // For now, just log errors to the console.
-            console.log(e);
-        }
-    }
+    // async componentDidMount() {
+    //     try {
+    //         const response = await fetch('/api/analysis/');
+    //         const analysis = await response.json();
+    //         this.setState({analysis});
+    //     } catch (e) {
+    //         // For now, just log errors to the console.
+    //         console.log(e);
+    //     }
+    // }
 
     render() {
         if (this.state.analysis !== null) {

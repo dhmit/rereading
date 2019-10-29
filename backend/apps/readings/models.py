@@ -85,7 +85,7 @@ class Question(models.Model):
 
     class Meta:
         # as an abstract base class, Django won't create separate database tables for Question and
-        # its # subclasses -- instead all of the subclasses will just get these fields
+        # its subclasses -- instead all of the subclasses will just get these fields
         abstract = True
 
 

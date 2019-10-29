@@ -88,6 +88,18 @@ class SegmentQuestion(models.Model):
     )
 
 
+class DocumentQuestion(models.Model):
+    """
+    A model representing a question that applies to an entire document
+    """
+    text = models.TextField()
+    document = models.ForeignKey(
+        Document,
+        on_delete=models.CASCADE,
+        related_name='global_questions'
+    )
+
+
 class SegmentQuestionResponse(models.Model):
     """
     Response to a SegmentQuestion
@@ -138,6 +150,24 @@ class StudentReadingData(models.Model):
         null=False,
         on_delete=models.CASCADE,
         related_name='reading_data'
+    )
+
+
+class DocumentQuestionResponse(models.Model):
+    """
+    Captures a response to a document-level question
+    """
+    response = models.TextField()
+    question = models.ForeignKey(
+        DocumentQuestion,
+        on_delete=models.CASCADE,
+        related_name='responses'
+    )
+
+    student_reading_data = models.ForeignKey(
+        StudentReadingData,
+        on_delete=models.CASCADE,
+        related_name='global_responses'
     )
 
 

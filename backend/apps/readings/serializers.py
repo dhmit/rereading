@@ -7,9 +7,37 @@ from rest_framework import serializers
 
 from .models import (
     Document, Segment, Student, SegmentQuestion, SegmentContext, SegmentQuestionResponse,
-    StudentReadingData, StudentSegmentData, StoryPrototype, QuestionPrototype, ContextPrototype,
-    StudentResponsePrototype
+    StudentReadingData, StudentSegmentData, DocumentQuestion, DocumentQuestionResponse,
+    StoryPrototype, QuestionPrototype, ContextPrototype, StudentResponsePrototype
 )
+
+
+class DocumentQuestionSerializer(serializers.ModelSerializer):
+    """
+    Serializes Document-level questions
+    """
+
+    class Meta:
+        model = DocumentQuestion
+
+        fields = (
+            'id',
+            'text',
+        )
+
+
+class DocumentQuestionResponseSerializer(serializers.ModelSerializer):
+    """
+    Serializes a Student's response to a given document-level question
+    """
+
+    class Meta:
+        model = DocumentQuestionResponse
+
+        fields = (
+            'id',
+            'text',
+        )
 
 
 class SegmentQuestionSerializer(serializers.ModelSerializer):
@@ -96,6 +124,7 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
     """
 
     segment_data = StudentSegmentDataSerializer(many=True)
+    global_responses = DocumentQuestionResponseSerializer(many=True)
 
     class Meta:
         model = StudentReadingData
@@ -103,6 +132,7 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'segment_data',
+            'global_responses',
         )
 
 
@@ -127,6 +157,7 @@ class DocumentSerializer(serializers.ModelSerializer):
     Serializes Document metadata and associated segments
     """
     segments = SegmentSerializer(many=True, read_only=True)
+    global_questions = DocumentQuestionSerializer(many=True, read_only=True)
 
     class Meta:
         model = Document
@@ -135,7 +166,8 @@ class DocumentSerializer(serializers.ModelSerializer):
             'id',
             'title',
             'author',
-            'segments'
+            'global_questions',
+            'segments',
         )
 
 

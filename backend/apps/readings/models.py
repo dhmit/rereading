@@ -83,6 +83,11 @@ class Question(models.Model):
     text = models.TextField()
     response_word_limit = models.IntegerField()
 
+    class Meta:
+        # as an abstract base class, Django won't create separate database tables for Question and
+        # its # subclasses -- instead all of the subclasses will just get these fields
+        abstract = True
+
 
 class DocumentQuestion(Question):
     """
@@ -118,7 +123,7 @@ class DocumentQuestion(models.Model):
     document = models.ForeignKey(
         Document,
         on_delete=models.CASCADE,
-        related_name='global_questions'
+        related_name='document_questions'
     )
 
 
@@ -178,6 +183,8 @@ class StudentReadingData(models.Model):
 class DocumentQuestionResponse(models.Model):
     """
     Captures a response to a document-level question
+    TODO: let this track diffs per segment, rather than just
+          a single response
     """
     response = models.TextField()
     question = models.ForeignKey(
@@ -189,7 +196,7 @@ class DocumentQuestionResponse(models.Model):
     student_reading_data = models.ForeignKey(
         StudentReadingData,
         on_delete=models.CASCADE,
-        related_name='global_responses'
+        related_name='document_responses'
     )
 
 

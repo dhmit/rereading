@@ -70,6 +70,7 @@ class ReadingView extends React.Component {
             segmentNum: 0,
             timer: null,
             segmentReadTimes: [],
+            segmentScrollUps: [],
             scrollTop: 0,
             scroll_ups: 0,
             scrolling_up: false,
@@ -92,11 +93,18 @@ class ReadingView extends React.Component {
         this.setState({timer});
     }
 
+    updateScrollUps() {
+        const segmentScrollUps = this.state.segmentScrollUps;
+        segmentScrollUps[this.state.segmentNum].push(this.state.scroll_ups);
+        this.setState({segmentScrollUps, scroll_ups:0});
+    }
+
     changeSegment(changeNum) {
         const segmentNum = this.state.segmentNum + changeNum;
         // document will be replaced by actual data
         if (segmentNum >= 0 && segmentNum < document.segments.length){
             this.restartTimer(false);
+            this.updateScrollUps();
             this.setState({segmentNum,});
         }
     }
@@ -109,8 +117,11 @@ class ReadingView extends React.Component {
     componentDidMount() {
         this.restartTimer(true);
         let segmentReadTimes = this.state.segmentReadTimes;
+        let segmentScrollUps = this.state.segmentScrollUps;
         for (let i = 0; i < document.segments.length; i++){
             segmentReadTimes.push([]);
+            // Will need to make this account for the reread after merge
+            segmentScrollUps.push([]);
         }
         this.setState({segmentReadTimes,});
         // This will allow the scroll detector to work

@@ -129,12 +129,10 @@ class ReadingView extends React.Component {
                 <p><b>Prompts: </b>{data.prompts.map(el => "[" + el + "] ")}</p>
                 <p>Segment Number: {this.state.segmentNum + 1}</p>
                 <p>{data.segments[this.state.segmentNum].text}</p>
-                {this.state.segmentNum > 0 ?
-                    <button onClick = {() => this.changeSegment(-1)}>Back</button> :
-                    ""}
-                {this.state.segmentNum < document.segments.length - 1 ?
-                    <button onClick={() => this.changeSegment(1)}>Next</button> :
-                    ""}
+                {this.state.segmentNum > 0 &&
+                <button onClick = {() => this.changeSegment(-1)}>Back</button>}
+                {this.state.segmentNum < document.segments.length - 1 &&
+                <button onClick={() => this.changeSegment(1)}>Next</button>}
             </div>
         );
     }

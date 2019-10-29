@@ -440,7 +440,7 @@ class RereadingAnalysis:
         if student_count == 0:
             return 0
         else:
-            mean_reread_count = round(sum_of_views / student_count, 2)
+            mean_reread_count = round((sum_of_views / student_count), 2)
 
         print(organized_data)
         return question, context, mean_reread_count, student_count

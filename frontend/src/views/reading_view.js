@@ -69,6 +69,8 @@ class ReadingView extends React.Component {
             const questions = QUESTIONS_PROTOTYPE; // replace me with this.state.document.whatever
             const prompts = PROMPTS_PROTOTYPE; // replace me with this.state.document.whatever
             const segment = data.segments[this.state.segmentNum].text;
+            const segment_lines = segment.split("\n")
+            console.log(segment_lines)
 
             return (
                 <div className={"container"}>
@@ -76,7 +78,10 @@ class ReadingView extends React.Component {
                     <div className={"row"}>
                         <div className={"col-9"}>
                             <p>Segment Number: {this.state.segmentNum + 1}</p>
-                            <p>{segment}</p>
+                            {segment_lines.map( (line, k) => (
+                                <p key={k}>{line}</p>)
+                            )}
+                            {/*<p>{segment}</p>*/}
                             <button onClick = {() => this.prevSegment()}>
                                 Back
                             </button>

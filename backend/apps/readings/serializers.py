@@ -16,7 +16,6 @@ class SegmentQuestionSerializer(serializers.ModelSerializer):
     """
     Serializes the questions that relate to a given segment
     """
-
     class Meta:
         model = SegmentQuestion
 
@@ -31,7 +30,6 @@ class SegmentContextSerializer(serializers.ModelSerializer):
     """
     Serializes the contexts provided with a given segment
     """
-
     class Meta:
         model = SegmentContext
 
@@ -45,7 +43,6 @@ class SegmentSerializer(serializers.ModelSerializer):
     """
     Serializes data related to a given segment of a document
     """
-
     questions = SegmentQuestionSerializer(many=True)
     contexts = SegmentContextSerializer(many=True)
 

@@ -75,12 +75,34 @@ class Student(models.Model):
     name = models.TextField(default='')
 
 
-class SegmentQuestion(models.Model):
+class Question(models.Model):
     """
-    A model that represents a question about a given segment
+    A model that represents a question
+    FOR SUBCLASSING ONLY DO NOT USE ME DIRECTLY
     """
     text = models.TextField()
     response_word_limit = models.IntegerField()
+
+
+class DocumentQuestion(Question):
+    """
+    A question that persists through the whole reading,
+    and is shown at each segment reread.
+    """
+    # Overview questions are only shown at the overview page at the end
+    is_overview_question = models.BooleanField(default=False)
+
+    document = models.ForeignKey(
+        Document,
+        on_delete=models.CASCADE,
+        related_name='questions'
+    )
+
+
+class SegmentQuestion(Question):
+    """
+    A question about a given segment
+    """
     segment = models.ForeignKey(
         Segment,
         on_delete=models.CASCADE,

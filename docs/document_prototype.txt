@@ -1,0 +1,65 @@
+This was the data format for the document in the frontend that Jason and Ophelia originally designed.
+
+Keep it! There's some stuff we haven't implemented here yet.
+
+- RA (2019-10-25)
+
+// This is a document object hardcoded here for prototyping,
+// to be replaced with an object fetched via API call once that's ready
+const document_prototype = {
+    title: "The Pigs",
+    prompts: ["the author is alive", "the book was written during the cold war"],
+    segments: [
+        {
+            text: "The little pig built a house.",
+            seq: 0,
+            prompts: ["this is an ad"],
+            questions: [
+                {
+                    question: "question_test",
+                    is_free_response: true,
+                    choices: [],
+                },
+                {
+                    question: "question_test2",
+                    is_free_response: false,
+                    choices: ["yes", "no"],
+                },
+            ]
+        },
+        {
+            text: "The wolf huffed and puffed",
+            seq: 1,
+            prompts: ["this is a story", "the author is testing you"],
+            questions: [
+                {
+                    question: "question_test",
+                    is_free_response: true,
+                    choices: [],
+                },
+                {
+                    question: "question_test2",
+                    is_free_response: false,
+                    choices: ["yes", "no"],
+                },
+            ]
+        },
+        {
+            text: "The pigs have brick house so they are safe.",
+            seq: 2,
+            prompts: ["this is a poem"],
+            questions: [
+                {
+                    question: "question_test",
+                    is_free_response: true,
+                    choices: [],
+                },
+                {
+                    question: "question_test2",
+                    is_free_response: false,
+                    choices: ["yes", "no"],
+                },
+            ]
+        },
+    ]
+};

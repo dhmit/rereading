@@ -1,7 +1,12 @@
-import React from "react";
-// import PropTypes from 'prop-types';
+This was the data format for the document in the frontend that Jason and Ophelia originally designed.
 
-const document = {
+Keep it! There's some stuff we haven't implemented here yet.
+
+- RA (2019-10-25)
+
+// This is a document object hardcoded here for prototyping,
+// to be replaced with an object fetched via API call once that's ready
+const document_prototype = {
     title: "The Pigs",
     prompts: ["the author is alive", "the book was written during the cold war"],
     segments: [
@@ -58,39 +63,3 @@ const document = {
         },
     ]
 };
-
-
-
-class ReadingView extends React.Component {
-
-    constructor(props){
-        super(props);
-        this.state = {
-            segmentNum: 0,
-        }
-    }
-
-    changeSegment (changeNum) {
-        const newNum = this.state.segmentNum + changeNum;
-        // document will be replaced by actual data
-        if (newNum >= 0 && newNum < document.segments.length){
-            this.setState({segmentNum: newNum});
-        }
-    }
-
-    render() {
-        const data = document;
-        return (
-            <div className={"container"}>
-                <h1>{data.title}</h1>
-                <p><b>Prompts: </b>{data.prompts.map(el => "[" + el + "] ")}</p>
-                <p>Segment Number: {this.state.segmentNum + 1}</p>
-                <p>{data.segments[this.state.segmentNum].text}</p>
-                <button onClick = {() => this.changeSegment(-1)}>Back</button>
-                <button onClick = {() => this.changeSegment(1)}>Next</button>
-            </div>
-        );
-    }
-}
-
-export default ReadingView;

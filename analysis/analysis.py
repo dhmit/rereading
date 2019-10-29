@@ -34,7 +34,6 @@ def load_data_csv(csv_path: Path):
             out_data.append(row)
     return out_data
 
-
 def clean_resp_strings(dataset):
     """
     Removes punctuation from responses in dataset and makes all characters lowercase.
@@ -158,10 +157,53 @@ def compute_reread_counts(student_data, question, context):
     return organized_data
 
 
+def unique_word_pattern(student_data):
+    """
+    Take the list of dictionaries and analyze the readers' responses based on the two different
+    contexts of the 2 questions (this is an ad/this is just a short story); analyze if the total
+    number of unique responses changed as more and more readers' responses are analyzed.
+    Eventually prints out the pattern along with the number of unique word in the text.
+
+    :param student_data
+    :return 2 lists of sets specifying unique responses at each point in time as a user
+    submits a response
+    """
+    response_ad = set()
+    response_story = set()
+    unique_word_tracker_ad = []
+    unique_word_tracker_story = []
+    question = "In three words or fewer, what is this text about?"
+
+    for data in student_data:
+        filtered_word_resp = filter_words(data['response'])
+        if data['question'] == question and data['context'] == "This is an ad.":
+            word_set = response_ad
+            histogram = unique_word_tracker_ad
+        elif data['question'] == question and data['context'] == "This is actually a short story.":
+            word_set = response_story
+            histogram = unique_word_tracker_story
+        else:
+            continue
+        for word in filtered_word_resp:
+            word_set.add(word)
+        histogram.append(set(word_set))
+
+    return unique_word_tracker_story, unique_word_tracker_ad
+
+
+def filter_words(string):
+    """
+    helper method to preprocess the string: remove the stopwords and punctuation
+    return: list of words that are non-stopwords
+    """
+    stop_words_and_punct = ["i", "for", "in", "is", "are", "on", "are", "'s", ".", ","]
+    return [ch for ch in string.lower().split() if ch not in stop_words_and_punct]
+
+
 def get_sentiments() -> dict:
     """
-    Returns a dictionary of sentiment scores, with the keys being the word and the values being
-    their score
+    Returns a dictionary of sentiment scores, with the keys being the word
+    and the values being their score
 
     :return: dict mapping words to their sentiment scores
     """
@@ -650,6 +692,8 @@ def run_analysis():
         "In one word, how does this text make you feel?",
         "This is an ad."
     ))
+    print(unique_word_pattern(student_data)[0])
+    print(unique_word_pattern(student_data)[1])
 
 
 def compute_mean_revisits(data):
@@ -1234,6 +1278,31 @@ class TestAnalysisMethods(unittest.TestCase):
         self.encountered = "Have you encountered this text before?"
         self.ads = "This is an ad."
         self.short_story = "This is actually a short story."
+
+
+    def test_unique_words_pattern(self):
+        """
+        Tests unique_words_pattern function with two data sets. The first is
+        the default empty dataset and the second is test_data2 which is a small dataset.
+        This function tests that it correctly appends the lists of unique words to both
+        ads response and story response lists the total unique words in each
+        timestamp. Future testing is suggested using larger datasets.
+        """
+
+        # first check: empty dataset
+        unique_words_story, unique_words_ad = unique_word_pattern(self.default_student_data)
+        set_unique_words_story = len(unique_words_story)
+        set_unique_words_ad = len(unique_words_ad)
+        self.assertEqual(set_unique_words_story, 0)
+        self.assertEqual(set_unique_words_ad, 0)
+
+        # second check: smaller dataset
+        unique_words_story1, unique_words_ads1 = unique_word_pattern(self.test_student_data)
+        set_unique_words_story1 = len(unique_words_story1)
+        set_unique_words_ad1 = len(unique_words_ads1)
+        self.assertEqual(set_unique_words_story1, 1)
+        self.assertEqual(set_unique_words_ad1, 1)
+
 
     def test_mean_view_time_sentiment_comparison(self):
         """

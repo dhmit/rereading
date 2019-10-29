@@ -85,12 +85,12 @@ function QuestionView(props) {
             const context = response.context;
 
             // We have already added the context to our questions object
-            if (questions.hasOwnProperty(context)) {
+            if (context in questions) {
 
                 const context_pairing = questions[context];
 
                 // The question is already in the context's list, so add the student
-                if (context_pairing.hasOwnProperty(question)) {
+                if (question in context_pairing) {
                     context_pairing[question].push([i, response_num]);
 
                 // The context/question pairing doesn't exist yet
@@ -112,7 +112,7 @@ function QuestionView(props) {
     // context_num is not guaranteed to start with 0
     let question_key;
     for (let context_num in questions) {
-        if (!questions.hasOwnProperty(context_num)) {
+        if (!Object.prototype.hasOwnProperty.call(questions, context_num)) {
             continue;
         }
 
@@ -120,7 +120,7 @@ function QuestionView(props) {
         const context_pairing = questions[context_num];
         for (let question in context_pairing) {
 
-            if (!context_pairing.hasOwnProperty(question)) {
+            if (!Object.prototype.hasOwnProperty.call(context_pairing, question)) {
                 continue;
             }
 

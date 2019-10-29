@@ -115,18 +115,6 @@ class SegmentQuestion(Question):
     )
 
 
-class DocumentQuestion(models.Model):
-    """
-    A model representing a question that applies to an entire document
-    """
-    text = models.TextField()
-    document = models.ForeignKey(
-        Document,
-        on_delete=models.CASCADE,
-        related_name='document_questions'
-    )
-
-
 class SegmentQuestionResponse(models.Model):
     """
     Response to a SegmentQuestion

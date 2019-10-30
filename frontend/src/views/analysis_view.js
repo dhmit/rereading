@@ -170,6 +170,7 @@ export class AnalysisView extends React.Component {
                 context_vs_read_time,
                 question_sentiment_analysis,
                 compute_median_view_time,
+                // all_contexts_repeated_prompt_words,
             } = this.state.analysis;
             return (
                 <div className={"container"}>
@@ -206,7 +207,11 @@ export class AnalysisView extends React.Component {
                         sentiment_average={question_sentiment_analysis[0]}
                         sentiment_std={question_sentiment_analysis[1]}
                     />
-
+                    {/*<h1>Repeated Prompt Words</h1>*/}
+                    {/*TODO unpack the dictionaries returned by
+                     all_contexts_repeated_prompt_words*/}
+                    {/*{console.log(all_contexts_repeated_prompt_words)}*/}
+                    {/*<p>{all_contexts_repeated_prompt_words}</p>*/}
                 </div>
             );
         } else {

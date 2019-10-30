@@ -168,7 +168,6 @@ def repeated_prompt_words(responses):
     # cycling through responses
     stop_words = ['a', 'and', 'the', 'of', 'an', 'for']
     for word in responses:
-        print(word)
         if word in resp_words:
             resp_words[word] += 1
         elif word not in stop_words:
@@ -450,10 +449,11 @@ class RereadingAnalysis:
         # removing punctuation and making lowercase
         clean_dataset = self.clean_resp_strings()  # removing punctuation and making lowercase
         for resp in clean_dataset:
-            if resp.question == question and resp.context == "This is an ad.":
-                responses_ad += resp['response'].split()
-            elif resp.question == question and resp.context == "This is actually a short story.":
-                responses_story += resp['response'].split()
+            if resp.question.text == question and resp.context.text == "This is an ad.":
+                responses_ad += resp.response.split()
+            elif resp.question.text == question and resp.context.text == "This is actually a " \
+                                                                         "short story.":
+                responses_story += resp.response.split()
 
         return responses_ad, responses_story
 

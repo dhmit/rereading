@@ -10,7 +10,7 @@ from collections import Counter
 from pathlib import Path
 
 from config.settings.base import PROJECT_ROOT
-from .models import StudentResponsePrototype, ContextPrototype
+from .models import StudentResponsePrototype, ContextPrototype, QuestionPrototype
 
 
 def max_abs(val1, val2):
@@ -290,7 +290,39 @@ class RereadingAnalysis:
 
         return average, standard_dev
 
-    # def unique_responses(self):
+    def unique_responses(self):
+        """
+        return a dictionary of dictionaries of the context: questions: unique responses for each
+        question for each context
+        :returns: dictionary of unique responses per context, dictionary of responses common to
+        every context, divided by question
+        """
+        questions = list(QuestionPrototype.text.distinct())
+        contexts = list(ContextPrototype.text.distinct())
+        response_dict = {}
+        common_dict = {}
+        # compile lists of responses divided by question and context
+        for question in questions:
+            for context in contexts:
+                value = get_responses_for_question(self.responses, question, context).keys()
+                response_dict[question] = {context: value}
+        for item in questions:
+            # prime the common list with all entries from first context
+            common_list = response_dict[item][contexts[0]]
+            for con in contexts:
+                for response in response_dict[item][con]:
+                    if response not in common_list:
+                        common_list.remove(response)
+            common_dict[item] = common_list
+            # exclude the common answers for unique answers
+            for text in contexts:
+                iterlist = response_dict[item][con].copy()
+                for element in iterlist:
+                    if element in common_list:
+                        response_dict[item][con].remove(element)
+        return response_dict, common_dict
+
+
     #     all_contexts = list(ContextPrototype.objects.all().values_list("text"))
     #     # for response in self.responses:
     #     #     context = response.context.text

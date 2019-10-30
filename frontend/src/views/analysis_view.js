@@ -190,7 +190,11 @@ export class AnalysisView extends React.Component {
                 context_vs_read_time,
                 question_sentiment_analysis,
                 compute_median_view_time,
-                // unique_responses,
+                // unique_responses,    dictionary of contexts, questions, unique responses
+                //                      Want to display based with drop-down menu for context and
+                //                      question selector. Could incorporate toggle button to
+                //                      switch between the unique responses and the responses
+                //                      common to all contexts
             } = this.state.analysis;
             return (
                 <div className={"container"}>

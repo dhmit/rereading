@@ -5,16 +5,154 @@ allow the frontend to suggest changes to the backend/database.
 """
 from rest_framework import serializers
 
-from .models import Story, Question, Context, Student, StudentResponse
+from .models import (
+    Document, Segment, Student, SegmentQuestion, SegmentContext, SegmentQuestionResponse,
+    StudentReadingData, StudentSegmentData, StoryPrototype, QuestionPrototype, ContextPrototype,
+    StudentResponsePrototype
+)
 
 
-class StudentResponseSerializer(serializers.ModelSerializer):
+class SegmentQuestionSerializer(serializers.ModelSerializer):
+    """
+    Serializes the questions that relate to a given segment
+    """
+
+    class Meta:
+        model = SegmentQuestion
+
+        fields = (
+            'id',
+            'text',
+            'response_word_limit',
+        )
+
+
+class SegmentContextSerializer(serializers.ModelSerializer):
+    """
+    Serializes the contexts provided with a given segment
+    """
+
+    class Meta:
+        model = SegmentContext
+
+        fields = (
+            'id',
+            'text',
+        )
+
+
+class SegmentSerializer(serializers.ModelSerializer):
+    """
+    Serializes data related to a given segment of a document
+    """
+
+    questions = SegmentQuestionSerializer(many=True)
+    contexts = SegmentContextSerializer(many=True)
+
+    class Meta:
+        model = Segment
+
+        fields = (
+            'id',
+            'text',
+            'sequence',
+            'questions',
+            'contexts',
+        )
+
+
+class SegmentQuestionResponseSerializer(serializers.ModelSerializer):
+    """
+    Serializes a response provided to a question from a segment
+    """
+
+    class Meta:
+        model = SegmentQuestionResponse
+
+        fields = (
+            'id',
+            'response',
+        )
+
+
+class StudentSegmentDataSerializer(serializers.ModelSerializer):
+    """
+    Serializes the data received from a user for a given segment
+    """
+
+    class Meta:
+        model = StudentSegmentData
+
+        fields = (
+            'id',
+            'views',
+            'scroll_ups',
+        )
+
+
+class StudentReadingDataSerializer(serializers.ModelSerializer):
+    """
+    Serializes the data received from all segments of a given document
+    """
+
+    segment_data = StudentSegmentDataSerializer(many=True)
+
+    class Meta:
+        model = StudentReadingData
+
+        fields = (
+            'id',
+            'segment_data',
+        )
+
+
+class StudentSerializer(serializers.ModelSerializer):
+    """
+    Serializes all data associated with the given student, i.e. reading data, responses, etc.
+    """
+
+    reading_data = StudentReadingDataSerializer(many=True)
+
+    class Meta:
+        model = Student
+
+        fields = (
+            'id',
+            'reading_data',
+        )
+
+
+class DocumentSerializer(serializers.ModelSerializer):
+    """
+    Serializes Document metadata and associated segments
+    """
+    segments = SegmentSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Document
+
+        fields = (
+            'id',
+            'title',
+            'author',
+            'segments'
+        )
+
+
+################################################################################
+# Prototyping Serializers
+# Serializers below were for the summer prototype
+# and initial analysis prototyping
+################################################################################
+
+
+class StudentResponsePrototypeSerializer(serializers.ModelSerializer):
     """
     A serializer makes it possible to view a database Django model
     on the web, such as React
     """
     class Meta:
-        model = StudentResponse
+        model = StudentResponsePrototype
 
         fields = (
             'id',
@@ -26,11 +164,11 @@ class StudentResponseSerializer(serializers.ModelSerializer):
         )
 
 
-class StudentSerializer(serializers.ModelSerializer):
+class StudentPrototypeSerializer(serializers.ModelSerializer):
     """
     Serializes a student object and responses.
     """
-    student_responses = StudentResponseSerializer(many=True)
+    student_responses = StudentResponsePrototypeSerializer(many=True)
 
     def create(self, validated_data):
         """
@@ -42,7 +180,7 @@ class StudentSerializer(serializers.ModelSerializer):
         responses_data = validated_data.pop('student_responses')
         student = Student.objects.create(**validated_data)
         for response_data in responses_data:
-            StudentResponse.objects.create(student=student, **response_data)
+            StudentResponsePrototype.objects.create(student=student, **response_data)
 
         return student
 
@@ -56,12 +194,12 @@ class StudentSerializer(serializers.ModelSerializer):
         )
 
 
-class QuestionSerializer(serializers.ModelSerializer):
+class QuestionPrototypeSerializer(serializers.ModelSerializer):
     """
     Serializes a Question object.
     """
     class Meta:
-        model = Question
+        model = QuestionPrototype
 
         fields = (
             'id',
@@ -70,12 +208,12 @@ class QuestionSerializer(serializers.ModelSerializer):
         )
 
 
-class ContextSerializer(serializers.ModelSerializer):
+class ContextPrototypeSerializer(serializers.ModelSerializer):
     """
     Serializes a Context object.
     """
     class Meta:
-        model = Context
+        model = ContextPrototype
 
         fields = (
             'id',
@@ -83,15 +221,15 @@ class ContextSerializer(serializers.ModelSerializer):
         )
 
 
-class StorySerializer(serializers.ModelSerializer):
+class StoryPrototypeSerializer(serializers.ModelSerializer):
     """
     Serializes a Story, including its questions and contexts.
     """
     contexts = serializers.StringRelatedField(many=True, read_only=True)
-    questions = QuestionSerializer(many=True, read_only=True)
+    questions = QuestionPrototypeSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Story
+        model = StoryPrototype
         fields = (
             'id',
             'story_text',
@@ -103,6 +241,11 @@ class StorySerializer(serializers.ModelSerializer):
 class AnalysisSerializer(serializers.Serializer):
     """ Serializes analysis class """
     total_view_time = serializers.ReadOnlyField()
+    all_responses = serializers.ReadOnlyField()
+    run_mean_reading_analysis_for_questions = serializers.ReadOnlyField()
+    frequency_feelings = serializers.ReadOnlyField()
+    context_vs_read_time = serializers.ReadOnlyField()
+    question_sentiment_analysis = serializers.ReadOnlyField()
     compute_median_view_time = serializers.ReadOnlyField()
     unique_word_pattern = serializers.ReadOnlyField()
 

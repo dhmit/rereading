@@ -22,13 +22,26 @@ class Document(models.Model):
         max_length=255,
     )
 
+    def __len__(self):
+        """
+        The length of a document is the number of segments
+        ... maybe this should be total wordcount instead?
+        """
+        return self.segments.count()
+
+    def __str__(self):
+        """ string representation of this class """
+        return f'Document: {self.title} by {self.author}'
+
 
 class Segment(models.Model):
     """
     A segment of a Document.
     """
     text = models.TextField(default='')
-    sequence = models.IntegerField()  # position of this segment in the doc
+    # We 1-index sequence so we don't have to increment whenever we display this to
+    # users in the frontend
+    sequence = models.IntegerField(default=1)  # position of this segment in the doc
 
     document = models.ForeignKey(
         Document,
@@ -36,6 +49,17 @@ class Segment(models.Model):
         on_delete=models.CASCADE,
         related_name='segments',
     )
+
+    def __len__(self):
+        """ Length of a segment is the word count
+            (Just split by whitespace -- not doing anything fancy...)
+        """
+        return len(self.text.split())
+
+    def __str__(self):
+        segment_count = len(self.document)
+        doc_title = self.document.title
+        return f'{doc_title} - Segment {self.sequence} of {segment_count}'
 
     class Meta:
         # see: https://docs.djangoproject.com/en/2.2/ref/models/options/#unique-together
@@ -51,12 +75,39 @@ class Student(models.Model):
     name = models.TextField(default='')
 
 
-class SegmentQuestion(models.Model):
+class Question(models.Model):
     """
-    A model that represents a question about a given segment
+    A model that represents a question
+    FOR SUBCLASSING ONLY DO NOT USE ME DIRECTLY
     """
     text = models.TextField()
     response_word_limit = models.IntegerField()
+
+    class Meta:
+        # as an abstract base class, Django won't create separate database tables for Question and
+        # its subclasses -- instead all of the subclasses will just get these fields
+        abstract = True
+
+
+class DocumentQuestion(Question):
+    """
+    A question that persists through the whole reading,
+    and is shown at each segment reread.
+    """
+    # Overview questions are only shown at the overview page at the end
+    is_overview_question = models.BooleanField(default=False)
+
+    document = models.ForeignKey(
+        Document,
+        on_delete=models.CASCADE,
+        related_name='questions'
+    )
+
+
+class SegmentQuestion(Question):
+    """
+    A question about a given segment
+    """
     segment = models.ForeignKey(
         Segment,
         on_delete=models.CASCADE,
@@ -114,6 +165,26 @@ class StudentReadingData(models.Model):
         null=False,
         on_delete=models.CASCADE,
         related_name='reading_data'
+    )
+
+
+class DocumentQuestionResponse(models.Model):
+    """
+    Captures a response to a document-level question
+    TODO: let this track diffs per segment, rather than just
+          a single response
+    """
+    response = models.TextField()
+    question = models.ForeignKey(
+        DocumentQuestion,
+        on_delete=models.CASCADE,
+        related_name='responses'
+    )
+
+    student_reading_data = models.ForeignKey(
+        StudentReadingData,
+        on_delete=models.CASCADE,
+        related_name='document_responses'
     )
 
 

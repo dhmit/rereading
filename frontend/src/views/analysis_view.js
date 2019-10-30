@@ -156,6 +156,31 @@ MeanReadingTimesForQuestions.propTypes = {
     mean_reading_times_for_questions: PropTypes.array,
 };
 
+export class RelevantWordPercentages extends React.Component {
+    formatDataWithPercentSign(rawData) {
+        //Formats the given data (usually in decimal form) as a percentage
+        return rawData.map(([question, context, decimal]) =>
+            ([question, context, `${Math.round(100 * decimal)}%`]))
+    }
+
+    render() {
+        return (
+            <TabularAnalysis
+                title = {"Percentage of Students Using Relevant Words"}
+                headers={[
+                    "Question",
+                    "Context",
+                    "Percentage"
+                ]}
+                data = {this.formatDataWithPercentSign(this.props.entryData)}
+            />
+        );
+    }
+}
+RelevantWordPercentages.propTypes = {
+    entryData: PropTypes.array,
+};
+
 export class AnalysisView extends React.Component {
     constructor(props) {
         super(props);
@@ -191,8 +216,7 @@ export class AnalysisView extends React.Component {
                 question_sentiment_analysis,
                 compute_median_view_time,
                 compute_mean_response_length,
-                percent_students_using_relevant_words_in_ad_context,
-                percent_students_using_relevant_words_in_story_context
+                percent_using_relevant_words_by_context_and_question
             } = this.state.analysis;
             return (
                 <div className={"container"}>
@@ -222,6 +246,11 @@ export class AnalysisView extends React.Component {
                         value = {compute_median_view_time}
                         unit = {"seconds"}
                     />
+                    <SingleValueAnalysis
+                        header = "Mean response length"
+                        value = {compute_mean_response_length}
+                        unit = {"characters"}
+                    />
                     <SentimentScores
                         sentiment_average={question_sentiment_analysis[0]}
                         sentiment_std={question_sentiment_analysis[1]}
@@ -231,7 +260,9 @@ export class AnalysisView extends React.Component {
                     />
                     <FrequencyFeelingTable feelings={frequency_feelings}/>
                     <ContextVsViewTime viewTime={context_vs_read_time}/>
-
+                    <RelevantWordPercentages
+                        entryData = {percent_using_relevant_words_by_context_and_question}
+                    />
                 </div>
             );
         } else {

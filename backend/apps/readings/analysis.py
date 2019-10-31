@@ -438,4 +438,3 @@ class RereadingAnalysis:
             results.append(self.compute_reread_counts(question, context))
 
         return results
-        return round(median_view_time)

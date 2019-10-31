@@ -115,9 +115,6 @@ ContextVsViewTime.propTypes = {
 };
 
 
-
-// start of reread counts
-
 export class RereadCountsAnalysis extends React.Component {
     render() {
         return (
@@ -134,6 +131,7 @@ export class RereadCountsAnalysis extends React.Component {
 RereadCountsAnalysis.propTypes = {
     get_reread_counts: PropTypes.objectOf(PropTypes.objectOf(PropTypes.objectOf(PropTypes.object))),
 };
+
 
 
 
@@ -266,33 +264,6 @@ export class AnalysisView extends React.Component {
 
 
 }
-
-/*
-
-
-
-*    renderTableHeader() {
-      let header = Object.keys(this.state.students[0])
-      return header.map((key, index) => {
-         return <th key={index}>{key.toUpperCase()}</th>
-      })
-   }
-
-   render() {
-      return (
-         <div>
-            <h1 id='title'>React Dynamic Table</h1>
-            <table id='students'>
-               <tbody>
-                  <tr>{this.renderTableHeader()}</tr>
-                  {this.renderTableData()}
-               </tbody>
-            </table>
-         </div>
-      )
-   }
-*
-* */
 
 
 export default AnalysisView;

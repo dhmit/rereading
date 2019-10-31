@@ -78,13 +78,20 @@ class ReadingView extends React.Component {
 
                         {this.state.rereading &&
                             <div className={"analysis col-4"}>
-                                <p><b>Contexts: </b></p>
+                                <p><b>Context: </b></p>
                                 <p>
-                                    {segment_contexts.map(el => el.text)}
+                                    {segment_contexts.map((el,i) =>
+                                        <ul key={i}>
+                                            <li>{el.text}</li>
+                                        </ul>)}
                                 </p>
                                 <p><b>Questions: </b></p>
                                 <p>
-                                    {segment_questions.map(el => el.text)}
+                                    {segment_questions.map((el,i) =>
+                                        <ul key={i}>
+                                            <li>{el.text}</li>
+                                        </ul>
+                                    )}
                                 </p>
                                 <p>
                                     <b>Add an annotation: </b><input

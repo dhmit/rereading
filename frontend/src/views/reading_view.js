@@ -22,10 +22,10 @@ class ReadingView extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            segmentNum: 0,
+            segment_num: 0,
             timer: null,
-            segmentReadTimes: [],
-            segmentScrollUps: [],
+            segment_read_times: [],
+            segment_scroll_ups: [],
             scrollTop: 0,
             scroll_ups: 0,
             scrolling_up: false,
@@ -35,30 +35,39 @@ class ReadingView extends React.Component {
     }
 
     /**
-     * segmentReadTimes is a array of arrays. The index of each array
+     * segment_read_times is a array of arrays. The index of each array
      * corresponds to the segment number of the segments and is updated
      * with a new time every time the buttons are clicked
      */
     restartTimer(firstTime) {
         if (!firstTime) {
-            const segmentReadTimes = this.state.segmentReadTimes;
+            const segment_read_times = this.state.segment_read_times;
             const time = this.state.timer.stop();
-            segmentReadTimes[this.state.segmentNum].push(time);
-            this.setState({segmentReadTimes,});
+            segment_read_times.push({
+                read_time: time,
+                is_rereading: this.state.rereading,
+                segment_num: this.state.segment_num
+            });
+            this.setState({segment_read_times,});
         }
         const timer = new TimeIt();
         this.setState({timer});
     }
 
     updateScrollUps() {
-        const segmentScrollUps = this.state.segmentScrollUps;
-        segmentScrollUps[this.state.segmentNum].push(this.state.scroll_ups);
-        this.setState({segmentScrollUps, scroll_ups:0});
+        const segment_scroll_ups = this.state.segment_scroll_ups;
+        segment_scroll_ups.push({
+            scroll_ups: this.state.scroll_ups,
+            is_rereading: this.state.rereading,
+            segment_num: this.state.segment_num,
+        });
+        this.setState({segment_scroll_ups, scroll_ups:0});
     }
 
     // We have the big arrow notation here to bind "this" to this function
     handleScroll = (e) => {
-        this.setState(handleStoryScroll(e, this.state));
+        this.setState(handleStoryScroll(e, this.state.scrollTop, this.state.scroll_ups,
+            this.state.scrolling_up));
     };
 
     async componentDidMount() {
@@ -69,14 +78,6 @@ class ReadingView extends React.Component {
             const document = await response.json();
             this.setState({document});
             this.restartTimer(true);
-            let segmentReadTimes = this.state.segmentReadTimes;
-            let segmentScrollUps = this.state.segmentScrollUps;
-            for (let i = 0; i < document.segments.length; i++){
-                segmentReadTimes.push([]);
-                // Will need to make this account for the reread after merge
-                segmentScrollUps.push([]);
-            }
-            this.setState({segmentReadTimes,});
             // This will allow the scroll detector to work
             window.addEventListener('scroll', this.handleScroll, true);
         } catch (e) {
@@ -87,21 +88,21 @@ class ReadingView extends React.Component {
 
     prevSegment () {
         // document will be replaced by actual data
-        if (this.state.segmentNum > 0){
+        if (this.state.segment_num > 0){
             this.restartTimer(false);
             this.updateScrollUps();
-            this.setState({segmentNum: this.state.segmentNum-1});
+            this.setState({segment_num: this.state.segment_num-1});
         }
     }
 
     nextSegment () {
         const length = this.state.document.segments.length;
-        if (this.state.segmentNum < length){
+        if (this.state.segment_num < length){
             if (this.state.rereading) {
                 // If we're already rereading, move to the next segment
                 this.restartTimer(false);
                 this.updateScrollUps();
-                this.setState({rereading: false, segmentNum: this.state.segmentNum+1});
+                this.setState({rereading: false, segment_num: this.state.segment_num+1});
             } else {
                 // Otherwise, move on to the rereading layout
                 this.restartTimer(false);
@@ -118,16 +119,16 @@ class ReadingView extends React.Component {
         if (data) {
             const questions = QUESTIONS_PROTOTYPE; // replace me with this.state.document.whatever
             const prompts = PROMPTS_PROTOTYPE; // replace me with this.state.document.whatever
-            const segment = data.segments[this.state.segmentNum].text;
+            const segment = data.segments[this.state.segment_num].text;
 
             return (
                 <div className={"container"}>
                     <h1>{data.title}</h1>
                     <div className={"row"}>
                         <div className={"col-9"}>
-                            <p>Segment Number: {this.state.segmentNum + 1}</p>
-                            <p>{segment}</p>
-                            {this.state.segmentNum > 0 &&
+                            <p>Segment Number: {this.state.segment_num + 1}</p>
+                            <p style={{fontSize: "50px"}}>{segment}</p>
+                            {this.state.segment_num > 0 &&
                             <button onClick={() => this.prevSegment()}>
                                 Back
                             </button>

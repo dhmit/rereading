@@ -170,7 +170,7 @@ export class AnalysisView extends React.Component {
                 context_vs_read_time,
                 question_sentiment_analysis,
                 compute_median_view_time,
-                // all_contexts_repeated_prompt_words,
+                all_contexts_repeated_prompt_words,
             } = this.state.analysis;
             return (
                 <div className={"container"}>
@@ -207,11 +207,24 @@ export class AnalysisView extends React.Component {
                         sentiment_average={question_sentiment_analysis[0]}
                         sentiment_std={question_sentiment_analysis[1]}
                     />
-                    {/*<h1>Repeated Prompt Words</h1>*/}
+                    <h1>Prompt Words Repeated in Responses</h1>
                     {/*TODO unpack the dictionaries returned by
                      all_contexts_repeated_prompt_words*/}
-                    {/*{console.log(all_contexts_repeated_prompt_words)}*/}
-                    {/*<p>{all_contexts_repeated_prompt_words}</p>*/}
+                    {console.log(all_contexts_repeated_prompt_words[0])}
+                    <h3>Ad context</h3>
+                    <ul>
+                        {Object.keys(all_contexts_repeated_prompt_words[0]).map((key, index) => (
+                            <li key={index}>{key} was repeated {all_contexts_repeated_prompt_words[0][key]} times</li>
+                        ))
+                        }
+                    </ul>
+                    <h3>Story context</h3>
+                    <ul>
+                        {Object.keys(all_contexts_repeated_prompt_words[1]).map((key, index) => (
+                            <li key={index}>{key} was repeated {all_contexts_repeated_prompt_words[1][key]} times</li>
+                        ))
+                        }
+                    </ul>
                 </div>
             );
         } else {

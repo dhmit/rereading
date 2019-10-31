@@ -385,11 +385,11 @@ class RereadingAnalysis:
             list_of_times.sort()
             median_view_time = statistics.median(list_of_times)
         return median_view_time
+
     def compute_reread_counts(self, question, context):
         """"
         Given a list of student response dicts,
         return a dictionary containing the number of times students had to reread the text
-        :param student_data: list, student response dicts
         :param question: string, question for which reread counts is collected
         :param context: string, context for which reread counts is collected
         :return: dictionary, each key in dictionary is the number of times the text was reread
@@ -411,38 +411,31 @@ class RereadingAnalysis:
                     raw_reread_counts.append(view_count)
 
         # Tallies the raw reread counts into the dictionary to be returned
-        organized_data = {}
+        organized_data = {
+            0: 0, 1: 0, 2: 0, 3: 0, 4: 0, "5+": 0
+        }
         for entry in raw_reread_counts:
-            if entry in organized_data.keys():
+            if entry < 5:
                 organized_data[entry] += 1
-            elif len(raw_reread_counts) != 0:
-                organized_data.update({entry: 1})
+            else:
+                organized_data["5+"] += 1
 
-        return organized_data
+        return [question, context] + list(organized_data.values())
 
     @property
     def reread_counts(self):
-        question = "In one word, how does this text make you feel?"
-        context = "This is an ad."
+        questions_and_contexts = [self.questions, self.contexts]
 
-        questions_and_contexts = [ self.questions, self.contexts]
-
+        # Creates an array of tuples of question/context pairings
         question_context_combinations = []
         for element in itertools.product(*questions_and_contexts):
             question_context_combinations.append(element)
 
-        counter = 0
-        results = {}
+        results = []
         for question_context_combination in question_context_combinations:
             question, context = question_context_combination
-            if results.get(question):
-                results[question][context] =  self.compute_reread_counts(question, context)
-            else:  # Initialize question with a dictionary
-                results[question] = {}
-                results[question][context] = self.compute_reread_counts(question, context)
 
-            counter += 1
+            results.append(self.compute_reread_counts(question, context))
 
-        # return self.compute_reread_counts(questions[0], context)
         return results
         return round(median_view_time)

@@ -120,39 +120,19 @@ ContextVsViewTime.propTypes = {
 
 export class RereadCountsAnalysis extends React.Component {
     render() {
-        const get_reread_counts = Object.entries(this.props.reread_counts);
         return (
             <div>
-                <h1>Analysis of Reread Counts</h1>
-                <table border="1" cellPadding="5">
-                    <tbody>
-                        <tr>
-                            <th>0</th>
-                            <th>1</th>
-                            <th>2</th>
-                            <th>3</th>
-                            <th>4</th>
-                            <th>5</th>
-                            <th>6</th>
-                        </tr>
-                        <tr>
-                            <th>{self.context[0]}</th>
-                            <td>{get_reread_counts()[self.questions[0]][self.contexts[0]][0]}</td>
-                            <td>{get_reread_counts()[self.questions[0]][self.contexts[0]][1]}</td>
-                            <td>{get_reread_counts()[self.questions[0]][self.contexts[0]][2]}</td>
-                            <td>{get_reread_counts()[self.questions[0]][self.contexts[0]][3]}</td>
-                            <td>{get_reread_counts()[self.questions[0]][self.contexts[0]][4]}</td>
-                            <td>{get_reread_counts()[self.questions[0]][self.contexts[0]][5]}</td>
-                            <td>{get_reread_counts()[self.questions[0]][self.contexts[0]][6]}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <TabularAnalysis
+                    title = {"Number of People That Reread a Given Number of Times"}
+                    headers = {["Question", "Context", 0, 1, 2, 3, 4, "5+"]}
+                    data = {this.props.get_reread_counts}
+                />
             </div>
         )
     }
 }
 RereadCountsAnalysis.propTypes = {
-    reread_counts: PropTypes.object,
+    get_reread_counts: PropTypes.objectOf(PropTypes.objectOf(PropTypes.objectOf(PropTypes.object))),
 };
 
 
@@ -233,6 +213,7 @@ export class AnalysisView extends React.Component {
                 context_vs_read_time,
                 question_sentiment_analysis,
                 compute_median_view_time,
+                reread_counts,
             } = this.state.analysis;
             return (
                 <div className={"container"}>
@@ -271,7 +252,7 @@ export class AnalysisView extends React.Component {
                     />
                     <FrequencyFeelingTable feelings={frequency_feelings}/>
                     <ContextVsViewTime viewTime={context_vs_read_time}/>
-
+                    <RereadCountsAnalysis get_reread_counts={reread_counts}/>
                 </div>
 
 

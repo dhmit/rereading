@@ -115,45 +115,26 @@ ContextVsViewTime.propTypes = {
 };
 
 
-
-// start of reread counts
-
 export class RereadCountsAnalysis extends React.Component {
     render() {
-        const get_reread_counts = Object.entries(this.props.reread_counts);
+        const  = Object.entries(this.props.viewTime);
         return (
             <div>
-                <h1>Analysis of Reread Counts</h1>
-                <table border="1" cellPadding="5">
-                    <tbody>
-                        <tr>
-                            <th>0</th>
-                            <th>1</th>
-                            <th>2</th>
-                            <th>3</th>
-                            <th>4</th>
-                            <th>5</th>
-                            <th>6</th>
-                        </tr>
-                        <tr>
-                            <th>{self.context[0]}</th>
-                            <td>{get_reread_counts()[self.questions[0]][self.contexts[0]][0]}</td>
-                            <td>{get_reread_counts()[self.questions[0]][self.contexts[0]][1]}</td>
-                            <td>{get_reread_counts()[self.questions[0]][self.contexts[0]][2]}</td>
-                            <td>{get_reread_counts()[self.questions[0]][self.contexts[0]][3]}</td>
-                            <td>{get_reread_counts()[self.questions[0]][self.contexts[0]][4]}</td>
-                            <td>{get_reread_counts()[self.questions[0]][self.contexts[0]][5]}</td>
-                            <td>{get_reread_counts()[self.questions[0]][self.contexts[0]][6]}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <TabularAnalysis
+                    title = {"Number of Students That Reread a Given Number of Times"}
+                    headers = {["Question", "Context"].concat(
+                        this.props.get_reread_counts()[0][0].keys()
+                    )}
+                    data
+                />
             </div>
         )
     }
 }
 RereadCountsAnalysis.propTypes = {
-    reread_counts: PropTypes.object,
+    get_reread_counts: PropTypes.objectOf(PropTypes.objectOf(PropTypes.objectOf(PropTypes.object))),
 };
+
 
 
 
@@ -271,7 +252,6 @@ export class AnalysisView extends React.Component {
                     />
                     <FrequencyFeelingTable feelings={frequency_feelings}/>
                     <ContextVsViewTime viewTime={context_vs_read_time}/>
-
                 </div>
 
 
@@ -285,33 +265,6 @@ export class AnalysisView extends React.Component {
 
 
 }
-
-/*
-
-
-
-*    renderTableHeader() {
-      let header = Object.keys(this.state.students[0])
-      return header.map((key, index) => {
-         return <th key={index}>{key.toUpperCase()}</th>
-      })
-   }
-
-   render() {
-      return (
-         <div>
-            <h1 id='title'>React Dynamic Table</h1>
-            <table id='students'>
-               <tbody>
-                  <tr>{this.renderTableHeader()}</tr>
-                  {this.renderTableData()}
-               </tbody>
-            </table>
-         </div>
-      )
-   }
-*
-* */
 
 
 export default AnalysisView;

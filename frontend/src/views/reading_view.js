@@ -51,17 +51,19 @@ class ReadingView extends React.Component {
         if (data) {
             const current_segment = data.segments[this.state.segmentNum];
             const segment_text = current_segment.text;
+            const segment_lines = segment_text.split("\r\n");
             const segment_questions = current_segment.questions;
             const segment_contexts = current_segment.contexts;
-            //add document_questions for questions that remain on screen for the every segment
-
+            // TODO: add document_questions for questions that remain on screen for the every segment
             return (
                 <div className={"container"}>
                     <h1 className={"display-4 py-3 pr-3"}>{data.title}</h1>
                     <div className={"row"}>
                         <div className={"col-8"}>
                             <p>Segment Number: {this.state.segmentNum + 1}</p>
-                            <p>{segment_text}</p>
+                            {segment_lines.map((line, k) => (
+                                <p key={k}>{line}</p>)
+                            )}
                             <button
                                 className={"btn btn-outline-dark mr-2"}
                                 onClick = {() => this.prevSegment()}

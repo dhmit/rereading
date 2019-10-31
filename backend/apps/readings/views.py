@@ -10,8 +10,7 @@ from .models import StoryPrototype, Student, Document
 from .analysis import RereadingAnalysis
 from .serializers import (
     StoryPrototypeSerializer, StudentPrototypeSerializer, AnalysisSerializer,
-    DocumentSerializer, StudentSerializer
-)
+    DocumentSerializer, StudentSerializer, DocumentAnalysisSerializer)
 
 
 @api_view(['GET'])
@@ -82,4 +81,14 @@ def analysis(request):
     """
     analysis_obj = RereadingAnalysis()
     serializer = AnalysisSerializer(instance=analysis_obj)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def document_analysis(request):
+    """
+    Init a DocumentAnalysis, and serialize it to send to the frontend.
+    """
+    analysis_obj = Document()
+    serializer = DocumentAnalysisSerializer(instance=analysis_obj)
     return Response(serializer.data)

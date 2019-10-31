@@ -76,10 +76,9 @@ class ReadingView extends React.Component {
                     <div className={"row"}>
                         <div className={"col-9"}>
                             <p>Segment Number: {this.state.segmentNum + 1}</p>
-                            {segment_lines.map( (line, k) => (
+                            {segment_lines.map((line, k) => (
                                 <p key={k}>{line}</p>)
                             )}
-                            {/*<p>{segment}</p>*/}
                             <button onClick = {() => this.prevSegment()}>
                                 Back
                             </button>

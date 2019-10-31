@@ -72,15 +72,21 @@ class ReadingView extends React.Component {
 
             return (
                 <div className={"container"}>
-                    <h1>{data.title}</h1>
+                    <h1 className={"display-4 py-3 pr-3"}>{data.title}</h1>
                     <div className={"row"}>
                         <div className={"col-9"}>
                             <p>Segment Number: {this.state.segmentNum + 1}</p>
                             <p>{segment}</p>
-                            <button onClick = {() => this.prevSegment()}>
+                            <button
+                                className={"btn btn-outline-dark mr-2"}
+                                onClick = {() => this.prevSegment()}
+                            >
                                 Back
                             </button>
-                            <button onClick = {() => this.nextSegment()}>
+                            <button
+                                className={"btn btn-outline-dark"}
+                                onClick = {() => this.nextSegment()}
+                            >
                                 {this.state.rereading ? 'Next' : 'Reread'}
                             </button>
                         </div>
@@ -99,13 +105,6 @@ class ReadingView extends React.Component {
                             </div>
                         }
                     </div>
-                    <h1 className={"display-4 py-3 pr-3"}>{data.title}</h1>
-                    <p>Segment Number: {this.state.segmentNum + 1}</p>
-                    <div className={"row"}>
-                        <p className={"col-12 col-md-8"}>{data.segments[this.state.segmentNum].text}</p>
-                    </div>
-                    <button className={"btn btn-outline-dark mr-2"} onClick={() => this.changeSegment(-1)}>Back</button>
-                    <button className={"btn btn-outline-dark"} onClick={() => this.changeSegment(1)}>Next</button>
                 </div>
             );
         } else {

@@ -72,17 +72,23 @@ class ReadingView extends React.Component {
             const segment_lines = segment.split("\r\n");
             return (
                 <div className={"container"}>
-                    <h1>{data.title}</h1>
+                    <h1 className={"display-4 py-3 pr-3"}>{data.title}</h1>
                     <div className={"row"}>
                         <div className={"col-9"}>
                             <p>Segment Number: {this.state.segmentNum + 1}</p>
                             {segment_lines.map((line, k) => (
                                 <p key={k}>{line}</p>)
                             )}
-                            <button onClick = {() => this.prevSegment()}>
+                            <button
+                                className={"btn btn-outline-dark mr-2"}
+                                onClick = {() => this.prevSegment()}
+                            >
                                 Back
                             </button>
-                            <button onClick = {() => this.nextSegment()}>
+                            <button
+                                className={"btn btn-outline-dark"}
+                                onClick = {() => this.nextSegment()}
+                            >
                                 {this.state.rereading ? 'Next' : 'Reread'}
                             </button>
                         </div>
@@ -108,6 +114,7 @@ class ReadingView extends React.Component {
                 <div>Loading!</div>
             );
         }
+
     }
 }
 

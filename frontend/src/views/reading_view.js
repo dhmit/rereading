@@ -54,7 +54,7 @@ class ReadingView extends React.Component {
             const segment_lines = segment_text.split("\r\n");
             const segment_questions = current_segment.questions;
             const segment_contexts = current_segment.contexts;
-            // TODO: add document_questions for questions that remain on screen for the every segment
+
             return (
                 <div className={"container"}>
                     <h1 className={"display-4 py-3 pr-3"}>{data.title}</h1>

@@ -392,8 +392,8 @@ class RereadingAnalysis:
         return a dictionary containing the number of times students had to reread the text
         :param question: string, question for which reread counts is collected
         :param context: string, context for which reread counts is collected
-        :return: dictionary, each key in dictionary is the number of times the text was reread
-        and value is the number of students who reread that many times
+        :return: tuple, which contains the question, context, and number of students that reread
+        the text 0 times, 1 time, etc.
         """
 
         # Checks that the question and context are not blank
@@ -434,7 +434,6 @@ class RereadingAnalysis:
         results = []
         for question_context_combination in question_context_combinations:
             question, context = question_context_combination
-
             results.append(self.compute_reread_counts(question, context))
 
         return results

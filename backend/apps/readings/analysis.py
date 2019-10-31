@@ -411,12 +411,14 @@ class RereadingAnalysis:
                     raw_reread_counts.append(view_count)
 
         # Tallies the raw reread counts into the dictionary to be returned
-        organized_data = {}
+        organized_data = {
+            0: 0, 1: 0, 2: 0, 3: 0, 4: 0, "5+": 0
+        }
         for entry in raw_reread_counts:
-            if entry in organized_data.keys():
+            if entry < 5:
                 organized_data[entry] += 1
-            elif len(raw_reread_counts) != 0:
-                organized_data.update({entry: 1})
+            else:
+                organized_data["5+"] += 1
 
         return organized_data
 

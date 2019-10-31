@@ -117,7 +117,6 @@ ContextVsViewTime.propTypes = {
 
 export class RereadCountsAnalysis extends React.Component {
     render() {
-        const  = Object.entries(this.props.viewTime);
         return (
             <div>
                 <TabularAnalysis
@@ -125,7 +124,7 @@ export class RereadCountsAnalysis extends React.Component {
                     headers = {["Question", "Context"].concat(
                         this.props.get_reread_counts()[0][0].keys()
                     )}
-                    data
+                    data = {this.props.get_reread_counts()[0][0].values()}
                 />
             </div>
         )
@@ -214,6 +213,7 @@ export class AnalysisView extends React.Component {
                 context_vs_read_time,
                 question_sentiment_analysis,
                 compute_median_view_time,
+                reread_counts,
             } = this.state.analysis;
             return (
                 <div className={"container"}>
@@ -252,6 +252,7 @@ export class AnalysisView extends React.Component {
                     />
                     <FrequencyFeelingTable feelings={frequency_feelings}/>
                     <ContextVsViewTime viewTime={context_vs_read_time}/>
+                    <RereadCountsAnalysis get_reread_counts={reread_counts}/>
                 </div>
 
 

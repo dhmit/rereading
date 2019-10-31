@@ -69,7 +69,7 @@ class ReadingView extends React.Component {
             const questions = QUESTIONS_PROTOTYPE; // replace me with this.state.document.whatever
             const prompts = PROMPTS_PROTOTYPE; // replace me with this.state.document.whatever
             const segment = data.segments[this.state.segmentNum].text;
-            const segment_lines = segment.split("\n")
+            const segment_lines = segment.split("\r\n")
             console.log(segment_lines)
 
             return (

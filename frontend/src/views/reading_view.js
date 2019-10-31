@@ -87,9 +87,9 @@ class ReadingView extends React.Component {
             this.setState({document});
             this.updateData(true);
             // This will allow the scroll detector to work
-            /** TODO: For when reading pane is done
-             *  Add event listener to the reading pane when it is complete to track scroll data
-             *  on that reading pane only. Currently, it is tracking scrolling data for entire page
+            /** TODO: Add event listener to the reading pane when it is complete to track scroll
+             *        data on that reading pane only. Currently, it is tracking scrolling data
+             *        for entire page
              */
             window.addEventListener('scroll', this.handleScroll, true);
         } catch (e) {

@@ -30,6 +30,7 @@ urlpatterns = [
     path('api/add-response/', readings_views.ListStudent.as_view()),
     path('api/documents/<int:pk>/', readings_views.DetailDocument.as_view()),
     path('api/analysis/', readings_views.analysis),
+    path('api/document_analysis/', readings_views.document_analysis),
 
     # Prototyping API endpoints
     path('api_proto/', readings_views.ListStoryPrototype.as_view()),

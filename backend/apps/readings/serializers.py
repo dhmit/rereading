@@ -282,3 +282,14 @@ class AnalysisSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         """ We will not update data using this serializer """
+
+
+class DocumentAnalysisSerializer(serializers.Serializer):
+    __len__ = serializers.ReadOnlyField()
+    __str__ = serializers.ReadOnlyField()
+
+    def create(self, validated_data):
+        """ We will not create new objects using this serializer """
+
+    def update(self, instance, validated_data):
+        """ We will not update data using this serializer """

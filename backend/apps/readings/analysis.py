@@ -432,7 +432,6 @@ class RereadingAnalysis:
                 organized_data[entry] += 1
             elif len(raw_reread_counts) != 0:
                 organized_data.update({entry: 1})
-
         for entry in organized_data.keys():
             sum_of_views += entry * organized_data[entry]
             student_count += organized_data[entry]
@@ -441,6 +440,7 @@ class RereadingAnalysis:
             return 0
         else:
             mean_reread_count = round((sum_of_views / student_count), 2)
+            sum_of_views = 0
 
         print(organized_data)
         return question, context, mean_reread_count, student_count

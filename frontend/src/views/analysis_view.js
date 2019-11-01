@@ -159,31 +159,20 @@ MeanReadingTimesForQuestions.propTypes = {
 export class UniqueWordPatterns extends React.Component {
     render() {
         return (
-            <div>
-                <TabularAnalysis
-                    title={"Unique Word Patterns for short story Context"}
-                    headers={[
-                        "Total number of readers",
-                        "Total Unique Words used with short story Context"
-                    ]}
-                    data={this.props.unique_word_pattern_story}
-                />
-
-                <TabularAnalysis
-                    title={"Unique Word Patterns for ad Context"}
-                    headers={[
-                        "Total number of readers",
-                        "Total Unique Words used with ad Context"
-                    ]}
-                    data={this.props.unique_word_pattern_ad}
-                />
-            </div>
+            <TabularAnalysis
+                title={"Unique Word Patterns for short story Context"}
+                headers={[
+                    "Total number of readers",
+                    "Total Unique Words used with short story Context"
+                ]}
+                data={this.props.unique_word_pattern_story}
+            />
         );
     }
 }
 UniqueWordPatterns.propTypes = {
     unique_word_pattern_story: PropTypes.array,
-    unique_word_pattern_ad: PropTypes.array
+    //unique_word_pattern_ad: PropTypes.array
 
 };
 
@@ -296,7 +285,6 @@ export class AnalysisView extends React.Component {
                     <FrequencyFeelingTable feelings={frequency_feelings}/>
                     <ContextVsViewTime viewTime={context_vs_read_time}/>
                     <UniqueWordPatterns unique_word_pattern_story={unique_word_pattern[0]}/>
-                    <UniqueWordPatterns unique_word_pattern_ad={unique_word_pattern[1]}/>
                     <RelevantWordPercentages
                         entryData={percent_using_relevant_words_by_context_and_question}
                     />

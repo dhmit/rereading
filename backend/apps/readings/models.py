@@ -81,7 +81,7 @@ class Question(models.Model):
     FOR SUBCLASSING ONLY DO NOT USE ME DIRECTLY
     """
     text = models.TextField()
-    response_word_limit = models.IntegerField()
+    response_word_limit = models.IntegerField(null=True)
 
     class Meta:
         # as an abstract base class, Django won't create separate database tables for Question and

@@ -201,7 +201,7 @@ class StudentView extends React.Component {
      */
     async componentDidMount() {
         try {
-            const questions = await fetch('/api/');
+            const questions = await fetch('/api_proto/');
             const json = await questions.json();
             // TODO: (?) Currently only accesses first story, cannot handle multiple
             this.setState(json[0]);
@@ -216,7 +216,7 @@ class StudentView extends React.Component {
      * so that it can be referenced in the instructor view
      */
     postData() {
-        const url = '/api/add-response/';
+        const url = '/api_proto/add-response/';
         const data = {
             story_text: this.state.story_text,
             student_responses: this.state.answers,

@@ -420,10 +420,11 @@ class RereadingAnalysis:
         for response in self.responses:
             filtered_word_resp = self.filter_words(response.response)
             print(filtered_word_resp)
-            if response.question == question and response.context == "This is an ad.":
+            if response.question.text == question and response.context.text == "This is an ad.":
                 word_set = response_ad
                 histogram = unique_word_tracker_ad
-            elif response.question == question and response.context == "This is actually a short " \
+            elif response.question.text == question and response.context.text == "This is " \
+                                                                                 "actually a short " \
                                                                        "story.":
                 word_set = response_story
                 histogram = unique_word_tracker_story

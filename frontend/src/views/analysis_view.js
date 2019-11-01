@@ -129,7 +129,7 @@ export class RereadCountsAnalysis extends React.Component {
     }
 }
 RereadCountsAnalysis.propTypes = {
-    get_reread_counts: PropTypes.objectOf(PropTypes.objectOf(PropTypes.objectOf(PropTypes.object))),
+    get_reread_counts: PropTypes.arrayOf(PropTypes.array),
 };
 
 

@@ -47,7 +47,7 @@ jobs:
         cd backend
         python manage.py test apps.readings
 
-  analysis_tests:
+  load_db_test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -58,10 +58,10 @@ jobs:
     - name: Install Python packages
       run: |
         pip install -r requirements.txt
-    - name: Run analysis tests
+    - name: Load db fixtures
       run: |
-        cd analysis
-        python analysis.py
+        cd backend
+        python manage.py load_db
 
   ##############################################################################
   # JS jobs

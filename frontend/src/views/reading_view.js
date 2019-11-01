@@ -82,27 +82,6 @@ class ReadingView extends React.Component {
 
     }
 
-    prevSegment () {
-        // document will be replaced by actual data
-        if (this.state.segmentNum > 0){
-            this.setState({segmentNum: this.state.segmentNum-1, rereading: true});
-        }
-    }
-
-    nextSegment () {
-        const length = this.state.document.segments.length;
-        if (this.state.segmentNum < length){
-            if (this.state.rereading) {
-                // If we're already rereading, move to the next segment
-                this.setState({rereading: false, segmentNum: this.state.segmentNum+1});
-            } else {
-                // Otherwise, move on to the rereading layout
-                this.setState({rereading: true});
-            }
-        }
-    }
-
-
     render() {
         const data = this.state.document;
 

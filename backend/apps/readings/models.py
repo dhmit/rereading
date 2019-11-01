@@ -33,8 +33,11 @@ class Document(models.Model):
         """ string representation of this class """
         return f'Document: {self.title} by {self.author}'
 
-    def test(self):
-        return "test"
+    def total_word_count(self):
+        count = 0
+        for segment in self.segments.get_queryset():
+            count += len(segment)
+        return count
 
 
 class Segment(models.Model):

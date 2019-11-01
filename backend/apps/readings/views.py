@@ -83,4 +83,3 @@ def analysis(request):
     analysis_obj = RereadingAnalysis()
     serializer = AnalysisSerializer(instance=analysis_obj)
     return Response(serializer.data)
-

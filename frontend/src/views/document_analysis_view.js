@@ -29,13 +29,13 @@ export class DocumentAnalysisView extends React.Component {
     render() {
         if (this.state.document !== null) {
             const {
-                __len__,
-                __str__,
+                total_word_count,
+                title_author,
             } = this.state.document;
             return (
                 <div>
-                    <p>Analysis of {__str__}</p>
-                    <p>Word count: {__len__}</p>
+                    <h3>Analysis of {title_author}</h3>
+                    <p>Word count: {total_word_count}</p>
 
                 </div>
             );

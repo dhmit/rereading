@@ -377,11 +377,10 @@ class RereadingAnalysis:
         return the mean character length (across all users) of the response
         :return: float, mean number of characters in the user's response
         """
-        list_of_responses = [r.response for r in self.responses]
         mean_response_length = 0
-        for response in list_of_responses:
-            mean_response_length += len(response)
-        return round(mean_response_length / len(list_of_responses), 2)
+        for row in self.responses:
+            mean_response_length += len(row.response)
+        return round(mean_response_length / len(self.responses), 2)
 
     def get_number_of_unique_students(self):
         """

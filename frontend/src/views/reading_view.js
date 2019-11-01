@@ -1,23 +1,6 @@
 import React from "react";
 // import PropTypes from 'prop-types';
 
-// THIS IS JUST FOR PROTOTYPING
-// DELETE ME as soon as these data are included in the API endpoint
-const PROMPTS_PROTOTYPE = ["this is an ad"];
-const QUESTIONS_PROTOTYPE = [
-    {
-        question: "question_test",
-        is_free_response: true,
-        choices: [],
-    },
-    {
-        question: "question_test2",
-        is_free_response: false,
-        choices: ["yes", "no"],
-    },
-];
-
-
 class ReadingView extends React.Component {
     constructor(props){
         super(props);
@@ -44,7 +27,7 @@ class ReadingView extends React.Component {
     prevSegment () {
         // document will be replaced by actual data
         if (this.state.segmentNum > 0){
-            this.setState({segmentNum: this.state.segmentNum-1});
+            this.setState({segmentNum: this.state.segmentNum-1, rereading: true});
         }
     }
 
@@ -66,36 +49,59 @@ class ReadingView extends React.Component {
         const data = this.state.document;
 
         if (data) {
-            const questions = QUESTIONS_PROTOTYPE; // replace me with this.state.document.whatever
-            const prompts = PROMPTS_PROTOTYPE; // replace me with this.state.document.whatever
-            const segment = data.segments[this.state.segmentNum].text;
+            const current_segment = data.segments[this.state.segmentNum];
+            const segment_text = current_segment.text;
+            const segment_lines = segment_text.split("\r\n");
+            const segment_questions = current_segment.questions;
+            const segment_contexts = current_segment.contexts;
 
             return (
                 <div className={"container"}>
-                    <h1>{data.title}</h1>
+                    <h1 className={"display-4 py-3 pr-3"}>{data.title}</h1>
                     <div className={"row"}>
-                        <div className={"col-9"}>
+                        <div className={"col-8"}>
                             <p>Segment Number: {this.state.segmentNum + 1}</p>
-                            <p>{segment}</p>
-                            <button onClick = {() => this.prevSegment()}>
+                            {segment_lines.map((line, k) => (
+                                <p key={k}>{line}</p>)
+                            )}
+                            <button
+                                className={"btn btn-outline-dark mr-2"}
+                                onClick = {() => this.prevSegment()}
+                            >
                                 Back
                             </button>
-                            <button onClick = {() => this.nextSegment()}>
+                            <button
+                                className={"btn btn-outline-dark"}
+                                onClick = {() => this.nextSegment()}
+                            >
                                 {this.state.rereading ? 'Next' : 'Reread'}
                             </button>
                         </div>
 
                         {this.state.rereading &&
-                            <div className={"analysis col-3"}>
-                                <p><b>Prompts: </b>{prompts.map(el => "[" + el + "] ")}</p>
-                                <p><b>Questions: </b>
-                                    {questions.map(el => "[" + el.question + "] ")}
+                            <div className={"analysis col-4"}>
+                                <p><b>Context: </b></p>
+                                <p>
+                                    {segment_contexts.map((el,i) =>
+                                        <ul key={i}>
+                                            <li>{el.text}</li>
+                                        </ul>)}
                                 </p>
-                                <p><b>Add an annotation: </b><input
-                                    type="text"
-                                    value={this.state.value}
-                                    onChange={this.handleChange}
-                                /><button>Submit</button></p>
+                                <p><b>Questions: </b></p>
+                                <p>
+                                    {segment_questions.map((el,i) =>
+                                        <ul key={i}>
+                                            <li>{el.text}</li>
+                                        </ul>
+                                    )}
+                                </p>
+                                <p>
+                                    <b>Add an annotation: </b><input
+                                        type="text"
+                                        value={this.state.value}
+                                        onChange={this.handleChange}
+                                    /><button>Submit</button>
+                                </p>
                             </div>
                         }
                     </div>
@@ -106,6 +112,7 @@ class ReadingView extends React.Component {
                 <div>Loading!</div>
             );
         }
+
     }
 }
 

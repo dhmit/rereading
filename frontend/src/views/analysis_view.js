@@ -82,9 +82,9 @@ export class FrequencyFeelingTable extends React.Component {
         return (
             <div>
                 <TabularAnalysis
-                    title = { "Frequency Feelings"}
-                    headers = {["Word","Frequency"]}
-                    data = {this.props.feelings}
+                    title={ "Frequency Feelings"}
+                    headers={["Word","Frequency"]}
+                    data={this.props.feelings}
                 />
             </div>
         );
@@ -102,9 +102,9 @@ export class ContextVsViewTime extends React.Component {
         return (
             <div>
                 <TabularAnalysis
-                    title = {"Mean View Times of Different Contexts"}
-                    headers = {["Context","Mean View Time (seconds)"]}
-                    data = {roundedViewTimes}
+                    title={"Mean View Times of Different Contexts"}
+                    headers={["Context","Mean View Time (seconds)"]}
+                    data={roundedViewTimes}
                 />
             </div>
         )
@@ -119,13 +119,13 @@ export class SentimentScores extends React.Component {
         return (
             <div>
                 <SingleValueAnalysis
-                    header = {"Average Positivity Score"}
-                    value = {this.props.sentiment_average}
+                    header={"Average Positivity Score"}
+                    value={this.props.sentiment_average}
                 />
 
                 <SingleValueAnalysis
-                    header = {"Standard Deviation of Positivity Score"}
-                    value = {this.props.sentiment_std}
+                    header={"Standard Deviation of Positivity Score"}
+                    value={this.props.sentiment_std}
                 />
             </div>
         );
@@ -140,14 +140,14 @@ export class MeanReadingTimesForQuestions extends React.Component {
     render() {
         return (
             <TabularAnalysis
-                title = {"Mean Reading Time for Questions"}
+                title={"Mean Reading Time for Questions"}
                 headers={[
                     "Question",
                     "Context",
                     "Mean time without outliers",
                     "Total number of readers",
                 ]}
-                data = {this.props.mean_reading_times_for_questions}
+                data={this.props.mean_reading_times_for_questions}
             />
         );
     }
@@ -168,12 +168,36 @@ export class RereadCountTable extends React.Component {
                     "Number of Student Responses",
                 ]}
                 data = {this.props.run_compute_reread_counts}
+
+                export class RelevantWordPercentages extends React.Component {
+                    formatDataWithPercentSign(rawData) {
+                        //Formats the given data (usually in decimal form) as a percentage
+                        let formattedData = []
+                        for (let [question, context, decimal] of rawData) {
+                            formattedData.push([question, context, `${Math.round(100 * decimal)}%`])
+                        }
+                        return formattedData
+                    }
+
+                    render() {
+                        return (
+                            <TabularAnalysis
+                                title={"Percentage of Students Using Relevant Words"}
+                                headers={[
+                                    "Question",
+                                    "Context",
+                                    "Percentage"
+                                ]}
+                                data={this.formatDataWithPercentSign(this.props.entryData)}
             />
         );
     }
 }
 RereadCountTable.propTypes = {
     run_compute_reread_counts: PropTypes.array,
+
+RelevantWordPercentages.propTypes = {
+    entryData: PropTypes.array,
 };
 
 export class AnalysisView extends React.Component {
@@ -211,6 +235,8 @@ export class AnalysisView extends React.Component {
                 question_sentiment_analysis,
                 compute_median_view_time,
                 run_compute_reread_counts,
+                compute_mean_response_length,
+                percent_using_relevant_words_by_context_and_question
             } = this.state.analysis;
             return (
                 <div className={"container"}>
@@ -231,20 +257,32 @@ export class AnalysisView extends React.Component {
                         id={"page-title"}
                     >Analysis of Student Responses</h1>
                     <SingleValueAnalysis
-                        header = {"Total view time"}
-                        value = {total_view_time}
-                        unit = {"seconds"}
+                        header={"Total view time"}
+                        value={total_view_time}
+                        unit={"seconds"}
                     />
                     <SingleValueAnalysis
-                        header = {"Median view time"}
-                        value = {compute_median_view_time}
-                        unit = {"seconds"}
+                        header={"Median view time"}
+                        value={compute_median_view_time}
+                        unit={"seconds"}
+                    />
+                    <SingleValueAnalysis
+                        header={"Mean response length"}
+                        value={compute_mean_response_length}
+                        unit={"characters"}
                     />
                     <SentimentScores
                         sentiment_average={question_sentiment_analysis[0]}
                         sentiment_std={question_sentiment_analysis[1]}
                     />
-
+                    <MeanReadingTimesForQuestions
+                        mean_reading_times_for_questions={run_mean_reading_analysis_for_questions}
+                    />
+                    <FrequencyFeelingTable feelings={frequency_feelings}/>
+                    <ContextVsViewTime viewTime={context_vs_read_time}/>
+                    <RelevantWordPercentages
+                        entryData={percent_using_relevant_words_by_context_and_question}
+                    />
                 </div>
             );
         } else {

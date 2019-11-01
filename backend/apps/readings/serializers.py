@@ -277,6 +277,8 @@ class AnalysisSerializer(serializers.Serializer):
     question_sentiment_analysis = serializers.ReadOnlyField()
     compute_median_view_time = serializers.ReadOnlyField()
     run_compute_reread_counts = serializers.ReadOnlyField()
+    compute_mean_response_length = serializers.ReadOnlyField()
+    percent_using_relevant_words_by_context_and_question = serializers.ReadOnlyField()
 
     def create(self, validated_data):
         """ We will not create new objects using this serializer """

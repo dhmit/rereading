@@ -75,7 +75,7 @@ TimeIt.propTypes = {
  * down to "advance" the story
  */
 export function handleStoryScroll(e, scrollTop, scroll_ups, scrolling_up) {
-    const current_scrollTop = e.target.scrollingElement.scrollTop;
+    const current_scrollTop = e.target.scrollTop;
     const prev_scroll = scrollTop;
     // If the user is scrolling up, log it
     // console.log(current_scrollTop, prev_scroll);

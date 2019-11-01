@@ -242,7 +242,7 @@ class RereadingAnalysis:
             "total_view_time": 0,
             "count": 0
         }
-                                     for context in all_contexts}
+            for context in all_contexts}
 
         for response in self.responses:
             context = response.context.text
@@ -252,8 +252,8 @@ class RereadingAnalysis:
 
         # For each context in total_contexts_view_time, calculate the average view time
         average_context_view_times = {context:
-                                      total_contexts_view_times[context]["total_view_time"] /
-                                      total_contexts_view_times[context]["count"]
+                                          total_contexts_view_times[context]["total_view_time"] /
+                                          total_contexts_view_times[context]["count"]
                                       for context in total_contexts_view_times}
         return average_context_view_times
 
@@ -473,6 +473,7 @@ class RereadingAnalysis:
             question_context_percent_list.append((item[0], item[1], item[2] / total_student_count))
 
         return question_context_percent_list
+
     def run_compute_reread_counts(self):
         """
         Runs the analysis on the data loaded from the CSV file by looking at the reread count for
@@ -517,7 +518,7 @@ class RereadingAnalysis:
         for row in self.responses:
             table_context = row.context.text
             table_question = row.question.text
-            view_count = len(row.views)
+            view_count = len(row.get_parsed_views())
             if context in table_context:
                 if question in table_question:
                     raw_reread_counts.append(view_count)
@@ -527,6 +528,7 @@ class RereadingAnalysis:
         mean_reread_count = 0
         sum_of_views = 0
         student_count = 0
+        final_student_count = 0
 
         for entry in raw_reread_counts:
             if entry in organized_data.keys():
@@ -542,6 +544,8 @@ class RereadingAnalysis:
         else:
             mean_reread_count = round((sum_of_views / student_count), 2)
             sum_of_views = 0
+            final_student_count = student_count
+            student_count = 0
 
         print(organized_data)
-        return [question, context, mean_reread_count, student_count]
+        return [question, context, mean_reread_count, final_student_count]

@@ -66,3 +66,27 @@ TimeIt.propTypes = {
     answer: PropTypes.string,
     word_limit: PropTypes.number
 };
+
+/**
+ * For large enough stories, this function logs how many times the user scrolls up to
+ * read a previous portion of the story
+ *
+ * Note: This only tracks the number of times scrolled up, and not when the user scrolls
+ * down to "advance" the story
+ */
+export function handleStoryScroll(e, scrollTop, scroll_ups, scrolling_up) {
+    const current_scrollTop = e.target.scrollingElement.scrollTop;
+    const prev_scroll = scrollTop;
+    // If the user is scrolling up, log it
+    // console.log(current_scrollTop, prev_scroll);
+    if (current_scrollTop < prev_scroll && !scrolling_up) {
+        scroll_ups++;
+        scrolling_up = true;
+    } else if (current_scrollTop > prev_scroll && scrolling_up) {
+        scrolling_up = false;
+    }
+    scrollTop = current_scrollTop;
+    // For use with the setState function
+    // console.log(scroll_ups);
+    return {scrollTop, scroll_ups, scrolling_up};
+}

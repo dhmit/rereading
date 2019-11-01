@@ -176,10 +176,10 @@ class RereadingAnalysis:
 
         """ Retrieve all possible contexts, and turn it into a list"""
         list_of_dict_of_contexts = ContextPrototype.objects.values('text')
-        merged_dicts = {}
+        merged_dicts2 = {}
         for key in list_of_dict_of_contexts[0].keys():
-            merged_dicts[key] = list(dict[key] for dict in list_of_dict_of_contexts)
-        self.contexts = merged_dicts.get('text')
+            merged_dicts2[key] = list(dict[key] for dict in list_of_dict_of_contexts)
+        self.contexts = merged_dicts2.get('text')
 
     def total_view_time(self):
         """

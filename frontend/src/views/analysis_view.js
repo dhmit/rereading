@@ -156,33 +156,23 @@ MeanReadingTimesForQuestions.propTypes = {
     mean_reading_times_for_questions: PropTypes.array,
 };
 
-class RereadCountTable extends React.Component {
+export class RereadCountTable extends React.Component {
     render() {
         return (
-            <div>
-                <table border="1" cellPadding="5">
-                    <tbody>
-                        <tr>
-                            <th>Question</th>
-                            <th>Context</th>
-                            <th>Mean Rereading Counts</th>
-                            <th>Number of Student Responses</th>
-                        </tr>
-                        {this.props.run_compute_reread_counts.map((i,k) =>
-                            <tr key = {k}>
-                                <td>{i[0]}</td>
-                                <td>{i[1]}</td>
-                                <td>{i[2]}</td>
-                                <td>{i[3]}</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+            <TabularAnalysis
+                title = {"Mean Rereading Count for Questions"}
+                headers={[
+                    "Question",
+                    "Context",
+                    "Mean Rereading Counts",
+                    "Number of Student Responses",
+                ]}
+                data = {this.props.run_compute_reread_counts}
+            />
         );
     }
 }
-RereadCountTable.propTypes = {
+MeanReadingTimesForQuestions.propTypes = {
     run_compute_reread_counts: PropTypes.array,
 };
 
@@ -254,8 +244,6 @@ export class AnalysisView extends React.Component {
                         sentiment_average={question_sentiment_analysis[0]}
                         sentiment_std={question_sentiment_analysis[1]}
                     />
-                    <h3>Mean Rereading Count for Questions</h3>
-                    <RereadCountTable run_compute_reread_counts = {run_compute_reread_counts}/>
 
                 </div>
             );

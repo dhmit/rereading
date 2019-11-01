@@ -443,4 +443,4 @@ class RereadingAnalysis:
             sum_of_views = 0
 
         print(organized_data)
-        return question, context, mean_reread_count, student_count
+        return [question, context, mean_reread_count, student_count]

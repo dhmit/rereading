@@ -1,47 +1,4 @@
 import React from "react";
-import PropTypes from 'prop-types';
-
-class SegmentQuestion extends React.Component {
-
-    handleAnswerSubmit(event) {
-        console.log(this.state.answer);
-        event.preventDefault();
-    }
-
-    render() {
-        const question_text = this.props.question.text;
-        // const question_word_limit = this.props.question.response_word_limit;
-        const context_text = this.props.context.text;
-        return (
-            <div>
-                <h4>Context:</h4>
-                <div className='segment-context-text'>
-                    {context_text}
-                </div>
-                <h4>Question:</h4>
-                <div className='segment-question-text'>
-                    {question_text}
-                </div>
-                <form onSubmit={this.handleAnswerSubmit}>
-                    <label><h4>Response:</h4></label>
-                    <input
-                        type='text'
-                        value={this.props.response}
-                        onChange={(e) => this.props.onChange(e)}
-                    />
-                    <input type='submit' value='Submit' />
-                </form>
-
-            </div>
-        );
-    }
-}
-SegmentQuestion.propTypes = {
-    question: PropTypes.object,
-    context: PropTypes.object,
-    onChange: PropTypes.func,
-    response: PropTypes.string,
-};
 
 class ReadingView extends React.Component {
     constructor(props){
@@ -52,7 +9,7 @@ class ReadingView extends React.Component {
             document: null,
             segmentQuestionNum: 0,
             segmentContextNum: 0,
-            segmentResponseArray: [[]],
+            segmentResponseArray: [],
         };
 
         this.handleSegmentResponseChange = this.handleSegmentResponseChange.bind(this);
@@ -95,19 +52,26 @@ class ReadingView extends React.Component {
     /**
      * Allows the user to change their response to a segment question
      */
-    handleSegmentResponseChange(event, question_id) {
+    handleSegmentResponseChange(question_id, event) {
         const segmentResponseArray = this.state.segmentResponseArray.slice();
 
-        // If the segment hasn't been added to the responses, initialize it as an array
-        if (!segmentResponseArray[this.state.segmentNum]) {
-            segmentResponseArray[this.state.segmentNum] = [];
+        let question_entry = null;
+        for (let el of segmentResponseArray) {
+            if (el.id === question_id) {
+                question_entry = el;
+                break;
+            }
         }
 
-        // The index of the response into the segment is the same as its id
-        const segment = segmentResponseArray[this.state.segmentNum];
-        segment[question_id] = event.target.value;
+        if (question_entry === null) {
+            question_entry = {id: question_id};
+            segmentResponseArray.push(question_entry);
+        }
+
+        question_entry.response = event.target.value;
 
         this.setState({segmentResponseArray});
+
     }
 
     /**
@@ -115,8 +79,6 @@ class ReadingView extends React.Component {
      */
     handleSegmentResponseSubmit(event) {
         event.preventDefault();
-
-
     }
 
 
@@ -128,18 +90,32 @@ class ReadingView extends React.Component {
             const segment_text = current_segment.text;
             const segment_lines = segment_text.split("\r\n");
             const segment_questions = current_segment.questions;
-            const segment_contexts = current_segment.contexts;
+            // const segment_contexts = current_segment.contexts;
+            const context_text = "Example context text";
 
             // Generate response fields for each of the questions
-            const response_fields = segment_questions.map((question_text, id) => {
+            const response_fields = segment_questions.map((question, id) => {
                 return (
-                    <SegmentQuestion
-                        question={question_text}
-                        context={segment_contexts[this.state.segmentContextNum]}
-                        onChange={this.handleSegmentResponseChange}
-                        response={this.state.segmentResponseArray[this.state.segmentNum][id]}
-                        key={id}
-                    />
+                    <React.Fragment key={id}>
+                        <div>
+                            <h4>Context:</h4>
+                            <div className='segment-context-text'>
+                                {context_text}
+                            </div>
+                            <h4>Question:</h4>
+                            <div className='segment-question-text'>
+                                {question.text}
+                            </div>
+
+                            <label><h4>Response:</h4></label>
+                            <input
+                                type='text'
+                                onChange={this.handleSegmentResponseChange.bind(this,
+                                    question.id)}
+                            />
+
+                        </div>
+                    </React.Fragment>
                 )
             });
 

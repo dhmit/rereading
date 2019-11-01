@@ -1,5 +1,56 @@
 import React from "react";
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
+
+class SegmentQuestion extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            answer: '',
+        };
+
+        this.handleAnswerSubmit = this.handleAnswerSubmit.bind(this);
+        this.handleAnswerChange = this.handleAnswerChange.bind(this);
+    }
+
+    handleAnswerChange(event) {
+        this.setState({answer: event.target.value});
+    }
+
+    handleAnswerSubmit(event) {
+        console.log(this.state.answer);
+        event.preventDefault();
+    }
+
+    render() {
+        return (
+            <div>
+                <h4>Context:</h4>
+                <div className='segment-context-text'>
+                    {this.props.context}
+                </div>
+                <h4>Question:</h4>
+                <div className='segment-question-text'>
+                    {this.props.question}
+                </div>
+                <form onSubmit={this.handleAnswerSubmit}>
+                    <label><h4>Response:</h4></label>
+                    <input
+                        type='text'
+                        value={this.state.answer}
+                        onChange={this.handleAnswerChange}
+                    />
+                    <input type='submit' value='Submit' />
+                </form>
+
+            </div>
+        );
+    }
+}
+SegmentQuestion.propTypes = {
+    question: PropTypes.string,
+    context: PropTypes.string,
+};
 
 class ReadingView extends React.Component {
     constructor(props){
@@ -8,6 +59,8 @@ class ReadingView extends React.Component {
             segmentNum: 0,
             rereading: false,  // we alternate reading and rereading
             document: null,
+            questionNum: 0,
+            contextNum: 0,
         }
     }
 
@@ -54,6 +107,8 @@ class ReadingView extends React.Component {
             const segment_lines = segment_text.split("\r\n");
             const segment_questions = current_segment.questions;
             const segment_contexts = current_segment.contexts;
+            segment_contexts[0] = "this is a test";
+            segment_questions[0] = "this is a better test";
 
             return (
                 <div className={"container"}>
@@ -80,28 +135,10 @@ class ReadingView extends React.Component {
 
                         {this.state.rereading &&
                             <div className={"analysis col-4"}>
-                                <p><b>Context: </b></p>
-                                <p>
-                                    {segment_contexts.map((el,i) =>
-                                        <ul key={i}>
-                                            <li>{el.text}</li>
-                                        </ul>)}
-                                </p>
-                                <p><b>Questions: </b></p>
-                                <p>
-                                    {segment_questions.map((el,i) =>
-                                        <ul key={i}>
-                                            <li>{el.text}</li>
-                                        </ul>
-                                    )}
-                                </p>
-                                <p>
-                                    <b>Add an annotation: </b><input
-                                        type="text"
-                                        value={this.state.value}
-                                        onChange={this.handleChange}
-                                    /><button>Submit</button>
-                                </p>
+                                <SegmentQuestion
+                                    question={segment_questions[this.state.questionNum]}
+                                    context={segment_contexts[this.state.contextNum]}
+                                />
                             </div>
                         }
                     </div>

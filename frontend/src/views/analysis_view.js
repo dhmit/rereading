@@ -172,7 +172,7 @@ export class RereadCountTable extends React.Component {
         );
     }
 }
-MeanReadingTimesForQuestions.propTypes = {
+RereadCountTable.propTypes = {
     run_compute_reread_counts: PropTypes.array,
 };
 

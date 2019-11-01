@@ -4,10 +4,10 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
 import statistics
+
 import math
 from collections import Counter
 from pathlib import Path
-
 from config.settings.base import PROJECT_ROOT
 from .models import StudentResponsePrototype, ContextPrototype
 
@@ -241,7 +241,7 @@ class RereadingAnalysis:
         total_contexts_view_times = {context.text: {
             "total_view_time": 0,
             "count": 0
-            }
+        }
                                      for context in all_contexts}
 
         for response in self.responses:
@@ -371,67 +371,105 @@ class RereadingAnalysis:
             median_view_time = statistics.median(list_of_times)
         return round(median_view_time)
 
-    '''def compute_median_view_time(student_data):
+    def compute_mean_response_length(self):
         """
-         Given a list of student response dicts,
-        return the median time (across all users) spent reading the text
+        Given a list of student response dicts,
+        return the mean character length (across all users) of the response
+        :return: float, mean number of characters in the user's response
+        """
+        mean_response_length = 0
+        for row in self.responses:
+            mean_response_length += len(row.response)
+        return round(mean_response_length / len(self.responses), 2)
 
-        :param student_data: list, student response dicts
-        :return: float, median amount of time users spend reading the text
+    def get_number_of_unique_students(self):
         """
-        list_of_times = []
-        for row in student_data:
-            for view_time in row.get('views'):
-                list_of_times.append(view_time)
-        if not list_of_times:
-            median_view_time = 0
-        else:
-            list_of_times.sort()
-            median_view_time = statistics.median(list_of_times)
-        return median_view_time
-        '''
-    def filter_words(string):
+        Count the number of unique students that gave responses
+        :return: the number of unique students that gave responses
         """
-        helper method to preprocess the string: remove the stopwords and punctuation
-        return: list of words that are non-stopwords
-        """
-        stop_words_and_punct = ["i", "for", "in", "is", "are", "on", "are", "'s", ".", ","]
-        return [ch for ch in string.lower().split() if ch not in stop_words_and_punct]
+        unique_students = set()
+        for row in self.responses:
+            unique_students.add(row.student)
+        return len(unique_students)
 
-    def unique_word_pattern(self):
+    @staticmethod
+    def description_has_relevant_words(story_meaning_description, relevant_words):
         """
-        Take the list of dictionaries as a parameter and analyze the readers' responses based on the
-        two different contexts of the 2 questions (this is an ad/this is just a short story);
-        analyze if
-        the total number of unique responses changed as more and more readers' responses are
-        analyzed. Will be used for future analysis and visualization on the webapp
-        :param student_data
-        :return 2 lists of sets specifying unique responses at each point in time as a user
-        submits a
-        response
+        Determine if the user's description contains a word relevant to the story's meaning
+        :param story_meaning_description: The user's three word description of the story
+        :param relevant_words: a list of words which show an understanding of the story's meaning
+        :return True if the description contains one of the relevant words or relevant_words is
+        empty. False otherwise
         """
-        response_ad = set()
-        response_story = set()
-        unique_word_tracker_ad = []
-        unique_word_tracker_story = []
-        question = "In three words or fewer, what is this text about?"
+        if not relevant_words:
+            return True
 
-        for response in self.responses:
-            # print(response.response)
-            filtered_word_resp = filter_words(response.response)
-            print(filtered_word_resp)
-            '''if data['question'] == question and data['context'] == "This is an ad.":
-                word_set = response_ad
-                histogram = unique_word_tracker_ad
-            elif data['question'] == question and data[
-                'context'] == "This is actually a short story.":
-                word_set = response_story
-                histogram = unique_word_tracker_story
-            else:
-                continue
-            for word in filtered_word_resp:
-                word_set.add(word)
-            histogram.append(set(word_set))
+        lowercase_relevant_words = []
+        for word in relevant_words:
+            lowercase_relevant_words.append(word.lower())
 
-        return unique_word_tracker_story, unique_word_tracker_ad
-        '''
+        words_used_in_description = story_meaning_description.lower().split(" ")
+
+        for word in lowercase_relevant_words:
+            if word.lower() in words_used_in_description:
+                return True
+        return False
+
+    @staticmethod
+    def transform_nested_dict_to_list(nested_dict):
+        """
+        Transforms a nested dictionary data structure into a flat array of tuples in the form
+        (key1, key2, value).
+        :param nested_dict: the map generated by
+        students_using_relevant_words_by_context_and_question
+        :return a list of tuples in the form (context, question, data)
+        """
+        flattened_list = []
+        for key1, inner_keys in nested_dict.items():
+            for key2, value in inner_keys.items():
+                flattened_list.append((key1, key2, value))
+        return flattened_list
+
+    def students_using_relevant_words_by_context_and_question(self):
+        """
+        Return a list of tuples of the form (question, context, count), where count is
+        the number of students who used relevant words in that context and question. This list
+        is sorted by question first and then context.
+        :return the return type explained in the function description
+        """
+        relevant_words = ["dead", "death", "miscarriage", "killed", "kill", "losing", "loss",
+                          "lost", "deceased", "died", "grief", "pregnancy", "pregnant"]
+
+        question_context_count_map = {}
+
+        for row in self.responses:
+            question = row.question.text
+            context = row.context.text
+            if question not in question_context_count_map:
+                question_context_count_map[question] = {}
+            if context not in question_context_count_map[question]:
+                question_context_count_map[question][context] = 0
+
+            if RereadingAnalysis.description_has_relevant_words(row.response, relevant_words):
+                question_context_count_map[question][context] += 1
+
+        flattened_data = RereadingAnalysis.transform_nested_dict_to_list(question_context_count_map)
+        flattened_data.sort()
+        return flattened_data
+
+    def percent_using_relevant_words_by_context_and_question(self):
+        """
+        Return a list of tuples of the form (question, context, percent), where percent is
+        the percentage [0.00, 1.00] of students who used relevant words in that context and
+        question. This list is sorted by question first and then context.
+        :return: The return type explained in the function description.
+        """
+        total_student_count = self.get_number_of_unique_students()
+
+        question_context_count_list = self.students_using_relevant_words_by_context_and_question()
+
+        question_context_percent_list = []
+        for item in question_context_count_list:
+            question_context_percent_list.append((item[0], item[1], item[2] / total_student_count))
+
+        return question_context_percent_list

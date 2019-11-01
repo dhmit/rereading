@@ -6,7 +6,10 @@ import PropTypes from 'prop-types';
 class Segment extends React.Component {
     render() {
         return (
-            <div className="scroll mb-3" onScroll={this.props.handleScroll}>
+            <div
+                className="scroll mb-3"
+                onScroll={this.props.handleScroll}
+            >
                 {this.props.segmentLines.map((line, k) => (
                     <p key={k}>{line}</p>)
                 )}
@@ -71,7 +74,6 @@ class ReadingView extends React.Component {
     prevSegment () {
         this.updateData(false);
         this.setState({segment_num: this.state.segment_num-1});
-        window.scrollTo(0,0);
     }
 
     nextSegment () {
@@ -140,20 +142,20 @@ class ReadingView extends React.Component {
                         {this.state.rereading &&
                             <div className={"analysis col-4"}>
                                 <p><b>Context: </b></p>
-                                <p>
+                                <div>
                                     {segment_contexts.map((el,i) =>
                                         <ul key={i}>
                                             <li>{el.text}</li>
                                         </ul>)}
-                                </p>
+                                </div>
                                 <p><b>Questions: </b></p>
-                                <p>
+                                <div>
                                     {segment_questions.map((el,i) =>
                                         <ul key={i}>
                                             <li>{el.text}</li>
                                         </ul>
                                     )}
-                                </p>
+                                </div>
                                 <p>
                                     <b>Add an annotation: </b><input
                                         type="text"

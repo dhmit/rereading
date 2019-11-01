@@ -1,6 +1,25 @@
 import React from "react";
 
-// import PropTypes from 'prop-types';
+import './reading_view.css';
+import PropTypes from 'prop-types';
+
+class Segment extends React.Component {
+    render() {
+        return (
+            <div className="scroll">
+                <p>Segment Number: {this.props.segmentNum + 1}</p>
+                {this.props.segmentLines.map((line, k) => (
+                    <p key={k}>{line}</p>)
+                )}
+            </div>
+        )
+    }
+}
+
+Segment.propTypes = {
+    segmentLines: PropTypes.array,
+    segmentNum: PropTypes.number,
+};
 
 class ReadingView extends React.Component {
     constructor(props){
@@ -60,12 +79,10 @@ class ReadingView extends React.Component {
                 <div className={"container"}>
                     <h1 className={"display-4 py-3 pr-3"}>{data.title}</h1>
                     <div className={"row"}>
-                        <div className="scroll">
-                            <p>Segment Number: {this.state.segmentNum + 1}</p>
-                            {segment_lines.map((line, k) => (
-                                <p key={k}>{line}</p>)
-                            )}
-                        </div>
+                        <Segment
+                            segmentLines={segment_lines}
+                            segmentNum={this.state.segmentNum}
+                        />
                         <div className={'col-8'}>
                             <button
                                 className={"btn btn-outline-dark mr-2"}

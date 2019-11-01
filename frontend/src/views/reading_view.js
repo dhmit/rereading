@@ -3,42 +3,31 @@ import PropTypes from 'prop-types';
 
 class SegmentQuestion extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            answer: '',
-        };
-
-        this.handleAnswerSubmit = this.handleAnswerSubmit.bind(this);
-        this.handleAnswerChange = this.handleAnswerChange.bind(this);
-    }
-
-    handleAnswerChange(event) {
-        this.setState({answer: event.target.value});
-    }
-
     handleAnswerSubmit(event) {
         console.log(this.state.answer);
         event.preventDefault();
     }
 
     render() {
+        const question_text = this.props.question.text;
+        // const question_word_limit = this.props.question.response_word_limit;
+        const context_text = this.props.context.text;
         return (
             <div>
                 <h4>Context:</h4>
                 <div className='segment-context-text'>
-                    {this.props.context}
+                    {context_text}
                 </div>
                 <h4>Question:</h4>
                 <div className='segment-question-text'>
-                    {this.props.question}
+                    {question_text}
                 </div>
                 <form onSubmit={this.handleAnswerSubmit}>
                     <label><h4>Response:</h4></label>
                     <input
                         type='text'
-                        value={this.state.answer}
-                        onChange={this.handleAnswerChange}
+                        value={this.props.response}
+                        onChange={(e) => this.props.onChange(e)}
                     />
                     <input type='submit' value='Submit' />
                 </form>
@@ -48,8 +37,10 @@ class SegmentQuestion extends React.Component {
     }
 }
 SegmentQuestion.propTypes = {
-    question: PropTypes.string,
-    context: PropTypes.string,
+    question: PropTypes.object,
+    context: PropTypes.object,
+    onChange: PropTypes.func,
+    response: PropTypes.string,
 };
 
 class ReadingView extends React.Component {
@@ -59,9 +50,13 @@ class ReadingView extends React.Component {
             segmentNum: 0,
             rereading: false,  // we alternate reading and rereading
             document: null,
-            questionNum: 0,
-            contextNum: 0,
-        }
+            segmentQuestionNum: 0,
+            segmentContextNum: 0,
+            segmentResponseArray: [[]],
+        };
+
+        this.handleSegmentResponseChange = this.handleSegmentResponseChange.bind(this);
+        this.handleSegmentResponseSubmit = this.handleSegmentResponseSubmit.bind(this);
     }
 
     async componentDidMount() {
@@ -97,6 +92,33 @@ class ReadingView extends React.Component {
         }
     }
 
+    /**
+     * Allows the user to change their response to a segment question
+     */
+    handleSegmentResponseChange(event, question_id) {
+        const segmentResponseArray = this.state.segmentResponseArray.slice();
+
+        // If the segment hasn't been added to the responses, initialize it as an array
+        if (!segmentResponseArray[this.state.segmentNum]) {
+            segmentResponseArray[this.state.segmentNum] = [];
+        }
+
+        // The index of the response into the segment is the same as its id
+        const segment = segmentResponseArray[this.state.segmentNum];
+        segment[question_id] = event.target.value;
+
+        this.setState({segmentResponseArray});
+    }
+
+    /**
+     * Handles data when a user is trying to submit a response to a question
+     */
+    handleSegmentResponseSubmit(event) {
+        event.preventDefault();
+
+
+    }
+
 
     render() {
         const data = this.state.document;
@@ -107,8 +129,19 @@ class ReadingView extends React.Component {
             const segment_lines = segment_text.split("\r\n");
             const segment_questions = current_segment.questions;
             const segment_contexts = current_segment.contexts;
-            segment_contexts[0] = "this is a test";
-            segment_questions[0] = "this is a better test";
+
+            // Generate response fields for each of the questions
+            const response_fields = segment_questions.map((question_text, id) => {
+                return (
+                    <SegmentQuestion
+                        question={question_text}
+                        context={segment_contexts[this.state.segmentContextNum]}
+                        onChange={this.handleSegmentResponseChange}
+                        response={this.state.segmentResponseArray[this.state.segmentNum][id]}
+                        key={id}
+                    />
+                )
+            });
 
             return (
                 <div className={"container"}>
@@ -135,10 +168,7 @@ class ReadingView extends React.Component {
 
                         {this.state.rereading &&
                             <div className={"analysis col-4"}>
-                                <SegmentQuestion
-                                    question={segment_questions[this.state.questionNum]}
-                                    context={segment_contexts[this.state.contextNum]}
-                                />
+                                {response_fields}
                             </div>
                         }
                     </div>

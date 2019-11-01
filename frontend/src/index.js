@@ -1,22 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Route, BrowserRouter as Router } from 'react-router-dom';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import Study from './prompted_readings/student_view';
-import InstructorPage from './prompted_readings/instructor_view';
+import StudentView from './views/student_view';
+import InstructorView from './views/instructor_view';
+import {AnalysisView} from './views/analysis_view';
+import ReadingView from './views/reading_view';
 
-// note(ra): for sanity testing of django-webpack-loader...
-// ReactDOM.render(<span>Hello, world!</span>, document.getElementById('root'));
 
-const routing = (
-    <Router>
-        <div>
-            <Route path="/student" component={Study} />
-            <Route path="/instructor" component={InstructorPage} />
-        </div>
-    </Router>
-);
+window.app_modules = {
+    React,  // Make React accessible from the base template
+    ReactDOM,  // Make ReactDOM accessible from the base template
 
-ReactDOM.render(routing, document.getElementById('root'));
+    // Add all frontend views here
+    StudentView,
+    InstructorView,
+    AnalysisView,
+    ReadingView,
+};

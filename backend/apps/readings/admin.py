@@ -4,33 +4,47 @@ Rereading project's "readings" app.
 """
 
 from django.contrib import admin
-from .models import Story, Context, Question, Student, StudentResponse
+from .models import (
+    Student,
+    Document,
+    Segment,
+    SegmentQuestion,
+    SegmentContext,
+)
 
 
-class StudentResponseInline(admin.TabularInline):
-    model = StudentResponse
+################################################################################
+# Document admin view
+################################################################################
+class SegmentInline(admin.TabularInline):
+    model = Segment
     extra = 1
 
 
-class StudentAdmin(admin.ModelAdmin):
-    model = Student
-    inlines = [StudentResponseInline]
+class DocumentAdmin(admin.ModelAdmin):
+    model = Document
+    inlines = [SegmentInline]
 
 
-class QuestionInline(admin.TabularInline):
-    model = Question
+################################################################################
+# Segment admin view
+################################################################################
+class SegmentContextInline(admin.TabularInline):
+    model = SegmentContext
     extra = 1
 
 
-class ContextInline(admin.TabularInline):
-    model = Context
+class SegmentQuestionInline(admin.TabularInline):
+    model = SegmentQuestion
     extra = 1
 
 
-class StoryAdmin(admin.ModelAdmin):
-    model = Story
-    inlines = [ContextInline, QuestionInline]
+class SegmentAdmin(admin.ModelAdmin):
+    model = Segment
+    inlines = [SegmentContextInline, SegmentQuestionInline]
 
 
-admin.site.register(Story, StoryAdmin)
-admin.site.register(Student, StudentAdmin)
+admin.site.register(Document, DocumentAdmin)
+admin.site.register(Student)
+admin.site.register(Segment, SegmentAdmin)
+

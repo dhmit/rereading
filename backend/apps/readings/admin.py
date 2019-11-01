@@ -8,13 +8,14 @@ from .models import (
     Student,
     Document,
     Segment,
-    StoryPrototype,
-    ContextPrototype,
-    QuestionPrototype,
-    StudentResponsePrototype,
+    SegmentQuestion,
+    SegmentContext,
 )
 
 
+################################################################################
+# Document admin view
+################################################################################
 class SegmentInline(admin.TabularInline):
     model = Segment
     extra = 1
@@ -25,34 +26,25 @@ class DocumentAdmin(admin.ModelAdmin):
     inlines = [SegmentInline]
 
 
-class StudentResponseInline(admin.TabularInline):
-    model = StudentResponsePrototype
+################################################################################
+# Segment admin view
+################################################################################
+class SegmentContextInline(admin.TabularInline):
+    model = SegmentContext
     extra = 1
 
 
-class StudentAdmin(admin.ModelAdmin):
-    model = Student
-    inlines = [StudentResponseInline]
-
-
-class QuestionInline(admin.TabularInline):
-    model = QuestionPrototype
+class SegmentQuestionInline(admin.TabularInline):
+    model = SegmentQuestion
     extra = 1
 
 
-class ContextInline(admin.TabularInline):
-    model = ContextPrototype
-    extra = 1
-
-
-class StoryAdmin(admin.ModelAdmin):
-    model = StoryPrototype
-    inlines = [ContextInline, QuestionInline]
+class SegmentAdmin(admin.ModelAdmin):
+    model = Segment
+    inlines = [SegmentContextInline, SegmentQuestionInline]
 
 
 admin.site.register(Document, DocumentAdmin)
-admin.site.register(StoryPrototype, StoryAdmin)
-admin.site.register(Student, StudentAdmin)
-admin.site.register(StudentResponsePrototype)
-admin.site.register(ContextPrototype)
-admin.site.register(QuestionPrototype)
+admin.site.register(Student)
+admin.site.register(Segment, SegmentAdmin)
+

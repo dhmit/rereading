@@ -47,42 +47,58 @@
 
     <hr>
 
-    <!-- the React way -->
-    !--
+
     <h1>React!</h1>
     <div id="react_root"></div>
     <script type="text/babel">
         class ReactToggler extends React.Component {
-            constructor() {
-                super();
+            constructor(props){
+                super(props);
                 this.state = {
-                    on:true,
-                    count: 0,
-                };
+                    on: true,
+                    count: 0
+                }
+
             }
-            toggle_status() {
+
+            toggle_status(){
                 this.setState({
                     on: !this.state.on,
-                    count: this.state.count + 1
-                });
-        }
+                    count: this.state.count + 1,
+                    }
+                )
+            }
+
             render() {
                 return (
                     <div>
                         <div>{this.state.on ? 'On' : 'Off'}</div>
-                        <button onClick={() => this.toggle_status()}>
-                            Turn status {this.state.on ? 'Off' : 'On'}</button>button>
+                        <button onClick={() => this.toggle_status()}>Turn status {this.state.on ? 'off' : 'on'}</button>
+                        Hello, {this.props.name}! Toggled {this.state.count} times.
                     </div>
+
                 );
             }
         }
 
+        class MoreTogglers extends React.Component{
+            render(){
+                return(
+                    <div>
+                        <ReactToggler name = "Foo"/>
+                        <ReactToggler name = "Bar"/>
+                    </div>
+                )
+            }
+
+        }
+
         ReactDOM.render(
-            <ReactToggler />,
+            <MoreTogglers />,
             document.getElementById('react_root')
         );
     </script>
-    -->
+
 
     </body>
 </html>

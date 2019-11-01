@@ -5,13 +5,14 @@ class ReadingView extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            segmentNum: 72,
+            segmentNum: 71,
             // MAKE SURE TO CHANGE THIS BACK TO 0
             // MAKE SURE TO CHANGE THIS BACK TO 0
             // MAKE SURE TO CHANGE THIS BACK TO 0
             // MAKE SURE TO CHANGE THIS BACK TO 0
             rereading: false,  // we alternate reading and rereading
             document: null,
+            overview: false
         }
     }
 
@@ -37,7 +38,7 @@ class ReadingView extends React.Component {
 
     nextSegment () {
         const length = this.state.document.segments.length;
-        if (this.state.segmentNum < length){
+        if (this.state.segmentNum < length - 1){
             if (this.state.rereading) {
                 // If we're already rereading, move to the next segment
                 this.setState({rereading: false, segmentNum: this.state.segmentNum+1});
@@ -45,6 +46,8 @@ class ReadingView extends React.Component {
                 // Otherwise, move on to the rereading layout
                 this.setState({rereading: true});
             }
+        } else if (this.state.segmentNum === length - 1){
+            this.setState({overview: true});
         }
     }
 
@@ -58,6 +61,7 @@ class ReadingView extends React.Component {
             const segment_lines = segment_text.split("\r\n");
             const segment_questions = current_segment.questions;
             const segment_contexts = current_segment.contexts;
+            const document_questions = data.questions;
 
             return (
                 <div className={"container"}>
@@ -105,6 +109,15 @@ class ReadingView extends React.Component {
                                         value={this.state.value}
                                         onChange={this.handleChange}
                                     /><button>Submit</button>
+                                </p>
+                            </div>
+                        }
+
+                        {this.state.overview &&
+                            <div className={"analysis col-4"}>
+                                <p><b>Document Questions: </b></p>
+                                <p>
+                                    filler
                                 </p>
                             </div>
                         }

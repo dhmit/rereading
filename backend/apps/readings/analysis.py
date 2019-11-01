@@ -534,7 +534,8 @@ class RereadingAnalysis:
                 organized_data[entry] += 1
             elif len(raw_reread_counts) != 0:
                 organized_data.update({entry: 1})
-        for entry in organized_data.keys():
+        keys_of_dictionary = organized_data.keys()
+        for entry in keys_of_dictionary:
             sum_of_views += entry * organized_data[entry]
             student_count += organized_data[entry]
 

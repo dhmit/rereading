@@ -1,4 +1,5 @@
 import React from "react";
+
 // import PropTypes from 'prop-types';
 
 class ReadingView extends React.Component {
@@ -59,11 +60,13 @@ class ReadingView extends React.Component {
                 <div className={"container"}>
                     <h1 className={"display-4 py-3 pr-3"}>{data.title}</h1>
                     <div className={"row"}>
-                        <div className={"col-8"}>
+                        <div className="scroll">
                             <p>Segment Number: {this.state.segmentNum + 1}</p>
                             {segment_lines.map((line, k) => (
                                 <p key={k}>{line}</p>)
                             )}
+                        </div>
+                        <div className={'col-8'}>
                             <button
                                 className={"btn btn-outline-dark mr-2"}
                                 onClick = {() => this.prevSegment()}

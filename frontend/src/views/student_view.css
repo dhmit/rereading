@@ -42,3 +42,11 @@
 .story-text {
   margin: 5%;
 }
+
+.scroll{
+    height: 150px;
+    width: 800px;
+    overflow: auto;
+    font-family: Perpetua;
+    font-size: x-large;
+}

@@ -33,6 +33,9 @@ class Document(models.Model):
         """ string representation of this class """
         return f'Document: {self.title} by {self.author}'
 
+    def test(self):
+        return "test"
+
 
 class Segment(models.Model):
     """

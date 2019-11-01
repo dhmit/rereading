@@ -34,9 +34,8 @@ export class DocumentAnalysisView extends React.Component {
             } = this.state.document;
             return (
                 <div>
-                    <p>Analysis of Recitatif</p>
-                    <p>{__len__}</p>
-                    <p>{__str__}</p>
+                    <p>Analysis of {__str__}</p>
+                    <p>Word count: {__len__}</p>
 
                 </div>
             );

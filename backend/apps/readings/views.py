@@ -13,15 +13,6 @@ from .serializers import (
     DocumentSerializer, StudentSerializer, DocumentAnalysisSerializer)
 
 
-@api_view(['GET'])
-def reading_view(request, doc_id):
-    """
-    Send a document with its associated segments, questions, prompts, etc.
-    to the frontend
-    """
-    # TODO(ra): implement me!
-
-
 class ListDocument(generics.ListCreateAPIView):
     """View a list of documents or create a new one"""
     queryset = Document.objects.all()
@@ -32,6 +23,16 @@ class DetailDocument(generics.RetrieveUpdateDestroyAPIView):
     """Get a single document or update/delete it"""
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
+
+
+@api_view(['GET'])
+def document_analysis(request):
+    """
+    Init a DocumentAnalysis, and serialize it to send to the frontend.
+    """
+    queryset = Document.objects.get(pk=1)
+    serializer = DocumentAnalysisSerializer(queryset)
+    return Response(serializer.data)
 
 
 class ListStudent(generics.ListCreateAPIView):
@@ -83,12 +84,3 @@ def analysis(request):
     serializer = AnalysisSerializer(instance=analysis_obj)
     return Response(serializer.data)
 
-
-@api_view(['GET'])
-def document_analysis(request):
-    """
-    Init a DocumentAnalysis, and serialize it to send to the frontend.
-    """
-    analysis_obj = Document()
-    serializer = DocumentAnalysisSerializer(instance=analysis_obj)
-    return Response(serializer.data)

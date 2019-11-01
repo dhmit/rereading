@@ -1,7 +1,7 @@
 import React from "react";
 // import PropTypes from 'prop-types';
 
-class ReadingView extends React.Component {
+class OverviewView extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -137,4 +137,4 @@ class ReadingView extends React.Component {
     }
 }
 
-export default ReadingView;
+export default OverviewView;

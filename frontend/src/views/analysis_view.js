@@ -156,7 +156,7 @@ MeanReadingTimesForQuestions.propTypes = {
     mean_reading_times_for_questions: PropTypes.array,
 };
 
-export class UniqueWordPatterns extends React.Component {
+export class UniqueWordPatterns1 extends React.Component {
     render() {
         return (
             <TabularAnalysis
@@ -170,9 +170,28 @@ export class UniqueWordPatterns extends React.Component {
         );
     }
 }
-UniqueWordPatterns.propTypes = {
+UniqueWordPatterns1.propTypes = {
     unique_word_pattern_story: PropTypes.array,
     //unique_word_pattern_ad: PropTypes.array
+
+};
+
+export class UniqueWordPatterns2 extends React.Component {
+    render() {
+        return (
+            <TabularAnalysis
+                title={"Unique Word Patterns for ad Context"}
+                headers={[
+                    "Total number of readers",
+                    "Total Unique Words used with ad Context"
+                ]}
+                data={this.props.unique_word_pattern_ad}
+            />
+        );
+    }
+}
+UniqueWordPatterns2.propTypes = {
+    unique_word_pattern_ad: PropTypes.array
 
 };
 
@@ -284,7 +303,8 @@ export class AnalysisView extends React.Component {
                     />
                     <FrequencyFeelingTable feelings={frequency_feelings}/>
                     <ContextVsViewTime viewTime={context_vs_read_time}/>
-                    <UniqueWordPatterns unique_word_pattern_story={unique_word_pattern[0]}/>
+                    <UniqueWordPatterns1 unique_word_pattern_story={unique_word_pattern[0]}/>
+                    <UniqueWordPatterns1 unique_word_pattern_ad={unique_word_pattern[1]}/>
                     <RelevantWordPercentages
                         entryData={percent_using_relevant_words_by_context_and_question}
                     />

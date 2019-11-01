@@ -9,7 +9,7 @@ import math
 from collections import Counter
 from pathlib import Path
 from config.settings.base import PROJECT_ROOT
-from .models import StudentResponsePrototype, ContextPrototype, QuestionPrototype
+from .models import StudentResponsePrototype, ContextPrototype
 
 
 def max_abs(val1, val2):

@@ -178,8 +178,8 @@ class RereadingAnalysis:
         list_of_dict_of_contexts = ContextPrototype.objects.values('text').all()
         merged_dicts = {}
         for key in list_of_dict_of_contexts[0].keys():
-            merged_dicts2[key] = list(dict[key] for dict in list_of_dict_of_contexts)
-        self.contexts = merged_dicts2.get('text')
+            merged_dicts[key] = list(dict[key] for dict in list_of_dict_of_contexts)
+        self.contexts = merged_dicts.get('text')
 
     def total_view_time(self):
         """

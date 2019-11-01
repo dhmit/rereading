@@ -61,3 +61,18 @@ class AnalysisTests(TestCase):
         outliers_data_3 = remove_outliers(outliers_data_1)
         print(outliers_data_3)
         self.assertEqual(outliers_data_3, outliers_data_2)
+
+    def test_unique_word_patterns(self):
+        """
+        Tests unique_words_pattern function with two data sets. The first is
+        the default empty dataset and the second is test_data2 which is a small dataset.
+        This function tests that it correctly appends the lists of unique words to both
+        ads response and story response lists the total unique words in each
+        timestamp. Future testing is suggested using larger datasets.
+        """
+        # first check: empty dataset
+        unique_words_story, unique_words_ad = self.analyzer.unique_word_pattern()
+        set_unique_words_story = len(unique_words_story)
+        set_unique_words_ad = len(unique_words_ad)
+        self.assertEqual(set_unique_words_story, 0)
+        self.assertEqual(set_unique_words_ad, 0)

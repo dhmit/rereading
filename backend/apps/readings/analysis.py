@@ -390,6 +390,7 @@ class RereadingAnalysis:
             median_view_time = statistics.median(list_of_times)
         return median_view_time
         '''
+    @staticmethod
     def filter_words(string):
         """
         helper method to preprocess the string: remove the stopwords and punctuation
@@ -410,7 +411,6 @@ class RereadingAnalysis:
         submits a
         response
         """
-        print("a")
         response_ad = set()
         response_story = set()
         unique_word_tracker_ad = []
@@ -418,14 +418,13 @@ class RereadingAnalysis:
         question = "In three words or fewer, what is this text about?"
 
         for response in self.responses:
-            # print(response.response)
-            filtered_word_resp = filter_words(response.response)
+            filtered_word_resp = self.filter_words(response.response)
             print(filtered_word_resp)
-            '''if data['question'] == question and data['context'] == "This is an ad.":
+            if response.question == question and response.context == "This is an ad.":
                 word_set = response_ad
                 histogram = unique_word_tracker_ad
-            elif data['question'] == question and data[
-                'context'] == "This is actually a short story.":
+            elif response.question == question and response.context == "This is actually a short " \
+                                                                       "story.":
                 word_set = response_story
                 histogram = unique_word_tracker_story
             else:
@@ -435,10 +434,7 @@ class RereadingAnalysis:
             histogram.append(set(word_set))
 
         return unique_word_tracker_story, unique_word_tracker_ad
-        '''
-    def test(self):
-        x = list(self.responses)
-        print(x)
+
     def compute_mean_response_length(self):
         """
         Given a list of student response dicts,

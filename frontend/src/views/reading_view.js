@@ -5,7 +5,11 @@ class ReadingView extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            segmentNum: 0,
+            segmentNum: 72,
+            // MAKE SURE TO CHANGE THIS BACK TO 0
+            // MAKE SURE TO CHANGE THIS BACK TO 0
+            // MAKE SURE TO CHANGE THIS BACK TO 0
+            // MAKE SURE TO CHANGE THIS BACK TO 0
             rereading: false,  // we alternate reading and rereading
             document: null,
         }

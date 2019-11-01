@@ -11,7 +11,9 @@ class OverviewWindow extends React.Component {
                     )}
                 </div>
                 <div className={"col-4"}>
-                    <p>hello</p>
+                    {this.props.document_questions.map((el, i) => (
+                        <p key={i}>{el.text}</p>)
+                    )}
                 </div>
             </div>
         );
@@ -20,6 +22,7 @@ class OverviewWindow extends React.Component {
 
 OverviewWindow.propTypes = {
     all_segments: PropTypes.array,
+    document_questions: PropTypes.array,
 };
 
 class OverviewView extends React.Component {
@@ -56,12 +59,16 @@ class OverviewView extends React.Component {
 
         if (data) {
             const all_segments = data.segments;
-            // const document_questions = data.questions;
+            const document_questions = data.questions; //document questions PR isn't on it but
+            // it will be soon
 
             return (
                 <div className={"container"}>
                     <h1 className={"display-4 py-3 pr-3"}>{data.title}</h1>
-                    <OverviewWindow all_segments={all_segments} />
+                    <OverviewWindow
+                        all_segments={all_segments}
+                        document_questions={document_questions}
+                    />
 
                 </div>
             );

@@ -410,6 +410,7 @@ class RereadingAnalysis:
         submits a
         response
         """
+        print("a")
         response_ad = set()
         response_story = set()
         unique_word_tracker_ad = []
@@ -435,3 +436,6 @@ class RereadingAnalysis:
 
         return unique_word_tracker_story, unique_word_tracker_ad
         '''
+    def test(self):
+        x = list(self.responses)
+        print(x)

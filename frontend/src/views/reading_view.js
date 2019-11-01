@@ -126,7 +126,6 @@ class ReadingView extends React.Component {
                             >
                                 Back
                             </button>
-                            }
                             <button
                                 className={"btn btn-outline-dark"}
                                 onClick={() => this.nextSegment()}

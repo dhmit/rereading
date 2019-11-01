@@ -276,6 +276,8 @@ class AnalysisSerializer(serializers.Serializer):
     context_vs_read_time = serializers.ReadOnlyField()
     question_sentiment_analysis = serializers.ReadOnlyField()
     compute_median_view_time = serializers.ReadOnlyField()
+    compute_mean_response_length = serializers.ReadOnlyField()
+    percent_using_relevant_words_by_context_and_question = serializers.ReadOnlyField()
     # unique_responses = serializers.ReadOnlyField()
 
     def create(self, validated_data):

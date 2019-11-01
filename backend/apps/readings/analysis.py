@@ -414,18 +414,6 @@ class RereadingAnalysis:
         return False
 
     @staticmethod
-    def get_relevant_words():
-        """
-        Gets the relevant words from data/words_related_to_story.txt
-        :return: a list containing all relevant words
-        """
-        relevant_words_file_path = 'data/words_related_to_story.txt'
-        with open(relevant_words_file_path, 'r') as relevant_words_file:
-            unstripped_relevant_words = relevant_words_file.readlines()
-            relevant_words = list(map(lambda s: s.strip(), unstripped_relevant_words))
-        return relevant_words
-
-    @staticmethod
     def transform_nested_dict_to_list(nested_dict):
         """
         Transforms a nested dictionary data structure into a flat array of tuples in the form
@@ -447,7 +435,8 @@ class RereadingAnalysis:
         is sorted by question first and then context.
         :return the return type explained in the function description
         """
-        relevant_words = RereadingAnalysis.get_relevant_words()
+        relevant_words = ["dead", "death", "miscarriage", "killed", "kill", "losing", "loss",
+                          "lost","deceased", "died", "grief", "pregnancy", "pregnant"]
 
         question_context_count_map = {}
 

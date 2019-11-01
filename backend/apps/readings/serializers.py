@@ -169,6 +169,9 @@ class DocumentSerializer(serializers.ModelSerializer):
 
 
 class DocumentAnalysisSerializer(serializers.Serializer):
+    """
+    Serializes Document analysis
+    """
     total_word_count = serializers.ReadOnlyField()
     title_author = serializers.SerializerMethodField()
 

@@ -405,7 +405,7 @@ class RereadingAnalysis:
             return True
 
         lowercase_relevant_words = list(map(lambda s: s.lower(), relevant_words))
-        words_used_in_description = story_meaning_description.lower().split(' ')
+        words_used_in_description = story_meaning_description.lower().split(" ")
 
         for word in lowercase_relevant_words:
             if word.lower() in words_used_in_description:
@@ -435,7 +435,7 @@ class RereadingAnalysis:
         :return the return type explained in the function description
         """
         relevant_words = ["dead", "death", "miscarriage", "killed", "kill", "losing", "loss",
-                          "lost","deceased", "died", "grief", "pregnancy", "pregnant"]
+                          "lost", "deceased", "died", "grief", "pregnancy", "pregnant"]
 
         question_context_count_map = {}
 

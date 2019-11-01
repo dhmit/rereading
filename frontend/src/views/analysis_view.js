@@ -156,6 +156,35 @@ MeanReadingTimesForQuestions.propTypes = {
     mean_reading_times_for_questions: PropTypes.array,
 };
 
+export class UniqueWordPatterns extends React.Component {
+    render() {
+        return (
+            <div>
+                <TabularAnalysis
+                    title={"Unique Word Patterns for short story Context"}
+                    headers={[
+                        "Total number of readers",
+                        "Total Unique Words used with short story Context"
+                    ]}
+                    data={this.props.unique_word_pattern[0]}
+                />
+
+                <TabularAnalysis
+                    title={"Unique Word Patterns for ad Context"}
+                    headers={[
+                        "Total number of readers",
+                        "Total Unique Words used with ad Context"
+                    ]}
+                    data={this.props.unique_word_pattern[1]}
+                />
+            </div>
+        );
+    }
+}
+UniqueWordPatterns.propTypes = {
+    unique_word_pattern: PropTypes.array,
+};
+
 export class RelevantWordPercentages extends React.Component {
     formatDataWithPercentSign(rawData) {
         //Formats the given data (usually in decimal form) as a percentage
@@ -219,7 +248,8 @@ export class AnalysisView extends React.Component {
                 question_sentiment_analysis,
                 compute_median_view_time,
                 compute_mean_response_length,
-                percent_using_relevant_words_by_context_and_question
+                percent_using_relevant_words_by_context_and_question,
+                unique_word_pattern
             } = this.state.analysis;
             return (
                 <div className={"container"}>
@@ -263,6 +293,7 @@ export class AnalysisView extends React.Component {
                     />
                     <FrequencyFeelingTable feelings={frequency_feelings}/>
                     <ContextVsViewTime viewTime={context_vs_read_time}/>
+                    <UniqueWordPatterns unique_word_pattern={unique_word_pattern}/>
                     <RelevantWordPercentages
                         entryData={percent_using_relevant_words_by_context_and_question}
                     />

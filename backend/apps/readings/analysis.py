@@ -168,14 +168,14 @@ class RereadingAnalysis:
         self.responses = StudentResponsePrototype.objects.all()
 
         """ Retrieve all possible questions and turn it into a list """
-        list_of_dict_of_questions = QuestionPrototype.objects.values('text')
+        list_of_dict_of_questions = QuestionPrototype.objects.values('text').all()
         merged_dicts = {}
         for key in list_of_dict_of_questions[0].keys():
             merged_dicts[key] = list(dict[key] for dict in list_of_dict_of_questions)
         self.questions = merged_dicts.get('text')
 
         """ Retrieve all possible contexts, and turn it into a list"""
-        list_of_dict_of_contexts = ContextPrototype.objects.values('text')
+        list_of_dict_of_contexts = ContextPrototype.objects.values('text').all()
         merged_dicts = {}
         for key in list_of_dict_of_contexts[0].keys():
             merged_dicts[key] = list(dict[key] for dict in list_of_dict_of_contexts)

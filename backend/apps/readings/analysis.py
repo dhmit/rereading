@@ -404,7 +404,10 @@ class RereadingAnalysis:
         if not relevant_words:
             return True
 
-        lowercase_relevant_words = list(map(lambda s: s.lower(), relevant_words))
+        lowercase_relevant_words = []
+        for word in relevant_words:
+            lowercase_relevant_words.append(word.lower())
+
         words_used_in_description = story_meaning_description.lower().split(" ")
 
         for word in lowercase_relevant_words:
@@ -465,7 +468,8 @@ class RereadingAnalysis:
 
         question_context_count_list = self.students_using_relevant_words_by_context_and_question()
 
-        question_context_percent_list = list(map(lambda data: (data[0], data[1],
-                                                               data[2] / total_student_count),
-                                                 question_context_count_list))
+        question_context_percent_list = []
+        for item in question_context_count_list:
+            question_context_percent_list.append((item[0], item[1], item[2] / total_student_count))
+
         return question_context_percent_list

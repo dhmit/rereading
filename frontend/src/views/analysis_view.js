@@ -184,6 +184,37 @@ RelevantWordPercentages.propTypes = {
     entryData: PropTypes.array,
 };
 
+export class UniqueOrCommonResponses extends React.Component {
+    formatDataWithPercentSign(common_and_unique) {
+        //Formats the given data
+        let formattedData = []
+        for (let [question, context, common, unique] of common_and_unique) {
+            formattedData.push([question, context, common, unique])
+        }
+        return formattedData
+    }
+
+    render() {
+        return (
+            <TabularAnalysis
+                title={"Common and Unique Responses"}
+                headers={[
+                    "Question",
+                    "Context",
+                    "Common Responses",
+                    "Unique Responses"
+                ]}
+                data={this.props.common_and_unique}
+            />
+        );
+    }
+}
+UniqueOrCommonResponses.propTypes = {
+    common_and_unique: PropTypes.array,
+    // common: PropTypes.arrayOf(PropTypes.string),
+    // unique: PropTypes.arrayOf(PropTypes.string)
+};
+
 export class AnalysisView extends React.Component {
     constructor(props) {
         super(props);
@@ -219,8 +250,8 @@ export class AnalysisView extends React.Component {
                 question_sentiment_analysis,
                 compute_median_view_time,
                 compute_mean_response_length,
-                percent_using_relevant_words_by_context_and_question
-                // unique_responses,    dictionary of contexts, questions, unique responses
+                percent_using_relevant_words_by_context_and_question,
+                unique_responses,    //dictionary of contexts, questions, unique responses
                 //                      Want to display based with drop-down menu for context and
                 //                      question selector. Could incorporate toggle button to
                 //                      switch between the unique responses and the responses
@@ -270,6 +301,9 @@ export class AnalysisView extends React.Component {
                     <ContextVsViewTime viewTime={context_vs_read_time}/>
                     <RelevantWordPercentages
                         entryData={percent_using_relevant_words_by_context_and_question}
+                    />
+                    <UniqueOrCommonResponses
+                        common_and_unique={unique_responses}
                     />
                 </div>
             );

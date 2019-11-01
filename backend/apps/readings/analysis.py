@@ -290,7 +290,8 @@ class RereadingAnalysis:
 
         return average, standard_dev
 
-    def unique_responses(self):
+    @staticmethod
+    def common_and_unique_responses(self):
         """
         return a dictionary of dictionaries of the context: questions: unique responses for each
         question for each context
@@ -320,37 +321,19 @@ class RereadingAnalysis:
                 for element in iterlist:
                     if element in common_list:
                         response_dict[item][con].remove(element)
-        return response_dict, common_dict
+        flattened_unique_response = RereadingAnalysis.transform_nested_dict_to_list(response_dict)
+        flattened_common_response = RereadingAnalysis.transform_nested_dict_to_list(common_dict)
+        return flattened_unique_response, flattened_common_response
 
-
-    #     all_contexts = list(ContextPrototype.objects.all().values_list("text"))
-    #     # for response in self.responses:
-    #     #     context = response.context.text
-    #     unique_response_dict = {}
-    #     # separate the unique responses by context
-    #     for item in all_contexts:
-    #         key = item.values("text")
-    #         context_responses = list(self.responses.distinct().filter(
-    #                                  context__icontains=key).values("response"))
-    #         unique_response_dict[key] = context_responses
-    #     # find the intersection between all contexts
-    #     common_responses = []
-    #     i = 0
-    #     for val in unique_response_dict.values():
-    #         if i is 1:
-    #             common_responses = val
-    #         else:
-    #             for entry in val:
-    #                 if entry not in common_responses:
-    #                     common_responses.remove(entry)
-    #         i += 1
-    #     # find the difference between all contexts
-    #     for value in unique_response_dict.values():
-    #         iterator = value[:]
-    #         for entry in iterator:
-    #             if entry in common_responses:
-    #                 value.remove(entry)
-    #     return 5
+    def get_unique_responses_per_context(self):
+        question_context_unique_response_list, question_context_common_list = \
+            self.common_and_unique_responses()
+        question_context_response_tuples = []
+        for item in question_context_unique_response_list:
+            question_context_response_tuples.append((item[0], item[1],
+                                                     question_context_common_list[item[0]][item[1]],
+                                                     item[2]))
+        return question_context_response_tuples
 
     @property
     def run_mean_reading_analysis_for_questions(self):

@@ -1,6 +1,38 @@
 import React from "react";
 import PropTypes from 'prop-types';
 
+export class RepeatedPromptWords extends React.Component {
+    render() {
+        return (
+            <div>
+                <h1>Prompt Words Repeated in Responses</h1>
+                <h3>Ad context</h3>
+                <ul>
+                    {Object.keys(this.props.repeated_words[0]).map((key, index) => (
+                        <li key={index}>
+                            {key} was repeated {this.props.repeated_words[0][key]} times
+                        </li>
+                    ))
+                    }
+                </ul>
+                <h3>Story context</h3>
+                <ul>
+                    {Object.keys(this.props.repeated_words[1]).map((key, index) => (
+                        <li key={index}>
+                            {key} was repeated {this.props.repeated_words[1][key]} times
+                        </li>
+                    ))
+                    }
+                </ul>
+            </div>
+        );
+    }
+}
+
+RepeatedPromptWords.propTypes = {
+    repeated_words: PropTypes.arrayOf(PropTypes.object),
+};
+
 export class CommonResponses extends React.Component {
     render() {
         return (
@@ -207,24 +239,7 @@ export class AnalysisView extends React.Component {
                         sentiment_average={question_sentiment_analysis[0]}
                         sentiment_std={question_sentiment_analysis[1]}
                     />
-                    <h1>Prompt Words Repeated in Responses</h1>
-                    {/*TODO unpack the dictionaries returned by
-                     all_contexts_repeated_prompt_words*/}
-                    {console.log(all_contexts_repeated_prompt_words[0])}
-                    <h3>Ad context</h3>
-                    <ul>
-                        {Object.keys(all_contexts_repeated_prompt_words[0]).map((key, index) => (
-                            <li key={index}>{key} was repeated {all_contexts_repeated_prompt_words[0][key]} times</li>
-                        ))
-                        }
-                    </ul>
-                    <h3>Story context</h3>
-                    <ul>
-                        {Object.keys(all_contexts_repeated_prompt_words[1]).map((key, index) => (
-                            <li key={index}>{key} was repeated {all_contexts_repeated_prompt_words[1][key]} times</li>
-                        ))
-                        }
-                    </ul>
+                    <RepeatedPromptWords repeated_words={all_contexts_repeated_prompt_words}/>
                 </div>
             );
         } else {

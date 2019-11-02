@@ -191,7 +191,7 @@ MeanReadingTimesForQuestions.propTypes = {
 export class RelevantWordPercentages extends React.Component {
     formatDataWithPercentSign(rawData) {
         //Formats the given data (usually in decimal form) as a percentage
-        let formattedData = []
+        let formattedData = [];
         for (let [question, context, decimal] of rawData) {
             formattedData.push([question, context, `${Math.round(100 * decimal)}%`])
         }
@@ -251,7 +251,7 @@ export class AnalysisView extends React.Component {
                 question_sentiment_analysis,
                 compute_median_view_time,
                 compute_mean_response_length,
-                percent_using_relevant_words_by_context_and_question
+                percent_using_relevant_words_by_context_and_question,
                 all_contexts_repeated_prompt_words,
             } = this.state.analysis;
             return (

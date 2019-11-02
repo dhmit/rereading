@@ -517,7 +517,6 @@ class RereadingAnalysis:
             question_context_percent_list.append((item[0], item[1], item[2] / total_student_count))
 
         return question_context_percent_list
-        return median_view_time
 
     def clean_resp_strings(self):
         """

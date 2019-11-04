@@ -33,7 +33,7 @@ class ReadingView extends React.Component {
                 is_rereading: this.state.rereading,
                 segment_num: this.state.segment_num
             });
-            this.setState({segment_data, scroll_ups: -1});
+            this.setState({segment_data, scroll_ups: 0});
         }
         const timer = new TimeIt();
         this.setState({timer});

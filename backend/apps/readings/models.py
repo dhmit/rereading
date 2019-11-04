@@ -33,6 +33,17 @@ class Document(models.Model):
         """ string representation of this class """
         return f'Document: {self.title} by {self.author}'
 
+    def total_word_count(self):
+        """
+        Computes the total wordcount by iterating through and getting individual wordcounts of
+        all segments
+        :return: int
+        """
+        count = 0
+        for segment in self.segments.all():
+            count += len(segment)
+        return count
+
 
 class Segment(models.Model):
     """

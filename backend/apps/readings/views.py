@@ -29,6 +29,7 @@ class DetailDocument(generics.RetrieveUpdateDestroyAPIView):
 def document_analysis(request):
     """
     Init a DocumentAnalysis, and serialize it to send to the frontend.
+    We are hardcoding the recitatif document for prototyping the DocumentAnalysis view
     """
     queryset = Document.objects.get(pk=1)
     serializer = DocumentAnalysisSerializer(queryset)

@@ -40,7 +40,7 @@ class Document(models.Model):
         :return: int
         """
         count = 0
-        for segment in self.segments.get_queryset():
+        for segment in self.segments.all():
             count += len(segment)
         return count
 

@@ -1,36 +1,16 @@
 import React from "react";
 import {TimeIt, handleStoryScroll} from "../common";
 import './reading_view.css';
-import PropTypes from 'prop-types';
-
-class Segment extends React.Component {
-    render() {
-        return (
-            <div
-                className="scroll mb-3"
-                onScroll={this.props.handleScroll}
-            >
-                {this.props.segmentLines.map((line, k) => (
-                    <p key={k}>{line}</p>)
-                )}
-            </div>
-        )
-    }
-}
-Segment.propTypes = {
-    segmentLines: PropTypes.array,
-    handleScroll: PropTypes.func,
-};
-
 
 class ReadingView extends React.Component {
     constructor(props){
         super(props);
+        this.segmentDivRef = React.createRef();
         this.state = {
             segment_num: 0,
             timer: null,
             segment_data: [],
-            scrollTop: 0,
+            scroll_top: 0,
             scroll_ups: 0,
             scrolling_up: false,
             rereading: false,  // we alternate reading and rereading
@@ -53,27 +33,22 @@ class ReadingView extends React.Component {
                 is_rereading: this.state.rereading,
                 segment_num: this.state.segment_num
             });
-            this.setState({segment_data, scroll_ups: 0});
+            this.setState({segment_data, scroll_ups: -1});
         }
         const timer = new TimeIt();
         this.setState({timer});
     }
 
     // We have the big arrow notation here to bind "this" to this function
-    handleScroll(e) {
-        this.setState(
-            handleStoryScroll(
-                e,
-                this.state.scrollTop,
-                this.state.scroll_ups,
-                this.state.scrolling_up,
-            )
-        );
-    }
+    handleScroll = (e) => {
+        this.setState(handleStoryScroll(e, this.state.scroll_top, this.state.scroll_ups,
+            this.state.scrolling_up));
+    };
 
     prevSegment () {
         this.updateData(false);
         this.setState({segment_num: this.state.segment_num-1});
+        this.segmentDivRef.current.scrollTo(0, 0);
     }
 
     nextSegment () {
@@ -85,7 +60,7 @@ class ReadingView extends React.Component {
             // Otherwise, move on to the rereading layout
             this.setState({rereading: true});
         }
-        window.scrollTo(0,0);
+        this.segmentDivRef.current.scrollTo(0, 0);
     }
 
     async componentDidMount() {
@@ -96,6 +71,12 @@ class ReadingView extends React.Component {
             const document = await response.json();
             this.setState({document});
             this.updateData(true);
+            // This will allow the scroll detector to work
+            /** TODO: Add event listener to the reading pane when it is complete to track scroll
+             *        data on that reading pane only. Currently, it is tracking scrolling data
+             *        for entire page
+             */
+            window.addEventListener('scroll', this.handleScroll, true);
         } catch (e) {
             console.log(e);
         }
@@ -103,26 +84,27 @@ class ReadingView extends React.Component {
     }
 
     render() {
-        const data = this.state.document;
+        const doc = this.state.document;
 
-
-        if (data) {
-            const current_segment = data.segments[this.state.segment_num];
+        if (doc) {
+            const current_segment = doc.segments[this.state.segment_num];
             const segment_text = current_segment.text;
             const segment_lines = segment_text.split("\r\n");
             const segment_questions = current_segment.questions;
             const segment_contexts = current_segment.contexts;
+            const document_questions = doc.document_questions;
 
             return (
                 <div className={"container"}>
-                    <h1 className={"display-4 py-3 pr-3"}>{data.title}</h1>
+                    <h1 className={"display-4 py-3 pr-3"}>{doc.title}</h1>
                     <div className={"row"}>
                         <div className={'col-8'}>
                             <p>Segment Number: {this.state.segment_num + 1}</p>
-                            <Segment
-                                segmentLines={segment_lines}
-                                handleScroll={(e) => this.handleScroll(e)}
-                            />
+                            <div className="scroll my-3" ref={this.segmentDivRef}>
+                                {segment_lines.map((line, k) => (
+                                    <p key={k}>{line}</p>)
+                                )}
+                            </div>
                             {this.state.segment_num > 0 &&
                                 <button
                                     className={"btn btn-outline-dark mr-2"}
@@ -131,6 +113,7 @@ class ReadingView extends React.Component {
                                     Back
                                 </button>
                             }
+
                             <button
                                 className={"btn btn-outline-dark"}
                                 onClick={() => this.nextSegment()}
@@ -142,20 +125,27 @@ class ReadingView extends React.Component {
                         {this.state.rereading &&
                             <div className={"analysis col-4"}>
                                 <p><b>Context: </b></p>
-                                <div>
-                                    {segment_contexts.map((el,i) =>
-                                        <ul key={i}>
-                                            <li>{el.text}</li>
-                                        </ul>)}
-                                </div>
+                                {segment_contexts.map((el,i) =>
+                                    <ul key={i}>
+                                        <li>{el.text}</li>
+                                    </ul>)}
                                 <p><b>Questions: </b></p>
-                                <div>
-                                    {segment_questions.map((el,i) =>
-                                        <ul key={i}>
-                                            <li>{el.text}</li>
-                                        </ul>
-                                    )}
-                                </div>
+                                {segment_questions.map((el,i) =>
+                                    <ul key={i}>
+                                        <li>{el.text}</li>
+                                    </ul>
+                                )}
+                                {document_questions && (
+                                    <p>
+                                        <p><b>Document Questions: </b></p>
+                                        {document_questions.map((el,i) =>
+                                            <ul key={i}>
+                                                <li>{el.text}</li>
+                                            </ul>
+                                        )}
+                                    </p>
+                                )}
+
                                 <p>
                                     <b>Add an annotation: </b><input
                                         type="text"

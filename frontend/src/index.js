@@ -8,6 +8,7 @@ import InstructorView from './views/instructor_view';
 import { AnalysisView } from './views/analysis_view';
 import { DocumentAnalysisView } from "./views/document_analysis_view";
 import ReadingView from './views/reading_view';
+import { OverviewView } from './views/overview_view';
 
 window.app_modules = {
     React,  // Make React accessible from the base template
@@ -19,4 +20,5 @@ window.app_modules = {
     AnalysisView,
     ReadingView,
     DocumentAnalysisView,
+    OverviewView,
 };

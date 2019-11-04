@@ -42,5 +42,6 @@ urlpatterns = [
     path('instructor/', render_react_view, {'component_name': 'InstructorView'}),
     path('analysis/', render_react_view, {'component_name': 'AnalysisView'}),
     path('document_analysis/', render_react_view, {'component_name': 'DocumentAnalysisView'}),
+    path('overview/', render_react_view, {'component_name': 'OverviewView'}),
     path('reading/', render_react_view, {'component_name': 'ReadingView'}),
 ]

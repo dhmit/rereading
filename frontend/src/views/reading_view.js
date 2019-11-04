@@ -1,49 +1,105 @@
 import React from "react";
-// import PropTypes from 'prop-types';
+import {TimeIt, handleStoryScroll} from "../common";
+import './reading_view.css';
+import PropTypes from 'prop-types';
+
+class Segment extends React.Component {
+    render() {
+        return (
+            <div className="scroll">
+                <p>Segment Number: {this.props.segmentNum + 1}</p>
+                {this.props.segmentLines.map((line, k) => (
+                    <p key={k}>{line}</p>)
+                )}
+            </div>
+        )
+    }
+}
+Segment.propTypes = {
+    segmentLines: PropTypes.array,
+    segmentNum: PropTypes.number,
+};
+
 
 class ReadingView extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            segmentNum: 0,
+            segment_num: 0,
+            timer: null,
+            segment_data: [],
+            scrollTop: 0,
+            scroll_ups: 0,
+            scrolling_up: false,
             rereading: false,  // we alternate reading and rereading
             document: null,
         }
     }
 
+    /**
+     * segment_read_times is a array of arrays. The index of each array
+     * corresponds to the segment number of the segments and is updated
+     * with a new time every time the buttons are clicked
+     */
+    updateData(firstTime){
+        if (!firstTime) {
+            const segment_data = this.state.segment_data;
+            const time = this.state.timer.stop();
+            segment_data.push({
+                scroll_ups: this.state.scroll_ups,
+                read_time: time,
+                is_rereading: this.state.rereading,
+                segment_num: this.state.segment_num
+            });
+            this.setState({segment_data, scroll_ups: -1});
+        }
+        const timer = new TimeIt();
+        this.setState({timer});
+    }
+
+    // We have the big arrow notation here to bind "this" to this function
+    handleScroll = (e) => {
+        this.setState(handleStoryScroll(e, this.state.scrollTop, this.state.scroll_ups,
+            this.state.scrolling_up));
+    };
+
+    prevSegment () {
+        this.updateData(false);
+        this.setState({segment_num: this.state.segment_num-1});
+        window.scrollTo(0,0);
+    }
+
+    nextSegment () {
+        this.updateData(false);
+        if (this.state.rereading) {
+            // If we're already rereading, move to the next segment
+            this.setState({rereading: false, segment_num: this.state.segment_num+1});
+        } else {
+            // Otherwise, move on to the rereading layout
+            this.setState({rereading: true});
+        }
+        window.scrollTo(0,0);
+    }
+
     async componentDidMount() {
         try {
-            // Hardcode the document we know exists for now,
+            // Hard code the document we know exists for now,
             // Generalize later...
             const response = await fetch('/api/documents/1');
             const document = await response.json();
             this.setState({document});
+            this.updateData(true);
+            // This will allow the scroll detector to work
+            /** TODO: Add event listener to the reading pane when it is complete to track scroll
+             *        data on that reading pane only. Currently, it is tracking scrolling data
+             *        for entire page
+             */
+            window.addEventListener('scroll', this.handleScroll, true);
         } catch (e) {
             console.log(e);
         }
 
     }
-
-    prevSegment () {
-        // document will be replaced by actual data
-        if (this.state.segmentNum > 0){
-            this.setState({segmentNum: this.state.segmentNum-1, rereading: true});
-        }
-    }
-
-    nextSegment () {
-        const length = this.state.document.segments.length;
-        if (this.state.segmentNum < length){
-            if (this.state.rereading) {
-                // If we're already rereading, move to the next segment
-                this.setState({rereading: false, segmentNum: this.state.segmentNum+1});
-            } else {
-                // Otherwise, move on to the rereading layout
-                this.setState({rereading: true});
-            }
-        }
-    }
-
 
     render() {
         const data = this.state.document;
@@ -59,20 +115,20 @@ class ReadingView extends React.Component {
                 <div className={"container"}>
                     <h1 className={"display-4 py-3 pr-3"}>{data.title}</h1>
                     <div className={"row"}>
-                        <div className={"col-8"}>
-                            <p>Segment Number: {this.state.segmentNum + 1}</p>
-                            {segment_lines.map((line, k) => (
-                                <p key={k}>{line}</p>)
-                            )}
+                        <Segment
+                            segmentLines={segment_lines}
+                            segmentNum={this.state.segmentNum}
+                        />
+                        <div className={'col-8'}>
                             <button
                                 className={"btn btn-outline-dark mr-2"}
-                                onClick = {() => this.prevSegment()}
+                                onClick={() => this.prevSegment()}
                             >
                                 Back
                             </button>
                             <button
                                 className={"btn btn-outline-dark"}
-                                onClick = {() => this.nextSegment()}
+                                onClick={() => this.nextSegment()}
                             >
                                 {this.state.rereading ? 'Next' : 'Reread'}
                             </button>

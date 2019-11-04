@@ -168,6 +168,24 @@ class DocumentSerializer(serializers.ModelSerializer):
         )
 
 
+class DocumentAnalysisSerializer(serializers.Serializer):
+    """
+    Serializes Document analysis
+    """
+    total_word_count = serializers.ReadOnlyField()
+    title_author = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_title_author(document):
+        return str(document)
+
+    def create(self, validated_data):
+        """ We will not create new objects using this serializer """
+
+    def update(self, instance, validated_data):
+        """ We will not update data using this serializer """
+
+
 ################################################################################
 # Prototyping Serializers
 # Serializers below were for the summer prototype

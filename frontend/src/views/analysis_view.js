@@ -122,14 +122,14 @@ export class RereadCountsAnalysis extends React.Component {
                 <TabularAnalysis
                     title = {"Number of People That Reread a Given Number of Times"}
                     headers = {["Question", "Context", 0, 1, 2, 3, 4, "5+"]}
-                    data = {this.props.get_reread_counts}
+                    data = {this.props.reread_counts}
                 />
             </div>
         )
     }
 }
 RereadCountsAnalysis.propTypes = {
-    get_reread_counts: PropTypes.arrayOf(PropTypes.array),
+    reread_counts: PropTypes.arrayOf(PropTypes.array),
 };
 
 
@@ -239,7 +239,7 @@ export class AnalysisView extends React.Component {
                 context_vs_read_time,
                 question_sentiment_analysis,
                 compute_median_view_time,
-                reread_counts,
+                get_reread_counts,
                 compute_mean_response_length,
                 percent_using_relevant_words_by_context_and_question
             } = this.state.analysis;
@@ -285,7 +285,7 @@ export class AnalysisView extends React.Component {
                     />
                     <FrequencyFeelingTable feelings={frequency_feelings}/>
                     <ContextVsViewTime viewTime={context_vs_read_time}/>
-                    <RereadCountsAnalysis get_reread_counts={reread_counts}/>
+                    <RereadCountsAnalysis reread_counts={get_reread_counts}/>
                     <RelevantWordPercentages
                         entryData={percent_using_relevant_words_by_context_and_question}
                     />

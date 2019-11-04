@@ -7,7 +7,7 @@ class Segment extends React.Component {
     render() {
         return (
             <div className="scroll">
-                <p>Segment Number: {this.props.segmentNum + 1}</p>
+                <p>Segment Number: {this.props.segment_num + 1}</p>
                 {this.props.segmentLines.map((line, k) => (
                     <p key={k}>{line}</p>)
                 )}
@@ -17,7 +17,7 @@ class Segment extends React.Component {
 }
 Segment.propTypes = {
     segmentLines: PropTypes.array,
-    segmentNum: PropTypes.number,
+    segment_num: PropTypes.number,
 };
 
 
@@ -105,7 +105,7 @@ class ReadingView extends React.Component {
         const doc = this.state.document;
 
         if (doc) {
-            const current_segment = doc.segments[this.state.segmentNum];
+            const current_segment = doc.segments[this.state.segment_num];
             const segment_text = current_segment.text;
             const segment_lines = segment_text.split("\r\n");
             const segment_questions = current_segment.questions;
@@ -118,7 +118,7 @@ class ReadingView extends React.Component {
                     <div className={"row"}>
                         <Segment
                             segmentLines={segment_lines}
-                            segmentNum={this.state.segmentNum}
+                            segment_num={this.state.segment_num}
                         />
                         <div className={'col-8'}>
                             <button

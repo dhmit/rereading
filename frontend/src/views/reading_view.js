@@ -71,12 +71,6 @@ class ReadingView extends React.Component {
             const document = await response.json();
             this.setState({document});
             this.updateData(true);
-            // This will allow the scroll detector to work
-            /** TODO: Add event listener to the reading pane when it is complete to track scroll
-             *        data on that reading pane only. Currently, it is tracking scrolling data
-             *        for entire page
-             */
-            window.addEventListener('scroll', this.handleScroll, true);
         } catch (e) {
             console.log(e);
         }
@@ -100,7 +94,11 @@ class ReadingView extends React.Component {
                     <div className={"row"}>
                         <div className={'col-8'}>
                             <p>Segment Number: {this.state.segment_num + 1}</p>
-                            <div className="scroll my-3" ref={this.segmentDivRef}>
+                            <div
+                                className="scroll my-3"
+                                ref={this.segmentDivRef}
+                                onScroll={this.handleScroll}
+                            >
                                 {segment_lines.map((line, k) => (
                                     <p key={k}>{line}</p>)
                                 )}

@@ -154,7 +154,7 @@ class DocumentSerializer(serializers.ModelSerializer):
     Serializes Document metadata and associated segments
     """
     segments = SegmentSerializer(many=True, read_only=True)
-    global_questions = DocumentQuestionSerializer(many=True, read_only=True)
+    document_questions = DocumentQuestionSerializer(many=True, read_only=True)
 
     class Meta:
         model = Document
@@ -163,9 +163,27 @@ class DocumentSerializer(serializers.ModelSerializer):
             'id',
             'title',
             'author',
-            'global_questions',
+            'document_questions',
             'segments',
         )
+
+
+class DocumentAnalysisSerializer(serializers.Serializer):
+    """
+    Serializes Document analysis
+    """
+    total_word_count = serializers.ReadOnlyField()
+    title_author = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_title_author(document):
+        return str(document)
+
+    def create(self, validated_data):
+        """ We will not create new objects using this serializer """
+
+    def update(self, instance, validated_data):
+        """ We will not update data using this serializer """
 
 
 ################################################################################

@@ -302,6 +302,8 @@ class RereadingAnalysis:
         contexts = list(ContextPrototype.text.distinct())
         response_dict = {}
         common_dict = {}
+        unique_dict = {}
+        common_list_dict = {}
         # compile lists of responses divided by question and context
         for question in questions:
             for context in contexts:
@@ -321,19 +323,24 @@ class RereadingAnalysis:
                 for element in iterlist:
                     if element in common_list:
                         response_dict[item][con].remove(element)
+                dict_list = ' '.join(response_dict[item][con])
+                response_dict[item][con] = dict_list
+                unique_dict[item] = {con: dict_list}
         flattened_unique_response = RereadingAnalysis.transform_nested_dict_to_list(response_dict)
         flattened_common_response = RereadingAnalysis.transform_nested_dict_to_list(common_dict)
+        flattened_unique_response.sort()
+        flattened_common_response.sort()
         return flattened_unique_response, flattened_common_response
 
     def get_unique_responses_per_context(self):
         question_context_unique_response_list, question_context_common_list = \
             self.common_and_unique_responses()
-        question_context_response_tuples = []
+        question_context_response_lists = []
         for item in question_context_unique_response_list:
-            question_context_response_tuples.append((item[0], item[1],
-                                                     question_context_common_list[item[0]][item[1]],
-                                                     item[2]))
-        return question_context_response_tuples
+            question_context_response_lists.append([item[0], item[1],
+                                                    question_context_common_list[item[0]][item[1]],
+                                                    item[2]])
+        return question_context_response_lists
 
     @property
     def run_mean_reading_analysis_for_questions(self):

@@ -185,32 +185,24 @@ RelevantWordPercentages.propTypes = {
 };
 
 export class UniqueOrCommonResponses extends React.Component {
-    formatDataWithPercentSign(common_and_unique) {
-        //Formats the given data
-        let formattedData = []
-        for (let [question, context, common, unique] of common_and_unique) {
-            formattedData.push([question, context, common, unique])
-        }
-        return formattedData
-    }
-
     render() {
         return (
             <TabularAnalysis
-                title={"Common and Unique Responses"}
+                title={"Common Responses"}
                 headers={[
                     "Question",
                     "Context",
                     "Common Responses",
                     "Unique Responses"
                 ]}
-                data={this.props.common_and_unique}
+                data={this.props.universal_responses}
             />
         );
     }
 }
 UniqueOrCommonResponses.propTypes = {
-    common_and_unique: PropTypes.array,
+    unique_responses: PropTypes.array,
+    universal_responses: PropTypes.array
     // common: PropTypes.arrayOf(PropTypes.string),
     // unique: PropTypes.arrayOf(PropTypes.string)
 };
@@ -303,7 +295,8 @@ export class AnalysisView extends React.Component {
                         entryData={percent_using_relevant_words_by_context_and_question}
                     />
                     <UniqueOrCommonResponses
-                        common_and_unique={unique_responses}
+                        unique_responses={unique_responses[0]}
+                        universal_responses={unique_responses[1]}
                     />
                 </div>
             );

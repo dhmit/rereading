@@ -10,17 +10,7 @@ from .models import StoryPrototype, Student, Document
 from .analysis import RereadingAnalysis
 from .serializers import (
     StoryPrototypeSerializer, StudentPrototypeSerializer, AnalysisSerializer,
-    DocumentSerializer, StudentSerializer
-)
-
-
-@api_view(['GET'])
-def reading_view(request, doc_id):
-    """
-    Send a document with its associated segments, questions, prompts, etc.
-    to the frontend
-    """
-    # TODO(ra): implement me!
+    DocumentSerializer, StudentSerializer, DocumentAnalysisSerializer)
 
 
 class ListDocument(generics.ListCreateAPIView):
@@ -33,6 +23,17 @@ class DetailDocument(generics.RetrieveUpdateDestroyAPIView):
     """Get a single document or update/delete it"""
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
+
+
+@api_view(['GET'])
+def document_analysis(request):
+    """
+    Init a DocumentAnalysis, and serialize it to send to the frontend.
+    We are hardcoding the recitatif document for prototyping the DocumentAnalysis view
+    """
+    queryset = Document.objects.get(pk=1)
+    serializer = DocumentAnalysisSerializer(queryset)
+    return Response(serializer.data)
 
 
 class ListStudent(generics.ListCreateAPIView):

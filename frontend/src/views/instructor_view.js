@@ -73,46 +73,67 @@ function QuestionView(props) {
     // Sorts each student response by the context and question that they are answering
     // TODO: clean this up!
     for (let i = 0; i < students.length; i++) {
-        let student = students[i];
-        for (const prompt in student.student_responses) {
-            if (!Object.prototype.hasOwnProperty.call(student.student_responses, prompt)) {
-                continue;
-            }
-            let question = student.student_responses[prompt].question;
-            let context = student.student_responses[prompt].context;
-            if (Object.prototype.hasOwnProperty.call(questions, context)) {
-                // The context is already in the list
-                if (Object.prototype.hasOwnProperty.call(questions[context], question)) {
-                    // The question is already in the context's list
-                    questions[context][question].push([i, prompt]);
-                } else {  // The context/question pairing doesn't exist yet
-                    questions[context][question] = [[i, prompt]];
+
+        const student = students[i];
+        const student_responses = student.student_responses;
+
+        // Iterate through all of the responses the student provided
+        for (let response_num = 0; response_num < student_responses.length; response_num++) {
+
+            const response = student_responses[response_num];
+            const question = response.question;
+            const context = response.context;
+
+            // We have already added the context to our questions object
+            if (context in questions) {
+
+                const context_pairing = questions[context];
+
+                // The question is already in the context's list, so add the student
+                if (question in context_pairing) {
+                    context_pairing[question].push([i, response_num]);
+
+                // The context/question pairing doesn't exist yet
+                } else {
+                    context_pairing[question] = [[i, response_num]];
                 }
-            } else {  // The context doesn't exist yet, add it to the list
+
+            // The context doesn't exist yet, so add it to the questions object
+            } else {
                 questions[context] = {};
-                questions[context][question] = [[i, prompt]];
+                questions[context][question] = [[i, response_num]];
             }
         }
     }
 
     // Create sections on the page dedicated to each Context/Question pairing
     const questionsToView = [];
-    for (const context in questions) {
-        if (!Object.prototype.hasOwnProperty.call(questions, context)) {
+
+    // context_num is not guaranteed to start with 0
+    let question_key;
+    for (let context_num in questions) {
+        if (!Object.prototype.hasOwnProperty.call(questions, context_num)) {
             continue;
         }
 
-        for (const question in questions[context]) {
-            if (!Object.prototype.hasOwnProperty.call(questions[context], question)) {
+        // Identify the given context/question for this group of responses
+        const context_pairing = questions[context_num];
+        for (let question in context_pairing) {
+
+            if (!Object.prototype.hasOwnProperty.call(context_pairing, question)) {
                 continue;
             }
+
+            // question_key will be a string of the form 'cnqx' where n and x are integers
+            // representing the context and question respectively
+            question_key = 'c' + String(context_num) + 'q' + String(question);
             questionsToView.push(
                 <Question
-                    context={context}
+                    context={context_num}
                     question={question}
-                    indices={questions[context][question]}
+                    indices={context_pairing[question]}
                     students={students}
-                    key={context}
+                    key={question_key}
                 />
             );
         }
@@ -133,28 +154,34 @@ QuestionView.propTypes = {
  *
  * Requires 'indices' property to display
  */
-function Question(props) {
-    const responses = props.indices.map(index => (
-        <QuestionResponse student={props.students[index[0]]} prompt_num={index[1]} key={index[0]}/>
-    ));
+class Question extends React.Component {
 
-    return (
-        <div>
-            <div><h2>Context: {props.context}</h2></div>
-            <div><h2>Question: {props.question}</h2></div>
-            <table className="table striped bordered hover responsive">
-                <thead>
-                    <tr>
-                        <td><b>Student</b></td>
-                        <td><b>Response</b></td>
-                        <td><b>Views</b></td>
-                        <td><b>Scrolls</b></td>
-                    </tr>
-                </thead>
-                <tbody>{responses}</tbody>
-            </table>
-        </div>
-    );
+    render() {
+        const responses = this.props.indices.map(index => (
+            <QuestionResponse
+                student={this.props.students[index[0]]}
+                prompt_num={index[1]}
+                key={index[0]}/>
+        ));
+
+        return (
+            <div>
+                <div><h2>Context: {this.props.context}</h2></div>
+                <div><h2>Question: {this.props.question}</h2></div>
+                <table className="table striped bordered hover responsive">
+                    <thead>
+                        <tr>
+                            <td><b>Student</b></td>
+                            <td><b>Response</b></td>
+                            <td><b>Views</b></td>
+                            <td><b>Scrolls</b></td>
+                        </tr>
+                    </thead>
+                    <tbody>{responses}</tbody>
+                </table>
+            </div>
+        );
+    }
 }
 Question.propTypes = {
     indices: PropTypes.array.isRequired,
@@ -167,22 +194,34 @@ Question.propTypes = {
 /**
  * Generates and returns a single row for the Question component
  */
-function QuestionResponse(props) {
-    // This line below is NOT something we do in this lab: we will learn soon how to fix it.
+class QuestionResponse extends React.Component {
 
-    // noinspection JSUnresolvedVariable
-    return (
-        <tr>
-            <td>{props.student.id}</td>
-            <td>{props.student.student_responses[props.prompt].response}</td>
-            <td>{props.student.student_responses[props.prompt].views}</td>
-            <td>{props.student.student_responses[props.prompt].scroll_ups}</td>
-        </tr>
-    );
+    constructor(props) {
+        super(props);
+
+        const student_response = props.student.student_responses[props.prompt_num];
+        this.state = {
+            student: props.student,
+            response: student_response.response,
+            views: student_response.views,
+            scroll_ups: student_response.scroll_ups,
+        };
+    }
+
+    render() {
+        return (
+            <tr>
+                <td>{this.state.student.id}</td>
+                <td>{this.state.response}</td>
+                <td>{this.state.views}</td>
+                <td>{this.state.scroll_ups}</td>
+            </tr>
+        );
+    }
 }
 QuestionResponse.propTypes = {
     student: PropTypes.object,
-    prompt: PropTypes.number,
+    prompt_num: PropTypes.number,
 };
 
 /**
@@ -212,6 +251,7 @@ class InstructorView extends React.Component {
         try {
             const res = await fetch('/api/add-response/');
             const students = await res.json();
+            console.log(students);
             const sortBy = this.state.sortBy;
             this.setState({
                 students,
@@ -254,7 +294,7 @@ class InstructorView extends React.Component {
 
     render() {
         if (this.state.loaded) {  // Only do this if we have the data! Otherwise breaks :(
-            let tempStudents = [...this.state.students];
+            let tempStudents = this.state.students;
             let students;
 
             if (this.state.sortBy === 'story') { // If we're sorting by story

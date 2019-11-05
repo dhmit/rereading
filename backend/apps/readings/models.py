@@ -33,6 +33,17 @@ class Document(models.Model):
         """ string representation of this class """
         return f'Document: {self.title} by {self.author}'
 
+    def total_word_count(self):
+        """
+        Computes the total wordcount by iterating through and getting individual wordcounts of
+        all segments
+        :return: int
+        """
+        count = 0
+        for segment in self.segments.all():
+            count += len(segment)
+        return count
+
 
 class Segment(models.Model):
     """
@@ -75,12 +86,39 @@ class Student(models.Model):
     name = models.TextField(default='')
 
 
-class SegmentQuestion(models.Model):
+class Question(models.Model):
     """
-    A model that represents a question about a given segment
+    A model that represents a question
+    FOR SUBCLASSING ONLY DO NOT USE ME DIRECTLY
     """
     text = models.TextField()
-    response_word_limit = models.IntegerField()
+    response_word_limit = models.IntegerField(null=True)
+
+    class Meta:
+        # as an abstract base class, Django won't create separate database tables for Question and
+        # its subclasses -- instead all of the subclasses will just get these fields
+        abstract = True
+
+
+class DocumentQuestion(Question):
+    """
+    A question that persists through the whole reading,
+    and is shown at each segment reread.
+    """
+    # Overview questions are only shown at the overview page at the end
+    is_overview_question = models.BooleanField(default=False)
+
+    document = models.ForeignKey(
+        Document,
+        on_delete=models.CASCADE,
+        related_name='questions'
+    )
+
+
+class SegmentQuestion(Question):
+    """
+    A question about a given segment
+    """
     segment = models.ForeignKey(
         Segment,
         on_delete=models.CASCADE,
@@ -138,6 +176,26 @@ class StudentReadingData(models.Model):
         null=False,
         on_delete=models.CASCADE,
         related_name='reading_data'
+    )
+
+
+class DocumentQuestionResponse(models.Model):
+    """
+    Captures a response to a document-level question
+    TODO: let this track diffs per segment, rather than just
+          a single response
+    """
+    response = models.TextField()
+    question = models.ForeignKey(
+        DocumentQuestion,
+        on_delete=models.CASCADE,
+        related_name='responses'
+    )
+
+    student_reading_data = models.ForeignKey(
+        StudentReadingData,
+        on_delete=models.CASCADE,
+        related_name='document_responses'
     )
 
 

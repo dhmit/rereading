@@ -7,16 +7,43 @@ from rest_framework import serializers
 
 from .models import (
     Document, Segment, Student, SegmentQuestion, SegmentContext, SegmentQuestionResponse,
-    StudentReadingData, StudentSegmentData, StoryPrototype, QuestionPrototype, ContextPrototype,
-    StudentResponsePrototype
+    StudentReadingData, StudentSegmentData, DocumentQuestion, DocumentQuestionResponse,
+    StoryPrototype, QuestionPrototype, ContextPrototype, StudentResponsePrototype
 )
+
+
+class DocumentQuestionSerializer(serializers.ModelSerializer):
+    """
+    Serializes Document-level questions
+    """
+
+    class Meta:
+        model = DocumentQuestion
+
+        fields = (
+            'id',
+            'text',
+        )
+
+
+class DocumentQuestionResponseSerializer(serializers.ModelSerializer):
+    """
+    Serializes a Student's response to a given document-level question
+    """
+
+    class Meta:
+        model = DocumentQuestionResponse
+
+        fields = (
+            'id',
+            'text',
+        )
 
 
 class SegmentQuestionSerializer(serializers.ModelSerializer):
     """
     Serializes the questions that relate to a given segment
     """
-
     class Meta:
         model = SegmentQuestion
 
@@ -31,7 +58,6 @@ class SegmentContextSerializer(serializers.ModelSerializer):
     """
     Serializes the contexts provided with a given segment
     """
-
     class Meta:
         model = SegmentContext
 
@@ -45,7 +71,6 @@ class SegmentSerializer(serializers.ModelSerializer):
     """
     Serializes data related to a given segment of a document
     """
-
     questions = SegmentQuestionSerializer(many=True)
     contexts = SegmentContextSerializer(many=True)
 
@@ -96,6 +121,7 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
     """
 
     segment_data = StudentSegmentDataSerializer(many=True)
+    global_responses = DocumentQuestionResponseSerializer(many=True)
 
     class Meta:
         model = StudentReadingData
@@ -103,6 +129,7 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'segment_data',
+            'global_responses',
         )
 
 
@@ -127,6 +154,7 @@ class DocumentSerializer(serializers.ModelSerializer):
     Serializes Document metadata and associated segments
     """
     segments = SegmentSerializer(many=True, read_only=True)
+    document_questions = DocumentQuestionSerializer(many=True, read_only=True)
 
     class Meta:
         model = Document
@@ -135,8 +163,27 @@ class DocumentSerializer(serializers.ModelSerializer):
             'id',
             'title',
             'author',
-            'segments'
+            'document_questions',
+            'segments',
         )
+
+
+class DocumentAnalysisSerializer(serializers.Serializer):
+    """
+    Serializes Document analysis
+    """
+    total_word_count = serializers.ReadOnlyField()
+    title_author = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_title_author(document):
+        return str(document)
+
+    def create(self, validated_data):
+        """ We will not create new objects using this serializer """
+
+    def update(self, instance, validated_data):
+        """ We will not update data using this serializer """
 
 
 ################################################################################
@@ -248,6 +295,8 @@ class AnalysisSerializer(serializers.Serializer):
     question_sentiment_analysis = serializers.ReadOnlyField()
     compute_median_view_time = serializers.ReadOnlyField()
     mean_view_time_comparison = serializers.ReadOnlyField()
+    compute_mean_response_length = serializers.ReadOnlyField()
+    percent_using_relevant_words_by_context_and_question = serializers.ReadOnlyField()
 
     def create(self, validated_data):
         """ We will not create new objects using this serializer """

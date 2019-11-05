@@ -6,11 +6,13 @@ import PropTypes from 'prop-types';
 class Segment extends React.Component {
     render() {
         return (
-            <div className="scroll">
+            <div>
                 <p>Segment Number: {this.props.segmentNum + 1}</p>
-                {this.props.segmentLines.map((line, k) => (
-                    <p key={k}>{line}</p>)
-                )}
+                <div className="scroll_segment">
+                    {this.props.segmentLines.map((line, k) => (
+                        <p key={k}>{line}</p>)
+                    )}
+                </div>
             </div>
         )
     }
@@ -31,11 +33,6 @@ class ReadingView extends React.Component {
             scrollTop: 0,
             scroll_ups: 0,
             scrolling_up: false,
-            segmentNum: 71,
-            // MAKE SURE TO CHANGE THIS BACK TO 0
-            // MAKE SURE TO CHANGE THIS BACK TO 0
-            // MAKE SURE TO CHANGE THIS BACK TO 0
-            // MAKE SURE TO CHANGE THIS BACK TO 0
             rereading: false,  // we alternate reading and rereading
             document: null,
             overview: false
@@ -107,34 +104,12 @@ class ReadingView extends React.Component {
 
     }
 
-    prevSegment () {
-        // document will be replaced by actual data
-        if (this.state.segmentNum > 0){
-            this.setState({segmentNum: this.state.segmentNum-1, rereading: true, overview: false});
-        }
-    }
-
-    nextSegment () {
-        const length = this.state.document.segments.length;
-        if (this.state.segmentNum < length - 1){
-            if (this.state.rereading) {
-                // If we're already rereading, move to the next segment
-                this.setState({rereading: false, segmentNum: this.state.segmentNum+1});
-            } else {
-                // Otherwise, move on to the rereading layout
-                this.setState({rereading: true});
-            }
-        } else if (this.state.segmentNum === length - 1){
-            this.setState({overview: true});
-        }
-    }
-
 
     render() {
         const doc = this.state.document;
 
         if (doc) {
-            const current_segment = doc.segments[this.state.segmentNum];
+            const current_segment = doc.segments[this.state.segment_num];
             const segment_text = current_segment.text;
             const segment_lines = segment_text.split("\r\n");
             const segment_questions = current_segment.questions;
@@ -146,11 +121,11 @@ class ReadingView extends React.Component {
                 <div className={"container"}>
                     <h1 className={"display-4 py-3 pr-3"}>{doc.title}</h1>
                     <div className={"row"}>
-                        <Segment
-                            segmentLines={segment_lines}
-                            segmentNum={this.state.segmentNum}
-                        />
                         <div className={'col-8'}>
+                            <Segment
+                                segmentLines={segment_lines}
+                                segmentNum={this.state.segment_num}
+                            />
                             <button
                                 className={"btn btn-outline-dark mr-2"}
                                 onClick={() => this.prevSegment()}
@@ -199,18 +174,6 @@ class ReadingView extends React.Component {
                             </div>
                         }
 
-                        {this.state.overview &&
-                            <div className={"analysis col-4"}>
-                                <p><b>Document Questions: </b></p>
-                                <p>
-                                    {/*{document_questions.map((el,i) =>*/}
-                                    {/*    <ul key={i}>*/}
-                                    {/*        <li>{el.text}</li>*/}
-                                    {/*    </ul>)}*/}
-                                    filler
-                                </p>
-                            </div>
-                        }
                     </div>
                 </div>
             );

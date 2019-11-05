@@ -7,7 +7,7 @@ class Segment extends React.Component {
     render() {
         return (
             <div className="scroll">
-                <p>Segment Number: {this.props.segmentNum + 1}</p>
+                <p>Segment Number: {this.props.segment_num + 1}</p>
                 {this.props.segmentLines.map((line, k) => (
                     <p key={k}>{line}</p>)
                 )}
@@ -17,7 +17,7 @@ class Segment extends React.Component {
 }
 Segment.propTypes = {
     segmentLines: PropTypes.array,
-    segmentNum: PropTypes.number,
+    segment_num: PropTypes.number,
 };
 
 
@@ -102,22 +102,23 @@ class ReadingView extends React.Component {
     }
 
     render() {
-        const data = this.state.document;
+        const doc = this.state.document;
 
-        if (data) {
-            const current_segment = data.segments[this.state.segmentNum];
+        if (doc) {
+            const current_segment = doc.segments[this.state.segment_num];
             const segment_text = current_segment.text;
             const segment_lines = segment_text.split("\r\n");
             const segment_questions = current_segment.questions;
             const segment_contexts = current_segment.contexts;
+            const document_questions = doc.document_questions;
 
             return (
                 <div className={"container"}>
-                    <h1 className={"display-4 py-3 pr-3"}>{data.title}</h1>
+                    <h1 className={"display-4 py-3 pr-3"}>{doc.title}</h1>
                     <div className={"row"}>
                         <Segment
                             segmentLines={segment_lines}
-                            segmentNum={this.state.segmentNum}
+                            segment_num={this.state.segment_num}
                         />
                         <div className={'col-8'}>
                             <button
@@ -137,20 +138,27 @@ class ReadingView extends React.Component {
                         {this.state.rereading &&
                             <div className={"analysis col-4"}>
                                 <p><b>Context: </b></p>
-                                <p>
-                                    {segment_contexts.map((el,i) =>
-                                        <ul key={i}>
-                                            <li>{el.text}</li>
-                                        </ul>)}
-                                </p>
+                                {segment_contexts.map((el,i) =>
+                                    <ul key={i}>
+                                        <li>{el.text}</li>
+                                    </ul>)}
                                 <p><b>Questions: </b></p>
-                                <p>
-                                    {segment_questions.map((el,i) =>
-                                        <ul key={i}>
-                                            <li>{el.text}</li>
-                                        </ul>
-                                    )}
-                                </p>
+                                {segment_questions.map((el,i) =>
+                                    <ul key={i}>
+                                        <li>{el.text}</li>
+                                    </ul>
+                                )}
+                                {document_questions && (
+                                    <p>
+                                        <p><b>Document Questions: </b></p>
+                                        {document_questions.map((el,i) =>
+                                            <ul key={i}>
+                                                <li>{el.text}</li>
+                                            </ul>
+                                        )}
+                                    </p>
+                                )}
+
                                 <p>
                                     <b>Add an annotation: </b><input
                                         type="text"

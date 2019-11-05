@@ -89,3 +89,7 @@ export function handleStoryScroll(e, scroll_top, scroll_ups, scrolling_up) {
     // For use with the setState function
     return {scroll_top, scroll_ups, scrolling_up};
 }
+
+// TODO: use set timeout to detect if still scrolling or not. If not, register new scroll position.
+// possible ideas: discrete scroll locations, scroll total, and A STRETCH: cater to lines in the
+// text.

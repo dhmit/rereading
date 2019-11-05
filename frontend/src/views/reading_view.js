@@ -1,11 +1,42 @@
 import React from "react";
+import PropTypes from 'prop-types';
+
 import {TimeIt, handleStoryScroll} from "../common";
 import './reading_view.css';
+
+
+/*
+ * Represents the actual Segment window
+ */
+class Segment extends React.Component {
+    constructor(props) {
+        super(props);
+        this.segment_div_ref = React.createRef();
+    }
+
+    render() {
+        const segment_lines = this.props.text.split("\r\n");
+        return (
+            <div
+                className="segment my-3"
+                ref={this.segment_div_ref}
+                onScroll={this.props.handleScroll}
+            >
+                {segment_lines.map(
+                    (line, k) => (<p key={k}>{line}</p>)
+                )}
+            </div>
+        );
+    }
+}
+Segment.propTypes = {
+    text: PropTypes.string,
+    handleScroll: PropTypes.func,
+};
 
 class ReadingView extends React.Component {
     constructor(props){
         super(props);
-        this.segmentDivRef = React.createRef();
         this.state = {
             segment_num: 0,
             timer: null,
@@ -83,7 +114,6 @@ class ReadingView extends React.Component {
         if (doc) {
             const current_segment = doc.segments[this.state.segment_num];
             const segment_text = current_segment.text;
-            const segment_lines = segment_text.split("\r\n");
             const segment_questions = current_segment.questions;
             const segment_contexts = current_segment.contexts;
             const document_questions = doc.document_questions;
@@ -94,15 +124,10 @@ class ReadingView extends React.Component {
                     <div className={"row"}>
                         <div className={'col-8'}>
                             <p>Segment Number: {this.state.segment_num + 1}</p>
-                            <div
-                                className="scroll my-3"
-                                ref={this.segmentDivRef}
-                                onScroll={this.handleScroll}
-                            >
-                                {segment_lines.map((line, k) => (
-                                    <p key={k}>{line}</p>)
-                                )}
-                            </div>
+                            <Segment
+                                text={segment_text}
+                                handleScroll={(e) => this.handleScroll(e)}
+                            />
                             {this.state.segment_num > 0 &&
                                 <button
                                     className={"btn btn-outline-dark mr-2"}

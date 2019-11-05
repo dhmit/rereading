@@ -85,6 +85,7 @@ export function handleStoryScroll(e, scroll_top, scroll_ups, scrolling_up) {
         scrolling_up = false;
     }
     scroll_top = current_scrollTop;
+    console.log("We've scrolled! Scroll ups: ", scroll_ups);
     // For use with the setState function
     return {scroll_top, scroll_ups, scrolling_up};
 }

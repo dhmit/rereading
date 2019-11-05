@@ -1,27 +1,58 @@
 import React from "react";
 //import PropTypes from 'prop-types';
 
+// export class TabBar extends React.Component {
+//     return() {
+//         return(
+//             <div>
+//                 <nav className={"navbar navbar-expand-lg"}>
+//                     <div className={"navbar-nav"}>
+//                         <a
+//                             className={"nav-link nav-item text-dark font-weight-bold"}
+//                             href={"/project"}
+//                         >Project</a>
+//                         <a
+//                             className={"nav-link nav-item text-dark font-weight-bold"}
+//                             href={"/reading_sample"}
+//                         >The Reading Sample</a>
+//                         <a
+//                             className={"nav-link nav-item text-dark font-weight-bold"}
+//                             href={"/rereading_visuals"}
+//                         >Rereading Visuals</a>
+//                         <a
+//                             className={"nav-link nav-item text-dark font-weight-bold"}
+//                             href={"/rereading_values"}
+//                         >Rereading Values</a>
+//                     </div>
+//                 </nav>
+//             </div>
+//         );
+//     }
+// }
+
 export class ProjectView extends React.Component {
     render() {
         return (
             <div>
+                {/*<TabBar/>*/}
+
                 <nav className={"navbar navbar-expand-lg"}>
                     <div className={"navbar-nav"}>
                         <a
                             className={"nav-link nav-item text-dark font-weight-bold"}
-                            href={"#"}
+                            href={"/project"}
                         >Project</a>
                         <a
                             className={"nav-link nav-item text-dark font-weight-bold"}
-                            href={"#"}
+                            href={"/reading_sample"}
                         >The Reading Sample</a>
                         <a
                             className={"nav-link nav-item text-dark font-weight-bold"}
-                            href={"#"}
+                            href={"/rereading_visuals"}
                         >Rereading Visuals</a>
                         <a
                             className={"nav-link nav-item text-dark font-weight-bold"}
-                            href={"#"}
+                            href={"/rereading_values"}
                         >Rereading Values</a>
                     </div>
                 </nav>
@@ -106,23 +137,24 @@ export class ReadingSampleView extends React.Component {
     render() {
         return(
             <div>
+                {/*<TabBar/>*/}
                 <nav className={"navbar navbar-expand-lg"}>
                     <div className={"navbar-nav"}>
                         <a
                             className={"nav-link nav-item text-dark font-weight-bold"}
-                            href={"#"}
+                            href={"/project"}
                         >Project</a>
                         <a
                             className={"nav-link nav-item text-dark font-weight-bold"}
-                            href={"#"}
+                            href={"/reading_sample"}
                         >The Reading Sample</a>
                         <a
                             className={"nav-link nav-item text-dark font-weight-bold"}
-                            href={"#"}
+                            href={"/rereading_visuals"}
                         >Rereading Visuals</a>
                         <a
                             className={"nav-link nav-item text-dark font-weight-bold"}
-                            href={"#"}
+                            href={"/rereading_values"}
                         >Rereading Values</a>
                     </div>
                 </nav>
@@ -203,6 +235,27 @@ export class RereadingVisualsView extends React.Component {
     render() {
         return(
             <div>
+                {/*<TabBar/>*/}
+                <nav className={"navbar navbar-expand-lg"}>
+                    <div className={"navbar-nav"}>
+                        <a
+                            className={"nav-link nav-item text-dark font-weight-bold"}
+                            href={"/project"}
+                        >Project</a>
+                        <a
+                            className={"nav-link nav-item text-dark font-weight-bold"}
+                            href={"/reading_sample"}
+                        >The Reading Sample</a>
+                        <a
+                            className={"nav-link nav-item text-dark font-weight-bold"}
+                            href={"/rereading_visuals"}
+                        >Rereading Visuals</a>
+                        <a
+                            className={"nav-link nav-item text-dark font-weight-bold"}
+                            href={"/rereading_values"}
+                        >Rereading Values</a>
+                    </div>
+                </nav>
                 <h1>Rereading Visuals</h1>
                 <h3>
                     How does one represent a reader’s multiple readings of one text? How does one
@@ -217,6 +270,27 @@ export class RereadingValuesView extends React.Component {
     render() {
         return(
             <div>
+                {/*<TabBar/>*/}
+                <nav className={"navbar navbar-expand-lg"}>
+                    <div className={"navbar-nav"}>
+                        <a
+                            className={"nav-link nav-item text-dark font-weight-bold"}
+                            href={"/project"}
+                        >Project</a>
+                        <a
+                            className={"nav-link nav-item text-dark font-weight-bold"}
+                            href={"/reading_sample"}
+                        >The Reading Sample</a>
+                        <a
+                            className={"nav-link nav-item text-dark font-weight-bold"}
+                            href={"/rereading_visuals"}
+                        >Rereading Visuals</a>
+                        <a
+                            className={"nav-link nav-item text-dark font-weight-bold"}
+                            href={"/rereading_values"}
+                        >Rereading Values</a>
+                    </div>
+                </nav>
                 <h1>Rereading Values</h1>
                 <h3>What are the numbers and statistics saying about rereading?</h3>
             </div>

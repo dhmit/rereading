@@ -46,6 +46,5 @@ urlpatterns = [
     path('reading_sample/', render_react_view, {'component_name': 'ReadingSampleView'}),
     path('rereading_visuals/', render_react_view, {'component_name': 'RereadingVisualsView'}),
     path('rereading_values/', render_react_view, {'component_name': 'RereadingValuesView'}),
-
     path('reading/', render_react_view, {'component_name': 'ReadingView'}),
 ]

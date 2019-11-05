@@ -1,135 +1,166 @@
 import React from "react";
-import {TimeIt, handleStoryScroll} from "../common";
-import './reading_view.css';
 import PropTypes from 'prop-types';
 
-class Segment extends React.Component {
+class SegmentQuestion extends React.Component {
+
+    handleAnswerSubmit(event) {
+        console.log(this.state.answer);
+        event.preventDefault();
+    }
+
     render() {
+        const question_text = this.props.question.text;
+        // const question_word_limit = this.props.question.response_word_limit;
+        const context_text = this.props.context.text;
         return (
-            <div className="scroll">
-                <p>Segment Number: {this.props.segment_num + 1}</p>
-                {this.props.segmentLines.map((line, k) => (
-                    <p key={k}>{line}</p>)
-                )}
+            <div>
+                <h4>Context:</h4>
+                <div className='segment-context-text'>
+                    {context_text}
+                </div>
+                <h4>Question:</h4>
+                <div className='segment-question-text'>
+                    {question_text}
+                </div>
+                <form onSubmit={this.handleAnswerSubmit}>
+                    <label><h4>Response:</h4></label>
+                    <input
+                        type='text'
+                        value={this.props.response}
+                        onChange={(e) => this.props.onChange(e)}
+                    />
+                    <input type='submit' value='Submit' />
+                </form>
+
             </div>
-        )
+        );
     }
 }
-Segment.propTypes = {
-    segmentLines: PropTypes.array,
-    segment_num: PropTypes.number,
+SegmentQuestion.propTypes = {
+    question: PropTypes.object,
+    context: PropTypes.object,
+    onChange: PropTypes.func,
+    response: PropTypes.string,
 };
-
 
 class ReadingView extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            segment_num: 0,
-            timer: null,
-            segment_data: [],
-            scrollTop: 0,
-            scroll_ups: 0,
-            scrolling_up: false,
+            segmentNum: 0,
             rereading: false,  // we alternate reading and rereading
             document: null,
-        }
-    }
+            segmentQuestionNum: 0,
+            segmentContextNum: 0,
+            segmentResponseArray: [[]],
+        };
 
-    /**
-     * segment_read_times is a array of arrays. The index of each array
-     * corresponds to the segment number of the segments and is updated
-     * with a new time every time the buttons are clicked
-     */
-    updateData(firstTime){
-        if (!firstTime) {
-            const segment_data = this.state.segment_data;
-            const time = this.state.timer.stop();
-            segment_data.push({
-                scroll_ups: this.state.scroll_ups,
-                read_time: time,
-                is_rereading: this.state.rereading,
-                segment_num: this.state.segment_num
-            });
-            this.setState({segment_data, scroll_ups: -1});
-        }
-        const timer = new TimeIt();
-        this.setState({timer});
-    }
-
-    // We have the big arrow notation here to bind "this" to this function
-    handleScroll = (e) => {
-        this.setState(handleStoryScroll(e, this.state.scrollTop, this.state.scroll_ups,
-            this.state.scrolling_up));
-    };
-
-    prevSegment () {
-        this.updateData(false);
-        this.setState({segment_num: this.state.segment_num-1});
-        window.scrollTo(0,0);
-    }
-
-    nextSegment () {
-        this.updateData(false);
-        if (this.state.rereading) {
-            // If we're already rereading, move to the next segment
-            this.setState({rereading: false, segment_num: this.state.segment_num+1});
-        } else {
-            // Otherwise, move on to the rereading layout
-            this.setState({rereading: true});
-        }
-        window.scrollTo(0,0);
+        this.handleSegmentResponseChange = this.handleSegmentResponseChange.bind(this);
+        this.handleSegmentResponseSubmit = this.handleSegmentResponseSubmit.bind(this);
     }
 
     async componentDidMount() {
         try {
-            // Hard code the document we know exists for now,
+            // Hardcode the document we know exists for now,
             // Generalize later...
             const response = await fetch('/api/documents/1');
             const document = await response.json();
             this.setState({document});
-            this.updateData(true);
-            // This will allow the scroll detector to work
-            /** TODO: Add event listener to the reading pane when it is complete to track scroll
-             *        data on that reading pane only. Currently, it is tracking scrolling data
-             *        for entire page
-             */
-            window.addEventListener('scroll', this.handleScroll, true);
         } catch (e) {
             console.log(e);
         }
 
     }
 
-    render() {
-        const doc = this.state.document;
+    prevSegment () {
+        // document will be replaced by actual data
+        if (this.state.segmentNum > 0){
+            this.setState({segmentNum: this.state.segmentNum-1, rereading: true});
+        }
+    }
 
-        if (doc) {
-            const current_segment = doc.segments[this.state.segment_num];
+    nextSegment () {
+        const length = this.state.document.segments.length;
+        if (this.state.segmentNum < length){
+            if (this.state.rereading) {
+                // If we're already rereading, move to the next segment
+                this.setState({rereading: false, segmentNum: this.state.segmentNum+1});
+            } else {
+                // Otherwise, move on to the rereading layout
+                this.setState({rereading: true});
+            }
+        }
+    }
+
+    /**
+     * Allows the user to change their response to a segment question
+     */
+    handleSegmentResponseChange(event, question_id) {
+        const segmentResponseArray = this.state.segmentResponseArray.slice();
+
+        // If the segment hasn't been added to the responses, initialize it as an array
+        if (!segmentResponseArray[this.state.segmentNum]) {
+            segmentResponseArray[this.state.segmentNum] = [];
+        }
+
+        // The index of the response into the segment is the same as its id
+        const segment = segmentResponseArray[this.state.segmentNum];
+        segment[question_id] = event.target.value;
+
+        this.setState({segmentResponseArray});
+    }
+
+    /**
+     * Handles data when a user is trying to submit a response to a question
+     */
+    handleSegmentResponseSubmit(event) {
+        event.preventDefault();
+
+
+    }
+
+
+    render() {
+        const data = this.state.document;
+
+        if (data) {
+            const current_segment = data.segments[this.state.segmentNum];
             const segment_text = current_segment.text;
             const segment_lines = segment_text.split("\r\n");
             const segment_questions = current_segment.questions;
             const segment_contexts = current_segment.contexts;
-            const document_questions = doc.document_questions;
+
+            // Generate response fields for each of the questions
+            const response_fields = segment_questions.map((question_text, id) => {
+                return (
+                    <SegmentQuestion
+                        question={question_text}
+                        context={segment_contexts[this.state.segmentContextNum]}
+                        onChange={this.handleSegmentResponseChange}
+                        response={this.state.segmentResponseArray[this.state.segmentNum][id]}
+                        key={id}
+                    />
+                )
+            });
 
             return (
                 <div className={"container"}>
-                    <h1 className={"display-4 py-3 pr-3"}>{doc.title}</h1>
+                    <h1 className={"display-4 py-3 pr-3"}>{data.title}</h1>
                     <div className={"row"}>
-                        <Segment
-                            segmentLines={segment_lines}
-                            segment_num={this.state.segment_num}
-                        />
-                        <div className={'col-8'}>
+                        <div className={"col-8"}>
+                            <p>Segment Number: {this.state.segmentNum + 1}</p>
+                            {segment_lines.map((line, k) => (
+                                <p key={k}>{line}</p>)
+                            )}
                             <button
                                 className={"btn btn-outline-dark mr-2"}
-                                onClick={() => this.prevSegment()}
+                                onClick = {() => this.prevSegment()}
                             >
                                 Back
                             </button>
                             <button
                                 className={"btn btn-outline-dark"}
-                                onClick={() => this.nextSegment()}
+                                onClick = {() => this.nextSegment()}
                             >
                                 {this.state.rereading ? 'Next' : 'Reread'}
                             </button>
@@ -137,35 +168,7 @@ class ReadingView extends React.Component {
 
                         {this.state.rereading &&
                             <div className={"analysis col-4"}>
-                                <p><b>Context: </b></p>
-                                {segment_contexts.map((el,i) =>
-                                    <ul key={i}>
-                                        <li>{el.text}</li>
-                                    </ul>)}
-                                <p><b>Questions: </b></p>
-                                {segment_questions.map((el,i) =>
-                                    <ul key={i}>
-                                        <li>{el.text}</li>
-                                    </ul>
-                                )}
-                                {document_questions && (
-                                    <p>
-                                        <p><b>Document Questions: </b></p>
-                                        {document_questions.map((el,i) =>
-                                            <ul key={i}>
-                                                <li>{el.text}</li>
-                                            </ul>
-                                        )}
-                                    </p>
-                                )}
-
-                                <p>
-                                    <b>Add an annotation: </b><input
-                                        type="text"
-                                        value={this.state.value}
-                                        onChange={this.handleChange}
-                                    /><button>Submit</button>
-                                </p>
+                                {response_fields}
                             </div>
                         }
                     </div>

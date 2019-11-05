@@ -3,11 +3,6 @@ import PropTypes from 'prop-types';
 
 class SegmentQuestion extends React.Component {
 
-    handleAnswerSubmit(event) {
-        console.log(this.state.answer);
-        event.preventDefault();
-    }
-
     render() {
         const question_text = this.props.question.text;
         // const question_word_limit = this.props.question.response_word_limit;
@@ -22,7 +17,7 @@ class SegmentQuestion extends React.Component {
                 <div className='segment-question-text'>
                     {question_text}
                 </div>
-                <form onSubmit={this.handleAnswerSubmit}>
+                <form onSubmit={(e) => this.props.onSubmit(e)}>
                     <label><h4>Response:</h4></label>
                     <input
                         type='text'
@@ -40,6 +35,7 @@ SegmentQuestion.propTypes = {
     question: PropTypes.object,
     context: PropTypes.object,
     onChange: PropTypes.func,
+    onSubmit: PropTypes.func,
     response: PropTypes.string,
 };
 
@@ -115,7 +111,7 @@ class ReadingView extends React.Component {
      */
     handleSegmentResponseSubmit(event) {
         event.preventDefault();
-
+        console.log(this.state.segmentResponseArray[0][0]);
 
     }
 
@@ -137,6 +133,7 @@ class ReadingView extends React.Component {
                         question={question_text}
                         context={segment_contexts[this.state.segmentContextNum]}
                         onChange={this.handleSegmentResponseChange}
+                        onSubmit={this.handleSegmentResponseSubmit}
                         response={this.state.segmentResponseArray[this.state.segmentNum][id]}
                         key={id}
                     />

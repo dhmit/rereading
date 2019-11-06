@@ -25,7 +25,7 @@ class ReadingView extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            segment_num: 0,
+            segment_num: 70,
             timer: null,
             segment_data: [],
             scrollTop: 0,
@@ -197,12 +197,15 @@ class ReadingView extends React.Component {
                             >
                                 Back
                             </button>
-                            <button
-                                className={"btn btn-outline-dark"}
-                                onClick={() => this.nextSegment()}
-                            >
-                                {this.state.rereading ? 'Next' : 'Reread'}
-                            </button>
+                            {!(this.state.rereading &&
+                                this.state.segment_num >= doc.segments.length - 1) &&
+                                <button
+                                    className={"btn btn-outline-dark"}
+                                    onClick={() => this.nextSegment()}
+                                >
+                                    {this.state.rereading ? 'Next' : 'Reread'}
+                                </button>
+                            }
                         </div>
 
                         {this.state.rereading &&

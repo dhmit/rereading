@@ -43,7 +43,7 @@ export class ProjectView extends React.Component {
 
                 <h1>The Reading Redux</h1>
                 <h3>The Values of Rereading</h3>
-                <p>
+                <p style = {{padding : "10px 20px", textAlign : 'center'}}>
                     In literary studies we have a word to describe a novel that traces the
                     psychological and moral growth of its protagonist. The word is
                     <em> bildungsroman.</em> But I think it is at once strange and unfortunate that

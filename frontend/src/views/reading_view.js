@@ -25,7 +25,7 @@ class ReadingView extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            segment_num: 70,
+            segment_num: 0,
             timer: null,
             segment_data: [],
             scrollTop: 0,

@@ -190,7 +190,6 @@ class ReadingView extends React.Component {
                             <button
                                 className={"btn btn-outline-dark mr-2"}
                                 onClick={() => this.prevSegment()}
-                                disabled={this.state.segment_num === 0}
                             >
                                 Back
                             </button>

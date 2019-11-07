@@ -4,7 +4,7 @@ import React from "react";
 function Navigation_Bar(){
     return(
         <div>
-            <nav className={"navbar navbar-expand-lg"}>
+            <nav className={"navbar navbar-expand-lg bg-light"}>
                 <div className={"navbar-nav"}>
                     <a
                         className={"nav-link nav-item text-dark font-weight-bold"}
@@ -90,7 +90,7 @@ export class ProjectView extends React.Component {
                         etc.?
                     </li>
                 </ul>
-                <p>
+                <p style = {{padding : "10px 20px", textAlign : 'center'}}>
                     At least one positive consequence of this project I anticipate is that the
                     nagging question in literacy-education circles about how to help people
                     transform into better readers can become less about trying to get people to read

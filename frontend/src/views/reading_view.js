@@ -40,7 +40,6 @@ class ReadingView extends React.Component {
             scrolling_up: false,
             rereading: false,  // we alternate reading and rereading
             document: null,
-            overview: false
         }
     }
 
@@ -109,7 +108,6 @@ class ReadingView extends React.Component {
 
     }
 
-
     render() {
         const doc = this.state.document;
 
@@ -120,7 +118,6 @@ class ReadingView extends React.Component {
             const segment_questions = current_segment.questions;
             const segment_contexts = current_segment.contexts;
             const document_questions = doc.document_questions;
-            // const document_questions = data.questions;
 
             return (
                 <div className={"container"}>
@@ -131,10 +128,6 @@ class ReadingView extends React.Component {
                             segment_num={this.state.segment_num}
                         />
                         <div className={'col-8'}>
-                            <Segment
-                                segmentLines={segment_lines}
-                                segmentNum={this.state.segment_num}
-                            />
                             <button
                                 className={"btn btn-outline-dark mr-2"}
                                 onClick={() => this.prevSegment()}
@@ -182,7 +175,6 @@ class ReadingView extends React.Component {
                                 </p>
                             </div>
                         }
-
                     </div>
                 </div>
             );

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from 'prop-types';
 
-import {TimeIt, handleStoryScroll} from "../common";
+import {TimeIt} from "../common";
 import './reading_view.css';
 
 
@@ -42,10 +42,10 @@ class ReadingView extends React.Component {
             timer: null,
             segment_data: [],
             scroll_top: 0,
-            scroll_ups: 0,
-            scrolling_up: false,
+            scroll_data: [],
             rereading: false,  // we alternate reading and rereading
             document: null,
+            interval_timer: null,
         }
     }
 
@@ -58,13 +58,14 @@ class ReadingView extends React.Component {
         if (!firstTime) {
             const segment_data = this.state.segment_data;
             const time = this.state.timer.stop();
+            const scroll_data = this.state.scroll_data;
             segment_data.push({
-                scroll_ups: this.state.scroll_ups,
+                scroll_data,
                 read_time: time,
                 is_rereading: this.state.rereading,
                 segment_num: this.state.segment_num
             });
-            this.setState({segment_data, scroll_ups: 0});
+            this.setState({segment_data, scroll_data: []});
         }
         const timer = new TimeIt();
         this.setState({timer});
@@ -72,14 +73,14 @@ class ReadingView extends React.Component {
 
     // We have the big arrow notation here to bind "this" to this function
     handleScroll = (e) => {
-        this.setState(handleStoryScroll(e, this.state.scroll_top, this.state.scroll_ups,
-            this.state.scrolling_up));
+        const scroll_top = e.target.scrollTop;
+        this.setState({scroll_top});
     };
 
     prevSegment () {
         this.updateData(false);
         this.setState({segment_num: this.state.segment_num-1});
-        this.segmentDivRef.current.scrollTo(0, 0);
+        // this.segment_div_ref.current.scrollTo(0, 0);
     }
 
     nextSegment () {
@@ -91,8 +92,14 @@ class ReadingView extends React.Component {
             // Otherwise, move on to the rereading layout
             this.setState({rereading: true});
         }
-        this.segmentDivRef.current.scrollTo(0, 0);
+        // this.segment_div_ref.current.scrollTo(0, 0);
     }
+
+    recordScroll = () => {
+        const scroll_data = this.state.scroll_data;
+        scroll_data.push(this.state.scroll_top);
+        this.setState({scroll_data});
+    };
 
     async componentDidMount() {
         try {
@@ -100,7 +107,8 @@ class ReadingView extends React.Component {
             // Generalize later...
             const response = await fetch('/api/documents/1');
             const document = await response.json();
-            this.setState({document});
+            const interval_timer = setInterval(this.recordScroll, 2000);
+            this.setState({document, interval_timer });
             this.updateData(true);
         } catch (e) {
             console.log(e);

@@ -5,13 +5,14 @@ import {TimeIt} from "../common";
 import './reading_view.css';
 
 
+const segment_ref = React.createRef();
 /*
  * Represents the actual Segment window
  */
 class Segment extends React.Component {
     constructor(props) {
         super(props);
-        this.segment_div_ref = React.createRef();
+        // this.segment_div_ref = React.createRef();
     }
 
     render() {
@@ -19,7 +20,7 @@ class Segment extends React.Component {
         return (
             <div
                 className="segment my-3"
-                ref={this.segment_div_ref}
+                ref={segment_ref}
                 onScroll={this.props.handleScroll}
             >
                 {segment_lines.map(
@@ -80,7 +81,7 @@ class ReadingView extends React.Component {
     prevSegment () {
         this.updateData(false);
         this.setState({segment_num: this.state.segment_num-1});
-        // this.segment_div_ref.current.scrollTo(0, 0);
+        segment_ref.current.scrollTo(0,0);
     }
 
     nextSegment () {
@@ -92,7 +93,7 @@ class ReadingView extends React.Component {
             // Otherwise, move on to the rereading layout
             this.setState({rereading: true});
         }
-        // this.segment_div_ref.current.scrollTo(0, 0);
+        segment_ref.current.scrollTo(0,0);
     }
 
     recordScroll = () => {

@@ -386,7 +386,7 @@ class RereadingAnalysis:
         if question == '' or context == '':
             return {}
 
-        # Collects the reread count for every student id of the provided context and question
+        # Collects the reread counts for every student id of the provided context and question
         raw_reread_counts = []
         for response in self.responses:
             table_context = response.context.text
@@ -396,15 +396,20 @@ class RereadingAnalysis:
                 if question in table_question:
                     raw_reread_counts.append(view_count)
 
+        remove_outliers(raw_reread_counts)
+
         # Tallies the raw reread counts into the dictionary to be returned
-        organized_data = {
-            0: 0, 1: 0, 2: 0, 3: 0, 4: 0, "5+": 0
-        }
+        organized_data = {}
         for entry in raw_reread_counts:
-            if entry < 5:
+            if entry in organized_data.keys():
                 organized_data[entry] += 1
             else:
-                organized_data["5+"] += 1
+                organized_data.update({entry: 1})
+
+        # Makes the organized_data dictionary keys uniform
+        for key in range(0, max(organized_data.keys()) + 1):
+            if key not in organized_data.keys():
+                organized_data.update({key: 0})
 
         return [question, context] + list(organized_data.values())
 
@@ -418,9 +423,19 @@ class RereadingAnalysis:
         function for a different question/context pairing.
         """
         results = []
-        for context in self.response.context.text:
-            for question in self.response.question.text:
+        for context in self.responses.context.text:
+            for question in self.responses.question.text:
                 results.append(self.compute_reread_counts(question, context))
+
+        # Making array sizes uniform
+        max_len = 0
+        for array in results:
+            if len(array) > max_len:
+                max_len = len(array)
+        for array in results:
+            if len(array) < max_len:
+                while len(array) < max_len:
+                    array.append(0)
 
         return results
 

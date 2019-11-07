@@ -117,11 +117,15 @@ ContextVsViewTime.propTypes = {
 
 export class RereadCountsAnalysis extends React.Component {
     render() {
+        const headings = []
+        for(let i = 0; i < this.props.reread_counts[0].length(); i++) {
+            headings[i] = i
+        }
         return (
             <div>
                 <TabularAnalysis
                     title = {"Number of People That Reread a Given Number of Times"}
-                    headers = {["Question", "Context", 0, 1, 2, 3, 4, "5+"]}
+                    headers = {["Question", "Context"].concat(headings)}
                     data = {this.props.reread_counts}
                 />
             </div>
@@ -129,7 +133,7 @@ export class RereadCountsAnalysis extends React.Component {
     }
 }
 RereadCountsAnalysis.propTypes = {
-    reread_counts: PropTypes.arrayOf(PropTypes.array),
+    reread_counts: PropTypes.array,
 };
 
 

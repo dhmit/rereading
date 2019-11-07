@@ -1,7 +1,7 @@
 .scroll_segment{
     height: 150px;
     overflow: auto;
-    font-family: Perpetua, sans-serif;
+    font-family: Perpetua;
     font-size: x-large;
     margin-bottom: 1em;
 }

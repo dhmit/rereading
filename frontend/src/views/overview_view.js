@@ -32,13 +32,13 @@ class ReadingWindow extends React.Component {
                         />
                         <button
                             className={"btn btn-outline-dark mr-2"}
-                            onClick={() => this.prevSegment()}
+                            onClick={() => this.props.prevSegment()}
                         >
                             Back
                         </button>
                         <button
                             className={"btn btn-outline-dark"}
-                            onClick={() => this.nextSegment()}
+                            onClick={() => this.props.nextSegment()}
                         >
                             {this.props.rereading ? 'Next' : 'Reread'}
                         </button>
@@ -90,6 +90,8 @@ ReadingWindow.propTypes = {
     segment_questions: PropTypes.array,
     document_questions: PropTypes.array,
     rereading: PropTypes.bool,
+    prevSegment: PropTypes.func,
+    nextSegment: PropTypes.func,
 };
 
 class OverviewWindow extends React.Component {
@@ -234,6 +236,8 @@ class OverviewView extends React.Component {
                             segment_contexts={segment_contexts}
                             document_questions={document_questions}
                             rereading={this.state.rereading}
+                            prevSegment={this.prevSegment()}
+                            nextSegment={this.nextSegment()}
                         />}
 
                 </div>

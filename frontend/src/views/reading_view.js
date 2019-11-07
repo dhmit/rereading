@@ -65,7 +65,7 @@ class ReadingView extends React.Component {
 
     prevSegment () {
         this.updateData(false);
-        this.setState({segment_num: this.state.segment_num-1});
+        this.setState({rereading: false, segment_num: this.state.segment_num-1});
         window.scrollTo(0,0);
     }
 

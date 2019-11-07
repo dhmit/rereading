@@ -124,12 +124,15 @@ class ReadingView extends React.Component {
                             <button
                                 className={"btn btn-outline-dark mr-2"}
                                 onClick={() => this.prevSegment()}
+                                disabled={this.state.segment_num === 0}
                             >
                                 Back
                             </button>
                             <button
                                 className={"btn btn-outline-dark"}
                                 onClick={() => this.nextSegment()}
+                                disabled={this.state.rereading &&
+                                this.state.segment_num >= doc.segments.length - 1}
                             >
                                 {this.state.rereading ? 'Next' : 'Reread'}
                             </button>

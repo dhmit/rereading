@@ -6,13 +6,6 @@ import PropTypes from 'prop-types';
 class Segment extends React.Component {
     render() {
         return (
-            <div>
-                <p>Segment Number: {this.props.segmentNum + 1}</p>
-                <div className="scroll_segment">
-                    {this.props.segmentLines.map((line, k) => (
-                        <p key={k}>{line}</p>)
-                    )}
-                </div>
             <div className="scroll">
                 <p>Segment Number: {this.props.segment_num + 1}</p>
                 {this.props.segmentLines.map((line, k) => (

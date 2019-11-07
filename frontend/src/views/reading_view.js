@@ -6,20 +6,18 @@ import PropTypes from 'prop-types';
 class Segment extends React.Component {
     render() {
         return (
-            <div>
-                <p>Segment Number: {this.props.segmentNum + 1}</p>
-                <div className="scroll_segment">
-                    {this.props.segmentLines.map((line, k) => (
-                        <p key={k}>{line}</p>)
-                    )}
-                </div>
+            <div className="scroll">
+                <p>Segment Number: {this.props.segment_num + 1}</p>
+                {this.props.segmentLines.map((line, k) => (
+                    <p key={k}>{line}</p>)
+                )}
             </div>
         )
     }
 }
 Segment.propTypes = {
     segmentLines: PropTypes.array,
-    segmentNum: PropTypes.number,
+    segment_num: PropTypes.number,
 };
 
 
@@ -35,7 +33,6 @@ class ReadingView extends React.Component {
             scrolling_up: false,
             rereading: false,  // we alternate reading and rereading
             document: null,
-            overview: false
         }
     }
 
@@ -104,7 +101,6 @@ class ReadingView extends React.Component {
 
     }
 
-
     render() {
         const doc = this.state.document;
 
@@ -115,17 +111,16 @@ class ReadingView extends React.Component {
             const segment_questions = current_segment.questions;
             const segment_contexts = current_segment.contexts;
             const document_questions = doc.document_questions;
-            // const document_questions = data.questions;
 
             return (
                 <div className={"container"}>
                     <h1 className={"display-4 py-3 pr-3"}>{doc.title}</h1>
                     <div className={"row"}>
+                        <Segment
+                            segmentLines={segment_lines}
+                            segment_num={this.state.segment_num}
+                        />
                         <div className={'col-8'}>
-                            <Segment
-                                segmentLines={segment_lines}
-                                segmentNum={this.state.segment_num}
-                            />
                             <button
                                 className={"btn btn-outline-dark mr-2"}
                                 onClick={() => this.prevSegment()}
@@ -173,7 +168,6 @@ class ReadingView extends React.Component {
                                 </p>
                             </div>
                         }
-
                     </div>
                 </div>
             );

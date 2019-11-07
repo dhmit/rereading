@@ -27,10 +27,10 @@ class ReadingWindow extends React.Component {
             <div>
                 <div className={"row"}>
                     <div className={'col-8'}>
-                        <Segment
-                            segmentLines={segment_lines}
-                            segmentNum={this.state.segment_num}
-                        />
+                        {/*<Segment*/}
+                        {/*    segmentLines={segment_lines}*/}
+                        {/*    segmentNum={this.state.segment_num}*/}
+                        {/*/>*/}
                         <button
                             className={"btn btn-outline-dark mr-2"}
                             onClick={() => this.prevSegment()}
@@ -112,11 +112,11 @@ class OverviewView extends React.Component {
         const doc = this.state.document;
 
         if (doc) {
-            const current_segment = doc.segments[this.state.segment_num];
-            const segment_text = current_segment.text;
-            const segment_lines = segment_text.split("\r\n");
-            const segment_questions = current_segment.questions;
-            const segment_contexts = current_segment.contexts;
+            // const current_segment = doc.segments[this.state.segment_num];
+            // const segment_text = current_segment.text;
+            // const segment_lines = segment_text.split("\r\n");
+            // const segment_questions = current_segment.questions;
+            // const segment_contexts = current_segment.contexts;
             const all_segments = doc.segments;
             const document_questions = ["placeholder1", "placeholder2"];
             // document questions PR isn't on but it will be soon

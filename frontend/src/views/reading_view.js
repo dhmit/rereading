@@ -139,30 +139,6 @@ class ReadingView extends React.Component {
         event.preventDefault();
     }
 
-    buildQuestionFields(questions, context_text) {
-        return questions.map((question, id) => (
-            <React.Fragment key={id}>
-                <div>
-                    <h4>Context:</h4>
-                    <div className='segment-context-text'>
-                        {context_text}
-                    </div>
-                    <h4>Question:</h4>
-                    <div className='segment-question-text'>
-                        {question.text}
-                    </div>
-
-                    <label><h4>Response:</h4></label>
-                    <input
-                        type='text'
-                        onChange={this.handleSegmentResponseChange.bind(this,
-                            question.id)}
-                    />
-
-                </div>
-            </React.Fragment>
-        ))
-    }
 
     render() {
         const doc = this.state.document;
@@ -173,13 +149,34 @@ class ReadingView extends React.Component {
             const segment_lines = segment_text.split("\r\n");
             const segment_questions = current_segment.questions;
 
-            const segment_contexts = current_segment.contexts;
-            const current_context = (this.segmentContextNum < segment_contexts.length) ?
-                segment_contexts[this.segmentContextNum].text : 'sample';
+            // const segment_contexts = current_segment.contexts;
+            const context_text = "Example context text";
 
             // Generate response fields for each of the questions
-            const segment_response_fields = this.buildQuestionFields(segment_questions,
-                current_context);
+            const response_fields = segment_questions.map((question, id) => {
+                return (
+                    <React.Fragment key={id}>
+                        <div>
+                            <h4>Context:</h4>
+                            <div className='segment-context-text'>
+                                {context_text}
+                            </div>
+                            <h4>Question:</h4>
+                            <div className='segment-question-text'>
+                                {question.text}
+                            </div>
+
+                            <label><h4>Response:</h4></label>
+                            <input
+                                type='text'
+                                onChange={this.handleSegmentResponseChange.bind(this,
+                                    question.id)}
+                            />
+
+                        </div>
+                    </React.Fragment>
+                )
+            });
 
             return (
                 <div className={"container"}>
@@ -210,7 +207,7 @@ class ReadingView extends React.Component {
 
                         {this.state.rereading &&
                             <div className={"analysis col-4"}>
-                                {segment_response_fields}
+                                {response_fields}
                             </div>
                         }
                     </div>

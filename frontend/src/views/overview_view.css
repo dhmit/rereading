@@ -1,0 +1,28 @@
+h1 {
+
+}
+
+h3 {
+
+}
+
+p {
+    text-align: left;
+    font-size: 15pt;
+}
+
+ul {
+    font-size: 15pt;
+}
+
+
+p, ul {
+    font-family: "Arial", serif;
+    padding: 5px 20% 5px 20%;
+}
+
+h1, h3 {
+    padding-left: 20%;
+    padding-right: 20%;
+}
+

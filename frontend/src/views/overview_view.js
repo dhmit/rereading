@@ -1,4 +1,5 @@
 import React from "react";
+import './overview_view.css';
 //import PropTypes from 'prop-types';
 
 function Navigation_Bar(){
@@ -41,7 +42,7 @@ export class ProjectView extends React.Component {
                 {this.renderNavigationBar()}
                 <h1>The Reading Redux</h1>
                 <h3>The Values of Rereading</h3>
-                <p style = {{padding : "10px 20px", textAlign : 'center'}}>
+                <p>
                     In literary studies we have a word to describe a novel that traces the
                     psychological and moral growth of its protagonist. The word is
                     <em> bildungsroman.</em> But I think it is at once strange and unfortunate that
@@ -90,7 +91,7 @@ export class ProjectView extends React.Component {
                         etc.?
                     </li>
                 </ul>
-                <p style = {{padding : "10px 20px", textAlign : 'center'}}>
+                <p>
                     At least one positive consequence of this project I anticipate is that the
                     nagging question in literacy-education circles about how to help people
                     transform into better readers can become less about trying to get people to read

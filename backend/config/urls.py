@@ -16,7 +16,6 @@ Including another URL configuration
 """
 from django.contrib import admin
 from django.urls import path
-from django.conf.urls import url
 
 from apps.common import render_react_view
 from apps.readings import views as readings_views
@@ -31,6 +30,7 @@ urlpatterns = [
     path('api/add-response/', readings_views.ListStudent.as_view()),
     path('api/documents/<int:pk>/', readings_views.DetailDocument.as_view()),
     path('api/analysis/', readings_views.analysis),
+    path('api/document_analysis/', readings_views.document_analysis),
 
     # Prototyping API endpoints
     path('api_proto/', readings_views.ListStoryPrototype.as_view()),
@@ -43,4 +43,9 @@ urlpatterns = [
     url('analysis/', render_react_view, {'component_name': 'AnalysisView'}),
     url('reading/', render_react_view, {'component_name': 'ReadingView'}),
     url('overview/', render_react_view, {'component_name': 'OverviewView'}),
+    path('student/', render_react_view, {'component_name': 'StudentView'}),
+    path('instructor/', render_react_view, {'component_name': 'InstructorView'}),
+    path('analysis/', render_react_view, {'component_name': 'AnalysisView'}),
+    path('document_analysis/', render_react_view, {'component_name': 'DocumentAnalysisView'}),
+    path('reading/', render_react_view, {'component_name': 'ReadingView'}),
 ]

@@ -13,13 +13,18 @@ class Segment extends React.Component {
                         <p key={k}>{line}</p>)
                     )}
                 </div>
+            <div className="scroll">
+                <p>Segment Number: {this.props.segment_num + 1}</p>
+                {this.props.segmentLines.map((line, k) => (
+                    <p key={k}>{line}</p>)
+                )}
             </div>
         )
     }
 }
 Segment.propTypes = {
     segmentLines: PropTypes.array,
-    segmentNum: PropTypes.number,
+    segment_num: PropTypes.number,
 };
 
 
@@ -121,6 +126,10 @@ class ReadingView extends React.Component {
                 <div className={"container"}>
                     <h1 className={"display-4 py-3 pr-3"}>{doc.title}</h1>
                     <div className={"row"}>
+                        <Segment
+                            segmentLines={segment_lines}
+                            segment_num={this.state.segment_num}
+                        />
                         <div className={'col-8'}>
                             <Segment
                                 segmentLines={segment_lines}

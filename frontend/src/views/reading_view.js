@@ -1,25 +1,39 @@
 import React from "react";
-import {TimeIt, handleStoryScroll} from "../common";
-import './reading_view.css';
 import PropTypes from 'prop-types';
 
+import {TimeIt} from "../common";
+import './reading_view.css';
+
+
+const segment_ref = React.createRef();
+/*
+ * Represents the actual Segment window
+ */
 class Segment extends React.Component {
+    constructor(props) {
+        super(props);
+        // this.segment_div_ref = React.createRef();
+    }
+
     render() {
+        const segment_lines = this.props.text.split("\r\n");
         return (
-            <div className="scroll">
-                <p>Segment Number: {this.props.segment_num + 1}</p>
-                {this.props.segmentLines.map((line, k) => (
-                    <p key={k}>{line}</p>)
+            <div
+                className="segment my-3"
+                ref={segment_ref}
+                onScroll={this.props.handleScroll}
+            >
+                {segment_lines.map(
+                    (line, k) => (<p key={k}>{line}</p>)
                 )}
             </div>
-        )
+        );
     }
 }
 Segment.propTypes = {
-    segmentLines: PropTypes.array,
-    segment_num: PropTypes.number,
+    text: PropTypes.string,
+    handleScroll: PropTypes.func,
 };
-
 
 class ReadingView extends React.Component {
     constructor(props){
@@ -28,11 +42,11 @@ class ReadingView extends React.Component {
             segment_num: 0,
             timer: null,
             segment_data: [],
-            scrollTop: 0,
-            scroll_ups: 0,
-            scrolling_up: false,
+            scroll_top: 0,
+            scroll_data: [],
             rereading: false,  // we alternate reading and rereading
             document: null,
+            interval_timer: null,
             segmentQuestionNum: 0,
             segmentContextNum: 0,
             segmentResponseArray: [],
@@ -51,13 +65,14 @@ class ReadingView extends React.Component {
         if (!firstTime) {
             const segment_data = this.state.segment_data;
             const time = this.state.timer.stop();
+            const scroll_data = this.state.scroll_data;
             segment_data.push({
-                scroll_ups: this.state.scroll_ups,
+                scroll_data,
                 read_time: time,
                 is_rereading: this.state.rereading,
                 segment_num: this.state.segment_num
             });
-            this.setState({segment_data, scroll_ups: -1});
+            this.setState({segment_data, scroll_data: []});
         }
         const timer = new TimeIt();
         this.setState({timer});
@@ -65,14 +80,14 @@ class ReadingView extends React.Component {
 
     // We have the big arrow notation here to bind "this" to this function
     handleScroll = (e) => {
-        this.setState(handleStoryScroll(e, this.state.scrollTop, this.state.scroll_ups,
-            this.state.scrolling_up));
+        const scroll_top = e.target.scrollTop;
+        this.setState({scroll_top});
     };
 
     prevSegment () {
         this.updateData(false);
         this.setState({segment_num: this.state.segment_num-1});
-        window.scrollTo(0,0);
+        segment_ref.current.scrollTo(0,0);
     }
 
     nextSegment () {
@@ -84,8 +99,14 @@ class ReadingView extends React.Component {
             // Otherwise, move on to the rereading layout
             this.setState({rereading: true});
         }
-        window.scrollTo(0,0);
+        segment_ref.current.scrollTo(0,0);
     }
+
+    recordScroll = () => {
+        const scroll_data = this.state.scroll_data;
+        scroll_data.push(this.state.scroll_top);
+        this.setState({scroll_data});
+    };
 
     async componentDidMount() {
         try {
@@ -93,14 +114,9 @@ class ReadingView extends React.Component {
             // Generalize later...
             const response = await fetch('/api/documents/1');
             const document = await response.json();
-            this.setState({document});
+            const interval_timer = setInterval(this.recordScroll, 2000);
+            this.setState({document, interval_timer });
             this.updateData(true);
-            // This will allow the scroll detector to work
-            /** TODO: Add event listener to the reading pane when it is complete to track scroll
-             *        data on that reading pane only. Currently, it is tracking scrolling data
-             *        for entire page
-             */
-            window.addEventListener('scroll', this.handleScroll, true);
         } catch (e) {
             console.log(e);
         }
@@ -170,7 +186,6 @@ class ReadingView extends React.Component {
         if (doc) {
             const current_segment = doc.segments[this.state.segment_num];
             const segment_text = current_segment.text;
-            const segment_lines = segment_text.split("\r\n");
             const segment_questions = current_segment.questions;
 
             const segment_contexts = current_segment.contexts;
@@ -185,17 +200,21 @@ class ReadingView extends React.Component {
                 <div className={"container"}>
                     <h1 className={"display-4 py-3 pr-3"}>{doc.title}</h1>
                     <div className={"row"}>
-                        <Segment
-                            segmentLines={segment_lines}
-                            segment_num={this.state.segment_num}
-                        />
                         <div className={'col-8'}>
-                            <button
-                                className={"btn btn-outline-dark mr-2"}
-                                onClick={() => this.prevSegment()}
-                            >
-                                Back
-                            </button>
+                            <p>Segment Number: {this.state.segment_num + 1}</p>
+                            <Segment
+                                text={segment_text}
+                                handleScroll={(e) => this.handleScroll(e)}
+                            />
+                            {this.state.segment_num > 0 &&
+                                <button
+                                    className={"btn btn-outline-dark mr-2"}
+                                    onClick={() => this.prevSegment()}
+                                >
+                                    Back
+                                </button>
+                            }
+
                             <button
                                 className={"btn btn-outline-dark"}
                                 onClick={() => this.nextSegment()}

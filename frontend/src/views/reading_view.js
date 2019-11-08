@@ -33,7 +33,13 @@ class ReadingView extends React.Component {
             scrolling_up: false,
             rereading: false,  // we alternate reading and rereading
             document: null,
-        }
+            segmentQuestionNum: 0,
+            segmentContextNum: 0,
+            segmentResponseArray: [],
+        };
+
+        this.handleSegmentResponseChange = this.handleSegmentResponseChange.bind(this);
+        this.handleSegmentResponseSubmit = this.handleSegmentResponseSubmit.bind(this);
     }
 
     /**
@@ -101,6 +107,63 @@ class ReadingView extends React.Component {
 
     }
 
+    /**
+     * Allows the user to change their response to a segment question
+     */
+    handleSegmentResponseChange(question_id, event) {
+        const segmentResponseArray = this.state.segmentResponseArray.slice();
+
+        let question_entry = null;
+        for (let el of segmentResponseArray) {
+            if (el.id === question_id) {
+                question_entry = el;
+                break;
+            }
+        }
+
+        if (question_entry === null) {
+            question_entry = {id: question_id};
+            segmentResponseArray.push(question_entry);
+        }
+
+        question_entry.response = event.target.value;
+
+        this.setState({segmentResponseArray});
+
+    }
+
+    /**
+     * Handles data when a user is trying to submit a response to a question
+     */
+    handleSegmentResponseSubmit(event) {
+        event.preventDefault();
+    }
+
+    buildQuestionFields(questions, context_text) {
+        return questions.map((question, id) => (
+            <React.Fragment key={id}>
+                <div>
+                    <h4>Context:</h4>
+                    <div className='segment-context-text'>
+                        {context_text}
+                    </div>
+                    <h4>Question:</h4>
+                    <div className='segment-question-text'>
+                        {question.text}
+                    </div>
+
+                    <label><h4>Response:</h4></label>
+                    <input
+                        type='text'
+                        onChange={this.handleSegmentResponseChange.bind(this,
+                            question.id)}
+                    />
+
+                </div>
+            </React.Fragment>
+        ))
+    }
+
     render() {
         const doc = this.state.document;
 
@@ -109,8 +172,14 @@ class ReadingView extends React.Component {
             const segment_text = current_segment.text;
             const segment_lines = segment_text.split("\r\n");
             const segment_questions = current_segment.questions;
+
             const segment_contexts = current_segment.contexts;
-            const document_questions = doc.document_questions;
+            const current_context = (this.segmentContextNum < segment_contexts.length) ?
+                segment_contexts[this.segmentContextNum].text : 'No segment context given';
+
+            // Generate response fields for each of the questions
+            const segment_response_fields = this.buildQuestionFields(segment_questions,
+                current_context);
 
             return (
                 <div className={"container"}>
@@ -137,35 +206,7 @@ class ReadingView extends React.Component {
 
                         {this.state.rereading &&
                             <div className={"analysis col-4"}>
-                                <p><b>Context: </b></p>
-                                {segment_contexts.map((el,i) =>
-                                    <ul key={i}>
-                                        <li>{el.text}</li>
-                                    </ul>)}
-                                <p><b>Questions: </b></p>
-                                {segment_questions.map((el,i) =>
-                                    <ul key={i}>
-                                        <li>{el.text}</li>
-                                    </ul>
-                                )}
-                                {document_questions && (
-                                    <p>
-                                        <p><b>Document Questions: </b></p>
-                                        {document_questions.map((el,i) =>
-                                            <ul key={i}>
-                                                <li>{el.text}</li>
-                                            </ul>
-                                        )}
-                                    </p>
-                                )}
-
-                                <p>
-                                    <b>Add an annotation: </b><input
-                                        type="text"
-                                        value={this.state.value}
-                                        onChange={this.handleChange}
-                                    /><button>Submit</button>
-                                </p>
+                                {segment_response_fields}
                             </div>
                         }
                     </div>

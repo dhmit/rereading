@@ -21,6 +21,34 @@ Segment.propTypes = {
 };
 
 
+class OverviewWindow extends React.Component {
+    render() {
+        return (
+            <div className={"row"}>
+                <div className={"col-8"}>
+                    <div className="scroll_overview">
+                        {this.props.all_segments.map((el, i) => (
+                            <p key={i}>{el.text}</p>)
+                        )}
+                    </div>
+                </div>
+                <div className={"col-4"}>
+                    <p><b>Overview Questions</b></p>
+                    {this.props.document_questions.map((el, i) => (
+                        <p key={i}>{el}</p>)
+                    )}
+                </div>
+            </div>
+        );
+    }
+}
+
+OverviewWindow.propTypes = {
+    all_segments: PropTypes.array,
+    document_questions: PropTypes.array,
+};
+
+
 class ReadingView extends React.Component {
     constructor(props){
         super(props);
@@ -81,6 +109,10 @@ class ReadingView extends React.Component {
         window.scrollTo(0,0);
     }
 
+    toOverview () {
+        this.setState({overview: true})
+    }
+
     async componentDidMount() {
         try {
             // Hard code the document we know exists for now,
@@ -105,70 +137,90 @@ class ReadingView extends React.Component {
         const doc = this.state.document;
 
         if (doc) {
+            const document_length = doc.segments.length;
             const current_segment = doc.segments[this.state.segment_num];
             const segment_text = current_segment.text;
             const segment_lines = segment_text.split("\r\n");
             const segment_questions = current_segment.questions;
             const segment_contexts = current_segment.contexts;
-            const document_questions = doc.document_questions;
+            const all_segments = doc.segments;
+            const document_questions = ["placeholder1", "placeholder2"];
+            // THIS IS HARD-CODED, REPLACE WITH API CALLS TO DOCUMENT QUESTIONS
 
             return (
                 <div className={"container"}>
                     <h1 className={"display-4 py-3 pr-3"}>{doc.title}</h1>
-                    <div className={"row"}>
-                        <Segment
-                            segmentLines={segment_lines}
-                            segment_num={this.state.segment_num}
+
+                    {this.state.overview ?
+                        <OverviewWindow
+                            all_segments={all_segments}
+                            document_questions={document_questions}
                         />
-                        <div className={'col-8'}>
-                            <button
-                                className={"btn btn-outline-dark mr-2"}
-                                onClick={() => this.prevSegment()}
-                            >
-                                Back
-                            </button>
-                            <button
-                                className={"btn btn-outline-dark"}
-                                onClick={() => this.nextSegment()}
-                            >
-                                {this.state.rereading ? 'Next' : 'Reread'}
-                            </button>
-                        </div>
-
-                        {this.state.rereading &&
-                            <div className={"analysis col-4"}>
-                                <p><b>Context: </b></p>
-                                {segment_contexts.map((el,i) =>
-                                    <ul key={i}>
-                                        <li>{el.text}</li>
-                                    </ul>)}
-                                <p><b>Questions: </b></p>
-                                {segment_questions.map((el,i) =>
-                                    <ul key={i}>
-                                        <li>{el.text}</li>
-                                    </ul>
-                                )}
-                                {document_questions && (
-                                    <p>
-                                        <p><b>Document Questions: </b></p>
-                                        {document_questions.map((el,i) =>
-                                            <ul key={i}>
-                                                <li>{el.text}</li>
-                                            </ul>
-                                        )}
-                                    </p>
-                                )}
-
-                                <p>
-                                    <b>Add an annotation: </b><input
-                                        type="text"
-                                        value={this.state.value}
-                                        onChange={this.handleChange}
-                                    /><button>Submit</button>
-                                </p>
+                        :
+                        <div className={"row"}>
+                            <div className={'col-8'}>
+                                <Segment
+                                    segmentLines={segment_lines}
+                                    segment_num={this.state.segment_num}
+                                />
+                                <button
+                                    className={"btn btn-outline-dark mr-2"}
+                                    onClick={() => this.prevSegment()}
+                                >
+                                    Back
+                                </button>
+                                {this.state.segment_num < document_length - 1 ?
+                                    <button
+                                        className={"btn btn-outline-dark"}
+                                        onClick={() => this.nextSegment()}
+                                    >
+                                        {this.state.rereading ? 'Next' : 'Reread'}
+                                    </button> :
+                                    <button
+                                        className={"btn btn-outline-dark"}
+                                        onClick={() => this.toOverview()}
+                                    >
+                                        To Overview
+                                    </button>
+                                }
                             </div>
-                        }
-                    </div>
+
+                            {this.state.rereading &&
+                                <div className={"analysis col-4"}>
+                                    <p><b>Context: </b></p>
+                                    {segment_contexts.map((el,i) =>
+                                        <ul key={i}>
+                                            <li>{el.text}</li>
+                                        </ul>)}
+                                    <p><b>Questions: </b></p>
+                                    {segment_questions.map((el,i) =>
+                                        <ul key={i}>
+                                            <li>{el.text}</li>
+                                        </ul>
+                                    )}
+                                    {document_questions && (
+                                        <div>
+                                            <p><b>Document Questions: </b></p>
+                                            {document_questions.map((el,i) =>
+                                                <ul key={i}>
+                                                    <li>{el.text}</li>
+                                                </ul>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    <p>
+                                        <b>Add an annotation: </b><input
+                                            type="text"
+                                            value={this.state.value}
+                                            onChange={this.handleChange}
+                                        /><button>Submit</button>
+                                    </p>
+                                </div>
+                            }
+                        </div>
+                    }
+
                 </div>
             );
         } else {

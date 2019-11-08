@@ -39,6 +39,44 @@ SegmentQuestion.propTypes = {
     response: PropTypes.string,
 };
 
+class GlobalQuestion extends React.Component {
+
+    render() {
+        const question_text_1 = this.props.question_one.text;
+        const question_text_2 = this.props.question_two.text;
+
+        return (
+            <div>
+                <h4>Question 1:</h4>
+                <div className='global-question-text'>
+                    {question_text_1}
+                </div>
+                <h4>Question 2:</h4>
+                <div className='global-question-text'>
+                    {question_text_2}
+                </div>
+                <form onSubmit={(e) => this.props.onSubmit(e)}>
+                    <label><h4>Response:</h4></label>
+                    <input
+                        type='text'
+                        value={this.props.response}
+                        onChange={(e) => this.props.onChange(e)}
+                    />
+                    <input type='submit' value='Submit' />
+                </form>
+
+            </div>
+        );
+    }
+}
+GlobalQuestion.propTypes = {
+    question_one: PropTypes.object,
+    question_two: PropTypes.object,
+    onChange: PropTypes.func,
+    onSubmit: PropTypes.func,
+    response: PropTypes.string,
+};
+
 class ReadingView extends React.Component {
     constructor(props){
         super(props);
@@ -49,6 +87,7 @@ class ReadingView extends React.Component {
             segmentQuestionNum: 0,
             segmentContextNum: 0,
             segmentResponseArray: [[]],
+            globalNum: 0
         };
 
         this.handleSegmentResponseChange = this.handleSegmentResponseChange.bind(this);
@@ -139,13 +178,37 @@ class ReadingView extends React.Component {
             const segment_lines = segment_text.split("\r\n");
             const segment_questions = current_segment.questions;
             const segment_contexts = current_segment.contexts;
+            const current_global_question_1 = data.questions[0];
+            const current_global_question_2 = data.questions[1]
 
             // Generate response fields for each of the questions
-            const response_fields = segment_questions.map((question_text, id) => {
+            const response_fields = segment_questions.map((question, id) => {
                 return (
                     <SegmentQuestion
-                        question={question_text}
+                        question={question}
                         context={segment_contexts[this.state.segmentContextNum]}
+                        onChange={this.handleSegmentResponseChange}
+                        onSubmit={this.handleSegmentResponseSubmit}
+                        response={this.state.segmentResponseArray[this.state.segmentNum][id]}
+                        key={id}
+                    />
+                )
+            });
+            const response_fields_global_1 = current_global_question_1.map((question, id) => {
+                return (
+                    <GlobalQuestion
+                        question_one={question}
+                        onChange={this.handleSegmentResponseChange}
+                        onSubmit={this.handleSegmentResponseSubmit}
+                        response={this.state.segmentResponseArray[this.state.segmentNum][id]}
+                        key={id}
+                    />
+                )
+            });
+            const response_fields_global_2 = current_global_question_2.map((question, id) => {
+                return (
+                    <GlobalQuestion
+                        question_two={question}
                         onChange={this.handleSegmentResponseChange}
                         onSubmit={this.handleSegmentResponseSubmit}
                         response={this.state.segmentResponseArray[this.state.segmentNum][id]}
@@ -180,6 +243,16 @@ class ReadingView extends React.Component {
                         {this.state.rereading &&
                             <div className={"analysis col-4"}>
                                 {response_fields}
+                            </div>
+                        }
+                        {this.state.rereading &&
+                            <div className={"analysis col-5"}>
+                                {response_fields_global_1}
+                            </div>
+                        }
+                        {this.state.rereading &&
+                            <div className={"analysis col-6"}>
+                                {response_fields_global_2}
                             </div>
                         }
                     </div>

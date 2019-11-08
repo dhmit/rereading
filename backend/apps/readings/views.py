@@ -6,12 +6,11 @@ from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import StoryPrototype, Student, Document, StudentReadingData
+from .models import StoryPrototype, Student, Document
 from .analysis import RereadingAnalysis
 from .serializers import (
     StoryPrototypeSerializer, StudentPrototypeSerializer, AnalysisSerializer,
-    DocumentSerializer, StudentSerializer, DocumentAnalysisSerializer,
-    StudentReadingDataSerializer)
+    DocumentSerializer, StudentSerializer, DocumentAnalysisSerializer)
 
 
 class ListDocument(generics.ListCreateAPIView):
@@ -47,18 +46,6 @@ class DetailStudent(generics.RetrieveUpdateDestroyAPIView):
     """Get a single student's data or update/delete it"""
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
-
-
-class DetailReadingData(generics.RetrieveUpdateDestroyAPIView):
-    """Get a single group of reading data or update/delete it"""
-    queryset = StudentReadingData.objects.all()
-    serializer_class = StudentReadingDataSerializer
-
-
-class ListReadingData(generics.ListCreateAPIView):
-    """View all instances of reading data"""
-    queryset = StudentReadingData.objects.all()
-    serializer_class = StudentReadingDataSerializer
 
 
 ################################################################################

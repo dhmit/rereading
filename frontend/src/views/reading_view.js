@@ -30,9 +30,12 @@ class Segment extends React.Component {
         );
     }
 }
-Segment.propTypes = {
-    text: PropTypes.string,
-    handleScroll: PropTypes.func,
+SegmentQuestion.propTypes = {
+    question: PropTypes.object,
+    context: PropTypes.object,
+    onChange: PropTypes.func,
+    onSubmit: PropTypes.func,
+    response: PropTypes.string,
 };
 
 class ReadingView extends React.Component {
@@ -84,24 +87,6 @@ class ReadingView extends React.Component {
         this.setState({scroll_top});
     };
 
-    prevSegment () {
-        this.updateData(false);
-        this.setState({segment_num: this.state.segment_num-1});
-        segment_ref.current.scrollTo(0,0);
-    }
-
-    nextSegment () {
-        this.updateData(false);
-        if (this.state.rereading) {
-            // If we're already rereading, move to the next segment
-            this.setState({rereading: false, segment_num: this.state.segment_num+1});
-        } else {
-            // Otherwise, move on to the rereading layout
-            this.setState({rereading: true});
-        }
-        segment_ref.current.scrollTo(0,0);
-    }
-
     recordScroll = () => {
         const scroll_data = this.state.scroll_data;
         scroll_data.push(this.state.scroll_top);
@@ -110,12 +95,12 @@ class ReadingView extends React.Component {
 
     async componentDidMount() {
         try {
-            // Hard code the document we know exists for now,
+            // Hardcode the document we know exists for now,
             // Generalize later...
             const response = await fetch('/api/documents/1');
             const document = await response.json();
             const interval_timer = setInterval(this.recordScroll, 2000);
-            this.setState({document, interval_timer });
+            this.setState({document, interval_timer});
             this.updateData(true);
         } catch (e) {
             console.log(e);
@@ -145,7 +130,52 @@ class ReadingView extends React.Component {
         question_entry.response = event.target.value;
 
         this.setState({segmentResponseArray});
+    }
 
+    prevSegment () {
+        this.updateData(false);
+        // document will be replaced by actual data
+        if (this.state.segmentNum > 0){
+            this.setState({
+                segmentNum: this.state.segmentNum-1,
+                rereading: true,
+                segmentQuestionNum: 0,
+                segmentContextNum: 0,
+            });
+        }
+        segment_ref.current.scrollTo(0,0);
+
+    }
+
+    nextSegment () {
+        this.updateData(false);
+        const length = this.state.document.segments.length;
+        const current_segment = this.state.segmentNum;
+        if (current_segment < length){
+            if (this.state.rereading) {
+
+                // Copy the response array to prevent weird shenanigans
+                const segmentResponseArray = this.state.segmentResponseArray.slice();
+
+                const segment_questions = this.state.document.segments[current_segment].questions;
+                const num_segment_questions = segment_questions.length;
+                segmentResponseArray.push(Array(num_segment_questions));
+
+                // If we're already rereading, move to the next segment
+                this.setState({
+                    rereading: false,
+                    segmentNum: this.state.segmentNum+1,
+                    segmentQuestionNum: 0,
+                    segmentContextNum: 0,
+                    segmentResponseArray,
+                });
+            } else {
+                // Otherwise, move on to the rereading layout
+                this.setState({rereading: true});
+            }
+        }
+
+        segment_ref.current.scrollTo(0,0);
     }
 
     /**
@@ -181,10 +211,10 @@ class ReadingView extends React.Component {
     }
 
     render() {
-        const doc = this.state.document;
+        const data = this.state.document;
 
-        if (doc) {
-            const current_segment = doc.segments[this.state.segment_num];
+        if (data) {
+            const current_segment = data.segments[this.state.segmentNum];
             const segment_text = current_segment.text;
             const segment_questions = current_segment.questions;
 
@@ -198,7 +228,7 @@ class ReadingView extends React.Component {
 
             return (
                 <div className={"container"}>
-                    <h1 className={"display-4 py-3 pr-3"}>{doc.title}</h1>
+                    <h1 className={"display-4 py-3 pr-3"}>{data.title}</h1>
                     <div className={"row"}>
                         <div className={'col-8'}>
                             <p>Segment Number: {this.state.segment_num + 1}</p>
@@ -206,18 +236,16 @@ class ReadingView extends React.Component {
                                 text={segment_text}
                                 handleScroll={(e) => this.handleScroll(e)}
                             />
-                            {this.state.segment_num > 0 &&
-                                <button
-                                    className={"btn btn-outline-dark mr-2"}
-                                    onClick={() => this.prevSegment()}
-                                >
-                                    Back
-                                </button>
-                            }
+                            <button
+                                className={"btn btn-outline-dark mr-2"}
+                                onClick={() => this.prevSegment()}
+                            >
+                                Back
+                            </button>
 
                             <button
                                 className={"btn btn-outline-dark"}
-                                onClick={() => this.nextSegment()}
+                                onClick = {() => this.nextSegment()}
                             >
                                 {this.state.rereading ? 'Next' : 'Reread'}
                             </button>

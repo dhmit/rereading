@@ -33,17 +33,6 @@ class Document(models.Model):
         """ string representation of this class """
         return f'Document: {self.title} by {self.author}'
 
-    def total_word_count(self):
-        """
-        Computes the total wordcount by iterating through and getting individual wordcounts of
-        all segments
-        :return: int
-        """
-        count = 0
-        for segment in self.segments.all():
-            count += len(segment)
-        return count
-
 
 class Segment(models.Model):
     """
@@ -92,7 +81,7 @@ class Question(models.Model):
     FOR SUBCLASSING ONLY DO NOT USE ME DIRECTLY
     """
     text = models.TextField()
-    response_word_limit = models.IntegerField(null=True)
+    response_word_limit = models.IntegerField()
 
     class Meta:
         # as an abstract base class, Django won't create separate database tables for Question and
@@ -115,6 +104,7 @@ class DocumentQuestion(Question):
     )
 
 
+
 class SegmentQuestion(Question):
     """
     A question about a given segment
@@ -125,26 +115,6 @@ class SegmentQuestion(Question):
         related_name='questions'
     )
 
-
-class SegmentQuestionResponse(models.Model):
-    """
-    Response to a SegmentQuestion
-    TODO: This might be a bit half-baked; it currently doesn't conveniently
-          reference the StudentSegmentData. I wanted each segment to be able
-          to have multiple Questions and Contexts, but that adds a bit of
-          complexity to this design... (RA 2019-10-24)
-
-    """
-    question = models.ForeignKey(
-        SegmentQuestion,
-        on_delete=models.CASCADE,
-        related_name='responses'
-    )
-    student = models.ForeignKey(
-        Student,
-        on_delete=models.CASCADE,
-    )
-    response = models.TextField(blank=True)
 
 
 class SegmentContext(models.Model):
@@ -179,26 +149,6 @@ class StudentReadingData(models.Model):
     )
 
 
-class DocumentQuestionResponse(models.Model):
-    """
-    Captures a response to a document-level question
-    TODO: let this track diffs per segment, rather than just
-          a single response
-    """
-    response = models.TextField()
-    question = models.ForeignKey(
-        DocumentQuestion,
-        on_delete=models.CASCADE,
-        related_name='responses'
-    )
-
-    student_reading_data = models.ForeignKey(
-        StudentReadingData,
-        on_delete=models.CASCADE,
-        related_name='document_responses'
-    )
-
-
 class StudentSegmentData(models.Model):
     """
     A model to capture data per segment (timing, scrolls, etc.)
@@ -226,6 +176,56 @@ class StudentSegmentData(models.Model):
         """
 
         return literal_eval(self.views)
+
+
+class SegmentQuestionResponse(models.Model):
+    """
+    Response to a SegmentQuestion
+    TODO: This might be a bit half-baked; it currently doesn't conveniently
+          reference the StudentSegmentData. I wanted each segment to be able
+          to have multiple Questions and Contexts, but that adds a bit of
+          complexity to this design... (RA 2019-10-24)
+
+    """
+    question = models.ForeignKey(
+        SegmentQuestion,
+        on_delete=models.CASCADE,
+        related_name='responses'
+    )
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,
+    )
+    response = models.TextField(blank=True)
+
+    student_segment_data = models.ForeignKey(
+        StudentSegmentData,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name='questions'
+    )
+
+
+class DocumentQuestionResponse(models.Model):
+    """
+    Captures a response to a document-level question
+    TODO: let this track diffs per segment, rather than just
+          a single response
+    """
+    response = models.TextField()
+    question = models.ForeignKey(
+        DocumentQuestion,
+        on_delete=models.CASCADE,
+        related_name='responses'
+    )
+
+    student_reading_data = models.ForeignKey(
+        StudentReadingData,
+        on_delete=models.CASCADE,
+        related_name='document_responses'
+    )
+
+
 
 
 ################################################################################

@@ -290,57 +290,47 @@ class RereadingAnalysis:
 
         return average, standard_dev
 
-    @staticmethod
-    def common_and_unique_responses(self):
+    def unique_responses(self):
         """
         return a dictionary of dictionaries of the context: questions: unique responses for each
         question for each context
         :returns: dictionary of unique responses per context, dictionary of responses common to
         every context, divided by question
         """
-        questions = list(QuestionPrototype.text.distinct())
-        contexts = list(ContextPrototype.text.distinct())
+        questions = list(QuestionPrototype.text)
+        contexts = list(ContextPrototype.text)
         response_dict = {}
         common_dict = {}
         unique_dict = {}
-        common_list_dict = {}
         # compile lists of responses divided by question and context
         for question in questions:
             for context in contexts:
-                value = get_responses_for_question(self.responses, question, context).keys()
+                value = list(get_responses_for_question(self.responses, question, context).keys())
                 response_dict[question] = {context: value}
         for item in questions:
             # prime the common list with all entries from first context
             common_list = response_dict[item][contexts[0]]
             for con in contexts:
-                for response in response_dict[item][con]:
-                    if response not in common_list:
+                for response in common_list:
+                    # remove items in the common list that aren't in every context
+                    if response not in response_dict[item][con]:
                         common_list.remove(response)
             common_dict[item] = common_list
-            # exclude the common answers for unique answers
+            # exclude the common answers to get unique answers
             for text in contexts:
-                iterlist = response_dict[item][con].copy()
+                iterlist = response_dict[item][text].copy()
                 for element in iterlist:
                     if element in common_list:
-                        response_dict[item][con].remove(element)
-                dict_list = ' '.join(response_dict[item][con])
-                response_dict[item][con] = dict_list
-                unique_dict[item] = {con: dict_list}
-        flattened_unique_response = RereadingAnalysis.transform_nested_dict_to_list(response_dict)
-        flattened_common_response = RereadingAnalysis.transform_nested_dict_to_list(common_dict)
+                        response_dict[item][text].remove(element)
+                dict_list = ', '.join(response_dict[item][text])
+                unique_dict[item] = {text: dict_list}
+        # flatten the nested dictionaries into arrays
+        flattened_unique_response = []
+        for key1, inner_keys in unique_dict.items():
+            for key2, value in inner_keys.items():
+                flattened_unique_response.append([key1, key2, value])
         flattened_unique_response.sort()
-        flattened_common_response.sort()
-        return flattened_unique_response, flattened_common_response
-
-    def get_unique_responses_per_context(self):
-        question_context_unique_response_list, question_context_common_list = \
-            self.common_and_unique_responses()
-        question_context_response_lists = []
-        for item in question_context_unique_response_list:
-            question_context_response_lists.append([item[0], item[1],
-                                                    question_context_common_list[item[0]][item[1]],
-                                                    item[2]])
-        return question_context_response_lists
+        return flattened_unique_response
 
     @property
     def run_mean_reading_analysis_for_questions(self):

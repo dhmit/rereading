@@ -159,7 +159,7 @@ MeanReadingTimesForQuestions.propTypes = {
 export class RelevantWordPercentages extends React.Component {
     formatDataWithPercentSign(rawData) {
         //Formats the given data (usually in decimal form) as a percentage
-        let formattedData = []
+        let formattedData = [];
         for (let [question, context, decimal] of rawData) {
             formattedData.push([question, context, `${Math.round(100 * decimal)}%`])
         }
@@ -188,23 +188,19 @@ export class UniqueOrCommonResponses extends React.Component {
     render() {
         return (
             <TabularAnalysis
-                title={"Common Responses"}
+                title={"Common and Unique Responses"}
                 headers={[
                     "Question",
                     "Context",
-                    "Common Responses",
                     "Unique Responses"
                 ]}
-                data={this.props.universal_responses}
+                data={this.props.unique_responses}
             />
         );
     }
 }
 UniqueOrCommonResponses.propTypes = {
-    unique_responses: PropTypes.array,
-    universal_responses: PropTypes.array
-    // common: PropTypes.arrayOf(PropTypes.string),
-    // unique: PropTypes.arrayOf(PropTypes.string)
+    unique_responses: PropTypes.array
 };
 
 export class AnalysisView extends React.Component {
@@ -295,8 +291,7 @@ export class AnalysisView extends React.Component {
                         entryData={percent_using_relevant_words_by_context_and_question}
                     />
                     <UniqueOrCommonResponses
-                        unique_responses={unique_responses[0]}
-                        universal_responses={unique_responses[1]}
+                        unique_responses={unique_responses}
                     />
                 </div>
             );

@@ -2,6 +2,13 @@ import React from "react";
 import PropTypes from 'prop-types';
 
 export class SingleValueAnalysis extends React.Component {
+    formatRound(value){
+        //Checks to see if string or number, rounding accordingly
+        if (typeof value === 'number'){
+            return Math.round(value * 1000) / 1000}
+        else return value
+    }
+
     render() {
         return(
             <div className={"row"}>
@@ -9,7 +16,7 @@ export class SingleValueAnalysis extends React.Component {
                     {this.props.header}
                 </strong>
                 <p className={"col-2 mb-1 text-left d-block d-md-inline"}>
-                    {this.props.value} {this.props.unit}
+                    {this.formatRound(this.props.value)} {this.props.unit}
                 </p>
             </div>
         );

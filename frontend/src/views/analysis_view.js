@@ -172,7 +172,6 @@ export class UniqueWordPatterns1 extends React.Component {
 }
 UniqueWordPatterns1.propTypes = {
     unique_word_pattern_story: PropTypes.array,
-    //unique_word_pattern_ad: PropTypes.array
 
 };
 
@@ -192,7 +191,6 @@ export class UniqueWordPatterns2 extends React.Component {
 }
 UniqueWordPatterns2.propTypes = {
     unique_word_pattern_ad: PropTypes.array
-
 };
 
 export class RelevantWordPercentages extends React.Component {
@@ -304,7 +302,7 @@ export class AnalysisView extends React.Component {
                     <FrequencyFeelingTable feelings={frequency_feelings}/>
                     <ContextVsViewTime viewTime={context_vs_read_time}/>
                     <UniqueWordPatterns1 unique_word_pattern_story={unique_word_pattern[0]}/>
-                    <UniqueWordPatterns1 unique_word_pattern_ad={unique_word_pattern[1]}/>
+                    <UniqueWordPatterns2 unique_word_pattern_ad={unique_word_pattern[1]}/>
                     <RelevantWordPercentages
                         entryData={percent_using_relevant_words_by_context_and_question}
                     />

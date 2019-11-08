@@ -371,25 +371,7 @@ class RereadingAnalysis:
             median_view_time = statistics.median(list_of_times)
         return round(median_view_time)
 
-    '''def compute_median_view_time(student_data):
-        """
-         Given a list of student response dicts,
-        return the median time (across all users) spent reading the text
 
-        :param student_data: list, student response dicts
-        :return: float, median amount of time users spend reading the text
-        """
-        list_of_times = []
-        for row in student_data:
-            for view_time in row.get('views'):
-                list_of_times.append(view_time)
-        if not list_of_times:
-            median_view_time = 0
-        else:
-            list_of_times.sort()
-            median_view_time = statistics.median(list_of_times)
-        return median_view_time
-        '''
     @staticmethod
     def filter_words(string):
         """
@@ -403,13 +385,11 @@ class RereadingAnalysis:
         """
         Take the list of dictionaries as a parameter and analyze the readers' responses based on the
         two different contexts of the 2 questions (this is an ad/this is just a short story);
-        analyze if
-        the total number of unique responses changed as more and more readers' responses are
-        analyzed. Will be used for future analysis and visualization on the webapp
-        :param student_data
+        analyze if the total number of unique responses changed as more and more readers'
+        responses are analyzed. Will be used for future analysis and visualization on the webapp
+        :param self
         :return 2 lists of sets specifying unique responses at each point in time as a user
-        submits a
-        response
+        submits a response
         """
         response_ad = set()
         response_story = set()
@@ -424,8 +404,8 @@ class RereadingAnalysis:
                 word_set = response_ad
                 histogram = unique_word_tracker_ad
             elif response.question.text == question and response.context.text == "This is " \
-                                                                                 "actually a short " \
-                                                                       "story.":
+                                                                                 "actually a " \
+                                                                                 "short story.":
                 word_set = response_story
                 histogram = unique_word_tracker_story
             else:

@@ -71,16 +71,36 @@ class ReadingView extends React.Component {
     prevSegment () {
         // document will be replaced by actual data
         if (this.state.segmentNum > 0){
-            this.setState({segmentNum: this.state.segmentNum-1, rereading: true});
+            this.setState({
+                segmentNum: this.state.segmentNum-1,
+                rereading: true,
+                segmentQuestionNum: 0,
+                segmentContextNum: 0,
+            });
         }
     }
 
     nextSegment () {
         const length = this.state.document.segments.length;
-        if (this.state.segmentNum < length){
+        const current_segment = this.state.segmentNum;
+        if (current_segment < length){
             if (this.state.rereading) {
+
+                // Copy the response array to prevent weird shenanigans
+                const segmentResponseArray = this.state.segmentResponseArray.slice();
+
+                const segment_questions = this.state.document.segments[current_segment].questions;
+                const num_segment_questions = segment_questions.length;
+                segmentResponseArray.push(Array(num_segment_questions));
+
                 // If we're already rereading, move to the next segment
-                this.setState({rereading: false, segmentNum: this.state.segmentNum+1});
+                this.setState({
+                    rereading: false,
+                    segmentNum: this.state.segmentNum+1,
+                    segmentQuestionNum: 0,
+                    segmentContextNum: 0,
+                    segmentResponseArray,
+                });
             } else {
                 // Otherwise, move on to the rereading layout
                 this.setState({rereading: true});
@@ -94,14 +114,8 @@ class ReadingView extends React.Component {
     handleSegmentResponseChange(event, question_id) {
         const segmentResponseArray = this.state.segmentResponseArray.slice();
 
-        // If the segment hasn't been added to the responses, initialize it as an array
-        if (!segmentResponseArray[this.state.segmentNum]) {
-            segmentResponseArray[this.state.segmentNum] = [];
-        }
-
         // The index of the response into the segment is the same as its id
-        const segment = segmentResponseArray[this.state.segmentNum];
-        segment[question_id] = event.target.value;
+        segmentResponseArray[this.state.segmentNum][question_id] = event.target.value;
 
         this.setState({segmentResponseArray});
     }

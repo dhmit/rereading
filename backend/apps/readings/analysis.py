@@ -436,12 +436,12 @@ class RereadingAnalysis:
 
         final_list_story = []
         for i in range(len(unique_word_tracker_story)):
-            final_list_story.append((i+1, unique_word_tracker_story[i]))
-
+            final_list_story.append((i+1, ', '.join(unique_word_tracker_story[i])))
         final_list_ad = []
         for i in range(len(unique_word_tracker_ad)):
-            final_list_ad.append((i+1, unique_word_tracker_ad[i]))
+            final_list_ad.append((i+1, ', '.join(unique_word_tracker_ad[i])))
         return final_list_story, final_list_ad
+
 
     def compute_mean_response_length(self):
         """

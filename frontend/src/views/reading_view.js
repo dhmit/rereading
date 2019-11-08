@@ -145,6 +145,7 @@ class ReadingView extends React.Component {
             const segment_contexts = current_segment.contexts;
             const all_segments = doc.segments;
             const document_questions = ["placeholder1", "placeholder2"];
+            // THIS IS HARD-CODED, REPLACE WITH API CALLS TO DOCUMENT QUESTIONS
 
             return (
                 <div className={"container"}>

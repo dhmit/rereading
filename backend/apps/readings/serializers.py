@@ -121,15 +121,47 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
     """
 
     segment_data = StudentSegmentDataSerializer(many=True)
-    global_responses = DocumentQuestionResponseSerializer(many=True)
+    document_responses = DocumentQuestionResponseSerializer(many=True)
+
+    def create(self, validated_data):
+        """
+        Creates a new reading data instance
+        :param validated_data:
+        :return:
+        """
+
+        # Separate out the global and segment responses
+        global_data = validated_data.pop("document_responses")
+        seg_data = validated_data.pop("segment_data")
+
+        # Hardcoded for now, will generalize later
+        document = Document.objects.get(id=1)
+        student = Student.objects.get(id=16)
+
+        # Create a new reading data instance
+        reading_data = StudentReadingData.objects.create(document=document,
+                                                         student=student,
+                                                         **validated_data)
+
+        # Link each global response to the reading data
+        for data in global_data:
+            DocumentQuestionResponse.objects.create(student_reading_data=reading_data,
+                                                    document=document,
+                                                    **global_data)
+            
+        # Link each segment response to the reading data
+        for data in seg_data:
+            StudentSegmentData.objects.create(reading_data=reading_data, **seg_data)
+
+        return reading_data
 
     class Meta:
         model = StudentReadingData
 
         fields = (
             'id',
+            'document_responses',
             'segment_data',
-            'global_responses',
         )
 
 

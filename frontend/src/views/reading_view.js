@@ -57,9 +57,9 @@ class ReadingView extends React.Component {
     }
 
     /**
-     * segment_read_times is a array of arrays. The index of each array
+     * segment_data is an array of arrays. The index of each array
      * corresponds to the segment number of the segments and is updated
-     * with a new time every time the buttons are clicked
+     * with new segment data every time the buttons are clicked
      */
     updateData(firstTime){
         if (!firstTime) {

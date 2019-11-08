@@ -213,10 +213,15 @@ class DocumentQuestionResponse(models.Model):
           a single response
     """
     response = models.TextField()
-    question = models.ForeignKey(
+    document_question = models.ForeignKey(
         DocumentQuestion,
         on_delete=models.CASCADE,
-        related_name='responses'
+        related_name='document_question'
+    )
+    segment_question = models.ForeignKey(
+        SegmentQuestion,
+        on_delete=models.CASCADE,
+        related_name="segment_question"
     )
 
     student_reading_data = models.ForeignKey(

@@ -35,8 +35,8 @@ class DocumentQuestionResponseSerializer(serializers.ModelSerializer):
         model = DocumentQuestionResponse
 
         fields = (
-            'id',
-            'text',
+            'question',
+            'response',
         )
 
 
@@ -120,7 +120,7 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
     Serializes the data received from all segments of a given document
     """
 
-    segment_data = StudentSegmentDataSerializer(many=True)
+    segment_data = StudentSegmentDataSerializer()
     document_responses = DocumentQuestionResponseSerializer(many=True)
 
     def create(self, validated_data):
@@ -129,7 +129,7 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
         :param validated_data:
         :return:
         """
-
+        print(validated_data)
         # Separate out the global and segment responses
         global_data = validated_data.pop("document_responses")
         seg_data = validated_data.pop("segment_data")
@@ -142,13 +142,13 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
         reading_data = StudentReadingData.objects.create(document=document,
                                                          student=student,
                                                          **validated_data)
-
+        print(global_data[0])
         # Link each global response to the reading data
         for data in global_data:
             DocumentQuestionResponse.objects.create(student_reading_data=reading_data,
-                                                    document=document,
-                                                    **global_data)
-            
+                                                    document_question=document.questions.get(pk=0),
+                                                    response=data['response'])
+
         # Link each segment response to the reading data
         for data in seg_data:
             StudentSegmentData.objects.create(reading_data=reading_data, **seg_data)

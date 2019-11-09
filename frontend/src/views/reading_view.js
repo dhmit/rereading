@@ -76,8 +76,8 @@ class ReadingView extends React.Component {
             // this.setState({segment_data, scroll_data: []});
             const url = '/api/add-response/';
             const reading_data = {
-                document_responses: [{question:1, response:'jhello'},
-                    {question:2, response:"bue"}],
+                document_responses: [{id:1, response:'jhello'},
+                    {id:2, response:"bue"}],
                 segment_data: {
                     id:2,
                     scroll_ups: 3,
@@ -85,7 +85,7 @@ class ReadingView extends React.Component {
                 },
             };
 
-            console.log(JSON.stringify(reading_data));
+            // console.log(JSON.stringify(reading_data));
 
             fetch(url, {
                 method: 'POST',
@@ -233,7 +233,6 @@ class ReadingView extends React.Component {
 
     render() {
         const data = this.state.document;
-        console.log(data)
 
         if (data) {
             const current_segment = data.segments[this.state.segment_num];

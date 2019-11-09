@@ -35,7 +35,7 @@ class DocumentQuestionResponseSerializer(serializers.ModelSerializer):
         model = DocumentQuestionResponse
 
         fields = (
-            'question',
+            # 'question',
             'response',
         )
 
@@ -120,7 +120,7 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
     Serializes the data received from all segments of a given document
     """
 
-    segment_data = StudentSegmentDataSerializer()
+    segment_data = StudentSegmentDataSerializer(many=True)
     document_responses = DocumentQuestionResponseSerializer(many=True)
 
     def create(self, validated_data):
@@ -137,21 +137,25 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
         # Hardcoded for now, will generalize later
         document = Document.objects.get(id=1)
         student = Student.objects.get(id=16)
+        document_question = DocumentQuestion.objects.get(id=1)
+        segment = Segment.objects.get(sequence=1)
 
         # Create a new reading data instance
         reading_data = StudentReadingData.objects.create(document=document,
                                                          student=student,
                                                          **validated_data)
-        print(global_data[0])
         # Link each global response to the reading data
         for data in global_data:
             DocumentQuestionResponse.objects.create(student_reading_data=reading_data,
-                                                    document_question=document.questions.get(pk=0),
+                                                    question=document_question,
                                                     response=data['response'])
-
         # Link each segment response to the reading data
-        for data in seg_data:
-            StudentSegmentData.objects.create(reading_data=reading_data, **seg_data)
+        StudentSegmentData.objects.create(
+            segment=segment,
+            reading_data=reading_data,
+            views=seg_data['views'],
+            scroll_ups=seg_data['scroll_ups'],
+        )
 
         return reading_data
 

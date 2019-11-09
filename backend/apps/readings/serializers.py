@@ -35,7 +35,7 @@ class DocumentQuestionResponseSerializer(serializers.ModelSerializer):
         model = DocumentQuestionResponse
 
         fields = (
-            # 'question',
+            'id',
             'response',
         )
 
@@ -141,14 +141,20 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
         segment = Segment.objects.get(sequence=1)
 
         # Create a new reading data instance
-        reading_data = StudentReadingData.objects.create(document=document,
-                                                         student=student,
-                                                         **validated_data)
+        reading_data = StudentReadingData.objects.create(
+            document=document,
+            student=student,
+            **validated_data
+        )
+
         # Link each global response to the reading data
         for data in global_data:
-            DocumentQuestionResponse.objects.create(student_reading_data=reading_data,
-                                                    question=document_question,
-                                                    response=data['response'])
+            DocumentQuestionResponse.objects.create(
+                student_reading_data=reading_data,
+                question=document_question,
+                response=data['response']
+            )
+
         # Link each segment response to the reading data
         StudentSegmentData.objects.create(
             segment=segment,

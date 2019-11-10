@@ -60,13 +60,6 @@ class ListReadingData(generics.ListCreateAPIView):
     queryset = StudentReadingData.objects.all()
     serializer_class = StudentReadingDataSerializer
 
-    def create(self, request, *args, **kwargs):
-        data = request.data
-        #serializer = StudentPrototypeSerializer(data)
-        return Response(data)
-
-
-
 ################################################################################
 # Prototype views
 # The API endpoints below were for the prototype from summer 2019

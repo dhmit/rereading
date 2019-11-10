@@ -81,7 +81,7 @@ class Question(models.Model):
     FOR SUBCLASSING ONLY DO NOT USE ME DIRECTLY
     """
     text = models.TextField()
-    response_word_limit = models.IntegerField()
+    response_word_limit = models.IntegerField(default=0)
 
     class Meta:
         # as an abstract base class, Django won't create separate database tables for Question and
@@ -104,7 +104,6 @@ class DocumentQuestion(Question):
     )
 
 
-
 class SegmentQuestion(Question):
     """
     A question about a given segment
@@ -114,7 +113,6 @@ class SegmentQuestion(Question):
         on_delete=models.CASCADE,
         related_name='questions'
     )
-
 
 
 class SegmentContext(models.Model):
@@ -166,8 +164,9 @@ class StudentSegmentData(models.Model):
         on_delete=models.CASCADE,
         related_name='segment_data'
     )
-    views = models.TextField(default='[]')
-    scroll_ups = models.IntegerField(default=0)
+    scroll_data = models.TextField(default='[]')
+    view_time = models.FloatField(default=0)
+    is_rereading = models.BooleanField(default=None)
 
     def get_parsed_views(self):
         """
@@ -190,20 +189,14 @@ class SegmentQuestionResponse(models.Model):
     question = models.ForeignKey(
         SegmentQuestion,
         on_delete=models.CASCADE,
-        related_name='responses'
+        related_name='segment_question'
     )
-    student = models.ForeignKey(
-        Student,
+    student_reading_data = models.ForeignKey(
+        StudentReadingData,
         on_delete=models.CASCADE,
+        related_name='segment_responses'
     )
-    response = models.TextField(blank=True)
-
-    student_segment_data = models.ForeignKey(
-        StudentSegmentData,
-        null=False,
-        on_delete=models.CASCADE,
-        related_name='questions'
-    )
+    response = models.TextField()
 
 
 class DocumentQuestionResponse(models.Model):
@@ -218,12 +211,6 @@ class DocumentQuestionResponse(models.Model):
         on_delete=models.CASCADE,
         related_name='document_question'
     )
-    # segment_question = models.ForeignKey(
-    #     SegmentQuestion,
-    #     on_delete=models.CASCADE,
-    #     related_name="segment_question"
-    # )
-
     student_reading_data = models.ForeignKey(
         StudentReadingData,
         on_delete=models.CASCADE,

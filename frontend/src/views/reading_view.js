@@ -41,7 +41,6 @@ class ReadingView extends React.Component {
         this.state = {
             segment_num: 0,
             timer: null,
-            segment_data: [],
             scroll_top: 0,
             scroll_data: [],
             rereading: false,  // we alternate reading and rereading
@@ -50,6 +49,7 @@ class ReadingView extends React.Component {
             segmentQuestionNum: 0,
             segmentContextNum: 0,
             segmentResponseArray: [],
+            student_id: 15, //temporary
         };
         this.csrftoken = getCookie('csrftoken');
 
@@ -64,29 +64,27 @@ class ReadingView extends React.Component {
      */
     sendData(firstTime){
         if (!firstTime) {
-            const segment_data = this.state.segment_data;
             const time = this.state.timer.stop();
-            const scroll_data = this.state.scroll_data;
-            segment_data.push({
-                scroll_data,
-                read_time: time,
-                is_rereading: this.state.rereading,
-                segment_num: this.state.segment_num
-            });
-            // this.setState({segment_data, scroll_data: []});
+            // segment_data.push({
+            //     scroll_data,
+            //     read_time: time,
+            //     is_rereading: this.state.rereading,
+            //     segment_num: this.state.segment_num
+            // });
+            this.setState({scroll_data: []});
             const url = '/api/add-response/';
             const reading_data = {
-                document_responses: [{id:1, response:'jhello'},
-                    {id:2, response:"bue"}],
-                segment_data: {
-                    id:2,
-                    scroll_ups: 3,
-                    views: "text",
-                },
+                document_id: this.state.document.id,
+                student_id: this.state.student_id,
+                segment_responses: this.state.segmentResponseArray,
+                segment_data: [{
+                    id: this.state.document.segments[this.state.segment_num].id,
+                    scroll_data: JSON.stringify(this.state.scroll_data),
+                    view_time: time,
+                    is_rereading: this.state.rereading,
+                }],
             };
-
-            // console.log(JSON.stringify(reading_data));
-
+            console.log(JSON.stringify(reading_data));
             fetch(url, {
                 method: 'POST',
                 body: JSON.stringify(reading_data),
@@ -176,11 +174,12 @@ class ReadingView extends React.Component {
             if (this.state.rereading) {
 
                 // Copy the response array to prevent weird shenanigans
-                const segmentResponseArray = this.state.segmentResponseArray.slice();
+                // const segmentResponseArray = this.state.segmentResponseArray.slice();
 
-                const segment_questions = this.state.document.segments[current_segment].questions;
-                const num_segment_questions = segment_questions.length;
-                segmentResponseArray.push(Array(num_segment_questions));
+                // const segment_questions = this.state.document.segments[current_segment].
+                // questions;
+                // const num_segment_questions = segment_questions.length;
+                // segmentResponseArray.push(Array(num_segment_questions));
 
                 // If we're already rereading, move to the next segment
                 this.setState({
@@ -188,7 +187,7 @@ class ReadingView extends React.Component {
                     segment_num: this.state.segment_num+1,
                     segmentQuestionNum: 0,
                     segmentContextNum: 0,
-                    segmentResponseArray,
+                    segmentResponseArray: [],
                 });
             } else {
                 // Otherwise, move on to the rereading layout

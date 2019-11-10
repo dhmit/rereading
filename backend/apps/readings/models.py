@@ -168,13 +168,13 @@ class StudentSegmentData(models.Model):
     view_time = models.FloatField(default=0)
     is_rereading = models.BooleanField(default=None)
 
-    def get_parsed_views(self):
+    def get_parsed_scroll_data(self):
         """
-        Views are stored as a string representing JSON data, so it needs to be converted
+        Scroll data is stored as a string representing JSON data, so it needs to be converted
         into a Python object before much can be done with it.
         """
 
-        return literal_eval(self.views)
+        return literal_eval(self.scroll_data)
 
 
 class SegmentQuestionResponse(models.Model):
@@ -216,8 +216,6 @@ class DocumentQuestionResponse(models.Model):
         on_delete=models.CASCADE,
         related_name='document_responses'
     )
-
-
 
 
 ################################################################################

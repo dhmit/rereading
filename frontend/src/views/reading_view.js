@@ -8,7 +8,7 @@ class Segment extends React.Component {
         return (
             <div className="scroll">
                 <p>Segment Number: {this.props.segment_num + 1}</p>
-                {this.props.segmentLines.map((line, k) => (
+                {this.props.segment_lines.map((line, k) => (
                     <p key={k}>{line}</p>)
                 )}
             </div>
@@ -16,7 +16,7 @@ class Segment extends React.Component {
     }
 }
 Segment.propTypes = {
-    segmentLines: PropTypes.array,
+    segment_lines: PropTypes.array,
     segment_num: PropTypes.number,
 };
 
@@ -35,7 +35,7 @@ class OverviewWindow extends React.Component {
                 <div className={"col-4"}>
                     <p><b>Overview Questions</b></p>
                     {this.props.document_questions.map((el, i) => (
-                        <p key={i}>{el}</p>)
+                        <p key={i}>{el.text}</p>)
                     )}
                 </div>
             </div>
@@ -53,7 +53,7 @@ class ReadingView extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            segment_num: 0,
+            segment_num: 71,
             timer: null,
             segment_data: [],
             scrollTop: 0,
@@ -144,8 +144,7 @@ class ReadingView extends React.Component {
             const segment_questions = current_segment.questions;
             const segment_contexts = current_segment.contexts;
             const all_segments = doc.segments;
-            const document_questions = ["placeholder1", "placeholder2"];
-            // THIS IS HARD-CODED, REPLACE WITH API CALLS TO DOCUMENT QUESTIONS
+            const document_questions = doc.questions;
 
             return (
                 <div className={"container"}>
@@ -160,7 +159,7 @@ class ReadingView extends React.Component {
                         <div className={"row"}>
                             <div className={'col-8'}>
                                 <Segment
-                                    segmentLines={segment_lines}
+                                    segment_lines={segment_lines}
                                     segment_num={this.state.segment_num}
                                 />
                                 <button

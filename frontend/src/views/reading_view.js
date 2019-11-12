@@ -51,6 +51,15 @@ class GlobalQuestion extends React.Component {
                 <div className='global-question-text'>
                     {question_text_1}
                 </div>
+                <form onSubmit={(e) => this.props.onSubmit(e)}>
+                    <label><h4>Response:</h4></label>
+                    <input
+                        type='text'
+                        value={this.props.response}
+                        onChange={(e) => this.props.onChange(e)}
+                    />
+                    <input type='submit' value='Submit' />
+                </form>
                 <h4>Question 2:</h4>
                 <div className='global-question-text'>
                     {question_text_2}
@@ -87,7 +96,6 @@ class ReadingView extends React.Component {
             segmentQuestionNum: 0,
             segmentContextNum: 0,
             segmentResponseArray: [[]],
-            globalNum: 0
         };
 
         this.handleSegmentResponseChange = this.handleSegmentResponseChange.bind(this);
@@ -178,8 +186,9 @@ class ReadingView extends React.Component {
             const segment_lines = segment_text.split("\r\n");
             const segment_questions = current_segment.questions;
             const segment_contexts = current_segment.contexts;
+            const current_global_questions = data.questions;
             const current_global_question_1 = data.questions[0];
-            const current_global_question_2 = data.questions[1]
+            const current_global_question_2 = data.questions[1];
 
             // Generate response fields for each of the questions
             const response_fields = segment_questions.map((question, id) => {
@@ -194,10 +203,11 @@ class ReadingView extends React.Component {
                     />
                 )
             });
-            const response_fields_global_1 = current_global_question_1.map((question, id) => {
+            const response_fields_global = current_global_questions.map((question, id) => {
                 return (
                     <GlobalQuestion
-                        question_one={question}
+                        question_one={current_global_question_1}
+                        question_two = {current_global_question_2}
                         onChange={this.handleSegmentResponseChange}
                         onSubmit={this.handleSegmentResponseSubmit}
                         response={this.state.segmentResponseArray[this.state.segmentNum][id]}
@@ -205,7 +215,7 @@ class ReadingView extends React.Component {
                     />
                 )
             });
-            const response_fields_global_2 = current_global_question_2.map((question, id) => {
+            /*const response_fields_global_2 = current_global_question_2.map((question, id) => {
                 return (
                     <GlobalQuestion
                         question_two={question}
@@ -215,7 +225,7 @@ class ReadingView extends React.Component {
                         key={id}
                     />
                 )
-            });
+            });*/
 
             return (
                 <div className={"container"}>
@@ -246,15 +256,15 @@ class ReadingView extends React.Component {
                             </div>
                         }
                         {this.state.rereading &&
-                            <div className={"analysis col-5"}>
-                                {response_fields_global_1}
+                            <div className={"analysis col-4"}>
+                                {response_fields_global}
                             </div>
                         }
-                        {this.state.rereading &&
-                            <div className={"analysis col-6"}>
+                        {/*{this.state.rereading &&
+                            <div className={"analysis col-4"}>
                                 {response_fields_global_2}
                             </div>
-                        }
+                        }*/}
                     </div>
                 </div>
             );

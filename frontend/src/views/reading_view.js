@@ -63,7 +63,7 @@ class ReadingView extends React.Component {
      * with new segment data every time the buttons are clicked
      */
     sendData(firstTime){
-        if (!firstTime) {
+        if (!firstTime && this.state.rereading) {
             const time = this.state.timer.stop();
             // segment_data.push({
             //     scroll_data,

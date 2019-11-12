@@ -154,7 +154,7 @@ class DocumentSerializer(serializers.ModelSerializer):
     Serializes Document metadata and associated segments
     """
     segments = SegmentSerializer(many=True, read_only=True)
-    document_questions = DocumentQuestionSerializer(many=True, read_only=True)
+    questions = DocumentQuestionSerializer(many=True, read_only=True)
 
     class Meta:
         model = Document
@@ -163,7 +163,7 @@ class DocumentSerializer(serializers.ModelSerializer):
             'id',
             'title',
             'author',
-            'document_questions',
+            'questions',
             'segments',
         )
 

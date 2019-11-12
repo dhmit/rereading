@@ -33,9 +33,13 @@ class OverviewWindow extends React.Component {
                     </div>
                 </div>
                 <div className={"col-4"}>
+                    <p><b>Document Questions</b></p>
+                    {this.props.document_questions.map((el, i) => (
+                        <p key={i}>{el.is_overview_question ? null : el.text}</p>)
+                    )}
                     <p><b>Overview Questions</b></p>
                     {this.props.document_questions.map((el, i) => (
-                        <p key={i}>{el.text}</p>)
+                        <p key={i}>{el.is_overview_question ? el.text : null}</p>)
                     )}
                 </div>
             </div>
@@ -188,22 +192,18 @@ class ReadingView extends React.Component {
                                 <div className={"analysis col-4"}>
                                     <p><b>Context: </b></p>
                                     {segment_contexts.map((el,i) =>
-                                        <ul key={i}>
-                                            <li>{el.text}</li>
-                                        </ul>)}
+                                        <p key={i}>{el.text}</p>)}
                                     <p><b>Questions: </b></p>
                                     {segment_questions.map((el,i) =>
-                                        <ul key={i}>
-                                            <li>{el.text}</li>
-                                        </ul>
+                                        <p key={i}>{el.text}</p>
                                     )}
                                     {document_questions && (
                                         <div>
                                             <p><b>Document Questions: </b></p>
                                             {document_questions.map((el,i) =>
-                                                <ul key={i}>
-                                                    <li>{el.text}</li>
-                                                </ul>
+                                                <p key={i}>
+                                                    {el.is_overview_question ? null : el.text}
+                                                </p>
                                             )}
                                         </div>
                                     )}

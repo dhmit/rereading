@@ -218,6 +218,15 @@ class ReadingView extends React.Component {
         }
     }
 
+    handleJumpToFieldChange = (e) => {
+        let numericValue = parseInt(e.target.value) - 1;
+        this.setState({jump_to_value: numericValue});
+    };
+
+    handleJumpToButton = () => {
+        this.gotoSegment(this.state.jump_to_value);
+    };
+
     toOverview () {
         this.setState({overview: true})
     }
@@ -310,10 +319,27 @@ class ReadingView extends React.Component {
                                     To Overview
                                 </button>
                             }
+                            <div className={"input-group"}>
+                                <input
+                                    className={"form-control"}
+                                    type="text"
+                                    onChange={this.handleJumpToFieldChange}
+                                />
+                                <button
+                                    className={"btn btn-outline-dark form-control"}
+                                    onClick={this.handleJumpToButton}
+                                    //Checks isNaN so that an empty string doesn't count as 0
+                                    disabled={Number.isNaN(this.state.jump_to_value) ||
+                                        !this.state.segments_viewed.includes(
+                                            this.state.jump_to_value)}
+                                >
+                                Jump
+                                </button>
+                            </div>
                         </div>
 
                         {this.state.rereading &&
-                            <div className={"analysis col-4"}>
+                            <div className={"analysis col-3"}>
                                 {segment_response_fields}
 
                                 {document_questions && (

@@ -140,7 +140,9 @@ class ReadingView extends React.Component {
                             segmentLines={segment_lines}
                             segment_num={this.state.segment_num}
                         />
-                        <div className={'col-8'}>
+                    </div>
+                    <div className={"row"}>
+                        <div className={'col-2'}>
                             <button
                                 className={"btn btn-outline-dark mr-2"}
                                 onClick={() => this.prevSegment()}
@@ -158,24 +160,26 @@ class ReadingView extends React.Component {
                             </button>
                         </div>
 
-                        <div className={'col-4'}>
+                        <div className={"col-3 input-group"}>
                             <input
+                                className={"form-control"}
                                 type="text"
                                 onChange={this.handleJumpToFieldChange}
                             />
                             <button
-                                className={"btn btn-outline-dark"}
+                                className={"btn btn-outline-dark form-control"}
                                 onClick={this.handleJumpToButton}
                                 //Checks isNaN so that an empty string doesn't count as 0
                                 disabled={Number.isNaN(this.state.jump_to_value) ||
-                                    !this.state.segments_viewed.includes(this.state.jump_to_value)}
+                                    !this.state.segments_viewed.includes(
+                                        this.state.jump_to_value)}
                             >
-                                Jump to
+                            Jump
                             </button>
                         </div>
 
                         {this.state.rereading &&
-                            <div className={"analysis col-4"}>
+                            <div className={"analysis col-7"}>
                                 <p><b>Context: </b></p>
                                 {segment_contexts.map((el,i) =>
                                     <ul key={i}>

@@ -28,6 +28,7 @@ class ReadingView extends React.Component {
             segment_num: 0,
             timer: null,
             segment_data: [],
+            segments_viewed: [0],
             scrollTop: 0,
             scroll_ups: 0,
             scrolling_up: false,
@@ -64,8 +65,8 @@ class ReadingView extends React.Component {
     };
 
     prevSegment () {
+        this.gotoSegment(this.state.segment_num - 1);
         this.updateData(false);
-        this.setState({rereading: false, segment_num: this.state.segment_num-1});
         window.scrollTo(0,0);
     }
 
@@ -73,12 +74,23 @@ class ReadingView extends React.Component {
         this.updateData(false);
         if (this.state.rereading) {
             // If we're already rereading, move to the next segment
-            this.setState({rereading: false, segment_num: this.state.segment_num+1});
+            this.gotoSegment(this.state.segment_num + 1);
         } else {
             // Otherwise, move on to the rereading layout
             this.setState({rereading: true});
         }
         window.scrollTo(0,0);
+    }
+
+    gotoSegment(segmentNum) {
+        const segments_viewed = this.state.segments_viewed.slice();
+        let rereading = segments_viewed.includes(segmentNum);
+
+        //The segment number is pushed regardless of whether or not the user has read the page
+        // before so that page reread order can also be determined.
+        segments_viewed.push(segmentNum);
+        console.log(segments_viewed);
+        this.setState({rereading, segments_viewed, segment_num : segmentNum});
     }
 
     async componentDidMount() {

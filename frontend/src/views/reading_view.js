@@ -124,7 +124,6 @@ class ReadingView extends React.Component {
                     is_rereading: this.state.rereading,
                 }],
             };
-            console.log(JSON.stringify(reading_data));
             fetch(url, {
                 method: 'POST',
                 body: JSON.stringify(reading_data),
@@ -199,7 +198,6 @@ class ReadingView extends React.Component {
     }
 
     gotoSegment(segmentNum) {
-        console.log(segmentNum);
         let segmentCount = this.state.document.segments.length;
         if (segmentNum >= 0 && segmentNum < segmentCount) {
             const segments_viewed = this.state.segments_viewed.slice();
@@ -289,40 +287,64 @@ class ReadingView extends React.Component {
                         document_questions={document_questions}
                     />
                     :
-                    <div className={"row"}>
-                        <div className={'col-8'}>
-                            <p>Segment Number: {this.state.segment_num + 1}</p>
-                            <Segment
-                                text={current_segment.text}
-                                handleScroll={(e) => this.handleScroll(e)}
-                                segment_ref={this.segment_ref}
-                            />
-                            {this.state.segment_num > 0 &&
-                            <button
-                                className={"btn btn-outline-dark mr-2"}
-                                onClick={() => this.prevSegment()}
-                            >
-                                Back
-                            </button>
+                    <React.Fragment>
+                        <div className={"row"}>
+                            <div className={'col-8'}>
+                                <p>Segment Number: {this.state.segment_num + 1}</p>
+                                <Segment
+                                    text={current_segment.text}
+                                    handleScroll={(e) => this.handleScroll(e)}
+                                    segment_ref={this.segment_ref}
+                                />
+                            </div>
+
+                            {this.state.rereading &&
+                                <div className={"analysis col-4"}>
+                                    {segment_response_fields}
+
+                                    {document_questions && (
+                                        <div>
+                                            <p><b>Document Questions: </b></p>
+                                            {document_questions.map((el,i) =>
+                                                <p key={i}>
+                                                    {el.is_overview_question ? null : el.text}
+                                                </p>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
                             }
-                            {this.state.segment_num < doc.segments.length - 1 ?
+                        </div>
+                        <div className={"row"}>
+                            <div className={"col-4"}>
+                                {this.state.segment_num > 0 &&
                                 <button
-                                    className={"btn btn-outline-dark"}
-                                    onClick={() => this.nextSegment()}
+                                    className={"btn btn-outline-dark mr-2"}
+                                    onClick={() => this.prevSegment()}
                                 >
-                                    {this.state.rereading ? 'Next' : 'Reread'}
-                                </button> :
-                                <button
-                                    className={"btn btn-outline-dark"}
-                                    onClick={() => this.toOverview()}
-                                >
-                                    To Overview
+                                    Back
                                 </button>
-                            }
-                            <div className={"input-group"}>
+                                }
+                                {this.state.segment_num < doc.segments.length - 1 ?
+                                    <button
+                                        className={"btn btn-outline-dark"}
+                                        onClick={() => this.nextSegment()}
+                                    >
+                                        {this.state.rereading ? 'Next' : 'Reread'}
+                                    </button> :
+                                    <button
+                                        className={"btn btn-outline-dark"}
+                                        onClick={() => this.toOverview()}
+                                    >
+                                        To Overview
+                                    </button>
+                                }
+                            </div>
+                            <div className={"col-4 input-group"}>
                                 <input
                                     className={"form-control"}
                                     type="text"
+                                    placeholder={"Page #"}
                                     onChange={this.handleJumpToFieldChange}
                                 />
                                 <button
@@ -337,24 +359,7 @@ class ReadingView extends React.Component {
                                 </button>
                             </div>
                         </div>
-
-                        {this.state.rereading &&
-                            <div className={"analysis col-3"}>
-                                {segment_response_fields}
-
-                                {document_questions && (
-                                    <div>
-                                        <p><b>Document Questions: </b></p>
-                                        {document_questions.map((el,i) =>
-                                            <p key={i}>
-                                                {el.is_overview_question ? null : el.text}
-                                            </p>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-                        }
-                    </div>
+                    </React.Fragment>
                 }
             </div>
         );

@@ -131,6 +131,7 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
     segment_responses = SegmentQuestionResponseSerializer(many=True)
     document_id = serializers.IntegerField()
     student_id = serializers.IntegerField()
+    reading_data_id = serializers.IntegerField(write_only=True)
 
     def create(self, validated_data):
         """
@@ -146,12 +147,15 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
         # Hardcoded for now, will generalize later
         document = Document.objects.get(id=validated_data.pop("document_id"))
         student = Student.objects.get(pk=validated_data.pop("student_id"))
+        reading_data_id = validated_data.pop("reading_data_id")
 
         # Create a new reading data instance
-        reading_data = StudentReadingData.objects.create(
-            document=document,
-            student=student,
-            **validated_data
+        reading_data, created = StudentReadingData.objects.get_or_create(
+            pk=reading_data_id,
+            defaults={
+                'document': document,
+                'student': student,
+            }
         )
         # print(reading_data)
         # Link each global response to the reading data
@@ -194,6 +198,7 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
             'segment_data',
             'document_id',
             'student_id',
+            'reading_data_id',
         )
 
 
@@ -219,6 +224,7 @@ class DocumentSerializer(serializers.ModelSerializer):
     """
     segments = SegmentSerializer(many=True, read_only=True)
     questions = DocumentQuestionSerializer(many=True, read_only=True)
+    last_reading_data_id = serializers.SerializerMethodField()
 
     class Meta:
         model = Document
@@ -229,7 +235,13 @@ class DocumentSerializer(serializers.ModelSerializer):
             'author',
             'questions',
             'segments',
+            'last_reading_data_id',
         )
+
+    def get_last_reading_data_id(self, obj):
+        if StudentReadingData.objects.count() == 0:
+            return 0
+        return StudentReadingData.objects.all().order_by("-id")[0].id
 
 
 class DocumentAnalysisSerializer(serializers.Serializer):

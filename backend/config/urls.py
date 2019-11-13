@@ -27,7 +27,7 @@ urlpatterns = [
 
     # API endpoints
     path('api/documents/', readings_views.ListDocument.as_view()),
-    path('api/add-response/', readings_views.ListStudent.as_view()),
+    path('api/add-response/', readings_views.ListReadingData.as_view()),
     path('api/documents/<int:pk>/', readings_views.DetailDocument.as_view()),
     path('api/analysis/', readings_views.analysis),
     path('api/document_analysis/', readings_views.document_analysis),

@@ -74,6 +74,8 @@ class ReadingView extends React.Component {
             timer: null,
             scroll_top: 0,
             scroll_data: [],
+            segments_viewed: [0],
+            jump_to_value: null,
             rereading: false,  // we alternate reading and rereading
             document: null,
             interval_timer: null,
@@ -175,38 +177,45 @@ class ReadingView extends React.Component {
 
     prevSegment () {
         this.sendData(false);
-        if (this.state.segment_num > 0) {
-            this.setState({
-                segment_num: this.state.segment_num - 1,
-                rereading: true,
-                segmentQuestionNum: 0,
-                segmentContextNum: 0,
-            });
-        }
+        this.gotoSegment(this.state.segment_num - 1);
         this.segment_ref.current.scrollTo(0,0);
     }
 
     nextSegment () {
         this.sendData(false);
-        const length = this.state.document.segments.length;
-        const current_segment = this.state.segment_num;
-        if (current_segment < length){
-            if (this.state.rereading) {
-                // If we're already rereading, move to the next segment
-                this.setState({
-                    rereading: false,
-                    segment_num: this.state.segment_num + 1,
-                    segmentQuestionNum: 0,
-                    segmentContextNum: 0,
-                    segmentResponseArray: [],
-                });
-            } else {
-                // Otherwise, move on to the rereading layout
-                this.setState({rereading: true});
-            }
+
+        if (this.state.rereading) {
+            // If we're already rereading, move to the next segment
+            this.gotoSegment(this.state.segment_num + 1);
+            this.setState({segmentResponseArray: []})
+            //TODO Figure out if this can be integrated into gotoSegment. I wasn't exactly
+            // sure why it was being set here but not prevSegment().
+        } else {
+            // Otherwise, move on to the rereading layout
+            this.setState({rereading: true});
         }
 
         this.segment_ref.current.scrollTo(0,0);
+    }
+
+    gotoSegment(segmentNum) {
+        console.log(segmentNum);
+        let segmentCount = this.state.document.segments.length;
+        if (segmentNum >= 0 && segmentNum < segmentCount) {
+            const segments_viewed = this.state.segments_viewed.slice();
+            let rereading = segments_viewed.includes(segmentNum);
+
+            //The segment number is pushed regardless of whether or not the user has read the page
+            // before so that page reread order can also be determined.
+            segments_viewed.push(segmentNum);
+            this.setState({
+                rereading,
+                segments_viewed,
+                segment_num: segmentNum,
+                segmentQuestionNum: 0,
+                segmentContextNum: 0,
+            });
+        }
     }
 
     toOverview () {

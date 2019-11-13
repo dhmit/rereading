@@ -20,7 +20,6 @@ Segment.propTypes = {
     segment_num: PropTypes.number,
 };
 
-
 class ReadingView extends React.Component {
     constructor(props){
         super(props);
@@ -29,6 +28,7 @@ class ReadingView extends React.Component {
             timer: null,
             segment_data: [],
             segments_viewed: [0],
+            jump_to_value: null,
             scrollTop: 0,
             scroll_ups: 0,
             scrolling_up: false,
@@ -89,9 +89,17 @@ class ReadingView extends React.Component {
         //The segment number is pushed regardless of whether or not the user has read the page
         // before so that page reread order can also be determined.
         segments_viewed.push(segmentNum);
-        console.log(segments_viewed);
-        this.setState({rereading, segments_viewed, segment_num : segmentNum});
+        this.setState({rereading, segments_viewed, segment_num: segmentNum});
     }
+
+    handleJumpToFieldChange = (e) => {
+        let numericValue = parseInt(e.target.value) - 1;
+        this.setState({jump_to_value: numericValue});
+    };
+
+    handleJumpToButton = () => {
+        this.gotoSegment(this.state.jump_to_value);
+    };
 
     async componentDidMount() {
         try {
@@ -147,6 +155,22 @@ class ReadingView extends React.Component {
                                 this.state.segment_num >= doc.segments.length - 1}
                             >
                                 {this.state.rereading ? 'Next' : 'Reread'}
+                            </button>
+                        </div>
+
+                        <div className={'col-4'}>
+                            <input
+                                type="text"
+                                onChange={this.handleJumpToFieldChange}
+                            />
+                            <button
+                                className={"btn btn-outline-dark"}
+                                onClick={this.handleJumpToButton}
+                                //Checks isNaN so that an empty string doesn't count as 0
+                                disabled={Number.isNaN(this.state.jump_to_value) ||
+                                    !this.state.segments_viewed.includes(this.state.jump_to_value)}
+                            >
+                                Jump to
                             </button>
                         </div>
 

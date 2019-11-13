@@ -10,6 +10,7 @@ from .models import (
     Segment,
     SegmentQuestion,
     SegmentContext,
+    DocumentQuestion,
 )
 
 
@@ -21,9 +22,14 @@ class SegmentInline(admin.TabularInline):
     extra = 1
 
 
+class DocumentQuestionInline(admin.TabularInline):
+    model = DocumentQuestion
+    extra = 1
+
+
 class DocumentAdmin(admin.ModelAdmin):
     model = Document
-    inlines = [SegmentInline]
+    inlines = [SegmentInline, DocumentQuestionInline]
 
 
 ################################################################################

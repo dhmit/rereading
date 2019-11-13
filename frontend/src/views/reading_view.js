@@ -5,14 +5,12 @@ import {getCookie, TimeIt} from "../common";
 import './reading_view.css';
 
 
-const segment_ref = React.createRef();
 /*
  * Represents the actual Segment window
  */
 class Segment extends React.Component {
     constructor(props) {
         super(props);
-        // this.segment_div_ref = React.createRef();
     }
 
     render() {
@@ -20,7 +18,7 @@ class Segment extends React.Component {
         return (
             <div
                 className="segment my-3"
-                ref={segment_ref}
+                ref={this.props.segment_ref}
                 onScroll={this.props.handleScroll}
             >
                 {segment_lines.map(
@@ -33,7 +31,40 @@ class Segment extends React.Component {
 Segment.propTypes = {
     text: PropTypes.string,
     handleScroll: PropTypes.func,
+    segment_ref: PropTypes.shape({current: PropTypes.instanceOf(Element)})
 };
+
+
+class OverviewWindow extends React.Component {
+    render() {
+        return (
+            <div className={"row"}>
+                <div className={"col-8"}>
+                    <div className="scroll_overview">
+                        {this.props.all_segments.map((el, i) => (
+                            <p key={i}>{el.text}</p>)
+                        )}
+                    </div>
+                </div>
+                <div className={"col-4"}>
+                    <p><b>Document Questions</b></p>
+                    {this.props.document_questions.map((el, i) => (
+                        <p key={i}>{el.is_overview_question ? null : el.text}</p>)
+                    )}
+                    <p><b>Overview Questions</b></p>
+                    {this.props.document_questions.map((el, i) => (
+                        <p key={i}>{el.is_overview_question ? el.text : null}</p>)
+                    )}
+                </div>
+            </div>
+        );
+    }
+}
+OverviewWindow.propTypes = {
+    all_segments: PropTypes.array,
+    document_questions: PropTypes.array,
+};
+
 
 class ReadingView extends React.Component {
     constructor(props){
@@ -53,6 +84,7 @@ class ReadingView extends React.Component {
         };
         this.csrftoken = getCookie('csrftoken');
 
+        this.segment_ref = React.createRef();
         this.handleSegmentResponseChange = this.handleSegmentResponseChange.bind(this);
         this.handleSegmentResponseSubmit = this.handleSegmentResponseSubmit.bind(this);
     }
@@ -65,12 +97,6 @@ class ReadingView extends React.Component {
     sendData(firstTime){
         if (!firstTime && this.state.rereading) {
             const time = this.state.timer.stop();
-            // segment_data.push({
-            //     scroll_data,
-            //     read_time: time,
-            //     is_rereading: this.state.rereading,
-            //     segment_num: this.state.segment_num
-            // });
             this.setState({scroll_data: []});
             const url = '/api/add-response/';
             const reading_data = {
@@ -100,31 +126,52 @@ class ReadingView extends React.Component {
         this.setState({timer});
     }
 
-    // We have the big arrow notation here to bind "this" to this function
-    handleScroll = (e) => {
-        const scroll_top = e.target.scrollTop;
-        this.setState({scroll_top});
-    };
 
-    recordScroll = () => {
+    prevSegment () {
+        this.updateData(false);
+        this.setState({segment_num: this.state.segment_num-1});
+        this.segment_ref.current.scrollTo(0,0);
+    }
+
+    nextSegment () {
+        this.updateData(false);
+        if (this.state.rereading) {
+            // If we're already rereading, move to the next segment
+            this.setState({rereading: false, segment_num: this.state.segment_num+1});
+        } else {
+            // Otherwise, move on to the rereading layout
+            this.setState({rereading: true});
+        }
+        this.segment_ref.current.scrollTo(0,0);
+    }
+
+    recordScroll() {
         const scroll_data = this.state.scroll_data;
         scroll_data.push(this.state.scroll_top);
+        //
         this.setState({scroll_data});
-    };
+    }
+
+    handleScroll(e) {
+        const scroll_top = e.target.scrollTop;
+        this.setState({scroll_top});
+    }
+
+    toOverview () {
+        this.setState({overview: true})
+    }
 
     async componentDidMount() {
         try {
-            // Hardcode the document we know exists for now,
-            // Generalize later...
+            // Hard code the document we know exists for now -- generalize later...
             const response = await fetch('/api/documents/1');
             const document = await response.json();
-            const interval_timer = setInterval(this.recordScroll, 2000);
+            const interval_timer = setInterval(() => this.recordScroll(), 2000);
             this.setState({document, interval_timer});
             this.sendData(true);
         } catch (e) {
             console.log(e);
         }
-
     }
 
     /**
@@ -153,17 +200,15 @@ class ReadingView extends React.Component {
 
     prevSegment () {
         this.sendData(false);
-        // document will be replaced by actual data
-        if (this.state.segment_num > 0){
+        if (this.state.segment_num > 0) {
             this.setState({
-                segment_num: this.state.segment_num-1,
+                segment_num: this.state.segment_num - 1,
                 rereading: true,
                 segmentQuestionNum: 0,
                 segmentContextNum: 0,
             });
         }
-        segment_ref.current.scrollTo(0,0);
-
+        this.segment_ref.current.scrollTo(0,0);
     }
 
     nextSegment () {
@@ -172,19 +217,10 @@ class ReadingView extends React.Component {
         const current_segment = this.state.segment_num;
         if (current_segment < length){
             if (this.state.rereading) {
-
-                // Copy the response array to prevent weird shenanigans
-                // const segmentResponseArray = this.state.segmentResponseArray.slice();
-
-                // const segment_questions = this.state.document.segments[current_segment].
-                // questions;
-                // const num_segment_questions = segment_questions.length;
-                // segmentResponseArray.push(Array(num_segment_questions));
-
                 // If we're already rereading, move to the next segment
                 this.setState({
                     rereading: false,
-                    segment_num: this.state.segment_num+1,
+                    segment_num: this.state.segment_num + 1,
                     segmentQuestionNum: 0,
                     segmentContextNum: 0,
                     segmentResponseArray: [],
@@ -195,7 +231,7 @@ class ReadingView extends React.Component {
             }
         }
 
-        segment_ref.current.scrollTo(0,0);
+        this.segment_ref.current.scrollTo(0,0);
     }
 
     /**
@@ -221,8 +257,9 @@ class ReadingView extends React.Component {
                     <label><h4>Response:</h4></label>
                     <input
                         type='text'
-                        onChange={this.handleSegmentResponseChange.bind(this,
-                            question.id)}
+                        onChange={
+                            this.handleSegmentResponseChange.bind(this, question.id)
+                        }
                     />
 
                 </div>
@@ -231,59 +268,88 @@ class ReadingView extends React.Component {
     }
 
     render() {
-        const data = this.state.document;
-
-        if (data) {
-            const current_segment = data.segments[this.state.segment_num];
-            const segment_text = current_segment.text;
-            const segment_questions = current_segment.questions;
-
-            const segment_contexts = current_segment.contexts;
-            const current_context = (this.segmentContextNum < segment_contexts.length) ?
-                segment_contexts[this.segmentContextNum].text : 'No segment context given';
-
-            // Generate response fields for each of the questions
-            const segment_response_fields = this.buildQuestionFields(segment_questions,
-                current_context);
-
+        const doc = this.state.document;
+        if (!doc) {
             return (
-                <div className={"container"}>
-                    <h1 className={"display-4 py-3 pr-3"}>{data.title}</h1>
+                <div>Loading!</div>
+            );
+        }
+
+        const current_segment = doc.segments[this.state.segment_num];
+        const segment_questions = current_segment.questions;
+        const segment_contexts = current_segment.contexts;
+        const current_context =
+            this.segmentContextNum < segment_contexts.length
+                ? segment_contexts[this.segmentContextNum].text
+                : 'No segment context given';
+
+        // Generate response fields for each of the questions
+        const segment_response_fields =
+            this.buildQuestionFields(segment_questions, current_context);
+
+        const document_questions = doc.questions;
+
+        return (
+            <div className={"container"}>
+                <h1 className={"display-4 py-3 pr-3"}>{doc.title}</h1>
+
+                {this.state.overview ?
+                    <OverviewWindow
+                        all_segments={doc.segments}
+                        document_questions={document_questions}
+                    />
+                    :
                     <div className={"row"}>
                         <div className={'col-8'}>
                             <p>Segment Number: {this.state.segment_num + 1}</p>
                             <Segment
-                                text={segment_text}
+                                text={current_segment.text}
                                 handleScroll={(e) => this.handleScroll(e)}
                             />
+                            {this.state.segment_num > 0 &&
                             <button
                                 className={"btn btn-outline-dark mr-2"}
                                 onClick={() => this.prevSegment()}
                             >
                                 Back
                             </button>
-
-                            <button
-                                className={"btn btn-outline-dark"}
-                                onClick = {() => this.nextSegment()}
-                            >
-                                {this.state.rereading ? 'Next' : 'Reread'}
-                            </button>
+                            }
+                            {this.state.segment_num < doc.segments.length - 1 ?
+                                <button
+                                    className={"btn btn-outline-dark"}
+                                    onClick={() => this.nextSegment()}
+                                >
+                                    {this.state.rereading ? 'Next' : 'Reread'}
+                                </button> :
+                                <button
+                                    className={"btn btn-outline-dark"}
+                                    onClick={() => this.toOverview()}
+                                >
+                                    To Overview
+                                </button>
+                            }
                         </div>
 
                         {this.state.rereading &&
                             <div className={"analysis col-4"}>
                                 {segment_response_fields}
+
+                                {document_questions && (
+                                    <div>
+                                        <p><b>Document Questions: </b></p>
+                                        {document_questions.map((el,i) =>
+                                            <p key={i}>
+                                                {el.is_overview_question ? null : el.text}
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         }
                     </div>
-                </div>
-            );
-        } else {
-            return (
-                <div>Loading!</div>
-            );
-        }
+                }
+            </div>
+        );
 
     }
 }

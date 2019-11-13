@@ -23,6 +23,7 @@ class DocumentQuestionSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'text',
+            'is_overview_question',
         )
 
 

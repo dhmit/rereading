@@ -86,7 +86,19 @@ class ReadingView extends React.Component {
 
         this.segment_ref = React.createRef();
         this.handleSegmentResponseChange = this.handleSegmentResponseChange.bind(this);
-        this.handleSegmentResponseSubmit = this.handleSegmentResponseSubmit.bind(this);
+    }
+
+    async componentDidMount() {
+        try {
+            // Hard code the document we know exists for now -- generalize later...
+            const response = await fetch('/api/documents/1');
+            const document = await response.json();
+            const interval_timer = setInterval(() => this.recordScroll(), 2000);
+            this.setState({document, interval_timer});
+            this.sendData(true);
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     /**
@@ -126,52 +138,15 @@ class ReadingView extends React.Component {
         this.setState({timer});
     }
 
-
-    prevSegment () {
-        this.updateData(false);
-        this.setState({segment_num: this.state.segment_num-1});
-        this.segment_ref.current.scrollTo(0,0);
-    }
-
-    nextSegment () {
-        this.updateData(false);
-        if (this.state.rereading) {
-            // If we're already rereading, move to the next segment
-            this.setState({rereading: false, segment_num: this.state.segment_num+1});
-        } else {
-            // Otherwise, move on to the rereading layout
-            this.setState({rereading: true});
-        }
-        this.segment_ref.current.scrollTo(0,0);
-    }
-
     recordScroll() {
         const scroll_data = this.state.scroll_data;
         scroll_data.push(this.state.scroll_top);
-        //
         this.setState({scroll_data});
     }
 
     handleScroll(e) {
         const scroll_top = e.target.scrollTop;
         this.setState({scroll_top});
-    }
-
-    toOverview () {
-        this.setState({overview: true})
-    }
-
-    async componentDidMount() {
-        try {
-            // Hard code the document we know exists for now -- generalize later...
-            const response = await fetch('/api/documents/1');
-            const document = await response.json();
-            const interval_timer = setInterval(() => this.recordScroll(), 2000);
-            this.setState({document, interval_timer});
-            this.sendData(true);
-        } catch (e) {
-            console.log(e);
-        }
     }
 
     /**
@@ -234,11 +209,8 @@ class ReadingView extends React.Component {
         this.segment_ref.current.scrollTo(0,0);
     }
 
-    /**
-     * Handles data when a user is trying to submit a response to a question
-     */
-    handleSegmentResponseSubmit(event) {
-        event.preventDefault();
+    toOverview () {
+        this.setState({overview: true})
     }
 
     buildQuestionFields(questions, context_text) {
@@ -305,6 +277,7 @@ class ReadingView extends React.Component {
                             <Segment
                                 text={current_segment.text}
                                 handleScroll={(e) => this.handleScroll(e)}
+                                segment_ref={this.segment_ref}
                             />
                             {this.state.segment_num > 0 &&
                             <button

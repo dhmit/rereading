@@ -149,14 +149,18 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
         student = Student.objects.get(pk=validated_data.pop("student_id"))
         reading_data_id = validated_data.pop("reading_data_id")
 
-        # Create a new reading data instance
-        reading_data, created = StudentReadingData.objects.get_or_create(
+        # Create a new reading data instance if one doesn't exist already
+        # with the primary key. It returns a tuple with the StudentReadingData
+        # object and a boolean about whether it created it or not
+        reading_data_output = StudentReadingData.objects.get_or_create(
             pk=reading_data_id,
             defaults={
                 'document': document,
                 'student': student,
             }
         )
+        reading_data = reading_data_output[0]
+
         # print(reading_data)
         # Link each global response to the reading data
         # for data in global_data:

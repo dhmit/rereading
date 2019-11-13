@@ -31,13 +31,14 @@ class DocumentQuestionResponseSerializer(serializers.ModelSerializer):
     """
     Serializes a Student's response to a given document-level question
     """
+    id = serializers.ModelField(model_field=DocumentQuestionResponse()._meta.get_field('id'))
 
     class Meta:
         model = DocumentQuestionResponse
 
         fields = (
             'id',
-            'text',
+            'response',
         )
 
 
@@ -91,6 +92,7 @@ class SegmentQuestionResponseSerializer(serializers.ModelSerializer):
     """
     Serializes a response provided to a question from a segment
     """
+    id = serializers.ModelField(model_field=SegmentQuestionResponse()._meta.get_field('id'))
 
     class Meta:
         model = SegmentQuestionResponse
@@ -105,14 +107,17 @@ class StudentSegmentDataSerializer(serializers.ModelSerializer):
     """
     Serializes the data received from a user for a given segment
     """
+    # To get the 'id' key to show up in validated_data in the create method
+    id = serializers.ModelField(model_field=StudentSegmentData()._meta.get_field('id'))
 
     class Meta:
         model = StudentSegmentData
 
         fields = (
             'id',
-            'views',
-            'scroll_ups',
+            'scroll_data',
+            'view_time',
+            'is_rereading',
         )
 
 
@@ -122,15 +127,73 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
     """
 
     segment_data = StudentSegmentDataSerializer(many=True)
-    global_responses = DocumentQuestionResponseSerializer(many=True)
+    # document_responses = DocumentQuestionResponseSerializer(many=True)
+    segment_responses = SegmentQuestionResponseSerializer(many=True)
+    document_id = serializers.IntegerField()
+    student_id = serializers.IntegerField()
+
+    def create(self, validated_data):
+        """
+        Creates a new reading data instance
+        :param validated_data:
+        :return:
+        """
+        # Separate out the global and segment responses
+        # global_data = validated_data.pop("document_responses")
+        segment_question_data = validated_data.pop("segment_responses")
+        seg_data = validated_data.pop("segment_data")
+
+        # Hardcoded for now, will generalize later
+        document = Document.objects.get(id=validated_data.pop("document_id"))
+        student = Student.objects.get(pk=validated_data.pop("student_id"))
+
+        # Create a new reading data instance
+        reading_data = StudentReadingData.objects.create(
+            document=document,
+            student=student,
+            **validated_data
+        )
+        # print(reading_data)
+        # Link each global response to the reading data
+        # for data in global_data:
+        #     document_question = DocumentQuestion.objects.get(id=data['id'])
+        #     DocumentQuestionResponse.objects.create(
+        #         student_reading_data=reading_data,
+        #         question=document_question,
+        #         response=data['response']
+        #     )
+
+        for data in segment_question_data:
+            segment_question = SegmentQuestion.objects.get(id=data['id'])
+            SegmentQuestionResponse.objects.create(
+                question=segment_question,
+                student_reading_data=reading_data,
+                response=data['response'],
+            )
+
+        # Link each segment response to the reading data
+
+        for data in seg_data:
+            segment = Segment.objects.get(id=data['id'])
+            StudentSegmentData.objects.create(
+                segment=segment,
+                reading_data=reading_data,
+                scroll_data=data['scroll_data'],
+                view_time=data['view_time'],
+                is_rereading=data['is_rereading']
+            )
+        return reading_data
 
     class Meta:
         model = StudentReadingData
 
         fields = (
             'id',
+            # 'document_responses',
+            'segment_responses',
             'segment_data',
-            'global_responses',
+            'document_id',
+            'student_id',
         )
 
 

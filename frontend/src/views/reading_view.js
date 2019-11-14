@@ -37,13 +37,17 @@ Segment.propTypes = {
 
 class OverviewWindow extends React.Component {
     render() {
+        const full_document_text = [];
+        this.props.all_segments.map((el) => full_document_text.push(el.text.split("\r\n")));
         return (
             <div className={"row"}>
                 <div className={"col-8"}>
                     <div className="scroll_overview">
-                        {this.props.all_segments.map((el, i) => (
-                            <p key={i}>{el.text}</p>)
-                        )}
+                        {full_document_text.map((segment_text_array) => (
+                            segment_text_array.map((text,i) => (
+                                <p key={i}>{text}</p>
+                            ))
+                        ))}
                     </div>
                 </div>
                 <div className={"col-4"}>

@@ -157,6 +157,8 @@ class ReadingView extends React.Component {
         this.prevSegment = this.prevSegment.bind(this);
         this.nextSegment = this.nextSegment.bind(this);
         this.toOverview = this.toOverview.bind(this);
+        this.handleJumpToFieldChange = this.handleJumpToFieldChange.bind(this);
+        this.handleJumpToButton = this.handleJumpToButton.bind(this);
     }
 
     async componentDidMount() {

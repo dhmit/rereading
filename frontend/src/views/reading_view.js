@@ -34,6 +34,77 @@ Segment.propTypes = {
     segment_ref: PropTypes.shape({current: PropTypes.instanceOf(Element)})
 };
 
+class NavBar extends React.Component {
+    render() {
+        const on_last_segment_and_rereading =
+            this.props.segment_num == this.props.document_segments.length - 1
+            && this.props.rereading;
+
+        return (
+            <div id="nav_panel">
+                <div className={"row"}>
+                    <div className={"col-2"}>
+                        {this.props.segment_num > 0 &&
+                        <button
+                            className={"btn btn-outline-dark mr-2"}
+                            onClick={() => this.props.prevSegment()}
+                        >
+                            Back
+                        </button>
+                        }
+                    </div>
+                    <div className={"col-4 input-group"}>
+                        <input
+                            className={"form-control"}
+                            type="text"
+                            placeholder={"Page #"}
+                            onChange={this.props.handleJumpToFieldChange}
+                        />
+                        <button
+                            className={"btn btn-outline-dark form-control"}
+                            onClick={this.props.handleJumpToButton}
+                            // Checks isNaN so that an empty string
+                            // doesn't count as 0
+                            disabled={Number.isNaN(this.props.jump_to_value) ||
+                            !this.props.segments_viewed.includes(
+                                this.props.jump_to_value)}
+                        >
+                            Jump
+                        </button>
+                    </div>
+                    <div className={"col-4"}>
+                        {!on_last_segment_and_rereading
+                            ? <button
+                                className={"btn btn-outline-dark"}
+                                onClick={() => this.props.nextSegment()}
+                            >
+                                {this.props.rereading ? 'Next' : 'Reread'}
+                            </button>
+                            : <button
+                                className={"btn btn-outline-dark"}
+                                onClick={() => this.props.toOverview()}
+                            >
+                                To Overview
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}
+NavBar.propTypes = {
+    document_segments: PropTypes.array,
+    segment_num: PropTypes.number,
+    jump_to_value: PropTypes.number,
+    segments_viewed: PropTypes.array,
+    rereading: PropTypes.bool,
+    prevSegment: PropTypes.func,
+    nextSegment: PropTypes.func,
+    toOverview: PropTypes.func,
+    handleJumpToFieldChange: PropTypes.func,
+    handleJumpToButton: PropTypes.func,
+}
 
 class OverviewWindow extends React.Component {
     render() {
@@ -91,6 +162,11 @@ class ReadingView extends React.Component {
 
         this.segment_ref = React.createRef();
         this.handleSegmentResponseChange = this.handleSegmentResponseChange.bind(this);
+        this.prevSegment = this.prevSegment.bind(this);
+        this.nextSegment = this.nextSegment.bind(this);
+        this.toOverview = this.toOverview.bind(this);
+        this.handleJumpToFieldChange = this.handleJumpToFieldChange.bind(this);
+        this.handleJumpToButton = this.handleJumpToButton.bind(this);
     }
 
     async componentDidMount() {
@@ -303,47 +379,19 @@ class ReadingView extends React.Component {
                             }
                         </div>
                         <div className={"row"}>
-                            <div className={"col-4"}>
-                                {this.state.segment_num > 0 &&
-                                <button
-                                    className={"btn btn-outline-dark mr-2"}
-                                    onClick={() => this.prevSegment()}
-                                >
-                                    Back
-                                </button>
-                                }
-                                {!(this.state.segment_num == doc.segments.length - 1
-                                    && this.state.rereading)
-                                    ? <button
-                                        className={"btn btn-outline-dark"}
-                                        onClick={() => this.nextSegment()}
-                                    >
-                                        {this.state.rereading ? 'Next' : 'Reread'}
-                                    </button>
-                                    : <button
-                                        className={"btn btn-outline-dark"}
-                                        onClick={() => this.toOverview()}
-                                    > To Overview
-                                    </button>
-                                }
-                            </div>
-                            <div className={"col-4 input-group"}>
-                                <input
-                                    className={"form-control"}
-                                    type="text"
-                                    placeholder={"Page #"}
-                                    onChange={this.handleJumpToFieldChange}
+                            <div className={"col-8"}>
+                                <NavBar
+                                    document_segments={doc.segments}
+                                    segment_num={this.state.segment_num}
+                                    rereading={this.state.rereading}
+                                    jump_to_value={this.state.jump_to_value}
+                                    segments_viewed={this.state.segments_viewed}
+                                    prevSegment={this.prevSegment}
+                                    nextSegment={this.nextSegment}
+                                    toOverview={this.toOverview}
+                                    handleJumpToFieldChange={this.handleJumpToFieldChange}
+                                    handleJumpToButton={this.handleJumpToButton}
                                 />
-                                <button
-                                    className={"btn btn-outline-dark form-control"}
-                                    onClick={this.handleJumpToButton}
-                                    //Checks isNaN so that an empty string doesn't count as 0
-                                    disabled={Number.isNaN(this.state.jump_to_value) ||
-                                        !this.state.segments_viewed.includes(
-                                            this.state.jump_to_value)}
-                                >
-                                Jump
-                                </button>
                             </div>
                         </div>
                     </React.Fragment>

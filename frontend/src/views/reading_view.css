@@ -7,6 +7,10 @@
     margin-bottom: 1em;
 }
 
+.nav_panel {
+    width: 600px;
+}
+
 .scroll_overview {
     height: 75vh;
     overflow: auto;

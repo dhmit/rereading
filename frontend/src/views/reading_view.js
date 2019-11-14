@@ -36,6 +36,10 @@ Segment.propTypes = {
 
 class NavBar extends React.Component {
     render() {
+        const on_last_segment_and_rereading =
+            this.props.segment_num == this.props.document_segments.length - 1
+            && this.props.rereading;
+
         return (
             <div id="nav_panel">
                 <div className={"row"}>
@@ -69,14 +73,14 @@ class NavBar extends React.Component {
                         </button>
                     </div>
                     <div className={"col-4"}>
-                        {this.props.segment_num < this.props.document_segments.length - 1 ?
-                            <button
+                        {!on_last_segment_and_rereading
+                            ? <button
                                 className={"btn btn-outline-dark"}
                                 onClick={() => this.props.nextSegment()}
                             >
                                 {this.props.rereading ? 'Next' : 'Reread'}
-                            </button> :
-                            <button
+                            </button>
+                            : <button
                                 className={"btn btn-outline-dark"}
                                 onClick={() => this.props.toOverview()}
                             >
@@ -104,13 +108,17 @@ NavBar.propTypes = {
 
 class OverviewWindow extends React.Component {
     render() {
+        const full_document_text = [];
+        this.props.all_segments.map((el) => full_document_text.push(el.text.split("\r\n")));
         return (
             <div className={"row"}>
                 <div className={"col-8"}>
                     <div className="scroll_overview">
-                        {this.props.all_segments.map((el, i) => (
-                            <p key={i}>{el.text}</p>)
-                        )}
+                        {full_document_text.map((segment_text_array) => (
+                            segment_text_array.map((text,i) => (
+                                <p key={i}>{text}</p>
+                            ))
+                        ))}
                     </div>
                 </div>
                 <div className={"col-4"}>

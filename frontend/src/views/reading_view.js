@@ -112,9 +112,7 @@ class ReadingView extends React.Component {
             this.setState({scroll_data: []});
             const url = '/api/add-response/';
             const reading_data = {
-                document_id: this.state.document.id,
-                student_id: this.state.student_id,
-                reading_data_id: this.state.document.last_reading_data_id + 1,
+                reading_data_id: this.state.document.new_reading_data_id,
                 segment_responses: this.state.segmentResponseArray,
                 segment_data: [{
                     id: this.state.document.segments[this.state.segment_num].id,

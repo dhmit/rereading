@@ -172,8 +172,20 @@ class ReadingView extends React.Component {
     async componentDidMount() {
         try {
             // Hard code the document we know exists for now -- generalize later...
-            const response = await fetch('/api/documents/1');
-            const document = await response.json();
+            const url = '/api/documents/1/';
+            const data = {
+                name: 'SOMEONE',
+            };
+            const response = await fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-type': 'application/json',
+                    'X-CSRFToken': this.csrftoken,
+                }
+            });
+            const response_json = await response.json();
+            const document = response_json.document;
             const interval_timer = setInterval(() => this.recordScroll(), 2000);
             this.setState({document, interval_timer});
             this.sendData(true);

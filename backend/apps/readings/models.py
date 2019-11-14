@@ -81,7 +81,7 @@ class Question(models.Model):
     FOR SUBCLASSING ONLY DO NOT USE ME DIRECTLY
     """
     text = models.TextField()
-    response_word_limit = models.IntegerField(default=0, null=True)
+    response_word_limit = models.IntegerField()
 
     class Meta:
         # as an abstract base class, Django won't create separate database tables for Question and
@@ -104,6 +104,7 @@ class DocumentQuestion(Question):
     )
 
 
+
 class SegmentQuestion(Question):
     """
     A question about a given segment
@@ -113,6 +114,7 @@ class SegmentQuestion(Question):
         on_delete=models.CASCADE,
         related_name='questions'
     )
+
 
 
 class SegmentContext(models.Model):
@@ -164,17 +166,16 @@ class StudentSegmentData(models.Model):
         on_delete=models.CASCADE,
         related_name='segment_data'
     )
-    scroll_data = models.TextField(default='[]')
-    view_time = models.FloatField(default=0)
-    is_rereading = models.BooleanField(default=None)
+    views = models.TextField(default='[]')
+    scroll_ups = models.IntegerField(default=0)
 
-    def get_parsed_scroll_data(self):
+    def get_parsed_views(self):
         """
-        Scroll data is stored as a string representing JSON data, so it needs to be converted
+        Views are stored as a string representing JSON data, so it needs to be converted
         into a Python object before much can be done with it.
         """
 
-        return literal_eval(self.scroll_data)
+        return literal_eval(self.views)
 
 
 class SegmentQuestionResponse(models.Model):
@@ -189,14 +190,20 @@ class SegmentQuestionResponse(models.Model):
     question = models.ForeignKey(
         SegmentQuestion,
         on_delete=models.CASCADE,
-        related_name='segment_question'
+        related_name='responses'
     )
-    student_reading_data = models.ForeignKey(
-        StudentReadingData,
+    student = models.ForeignKey(
+        Student,
         on_delete=models.CASCADE,
-        related_name='segment_responses'
     )
-    response = models.TextField()
+    response = models.TextField(blank=True)
+
+    student_segment_data = models.ForeignKey(
+        StudentSegmentData,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name='questions'
+    )
 
 
 class DocumentQuestionResponse(models.Model):
@@ -209,13 +216,16 @@ class DocumentQuestionResponse(models.Model):
     question = models.ForeignKey(
         DocumentQuestion,
         on_delete=models.CASCADE,
-        related_name='document_question'
+        related_name='responses'
     )
+
     student_reading_data = models.ForeignKey(
         StudentReadingData,
         on_delete=models.CASCADE,
         related_name='document_responses'
     )
+
+
 
 
 ################################################################################

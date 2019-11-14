@@ -10,9 +10,6 @@ from .models import (
     Segment,
     SegmentQuestion,
     SegmentContext,
-    DocumentQuestion,
-    StudentSegmentData,
-    StudentReadingData,
 )
 
 
@@ -24,14 +21,9 @@ class SegmentInline(admin.TabularInline):
     extra = 1
 
 
-class DocumentQuestionInline(admin.TabularInline):
-    model = DocumentQuestion
-    extra = 1
-
-
 class DocumentAdmin(admin.ModelAdmin):
     model = Document
-    inlines = [SegmentInline, DocumentQuestionInline]
+    inlines = [SegmentInline]
 
 
 ################################################################################
@@ -52,21 +44,7 @@ class SegmentAdmin(admin.ModelAdmin):
     inlines = [SegmentContextInline, SegmentQuestionInline]
 
 
-################################################################################
-# Student data admin view
-################################################################################
-class StudentSegmentDataInline(admin.TabularInline):
-    model = StudentSegmentData
-
-
-class StudentReadingDataAdmin(admin.ModelAdmin):
-    model = StudentReadingData
-    inlines = [StudentSegmentDataInline]
-
-
 admin.site.register(Document, DocumentAdmin)
-admin.site.register(Segment, SegmentAdmin)
 admin.site.register(Student)
-admin.site.register(StudentReadingData, StudentReadingDataAdmin)
-admin.site.register(StudentSegmentData)
+admin.site.register(Segment, SegmentAdmin)
 

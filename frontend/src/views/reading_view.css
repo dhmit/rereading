@@ -1,14 +1,6 @@
-.segment {
-    height: 500px;
-    width: 600px;
-    overflow: auto;
-    font-family: Perpetua;
-    font-size: x-large;
-    margin-bottom: 1em;
-}
-
-.scroll_overview {
-    height: 75vh;
+.scroll{
+    height: 150px;
+    width: 800px;
     overflow: auto;
     font-family: Perpetua;
     font-size: x-large;

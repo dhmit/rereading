@@ -80,7 +80,6 @@ class ReadingView extends React.Component {
             document: null,
             interval_timer: null,
             segmentQuestionNum: 0,
-            segmentContextNum: 0,
             segmentResponseArray: [],
             student_id: 15, //temporary
         };
@@ -210,7 +209,6 @@ class ReadingView extends React.Component {
                 segments_viewed,
                 segment_num: segmentNum,
                 segmentQuestionNum: 0,
-                segmentContextNum: 0,
             });
         }
     }
@@ -228,22 +226,15 @@ class ReadingView extends React.Component {
         this.setState({overview: true})
     }
 
-    buildQuestionFields(questions, context_text) {
+    buildQuestionFields(questions) {
         return questions.map((question, id) => (
             <React.Fragment key={id}>
-                <div>
-                    <h4>Context:</h4>
-                    <div className='segment-context-text'>
-                        {context_text}
-                    </div>
-                    <h4>Question:</h4>
+                <div className="mb-2">
                     <div className='segment-question-text'>
                         {question.text}
                     </div>
-
-                    <label><h4>Response:</h4></label>
-                    <input
-                        type='text'
+                    <textarea
+                        className={'form-control'}
                         onChange={
                             this.handleSegmentResponseChange.bind(this, question.id)
                         }
@@ -263,15 +254,9 @@ class ReadingView extends React.Component {
         }
         const current_segment = doc.segments[this.state.segment_num];
         const segment_questions = current_segment.questions;
-        const segment_contexts = current_segment.contexts;
-        const current_context =
-            this.segmentContextNum < segment_contexts.length
-                ? segment_contexts[this.segmentContextNum].text
-                : 'No segment context given';
 
         // Generate response fields for each of the questions
-        const segment_response_fields =
-            this.buildQuestionFields(segment_questions, current_context);
+        const segment_response_fields = this.buildQuestionFields(segment_questions);
 
         const document_questions = doc.questions;
 
@@ -314,47 +299,54 @@ class ReadingView extends React.Component {
                             }
                         </div>
                         <div className={"row"}>
-                            <div className={"col-4"}>
-                                {this.state.segment_num > 0 &&
-                                <button
-                                    className={"btn btn-outline-dark mr-2"}
-                                    onClick={() => this.prevSegment()}
-                                >
-                                    Back
-                                </button>
-                                }
-                                {this.state.segment_num < doc.segments.length - 1 ?
-                                    <button
-                                        className={"btn btn-outline-dark"}
-                                        onClick={() => this.nextSegment()}
-                                    >
-                                        {this.state.rereading ? 'Next' : 'Reread'}
-                                    </button> :
-                                    <button
-                                        className={"btn btn-outline-dark"}
-                                        onClick={() => this.toOverview()}
-                                    >
-                                        To Overview
-                                    </button>
-                                }
-                            </div>
-                            <div className={"col-4 input-group"}>
-                                <input
-                                    className={"form-control"}
-                                    type="text"
-                                    placeholder={"Page #"}
-                                    onChange={this.handleJumpToFieldChange}
-                                />
-                                <button
-                                    className={"btn btn-outline-dark form-control"}
-                                    onClick={this.handleJumpToButton}
-                                    //Checks isNaN so that an empty string doesn't count as 0
-                                    disabled={Number.isNaN(this.state.jump_to_value) ||
-                                        !this.state.segments_viewed.includes(
-                                            this.state.jump_to_value)}
-                                >
-                                Jump
-                                </button>
+                            <div className={"col-8"} id="nav_panel">
+                                <div className={"row"}>
+                                    <div className={"col-2"}>
+                                        {this.state.segment_num > 0 &&
+                                        <button
+                                            className={"btn btn-outline-dark mr-2"}
+                                            onClick={() => this.prevSegment()}
+                                        >
+                                            Back
+                                        </button>
+                                        }
+                                    </div>
+                                    <div className={"col-4 input-group"}>
+                                        <input
+                                            className={"form-control"}
+                                            type="text"
+                                            placeholder={"Page #"}
+                                            onChange={this.handleJumpToFieldChange}
+                                        />
+                                        <button
+                                            className={"btn btn-outline-dark form-control"}
+                                            onClick={this.handleJumpToButton}
+                                            // Checks isNaN so that an empty string
+                                            // doesn't count as 0
+                                            disabled={Number.isNaN(this.state.jump_to_value) ||
+                                            !this.state.segments_viewed.includes(
+                                                this.state.jump_to_value)}
+                                        >
+                                            Jump
+                                        </button>
+                                    </div>
+                                    <div className={"col-4"}>
+                                        {this.state.segment_num < doc.segments.length - 1 ?
+                                            <button
+                                                className={"btn btn-outline-dark"}
+                                                onClick={() => this.nextSegment()}
+                                            >
+                                                {this.state.rereading ? 'Next' : 'Reread'}
+                                            </button> :
+                                            <button
+                                                className={"btn btn-outline-dark"}
+                                                onClick={() => this.toOverview()}
+                                            >
+                                                To Overview
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </React.Fragment>

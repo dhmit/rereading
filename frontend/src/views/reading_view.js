@@ -37,13 +37,17 @@ Segment.propTypes = {
 
 class OverviewWindow extends React.Component {
     render() {
+        const full_document_text = [];
+        this.props.all_segments.map((el) => full_document_text.push(el.text.split("\r\n")));
         return (
             <div className={"row"}>
                 <div className={"col-8"}>
                     <div className="scroll_overview">
-                        {this.props.all_segments.map((el, i) => (
-                            <p key={i}>{el.text}</p>)
-                        )}
+                        {full_document_text.map((segment_text_array) => (
+                            segment_text_array.map((text,i) => (
+                                <p key={i}>{text}</p>
+                            ))
+                        ))}
                     </div>
                 </div>
                 <div className={"col-4"}>
@@ -299,54 +303,47 @@ class ReadingView extends React.Component {
                             }
                         </div>
                         <div className={"row"}>
-                            <div className={"col-8"} id="nav_panel">
-                                <div className={"row"}>
-                                    <div className={"col-2"}>
-                                        {this.state.segment_num > 0 &&
-                                        <button
-                                            className={"btn btn-outline-dark mr-2"}
-                                            onClick={() => this.prevSegment()}
-                                        >
-                                            Back
-                                        </button>
-                                        }
-                                    </div>
-                                    <div className={"col-4 input-group"}>
-                                        <input
-                                            className={"form-control"}
-                                            type="text"
-                                            placeholder={"Page #"}
-                                            onChange={this.handleJumpToFieldChange}
-                                        />
-                                        <button
-                                            className={"btn btn-outline-dark form-control"}
-                                            onClick={this.handleJumpToButton}
-                                            // Checks isNaN so that an empty string
-                                            // doesn't count as 0
-                                            disabled={Number.isNaN(this.state.jump_to_value) ||
-                                            !this.state.segments_viewed.includes(
-                                                this.state.jump_to_value)}
-                                        >
-                                            Jump
-                                        </button>
-                                    </div>
-                                    <div className={"col-4"}>
-                                        {this.state.segment_num < doc.segments.length - 1 ?
-                                            <button
-                                                className={"btn btn-outline-dark"}
-                                                onClick={() => this.nextSegment()}
-                                            >
-                                                {this.state.rereading ? 'Next' : 'Reread'}
-                                            </button> :
-                                            <button
-                                                className={"btn btn-outline-dark"}
-                                                onClick={() => this.toOverview()}
-                                            >
-                                                To Overview
-                                            </button>
-                                        }
-                                    </div>
-                                </div>
+                            <div className={"col-4"}>
+                                {this.state.segment_num > 0 &&
+                                <button
+                                    className={"btn btn-outline-dark mr-2"}
+                                    onClick={() => this.prevSegment()}
+                                >
+                                    Back
+                                </button>
+                                }
+                                {!(this.state.segment_num == doc.segments.length - 1
+                                    && this.state.rereading)
+                                    ? <button
+                                        className={"btn btn-outline-dark"}
+                                        onClick={() => this.nextSegment()}
+                                    >
+                                        {this.state.rereading ? 'Next' : 'Reread'}
+                                    </button>
+                                    : <button
+                                        className={"btn btn-outline-dark"}
+                                        onClick={() => this.toOverview()}
+                                    > To Overview
+                                    </button>
+                                }
+                            </div>
+                            <div className={"col-4 input-group"}>
+                                <input
+                                    className={"form-control"}
+                                    type="text"
+                                    placeholder={"Page #"}
+                                    onChange={this.handleJumpToFieldChange}
+                                />
+                                <button
+                                    className={"btn btn-outline-dark form-control"}
+                                    onClick={this.handleJumpToButton}
+                                    //Checks isNaN so that an empty string doesn't count as 0
+                                    disabled={Number.isNaN(this.state.jump_to_value) ||
+                                        !this.state.segments_viewed.includes(
+                                            this.state.jump_to_value)}
+                                >
+                                Jump
+                                </button>
                             </div>
                         </div>
                     </React.Fragment>

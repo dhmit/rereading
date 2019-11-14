@@ -229,6 +229,11 @@ class DocumentSerializer(serializers.ModelSerializer):
         )
 
     def get_new_reading_data_id(self, obj):
+        """
+        Creates a new StudentReadingData object and return its id
+        :param obj: The document object that is being sent to the front end
+        :return: The id of the new StudentReadingData object
+        """
         # TODO: When students are implemented, modify this
         # Currently, student id is set to 15 temporarily
         reading_data = StudentReadingData.objects.create(document=obj,

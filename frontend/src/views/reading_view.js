@@ -59,6 +59,7 @@ class NavBar extends React.Component {
                             type="text"
                             placeholder="Page #"
                             onChange={this.props.handleJumpToFieldChange}
+                            onKeyDown={this.props.handleJumpToFieldKeyDown}
                         />
                         <button
                             className="btn btn-outline-dark form-control"
@@ -102,6 +103,7 @@ NavBar.propTypes = {
     prevSegment: PropTypes.func,
     nextSegment: PropTypes.func,
     toOverview: PropTypes.func,
+    handleJumpToFieldKeyDown: PropTypes.func,
     handleJumpToFieldChange: PropTypes.func,
     handleJumpToButton: PropTypes.func,
 }
@@ -307,6 +309,12 @@ export class ReadingView extends React.Component {
         }
     }
 
+    handleJumpToFieldKeyDown = (e) => {
+        if (e.key == 'Enter') {
+            this.handleJumpToButton(); //The enter key should be treated the same the jump button
+        }
+    }
+
     handleJumpToFieldChange = (e) => {
         let numericValue = parseInt(e.target.value) - 1;
         this.setState({jump_to_value: numericValue});
@@ -385,6 +393,7 @@ export class ReadingView extends React.Component {
                                     toOverview={this.toOverview}
                                     handleJumpToFieldChange={this.handleJumpToFieldChange}
                                     handleJumpToButton={this.handleJumpToButton}
+                                    handleJumpToFieldKeyDown={this.handleJumpToFieldKeyDown}
                                 />
                             </div>
 

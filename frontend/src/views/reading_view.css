@@ -1,7 +1,28 @@
-.scroll{
-    height: 150px;
-    width: 800px;
+.segment,
+.scroll_overview {
+    height: 500px;
+    width: 600px;
     overflow: auto;
     font-family: Perpetua;
-    font-size: x-large;
+    font-size: 18pt;
+    margin: 1em 1em 1em 1em;
+}
+
+.questions_boxes {
+    overflow: auto;
+    font-family: Perpetua;
+    font-size: 14pt;
+    text-decoration-color: dimgrey;
+
+}
+
+.questions-overview {
+    height: 550px;
+    overflow: auto;
+}
+
+.question-text {
+    font-family: Perpetua;
+    font-size: 16pt;
+
 }

@@ -1,5 +1,5 @@
 import React from "react";
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 export class SingleValueAnalysis extends React.Component {
     render() {
@@ -114,31 +114,6 @@ ContextVsViewTime.propTypes = {
     viewTime: PropTypes.object,
 };
 
-
-export class RereadCountsAnalysis extends React.Component {
-    render() {
-        const headings = []
-        for(let i = 0; i < this.props.reread_counts[0].length(); i++) {
-            headings[i] = i
-        }
-        return (
-            <div>
-                <TabularAnalysis
-                    title = {"Number of People That Reread a Given Number of Times"}
-                    headers = {["Question", "Context"].concat(headings)}
-                    data = {this.props.reread_counts}
-                />
-            </div>
-        )
-    }
-}
-RereadCountsAnalysis.propTypes = {
-    reread_counts: PropTypes.array,
-};
-
-
-
-
 export class SentimentScores extends React.Component {
     render() {
         return (
@@ -181,6 +156,26 @@ MeanReadingTimesForQuestions.propTypes = {
     mean_reading_times_for_questions: PropTypes.array,
 };
 
+export class RereadCountTable extends React.Component {
+    render() {
+        return (
+            <TabularAnalysis
+                title={"Mean Reread Counts for Questions and Context"}
+                headers={[
+                    "Question",
+                    "Context",
+                    "Mean Reread Counts",
+                    "Total number of readers",
+                ]}
+                data={this.props.run_compute_reread_counts}
+            />
+        );
+    }
+}
+RereadCountTable.propTypes = {
+    run_compute_reread_counts: PropTypes.array,
+};
+
 export class RelevantWordPercentages extends React.Component {
     formatDataWithPercentSign(rawData) {
         //Formats the given data (usually in decimal form) as a percentage
@@ -209,7 +204,7 @@ RelevantWordPercentages.propTypes = {
     entryData: PropTypes.array,
 };
 
-export class AnalysisView extends React.Component {
+export class PrototypeAnalysisView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -225,7 +220,7 @@ export class AnalysisView extends React.Component {
      */
     async componentDidMount() {
         try {
-            const response = await fetch('/api/analysis/');
+            const response = await fetch('/api_proto/analysis/');
             const analysis = await response.json();
             this.setState({analysis});
         } catch (e) {
@@ -243,7 +238,7 @@ export class AnalysisView extends React.Component {
                 context_vs_read_time,
                 question_sentiment_analysis,
                 compute_median_view_time,
-                get_reread_counts,
+                run_compute_reread_counts,
                 compute_mean_response_length,
                 percent_using_relevant_words_by_context_and_question
             } = this.state.analysis;
@@ -287,49 +282,20 @@ export class AnalysisView extends React.Component {
                     <MeanReadingTimesForQuestions
                         mean_reading_times_for_questions={run_mean_reading_analysis_for_questions}
                     />
+                    <RereadCountTable
+                        run_compute_reread_counts={run_compute_reread_counts}
+                    />
                     <FrequencyFeelingTable feelings={frequency_feelings}/>
                     <ContextVsViewTime viewTime={context_vs_read_time}/>
-                    <RereadCountsAnalysis reread_counts={get_reread_counts}/>
                     <RelevantWordPercentages
                         entryData={percent_using_relevant_words_by_context_and_question}
                     />
                 </div>
-
-
             );
         } else {
-        if (this.state.analysis === null) {
             return (
                 <div>Loading!</div>
             );
         }
-
-        // const { } = this.state.analysis;
-        return (
-            <div className={"container"}>
-                <nav className={"navbar navbar-expand-lg"}>
-                    <div className={"navbar-nav"}>
-                        <a
-                            className={"nav-link nav-item text-dark font-weight-bold"}
-                            href={"#"}
-                        >Overview</a>
-                        <a
-                            className={"nav-link nav-item text-dark font-weight-bold"}
-                            href={"#"}
-                        >Analysis</a>
-                    </div>
-                </nav>
-
-                <h1
-                    className={"text-center display-4 mb-4"}
-                    id={"page-title"}
-                >Analysis of Student Responses</h1>
-            </div>
-        );
     }
-
-
 }
-
-
-export default AnalysisView;

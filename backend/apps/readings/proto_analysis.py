@@ -3,14 +3,63 @@
 Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
+import statistics
+from collections import Counter
 
-from .models import StudentReadingData
+from .analysis_helpers import (
+    get_sentiments,
+    remove_outliers,
+)
+from .models import StudentResponsePrototype, ContextPrototype
 
 
-class RereadingAnalysis:
+def get_responses_for_question(all_responses, question, context):
     """
-    This class loads all StudentReadingData objects from the db,
+    For a certain question and context, returns the set of responses as a dictionary with keys
+    being the response and values being the frequency.
+    :param all_responses: QuerySet of all student responses
+    :param question: string, question
+    :param context: string, context
+    :return: dictionary mapping strings to integers
+    """
+    responses_frequency = Counter()
+    response_list = []
+    for student_response in all_responses:
+        student_question = student_response.question.text
+        student_context = student_response.context.text
+        student_answer = student_response.response.lower()
+        if student_question == question and student_context == context:
+            response_list.append(student_answer)
+    for answer in response_list:
+        responses_frequency[answer] += 1
+    return responses_frequency
+
+
+def most_common_response_by_question_and_context(all_responses, question, context):
+    """
+    Returns a list of the most common response(s) given a set of data, a question,
+    and a context.
+    :param all_responses: student response object
+    :param question: string, question
+    :param context: string, context
+    :return: list of strings
+    """
+    max_response = []
+    response_dict = get_responses_for_question(all_responses, question, context)
+    max_response_frequency = max(response_dict.values())
+    for response in response_dict:
+        if response_dict[response] == max_response_frequency:
+            max_response.append(response)
+    return max_response
+
+
+class PrototypeRereadingAnalysis:
+    """
+    This class loads all student responses from the db,
     and implements analysis methods on these responses.
+
+    We use .serializers.AnalysisSerializer to send these analysis results to the
+    frontend for display.
     """
 
     def __init__(self):
@@ -24,7 +73,6 @@ class RereadingAnalysis:
 
         :return: float, the total time all users spent reading the text
         """
-
         total_view_time = 0
         for response in self.responses:
             for view_time in response.get_parsed_views():
@@ -93,8 +141,7 @@ class RereadingAnalysis:
         total_contexts_view_times = {context.text: {
             "total_view_time": 0,
             "count": 0
-        }
-                                     for context in all_contexts}
+        } for context in all_contexts}
 
         for response in self.responses:
             context = response.context.text
@@ -104,8 +151,8 @@ class RereadingAnalysis:
 
         # For each context in total_contexts_view_time, calculate the average view time
         average_context_view_times = {context:
-                                      total_contexts_view_times[context]["total_view_time"] /
-                                      total_contexts_view_times[context]["count"]
+                                          total_contexts_view_times[context]["total_view_time"] /
+                                          total_contexts_view_times[context]["count"]
                                       for context in total_contexts_view_times}
         return average_context_view_times
 
@@ -221,74 +268,7 @@ class RereadingAnalysis:
         else:
             list_of_times.sort()
             median_view_time = statistics.median(list_of_times)
-        return median_view_time
-
-    def compute_reread_counts(self, question, context):
-        """"
-        Given a list of student response dicts,
-        return a dictionary containing the number of times students had to reread the text
-        :param question: string, question for which reread counts is collected
-        :param context: string, context for which reread counts is collected
-        :return: tuple, which contains the question, context, and number of students that reread
-         the text 0 times, 1 time, etc.
-        """
-
-        # Checks that the question and context are not blank
-        if question == '' or context == '':
-            return {}
-
-        # Collects the reread counts for every student id of the provided context and question
-        raw_reread_counts = []
-        for response in self.responses:
-            table_context = response.context.text
-            table_question = response.question.text
-            view_count = len(response.get_parsed_views())
-            if context in table_context:
-                if question in table_question:
-                    raw_reread_counts.append(view_count)
-
-        remove_outliers(raw_reread_counts)
-
-        # Tallies the raw reread counts into the dictionary to be returned
-        organized_data = {}
-        for entry in raw_reread_counts:
-            if entry in organized_data.keys():
-                organized_data[entry] += 1
-            else:
-                organized_data.update({entry: 1})
-
-        # Makes the organized_data dictionary keys uniform
-        for key in range(0, max(organized_data.keys()) + 1):
-            if key not in organized_data.keys():
-                organized_data.update({key: 0})
-
-        return [question, context] + list(organized_data.values())
-
-    @property
-    def get_reread_counts(self):
-        """
-        Iterates through all of the question/context pairings and returns an array of
-        tuples, which contains a question, context, and reread count values taken from
-        the compute_reread_counts function.
-        :return: Array of tuples, each tuple generated by running the compute_reread_counts
-        function for a different question/context pairing.
-        """
-        results = []
-        for context in self.responses.context.text:
-            for question in self.responses.question.text:
-                results.append(self.compute_reread_counts(question, context))
-
-        # Making array sizes uniform
-        max_len = 0
-        for array in results:
-            if len(array) > max_len:
-                max_len = len(array)
-        for array in results:
-            if len(array) < max_len:
-                while len(array) < max_len:
-                    array.append(0)
-
-        return results
+        return round(median_view_time)
 
     def compute_mean_response_length(self):
         """
@@ -369,10 +349,14 @@ class RereadingAnalysis:
             if context not in question_context_count_map[question]:
                 question_context_count_map[question][context] = 0
 
-            if RereadingAnalysis.description_has_relevant_words(row.response, relevant_words):
+            if PrototypeRereadingAnalysis.description_has_relevant_words(
+                    row.response,
+                    relevant_words):
                 question_context_count_map[question][context] += 1
 
-        flattened_data = RereadingAnalysis.transform_nested_dict_to_list(question_context_count_map)
+        flattened_data = \
+            PrototypeRereadingAnalysis.transform_nested_dict_to_list(question_context_count_map)
+
         flattened_data.sort()
         return flattened_data
 
@@ -386,4 +370,86 @@ class RereadingAnalysis:
         total_student_count = self.get_number_of_unique_students()
 
         question_context_count_list = self.students_using_relevant_words_by_context_and_question()
-        self.readings = StudentReadingData.objects.all()
+
+        question_context_percent_list = []
+        for item in question_context_count_list:
+            question_context_percent_list.append((item[0], item[1], item[2] / total_student_count))
+
+        return question_context_percent_list
+
+    def run_compute_reread_counts(self):
+        """
+        Runs the analysis on the data loaded from the CSV file by looking at the reread count for
+        each question and the context that the question was given in and
+        prints it in a nice readable format.
+        :return: the info wed like to put on js
+        """
+        questions = []
+        contexts = []
+        student_data = self.responses[:]
+        for response in student_data:
+            if response.question.text not in questions:
+                questions.append(response.question.text)
+            if response.context.text not in contexts:
+                contexts.append(response.context.text)
+
+        compute_reread_counts_data = []
+
+        for question in questions:
+            for context in contexts:
+                compute_reread_counts_data.append(self.compute_reread_counts(
+                    question, context))
+
+        return compute_reread_counts_data
+
+    def compute_reread_counts(self, question, context):
+        """"
+        Given a list of student response dicts,
+        return a dictionary containing the number of times students had to reread the text
+        :param question: string, question for which reread counts is collected
+        :param context: string, context for which reread counts is collected
+        :return: dictionary, each key in dictionary is the number of times the text was reread
+        and value is the number of students who reread that many times
+        """
+
+        # Checks that the question and context are not blank
+        if question == '' or context == '':
+            return {}
+
+        # Collects the reread count for every student id of the provided context and question
+        raw_reread_counts = []
+        for row in self.responses:
+            table_context = row.context.text
+            table_question = row.question.text
+            view_count = len(row.get_parsed_views())
+            if context in table_context:
+                if question in table_question:
+                    raw_reread_counts.append(view_count)
+
+        # Tallies the raw reread counts into the dictionary to be returned
+        organized_data = {}
+        mean_reread_count = 0
+        sum_of_views = 0
+        student_count = 0
+        final_student_count = 0
+
+        for entry in raw_reread_counts:
+            if entry in organized_data.keys():
+                organized_data[entry] += 1
+            elif len(raw_reread_counts) != 0:
+                organized_data.update({entry: 1})
+        keys_of_dictionary = organized_data.keys()
+        for entry in keys_of_dictionary:
+            sum_of_views += entry * organized_data[entry]
+            student_count += organized_data[entry]
+
+        if student_count == 0:
+            return 0
+        else:
+            mean_reread_count = round((sum_of_views / student_count), 2)
+            sum_of_views = 0
+            final_student_count = student_count
+            student_count = 0
+
+        print(organized_data)
+        return [question, context, mean_reread_count, final_student_count]

@@ -151,7 +151,10 @@ export class ReadingView extends React.Component {
             scroll_data: [],
             segments_viewed: [0],
             jump_to_value: null,
-            rereading: false,  // we alternate reading and rereading
+            rereading: true,  // we alternate reading and rereading
+            /*
+            CHANGE BACK TO FALSE
+             */
             document: null,
             interval_timer: null,
             segmentQuestionNum: 0,
@@ -321,17 +324,18 @@ export class ReadingView extends React.Component {
     buildQuestionFields(questions) {
         return questions.map((question, id) => (
             <React.Fragment key={id}>
-                <div className="mb-2">
-                    <div className='segment-question-text'>
+                <div className="mb-5">
+                    <div className='segment-question-text question-text'>
                         {question.text}
                     </div>
                     <textarea
-                        className={'form-control'}
+                        className={'form-control form-control-lg questions_boxes'}
+                        id={"exampleFormControlTextarea1"}
+                        rows={"4"}
                         onChange={
                             this.handleSegmentResponseChange.bind(this, question.id)
                         }
                     />
-
                 </div>
             </React.Fragment>
         ))
@@ -374,7 +378,7 @@ export class ReadingView extends React.Component {
                             </div>
 
                             {this.state.rereading &&
-                                <div className={"analysis col-4"}>
+                                <div className={"analysis col-4 questions-overview"}>
                                     {segment_response_fields}
 
                                     {document_questions && (

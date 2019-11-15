@@ -32,12 +32,23 @@ urlpatterns = [
     path('api/documents/<int:pk>/', readings_views.reading_view),
     path('api/analysis/', readings_views.analysis),
 
-    # Prototyping API endpoints
+    # React views
+    path('', lambda request: redirect('project_overview')),  # redirect / to project overview
+    path('project_overview/',
+         render_react_view, {'component_name': 'ProjectView'},
+         name='project_overview'),
+    path('reading/', render_react_view, {'component_name': 'ReadingView'}),
+    path('analysis/', render_react_view, {'component_name': 'AnalysisView'}),
+
+
+    # PROTOTYPING STUFF
+    # API endpoints
     path('api_proto/', proto_views.ListStoryPrototype.as_view()),
     path('api_proto/add-response/', proto_views.ListStudentPrototype.as_view()),
     path('api_proto/<int:pk>/', proto_views.DetailStoryPrototype.as_view()),
     path('api_proto/analysis/', proto_views.analysis),
 
+    # Views
     path('prototype/instructor/',
          render_react_view,
          {'component_name': 'PrototypeInstructorView'}),
@@ -46,12 +57,4 @@ urlpatterns = [
          {'component_name': 'PrototypeStudentView'}),
     path('prototype/analysis/',
          render_react_view, {'component_name': 'PrototypeAnalysisView'}),
-
-    # React views
-    path('', lambda request: redirect('project_overview')),  # redirect / to project overview
-    path('project_overview/',
-         render_react_view, {'component_name': 'ProjectView'},
-         name='project_overview'),
-    path('document_analysis/', render_react_view, {'component_name': 'DocumentAnalysisView'}),
-    path('reading/', render_react_view, {'component_name': 'ReadingView'}),
 ]

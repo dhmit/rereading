@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from .models import StoryPrototype, Student
 from .proto_analysis import PrototypeRereadingAnalysis
 from .proto_serializers import (
-    StoryPrototypeSerializer, StudentPrototypeSerializer, AnalysisSerializer
+    StoryPrototypeSerializer, StudentPrototypeSerializer, PrototypeAnalysisSerializer
 )
 
 
@@ -44,5 +44,5 @@ def analysis(request):
     Init a RereadingAnalysis, and serialize it to send to the frontend.
     """
     analysis_obj = PrototypeRereadingAnalysis()
-    serializer = AnalysisSerializer(instance=analysis_obj)
+    serializer = PrototypeAnalysisSerializer(instance=analysis_obj)
     return Response(serializer.data)

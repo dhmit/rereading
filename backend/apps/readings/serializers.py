@@ -8,7 +8,6 @@ from rest_framework import serializers
 from .models import (
     Document, Segment, Student, SegmentQuestion, SegmentContext, SegmentQuestionResponse,
     StudentReadingData, StudentSegmentData, DocumentQuestion, DocumentQuestionResponse,
-    StoryPrototype, QuestionPrototype, ContextPrototype, StudentResponsePrototype
 )
 
 
@@ -239,16 +238,8 @@ class ReadingSerializer(serializers.Serializer):
         """ We will not update data using this serializer """
 
 
-class DocumentAnalysisSerializer(serializers.Serializer):
-    """
-    Serializes Document analysis
-    """
-    total_word_count = serializers.ReadOnlyField()
-    title_author = serializers.SerializerMethodField()
-
-    @staticmethod
-    def get_title_author(document):
-        return str(document)
+class AnalysisSerializer(serializers.Serializer):
+    """ Serializes analysis class """
 
     def create(self, validated_data):
         """ We will not create new objects using this serializer """

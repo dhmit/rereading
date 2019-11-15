@@ -102,7 +102,7 @@ class StoryPrototypeSerializer(serializers.ModelSerializer):
         )
 
 
-class AnalysisSerializer(serializers.Serializer):
+class PrototypeAnalysisSerializer(serializers.Serializer):
     """ Serializes analysis class """
     total_view_time = serializers.ReadOnlyField()
     all_responses = serializers.ReadOnlyField()

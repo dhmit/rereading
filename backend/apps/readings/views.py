@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from .models import Student, Document, StudentReadingData
 from .analysis import RereadingAnalysis
 from .serializers import (
-    DocumentSerializer,
+    AnalysisSerializer,
     ReadingSerializer,
     StudentReadingDataSerializer,
     StudentSerializer,

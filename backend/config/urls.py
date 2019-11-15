@@ -15,6 +15,7 @@ Including another URL configuration
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.shortcuts import redirect
 from django.urls import path
 
 from apps.common import render_react_view
@@ -36,15 +37,15 @@ urlpatterns = [
     path('api_proto/', readings_views.ListStoryPrototype.as_view()),
     path('api_proto/add-response/', readings_views.ListStudentPrototype.as_view()),
     path('api_proto/<int:pk>/', readings_views.DetailStoryPrototype.as_view()),
+    path('instructor_proto/', render_react_view, {'component_name': 'InstructorView'}),
+    path('student_proto/', render_react_view, {'component_name': 'StudentView'}),
+    path('analysis_proto/', render_react_view, {'component_name': 'AnalysisView'}),
 
     # React views
-    path('student/', render_react_view, {'component_name': 'StudentView'}),
-    path('instructor/', render_react_view, {'component_name': 'InstructorView'}),
-    path('analysis/', render_react_view, {'component_name': 'AnalysisView'}),
+    path('', lambda request: redirect('project_overview')),  # redirect / to project overview
+    path('project_overview/',
+         render_react_view, {'component_name': 'ProjectView'},
+         name='project_overview'),
     path('document_analysis/', render_react_view, {'component_name': 'DocumentAnalysisView'}),
-    path('project/', render_react_view, {'component_name': 'ProjectView'}),
-    path('reading_sample/', render_react_view, {'component_name': 'ReadingSampleView'}),
-    path('rereading_visuals/', render_react_view, {'component_name': 'RereadingVisualsView'}),
-    path('rereading_values/', render_react_view, {'component_name': 'RereadingValuesView'}),
     path('reading/', render_react_view, {'component_name': 'ReadingView'}),
 ]

@@ -206,6 +206,8 @@ class DocumentQuestionResponse(models.Model):
           a single response
     """
     response = models.TextField()
+    response_segment = models.IntegerField(default=1)
+
     question = models.ForeignKey(
         DocumentQuestion,
         on_delete=models.CASCADE,

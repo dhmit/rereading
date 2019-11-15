@@ -157,6 +157,7 @@ export class ReadingView extends React.Component {
             interval_timer: null,
             segmentQuestionNum: 0,
             segmentResponseArray: [],
+            documentResponseArray: [],
             student_id: 15, //temporary
         };
         this.csrftoken = getCookie('csrftoken');
@@ -266,6 +267,26 @@ export class ReadingView extends React.Component {
         this.setState({segmentResponseArray});
     }
 
+    handleDocumentResponseChange(question_id, event) {
+        const documentResponseArray = this.state.documentResponseArray.slice();
+
+        let document_entry = null;
+        for (let el of documentResponseArray) {
+            if (el.id === question_id) {
+                document_entry = el;
+            }
+        }
+
+        if (document_entry === null) {
+            document_entry = {id: question_id};
+        }
+
+        document_entry.response = event.target.value;
+        document_entry.response_segment = this.state.segment_num;
+
+        this.setState({documentResponseArray});
+    }
+
     prevSegment () {
         this.sendData(false);
         this.gotoSegment(this.state.segment_num - 1);
@@ -334,6 +355,24 @@ export class ReadingView extends React.Component {
                         }
                     />
 
+                </div>
+            </React.Fragment>
+        ))
+    }
+
+    populateDocumentQuestions(document_questions) {
+        return document_questions.map((question, id) => (
+            <React.Fragment key={id}>
+                <div className="mb-2">
+                    <div className='document-question-text'>
+                        {question.text}
+                    </div>
+                    <textarea
+                        className='form-control'
+                        onChange={
+                            this.handleDocumentResponseChange.bind(this, question.id)
+                        }
+                    />
                 </div>
             </React.Fragment>
         ))

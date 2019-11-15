@@ -126,7 +126,7 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
     """
 
     segment_data = StudentSegmentDataSerializer(many=True)
-    # document_responses = DocumentQuestionResponseSerializer(many=True)
+    document_responses = DocumentQuestionResponseSerializer(many=True)
     segment_responses = SegmentQuestionResponseSerializer(many=True)
     reading_data_id = serializers.IntegerField(write_only=True)
 
@@ -140,6 +140,7 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
         segment_question_data = validated_data.pop("segment_responses")
         seg_data = validated_data.pop("segment_data")
         reading_data_id = validated_data.pop("reading_data_id")
+        global_data = validated_data.pop("document_responses")
 
         # Create a new reading data instance if one doesn't exist already
         # with the primary key. It returns a tuple with the StudentReadingData
@@ -147,15 +148,15 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
         reading_data = StudentReadingData.objects.get(pk=reading_data_id)
 
         # TODO: Use this when we answer collect the document question responses
-        # print(reading_data)
+
         # Link each global response to the reading data
-        # for data in global_data:
-        #     document_question = DocumentQuestion.objects.get(id=data['id'])
-        #     DocumentQuestionResponse.objects.create(
-        #         student_reading_data=reading_data,
-        #         question=document_question,
-        #         response=data['response']
-        #     )
+        for data in global_data:
+            document_question = DocumentQuestion.objects.get(id=data['id'])
+            DocumentQuestionResponse.objects.create(
+                student_reading_data=reading_data,
+                question=document_question,
+                response=data['response']
+            )
 
         for data in segment_question_data:
             segment_question = SegmentQuestion.objects.get(id=data['id'])
@@ -183,7 +184,7 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
 
         fields = (
             'id',
-            # 'document_responses',
+            'document_responses',
             'segment_responses',
             'segment_data',
             'reading_data_id',

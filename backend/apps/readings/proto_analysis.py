@@ -35,7 +35,7 @@ def get_responses_for_question(all_responses, question, context):
     return responses_frequency
 
 # yes - sandy wants to port
-def most_common_response_by_question_and_context(all_responses, question, context):
+def most_common_response_by_question_and_context(all_responses, question):
     """
     Returns a list of the most common response(s) given a set of data, a question,
     and a context.
@@ -45,7 +45,7 @@ def most_common_response_by_question_and_context(all_responses, question, contex
     :return: list of strings
     """
     max_response = []
-    response_dict = get_responses_for_question(all_responses, question, context)
+    response_dict = get_responses_for_question(all_responses, question)
     max_response_frequency = max(response_dict.values())
     for response in response_dict:
         if response_dict[response] == max_response_frequency:
@@ -88,26 +88,11 @@ class PrototypeRereadingAnalysis:
         :return: list of dictionaries storing each question, context, and most common answers
         """
         questions = []
-        contexts = []
+
         all_responses = []
         for response in self.responses:
             if response.question.text not in questions:
                 questions.append(response.question.text)
-            if response.context.text not in contexts:
-                contexts.append(response.context.text)
-        for question in questions:
-            for context in contexts:
-                answers = most_common_response_by_question_and_context(
-                    self.responses,
-                    question,
-                    context,
-                )
-                response_by_question_and_context = {
-                    'question': question,
-                    'context': context,
-                    'answers': answers
-                }
-                all_responses.append(response_by_question_and_context)
 
         return all_responses
 
@@ -221,7 +206,7 @@ class PrototypeRereadingAnalysis:
         return mean_reading_time_results_data
 
     # yes - sandy wants to port
-    def mean_reading_time_for_a_question(self, question, context):
+    def mean_reading_time_for_a_question(self, question):
         """
         Given the student response dicts, computes the mean read time for a
         specific question (given by its keyword) and the context in which it was asked.
@@ -238,8 +223,6 @@ class PrototypeRereadingAnalysis:
         total_question_view_time = 0
         student_data = self.responses[:]
         for response in student_data:
-            if question != response.question.text or context != response.context.text:
-                continue
             if response.get_parsed_views():
                 number_of_readers += 1
             for view_time in response.get_parsed_views():
@@ -257,7 +240,7 @@ class PrototypeRereadingAnalysis:
         if reading_time:
             mean_time = round(total_question_view_time / len(reading_time), 2)
 
-        return [question, context, mean_time, number_of_readers]
+        return [question, mean_time, number_of_readers]
 
     # yes - sandy wants to port
     def compute_median_view_time(self):
@@ -415,7 +398,7 @@ class PrototypeRereadingAnalysis:
         return compute_reread_counts_data
 
     # yes - sandy wants to port
-    def compute_reread_counts(self, question, context):
+    def compute_reread_counts(self, question):
         """"
         Given a list of student response dicts,
         return a dictionary containing the number of times students had to reread the text
@@ -425,19 +408,12 @@ class PrototypeRereadingAnalysis:
         and value is the number of students who reread that many times
         """
 
-        # Checks that the question and context are not blank
-        if question == '' or context == '':
-            return {}
-
         # Collects the reread count for every student id of the provided context and question
         raw_reread_counts = []
         for row in self.responses:
             table_context = row.context.text
             table_question = row.question.text
             view_count = len(row.get_parsed_views())
-            if context in table_context:
-                if question in table_question:
-                    raw_reread_counts.append(view_count)
 
         # Tallies the raw reread counts into the dictionary to be returned
         organized_data = {}
@@ -465,4 +441,4 @@ class PrototypeRereadingAnalysis:
             student_count = 0
 
         print(organized_data)
-        return [question, context, mean_reread_count, final_student_count]
+        return [question, mean_reread_count, final_student_count]

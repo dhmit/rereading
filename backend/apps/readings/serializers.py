@@ -38,6 +38,7 @@ class DocumentQuestionResponseSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'response',
+            'response_segment'
         )
 
 

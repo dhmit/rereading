@@ -1,5 +1,16 @@
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+    background-color: rgba(0, 0, 0, 0.05);
+    width: 7px;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 1px;
+    background-color: rgba(38, 125, 207, 0.5);
+    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
+
 .segment,
-.scroll_overview {
+.scroll-overview {
     height: 500px;
     width: 600px;
     overflow: auto;
@@ -8,7 +19,7 @@
     margin: 1em 1em 1em 1em;
 }
 
-.questions_boxes {
+.questions-boxes {
     overflow: auto;
     font-family: Perpetua;
     font-size: 14pt;
@@ -24,5 +35,4 @@
 .question-text {
     font-family: Perpetua;
     font-size: 16pt;
-
 }

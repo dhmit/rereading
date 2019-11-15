@@ -211,7 +211,18 @@ class DocumentSerializer(serializers.ModelSerializer):
     Serializes Document metadata and associated segments
     """
     segments = SegmentSerializer(many=True, read_only=True)
-    questions = DocumentQuestionSerializer(many=True, read_only=True)
+    document_questions = serializers.SerializerMethodField(read_only=True)
+    overview_questions = serializers.SerializerMethodField(read_only=True)
+
+    def get_document_questions(self, obj):
+        queryset = obj.questions.filter(is_overview_question=False)
+        serializer = DocumentQuestionSerializer(queryset, many=True)
+        return serializer.data
+
+    def get_overview_questions(self, obj):
+        queryset = obj.questions.filter(is_overview_question=True)
+        serializer = DocumentQuestionSerializer(queryset, many=True)
+        return serializer.data
 
     class Meta:
         model = Document
@@ -220,7 +231,8 @@ class DocumentSerializer(serializers.ModelSerializer):
             'id',
             'title',
             'author',
-            'questions',
+            'document_questions',
+            'overview_questions',
             'segments',
         )
 

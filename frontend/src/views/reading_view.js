@@ -37,7 +37,7 @@ Segment.propTypes = {
 class NavBar extends React.Component {
     render() {
         const on_last_segment_and_rereading =
-            this.props.segment_num == this.props.document_segments.length - 1
+            this.props.segment_num === this.props.document_segments.length - 1
             && this.props.rereading;
 
         return (
@@ -104,16 +104,21 @@ NavBar.propTypes = {
     toOverview: PropTypes.func,
     handleJumpToFieldChange: PropTypes.func,
     handleJumpToButton: PropTypes.func,
-}
+};
 
 class OverviewWindow extends React.Component {
     render() {
         const full_document_text = [];
         this.props.all_segments.map((el) => full_document_text.push(el.text.split("\r\n")));
+        const document_questions = this.props.document_questions;
+        const overview_questions = this.props.overview_questions;
+        const document_response_fields = this.props.buildQuestionFields(document_questions);
+        const overview_response_fields = this.props.buildQuestionFields(overview_questions);
+
         return (
             <div className="row">
                 <div className="col-8">
-                    <div className="scroll_overview">
+                    <div className="scroll-overview">
                         {full_document_text.map((segment_text_array) => (
                             segment_text_array.map((text,i) => (
                                 <p key={i}>{text}</p>
@@ -121,15 +126,11 @@ class OverviewWindow extends React.Component {
                         ))}
                     </div>
                 </div>
-                <div className="col-4">
+                <div className="col-4 questions-overview">
                     <p><b>Document Questions</b></p>
-                    {this.props.document_questions.map((el, i) => (
-                        <p key={i}>{el.is_overview_question ? null : el.text}</p>)
-                    )}
+                    {document_response_fields}
                     <p><b>Overview Questions</b></p>
-                    {this.props.document_questions.map((el, i) => (
-                        <p key={i}>{el.is_overview_question ? el.text : null}</p>)
-                    )}
+                    {overview_response_fields}
                 </div>
             </div>
         );
@@ -138,6 +139,8 @@ class OverviewWindow extends React.Component {
 OverviewWindow.propTypes = {
     all_segments: PropTypes.array,
     document_questions: PropTypes.array,
+    overview_questions: PropTypes.array,
+    buildQuestionFields: PropTypes.func,
 };
 
 
@@ -168,6 +171,7 @@ export class ReadingView extends React.Component {
         this.toOverview = this.toOverview.bind(this);
         this.handleJumpToFieldChange = this.handleJumpToFieldChange.bind(this);
         this.handleJumpToButton = this.handleJumpToButton.bind(this);
+        this.buildQuestionFields = this.buildQuestionFields.bind(this);
     }
 
     async componentDidMount() {
@@ -328,7 +332,7 @@ export class ReadingView extends React.Component {
                         {question.text}
                     </div>
                     <textarea
-                        className='form-control form-control-lg questions_boxes'
+                        className='form-control form-control-lg questions-boxes'
                         id="exampleFormControlTextarea1"
                         rows="4"
                         onChange={
@@ -349,11 +353,12 @@ export class ReadingView extends React.Component {
         }
         const current_segment = doc.segments[this.state.segment_num];
         const segment_questions = current_segment.questions;
+        const document_questions = doc.document_questions;
+        const overview_questions = doc.overview_questions;
 
         // Generate response fields for each of the questions
         const segment_response_fields = this.buildQuestionFields(segment_questions);
-
-        const document_questions = doc.questions;
+        const document_response_fields = this.buildQuestionFields(document_questions);
 
         return (
             <div className="container">
@@ -363,6 +368,8 @@ export class ReadingView extends React.Component {
                     <OverviewWindow
                         all_segments={doc.segments}
                         document_questions={document_questions}
+                        overview_questions={overview_questions}
+                        buildQuestionFields={this.buildQuestionFields}
                     />
                     :
                     <React.Fragment>
@@ -389,17 +396,13 @@ export class ReadingView extends React.Component {
                             </div>
 
                             {this.state.rereading &&
-                                <div className="analysis col-4 questions-overview">
+                                <div className="col-4 questions-overview">
                                     {segment_response_fields}
 
                                     {document_questions && (
                                         <div>
-                                            <p><b>Document Questions: </b></p>
-                                            {document_questions.map((el,i) =>
-                                                <p key={i}>
-                                                    {el.is_overview_question ? null : el.text}
-                                                </p>
-                                            )}
+                                            <p><b>Document Questions</b></p>
+                                            {document_response_fields}
                                         </div>
                                     )}
                                 </div>

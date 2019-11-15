@@ -131,6 +131,10 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
     document_responses = DocumentQuestionResponseSerializer(many=True)
     reading_data_id = serializers.IntegerField(write_only=True)
 
+    def update(self, instance, validated_data):
+        # this is a horrible hack. do not do this, friends. (RA)
+        self.create(self, validated_data)
+
     def create(self, validated_data):
         """
         Creates or updates a new reading data instance

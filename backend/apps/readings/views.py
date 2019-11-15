@@ -40,10 +40,13 @@ def reading_view(request, pk):
     return Response(serializer.data)
 
 
-class ListReadingData(generics.ListCreateAPIView):
-    """View all instances of reading data"""
-    queryset = StudentReadingData.objects.all()
-    serializer_class = StudentReadingDataSerializer
+@api_view(['POST'])
+def add_response(request):
+    data = request.data
+    serializer = StudentReadingDataSerializer(data=data)
+    serializer.is_valid()
+    serializer.save()
+    return Response(serializer.data)
 
 
 @api_view(['GET'])

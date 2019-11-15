@@ -120,12 +120,12 @@ export class SentimentScores extends React.Component {
             <div>
                 <SingleValueAnalysis
                     header={"Average Positivity Score"}
-                    value={this.props.sentiment_average}
+                    value={this.props.sentiment_average.toFixed(2)}
                 />
 
                 <SingleValueAnalysis
                     header={"Standard Deviation of Positivity Score"}
-                    value={this.props.sentiment_std}
+                    value={this.props.sentiment_std.toFixed(2)}
                 />
             </div>
         );

@@ -229,6 +229,7 @@ export class ReadingView extends React.Component {
             });
             const response_json = await response.json();
             const new_reading_data = response_json.reading_data;
+            console.log(response_json);
             console.log(new_reading_data);
             this.setState({reading_data: new_reading_data});
         }
@@ -283,6 +284,7 @@ export class ReadingView extends React.Component {
 
         if (document_entry === null) {
             document_entry = {id: question_id};
+            documentResponseArray.push(document_entry);
         }
 
         document_entry.response = event.target.value;
@@ -395,7 +397,7 @@ export class ReadingView extends React.Component {
         // Generate response fields for each of the questions
         const segment_response_fields = this.buildQuestionFields(segment_questions);
 
-        const document_questions = doc.questions;
+        const document_questions = this.populateDocumentQuestions(doc.questions);
 
         return (
             <div className={"container"}>
@@ -437,11 +439,7 @@ export class ReadingView extends React.Component {
                                     {document_questions && (
                                         <div>
                                             <p><b>Document Questions: </b></p>
-                                            {document_questions.map((el,i) =>
-                                                <p key={i}>
-                                                    {el.is_overview_question ? null : el.text}
-                                                </p>
-                                            )}
+                                            {document_questions}
                                         </div>
                                     )}
                                 </div>

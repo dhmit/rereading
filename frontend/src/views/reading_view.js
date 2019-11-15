@@ -227,9 +227,7 @@ export class ReadingView extends React.Component {
                 }
 
             });
-            const response_json = await response.json();
-            const new_reading_data = response_json.reading_data;
-            console.log(response_json);
+            const new_reading_data = await response.json();
             console.log(new_reading_data);
             this.setState({reading_data: new_reading_data});
         }

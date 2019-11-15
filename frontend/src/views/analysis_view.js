@@ -156,6 +156,26 @@ MeanReadingTimesForQuestions.propTypes = {
     mean_reading_times_for_questions: PropTypes.array,
 };
 
+export class RereadCountTable extends React.Component {
+    render() {
+        return (
+            <TabularAnalysis
+                title={"Mean Reread Counts for Questions and Context"}
+                headers={[
+                    "Question",
+                    "Context",
+                    "Mean Reread Counts",
+                    "Total number of readers",
+                ]}
+                data={this.props.run_compute_reread_counts}
+            />
+        );
+    }
+}
+RereadCountTable.propTypes = {
+    run_compute_reread_counts: PropTypes.array,
+};
+
 export class RelevantWordPercentages extends React.Component {
     formatDataWithPercentSign(rawData) {
         //Formats the given data (usually in decimal form) as a percentage
@@ -218,6 +238,7 @@ export class AnalysisView extends React.Component {
                 context_vs_read_time,
                 question_sentiment_analysis,
                 compute_median_view_time,
+                run_compute_reread_counts,
                 compute_mean_response_length,
                 percent_using_relevant_words_by_context_and_question
             } = this.state.analysis;
@@ -260,6 +281,9 @@ export class AnalysisView extends React.Component {
                     />
                     <MeanReadingTimesForQuestions
                         mean_reading_times_for_questions={run_mean_reading_analysis_for_questions}
+                    />
+                    <RereadCountTable
+                        run_compute_reread_counts={run_compute_reread_counts}
                     />
                     <FrequencyFeelingTable feelings={frequency_feelings}/>
                     <ContextVsViewTime viewTime={context_vs_read_time}/>

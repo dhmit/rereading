@@ -228,6 +228,7 @@ class DocumentSerializer(serializers.ModelSerializer):
 
 
 class ReadingSerializer(serializers.Serializer):
+    """ Serializer for main reading view """
     document = DocumentSerializer()
     reading_data = StudentReadingDataSerializer()
 

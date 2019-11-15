@@ -40,30 +40,10 @@ def reading_view(request, pk):
     return Response(serializer.data)
 
 
-class ListStudent(generics.ListCreateAPIView):
-    """View a list of students or create a new one"""
-    queryset = Student.objects.all()
-    serializer_class = StudentSerializer
-
-
-class DetailStudent(generics.RetrieveUpdateDestroyAPIView):
-    """Get a single student's data or update/delete it"""
-    queryset = Student.objects.all()
-    serializer_class = StudentSerializer
-
-
-class DetailReadingData(generics.RetrieveUpdateDestroyAPIView):
-    """Get a single group of reading data or update/delete it"""
-    queryset = StudentReadingData.objects.all()
-    serializer_class = StudentReadingDataSerializer
-
-
 class ListReadingData(generics.ListCreateAPIView):
     """View all instances of reading data"""
     queryset = StudentReadingData.objects.all()
     serializer_class = StudentReadingDataSerializer
-
-
 
 
 @api_view(['GET'])
@@ -74,3 +54,4 @@ def analysis(request):
     analysis_obj = RereadingAnalysis()
     serializer = AnalysisSerializer(instance=analysis_obj)
     return Response(serializer.data)
+

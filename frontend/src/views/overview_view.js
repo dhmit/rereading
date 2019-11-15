@@ -2,45 +2,39 @@ import React from "react";
 import './overview_view.css';
 //import PropTypes from 'prop-types';
 
-function Navigation_Bar(){
-    return(
-        <div>
-            <nav className={"navbar navbar-expand-lg bg-light"}>
+class Navigation_Bar extends React.Component {
+    render() {
+        return (
+            <nav className={"navbar navbar-expand-md bg-light"}>
                 <div className={"navbar-nav"}>
                     <a
                         className={"nav-link nav-item text-dark font-weight-bold"}
-                        href={"/project"}
-                    >Project</a>
+                        href={"#overview"}
+                    >Project Overview</a>
                     <a
                         className={"nav-link nav-item text-dark font-weight-bold"}
-                        href={"/reading_sample"}
+                        href={"#sample"}
                     >The Reading Sample</a>
                     <a
                         className={"nav-link nav-item text-dark font-weight-bold"}
-                        href={"/rereading_visuals"}
+                        href={"#visuals"}
                     >Rereading Visuals</a>
                     <a
                         className={"nav-link nav-item text-dark font-weight-bold"}
-                        href={"/rereading_values"}
+                        href={"#values"}
                     >Rereading Values</a>
                 </div>
             </nav>
-        </div>
-    );
-}
-
-export class ProjectView extends React.Component {
-    renderNavigationBar(){
-        return(
-            <Navigation_Bar/>
         );
     }
+}
 
+
+export class ReadingRedux extends React.Component {
     render() {
         return (
-            <div>
-                {this.renderNavigationBar()}
-                <h1>The Reading Redux</h1>
+            <div className="row"><div className="col">
+                <a name="overview"><h1>The Reading Redux</h1></a>
                 <h3>The Values of Rereading</h3>
                 <p>
                     In literary studies we have a word to describe a novel that traces the
@@ -112,24 +106,16 @@ export class ProjectView extends React.Component {
                     of readers eager to understand both the qualitative and quantitative uses of
                     literature.
                 </p>
-            </div>
+            </div></div>
         );
     }
 }
 
-export class ReadingSampleView extends React.Component {
-    renderNavigationBar(){
-        return(
-            <Navigation_Bar/>
-        );
-    }
-
+export class RereadingSample extends React.Component {
     render() {
         return(
-            <div>
-                {this.renderNavigationBar()}
-
-                <h1>The Reading Sample: Recitatif</h1>
+            <div className="row"><div className="col">
+                <a name="sample"><h1>The Reading Sample: Recitatif</h1></a>
                 <h3>
                     <q>The only short story I have ever written, <q>Recitatif,</q> was an 
                     experiment in the removal of all racial codes from a narrative about two
@@ -197,48 +183,66 @@ export class ReadingSampleView extends React.Component {
                         be.
                     </li>
                 </ul>
+            </div></div>
+        );
+    }
+}
+
+export class RereadingVisuals extends React.Component {
+    render() {
+        return(
+            <div className="row">
+                <div className="col">
+                    <a name="visuals"><h1>Rereading Visuals</h1></a>
+                    <h3>
+                        How does one represent a reader’s multiple readings of one text?
+                        How does one visualize a reader’s re-readings?
+                    </h3>
+                </div>
             </div>
         );
     }
 }
 
-export class RereadingVisualsView extends React.Component {
-    renderNavigationBar(){
-        return(
-            <Navigation_Bar/>
-        );
-    }
-
+export class RereadingValues extends React.Component {
     render() {
         return(
-            <div>
-                {this.renderNavigationBar()}
-
-                <h1>Rereading Visuals</h1>
-                <h3>
-                    How does one represent a reader’s multiple readings of one text? How does one
-                    visualize a reader’s re-readings?
-                </h3>
+            <div className="row">
+                <div className="col">
+                    <a name="values"><h1>Rereading Values</h1></a>
+                    <h3>What are the numbers and statistics saying about rereading?</h3>
+                </div>
             </div>
         );
     }
 }
 
-export class RereadingValuesView extends React.Component {
-    renderNavigationBar(){
-        return(
-            <Navigation_Bar/>
-        );
-    }
+function render_participate_btn() {
+    return (
+        <div className="row mt-4"><div className="col text-center">
+            <a
+                className={"btn mx-auto btn-primary col-8"}
+                href="/reading/"
+            >Participate in our Study
+            </a>
+        </div></div>
+    );
+}
 
+export class ProjectView extends React.Component {
     render() {
-        return(
-            <div>
-                {this.renderNavigationBar()}
-
-                <h1>Rereading Values</h1>
-                <h3>What are the numbers and statistics saying about rereading?</h3>
-            </div>
+        return (
+            <React.Fragment>
+                <Navigation_Bar />
+                <div className="container">
+                    {render_participate_btn()}
+                    <ReadingRedux />
+                    <RereadingSample />
+                    <RereadingVisuals />
+                    <RereadingValues />
+                    {render_participate_btn()}
+                </div>
+            </React.Fragment>
         );
     }
 }

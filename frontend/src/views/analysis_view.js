@@ -1,5 +1,7 @@
 import React from "react";
-// import PropTypes from 'prop-types';
+import {SingleValueAnalysis} from "../prototype/analysis_view";
+//import PropTypes from "prop-types";
+//import PropTypes from 'prop-types';
 
 
 export class AnalysisView extends React.Component {
@@ -29,32 +31,39 @@ export class AnalysisView extends React.Component {
 
     render() {
         if (this.state.analysis === null) {
+            const {
+                total_view_time,
+            } = this.state.analysis;
+            return (
+                <div className={"container"}>
+                    <nav className={"navbar navbar-expand-lg"}>
+                        <div className={"navbar-nav"}>
+                            <a
+                                className={"nav-link nav-item text-dark font-weight-bold"}
+                                href={"#"}
+                            >Overview</a>
+                            <a
+                                className={"nav-link nav-item text-dark font-weight-bold"}
+                                href={"#"}
+                            >Analysis</a>
+                        </div>
+                    </nav>
+
+                    <h1
+                        className={"text-center display-4 mb-4"}
+                        id={"page-title"}
+                    >Analysis of Student Responses</h1>
+                    <SingleValueAnalysis
+                        header={"Total view time"}
+                        value={total_view_time}
+                        unit={"seconds"}
+                    />
+                </div>
+            );
+        } else {
             return (
                 <div>Loading!</div>
             );
         }
-
-        // const { } = this.state.analysis;
-        return (
-            <div className={"container"}>
-                <nav className={"navbar navbar-expand-lg"}>
-                    <div className={"navbar-nav"}>
-                        <a
-                            className={"nav-link nav-item text-dark font-weight-bold"}
-                            href={"#"}
-                        >Overview</a>
-                        <a
-                            className={"nav-link nav-item text-dark font-weight-bold"}
-                            href={"#"}
-                        >Analysis</a>
-                    </div>
-                </nav>
-
-                <h1
-                    className={"text-center display-4 mb-4"}
-                    id={"page-title"}
-                >Analysis of Student Responses</h1>
-            </div>
-        );
     }
 }

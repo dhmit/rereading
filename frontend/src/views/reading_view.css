@@ -8,3 +8,21 @@
     margin: 1em 1em 1em 1em;
 }
 
+.questions_boxes {
+    overflow: auto;
+    font-family: Perpetua;
+    font-size: 14pt;
+    text-decoration-color: dimgrey;
+
+}
+
+.questions-overview {
+    height: 550px;
+    overflow: auto;
+}
+
+.question-text {
+    font-family: Perpetua;
+    font-size: 16pt;
+
+}

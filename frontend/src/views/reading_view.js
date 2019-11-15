@@ -42,26 +42,26 @@ class NavBar extends React.Component {
 
         return (
             <div id="nav_panel">
-                <div className={"row"}>
-                    <div className={"col-2"}>
+                <div className="row">
+                    <div className="col-2">
                         {this.props.segment_num > 0 &&
                         <button
-                            className={"btn btn-outline-dark mr-2"}
+                            className="btn btn-outline-dark mr-2"
                             onClick={() => this.props.prevSegment()}
                         >
                             Back
                         </button>
                         }
                     </div>
-                    <div className={"col-4 input-group"}>
+                    <div className="col-4 input-group">
                         <input
-                            className={"form-control"}
+                            className="form-control"
                             type="text"
-                            placeholder={"Page #"}
+                            placeholder="Page #"
                             onChange={this.props.handleJumpToFieldChange}
                         />
                         <button
-                            className={"btn btn-outline-dark form-control"}
+                            className="btn btn-outline-dark form-control"
                             onClick={this.props.handleJumpToButton}
                             // Checks isNaN so that an empty string
                             // doesn't count as 0
@@ -72,16 +72,16 @@ class NavBar extends React.Component {
                             Jump
                         </button>
                     </div>
-                    <div className={"col-4"}>
+                    <div className="col-4">
                         {!on_last_segment_and_rereading
                             ? <button
-                                className={"btn btn-outline-dark"}
+                                className="btn btn-outline-dark"
                                 onClick={() => this.props.nextSegment()}
                             >
                                 {this.props.rereading ? 'Next' : 'Reread'}
                             </button>
                             : <button
-                                className={"btn btn-outline-dark"}
+                                className="btn btn-outline-dark"
                                 onClick={() => this.props.toOverview()}
                             >
                                 To Overview
@@ -111,8 +111,8 @@ class OverviewWindow extends React.Component {
         const full_document_text = [];
         this.props.all_segments.map((el) => full_document_text.push(el.text.split("\r\n")));
         return (
-            <div className={"row"}>
-                <div className={"col-8"}>
+            <div className="row">
+                <div className="col-8">
                     <div className="scroll_overview">
                         {full_document_text.map((segment_text_array) => (
                             segment_text_array.map((text,i) => (
@@ -121,7 +121,7 @@ class OverviewWindow extends React.Component {
                         ))}
                     </div>
                 </div>
-                <div className={"col-4"}>
+                <div className="col-4">
                     <p><b>Document Questions</b></p>
                     {this.props.document_questions.map((el, i) => (
                         <p key={i}>{el.is_overview_question ? null : el.text}</p>)
@@ -323,17 +323,18 @@ export class ReadingView extends React.Component {
     buildQuestionFields(questions) {
         return questions.map((question, id) => (
             <React.Fragment key={id}>
-                <div className="mb-2">
-                    <div className='segment-question-text'>
+                <div className="mb-5">
+                    <div className='segment-question-text question-text'>
                         {question.text}
                     </div>
                     <textarea
-                        className={'form-control'}
+                        className='form-control form-control-lg questions_boxes'
+                        id="exampleFormControlTextarea1"
+                        rows="4"
                         onChange={
                             this.handleSegmentResponseChange.bind(this, question.id)
                         }
                     />
-
                 </div>
             </React.Fragment>
         ))
@@ -355,8 +356,8 @@ export class ReadingView extends React.Component {
         const document_questions = doc.questions;
 
         return (
-            <div className={"container"}>
-                <h1 className={"display-4 py-3 pr-3"}>{doc.title}</h1>
+            <div className="container">
+                <h1 className="display-4 py-3 pr-3">{doc.title}</h1>
 
                 {this.state.overview ?
                     <OverviewWindow
@@ -365,8 +366,8 @@ export class ReadingView extends React.Component {
                     />
                     :
                     <React.Fragment>
-                        <div className={"row"}>
-                            <div className={'col-8'}>
+                        <div className="row">
+                            <div className='col-8'>
                                 <p>Segment Number: {this.state.segment_num + 1}</p>
                                 <Segment
                                     text={current_segment.text}
@@ -388,7 +389,7 @@ export class ReadingView extends React.Component {
                             </div>
 
                             {this.state.rereading &&
-                                <div className={"analysis col-4"}>
+                                <div className="analysis col-4 questions-overview">
                                     {segment_response_fields}
 
                                     {document_questions && (

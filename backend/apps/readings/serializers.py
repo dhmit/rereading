@@ -108,6 +108,7 @@ class StudentSegmentDataSerializer(serializers.ModelSerializer):
     """
     # To get the 'id' key to show up in validated_data in the create method
     id = serializers.ModelField(model_field=StudentSegmentData()._meta.get_field('id'))
+    responses = SegmentQuestionResponseSerializer(many=True)
 
     class Meta:
         model = StudentSegmentData
@@ -117,6 +118,7 @@ class StudentSegmentDataSerializer(serializers.ModelSerializer):
             'scroll_data',
             'view_time',
             'is_rereading',
+            'responses',
         )
 
 
@@ -127,7 +129,6 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
 
     segment_data = StudentSegmentDataSerializer(many=True)
     document_responses = DocumentQuestionResponseSerializer(many=True)
-    segment_responses = SegmentQuestionResponseSerializer(many=True)
     reading_data_id = serializers.IntegerField(write_only=True)
 
     def create(self, validated_data):

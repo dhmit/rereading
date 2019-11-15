@@ -4,7 +4,7 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
 
-from .models import StudentReadingData
+from .models import StudentReadingData, StudentSegmentData
 
 
 class RereadingAnalysis:
@@ -16,6 +16,7 @@ class RereadingAnalysis:
     def __init__(self):
         pass
         self.readings = StudentReadingData.objects.all()
+        self.segmentData = StudentSegmentData.objects.all()
 
 
     def compute_mean_response_length(self):
@@ -24,9 +25,9 @@ class RereadingAnalysis:
         return the mean character length (across all users) of the response
         :return: float, mean number of characters in the user's response
         """
-        mean_response_length = 0
-        for row in self.responses:
-            mean_response_length += len(row.response)
-        return round(mean_response_length / len(self.responses), 2)
+        mean_response_length = {}
+        for entry in self.segmentData.segment.text:
+            mean_response_length[entry] = len(entry)
+        return mean_response_length
 
 

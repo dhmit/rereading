@@ -4,7 +4,8 @@ Tests for the Rereading app.
 
 from django.test import TestCase
 
-from .analysis import RereadingAnalysis, remove_outliers
+from .analysis import RereadingAnalysis
+from .analysis_helpers import remove_outliers
 
 
 class AnalysisTests(TestCase):

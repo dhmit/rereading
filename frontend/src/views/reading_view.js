@@ -145,6 +145,8 @@ export class ReadingView extends React.Component {
     constructor(props){
         super(props);
         this.state = {
+            is_reading: false,
+            student_name: "",
             segment_num: 0,
             timer: null,
             scroll_top: 0,
@@ -170,12 +172,12 @@ export class ReadingView extends React.Component {
         this.handleJumpToButton = this.handleJumpToButton.bind(this);
     }
 
-    async componentDidMount() {
+    async startReading() {
         try {
             // Hard code the document we know exists for now -- generalize later...
             const url = '/api/documents/1/';
             const data = {
-                name: 'SOMEONE',
+                name: this.state.student_name,
             };
             const response = await fetch(url, {
                 method: 'POST',
@@ -189,7 +191,7 @@ export class ReadingView extends React.Component {
             const document = response_json.document;
             const reading_data = response_json.reading_data;
             const interval_timer = setInterval(() => this.recordScroll(), 2000);
-            this.setState({document, interval_timer, reading_data});
+            this.setState({document, interval_timer, reading_data, is_reading: true});
             this.sendData(true);
         } catch (e) {
             console.log(e);
@@ -223,7 +225,6 @@ export class ReadingView extends React.Component {
                     'Content-type': 'application/json',
                     'X-CSRFToken': this.csrftoken,
                 }
-
             }).then(res => res.json()).then(response => console.log(JSON.stringify(response)))
                 .catch(err => console.log(err));
         }
@@ -339,7 +340,29 @@ export class ReadingView extends React.Component {
         ))
     }
 
+    handleStudentName(e) {
+        this.setState({student_name: e.target.value});
+    }
+
     render() {
+        if (!this.state.is_reading){
+            return (
+                <div className={"container"}>
+                    What is your name?
+                    <br/>
+                    <input
+                        type={"text"}
+                        onChange={(e) => this.handleStudentName(e)}
+                    />
+                    <button
+                        onClick={() => this.startReading()}
+                    >
+                        Start Reading
+                    </button>
+                </div>
+            )
+        }
+
         const doc = this.state.document;
         if (!doc) {
             return (
@@ -353,7 +376,6 @@ export class ReadingView extends React.Component {
         const segment_response_fields = this.buildQuestionFields(segment_questions);
 
         const document_questions = doc.questions;
-
         return (
             <div className={"container"}>
                 <h1 className={"display-4 py-3 pr-3"}>{doc.title}</h1>

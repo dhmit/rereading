@@ -209,13 +209,14 @@ export class ReadingView extends React.Component {
             const url = '/api/add-response/';
             const reading_data = {
                 reading_data_id: this.state.reading_data.id,
-                segment_responses: this.state.segmentResponseArray,
                 segment_data: [{
                     id: this.state.document.segments[this.state.segment_num].id,
                     scroll_data: JSON.stringify(this.state.scroll_data),
                     view_time: time,
                     is_rereading: this.state.rereading,
+                    segment_responses: this.state.segmentResponseArray,
                 }],
+                document_responses: this.state.documentResponseArray,
             };
             fetch(url, {
                 method: 'POST',

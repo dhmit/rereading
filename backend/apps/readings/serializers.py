@@ -108,7 +108,7 @@ class StudentSegmentDataSerializer(serializers.ModelSerializer):
     """
     # To get the 'id' key to show up in validated_data in the create method
     id = serializers.ModelField(model_field=StudentSegmentData()._meta.get_field('id'))
-    responses = SegmentQuestionResponseSerializer(many=True)
+    segment_responses = SegmentQuestionResponseSerializer(many=True)
 
     class Meta:
         model = StudentSegmentData
@@ -118,7 +118,7 @@ class StudentSegmentDataSerializer(serializers.ModelSerializer):
             'scroll_data',
             'view_time',
             'is_rereading',
-            'responses',
+            'segment_responses',
         )
 
 
@@ -138,7 +138,6 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
         :return:
         """
         # Separate out the responses
-        segment_question_data = validated_data.pop("segment_responses")
         seg_data = validated_data.pop("segment_data")
         reading_data_id = validated_data.pop("reading_data_id")
         global_data = validated_data.pop("document_responses")
@@ -156,28 +155,31 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
             DocumentQuestionResponse.objects.create(
                 student_reading_data=reading_data,
                 question=document_question,
-                response=data['response']
-            )
-
-        for data in segment_question_data:
-            segment_question = SegmentQuestion.objects.get(id=data['id'])
-            SegmentQuestionResponse.objects.create(
-                question=segment_question,
-                student_reading_data=reading_data,
                 response=data['response'],
+                response_segment=data['response_segment'],
             )
 
         # Link each segment response to the reading data
 
         for data in seg_data:
+            # create seg responses
+
             segment = Segment.objects.get(id=data['id'])
-            StudentSegmentData.objects.create(
+            segment_data = StudentSegmentData.objects.create(
                 segment=segment,
                 reading_data=reading_data,
                 scroll_data=data['scroll_data'],
                 view_time=data['view_time'],
                 is_rereading=data['is_rereading']
             )
+
+            segment_question_responses = data.pop('segment_responses')
+            for response in segment_question_responses:
+                SegmentQuestionResponse.objects.create(
+                    student_segment_data=segment_data,
+                    **response,
+                )
+
         return reading_data
 
     class Meta:

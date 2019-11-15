@@ -127,7 +127,7 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
 
     segment_data = StudentSegmentDataSerializer(many=True)
     # document_responses = DocumentQuestionResponseSerializer(many=True)
-    segment_responses = SegmentQuestionResponseSerializer(many=True)
+    # segment_responses = SegmentQuestionResponseSerializer(many=True)
     reading_data_id = serializers.IntegerField(write_only=True)
 
     def create(self, validated_data):
@@ -184,7 +184,7 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             # 'document_responses',
-            'segment_responses',
+            # 'segment_responses',
             'segment_data',
             'reading_data_id',
         )

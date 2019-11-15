@@ -169,7 +169,7 @@ function WordAlert(props) {
  *
  * Handles all logic, displays information, and makes database query/posts
  */
-class StudentView extends React.Component {
+export class PrototypeStudentView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -286,7 +286,7 @@ class StudentView extends React.Component {
         let scroll_ups = this.state.scroll_ups;
 
         // Don't let the user submit until their response fits the criteria of the question
-        const isValid = StudentView.validateSubmission(response, word_limit);
+        const isValid = PrototypeStudentView.validateSubmission(response, word_limit);
         if (!isValid) {
             this.setState({word_alert: true,});
             return;
@@ -468,6 +468,4 @@ class StudentView extends React.Component {
         return response;
     }
 }
-
-export default StudentView;
 

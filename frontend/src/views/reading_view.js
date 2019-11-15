@@ -43,19 +43,19 @@ class NavBar extends React.Component {
         return (
             <div id="nav_panel">
                 <div className="row">
-                    <div className="col-2">
+                    <div className="col-3">
                         {this.props.segment_num > 0 &&
                         <button
-                            className="btn btn-outline-dark mr-2"
+                            className="btn btn-outline-dark"
                             onClick={() => this.props.prevSegment()}
                         >
                             Back
                         </button>
                         }
                     </div>
-                    <div className="col-4 input-group">
+                    <div className="col-6 input-group">
                         <input
-                            className="form-control"
+                            className="form-control "
                             type="text"
                             placeholder="Page #"
                             onChange={this.props.handleJumpToFieldChange}
@@ -72,7 +72,7 @@ class NavBar extends React.Component {
                             Jump
                         </button>
                     </div>
-                    <div className="col-4">
+                    <div className="col-3">
                         {!on_last_segment_and_rereading
                             ? <button
                                 className="btn btn-outline-dark"

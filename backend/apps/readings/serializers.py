@@ -129,8 +129,7 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
     segment_data = StudentSegmentDataSerializer(many=True)
     # document_responses = DocumentQuestionResponseSerializer(many=True)
     segment_responses = SegmentQuestionResponseSerializer(many=True)
-    document_id = serializers.IntegerField()
-    student_id = serializers.IntegerField()
+    reading_data_id = serializers.IntegerField(write_only=True)
 
     def create(self, validated_data):
         """
@@ -138,21 +137,18 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
         :param validated_data:
         :return:
         """
-        # Separate out the global and segment responses
-        # global_data = validated_data.pop("document_responses")
+        # Separate out the responses
         segment_question_data = validated_data.pop("segment_responses")
         seg_data = validated_data.pop("segment_data")
 
-        # Hardcoded for now, will generalize later
-        document = Document.objects.get(id=validated_data.pop("document_id"))
-        student = Student.objects.get(pk=validated_data.pop("student_id"))
+        reading_data_id = validated_data.pop("reading_data_id")
 
-        # Create a new reading data instance
-        reading_data = StudentReadingData.objects.create(
-            document=document,
-            student=student,
-            **validated_data
-        )
+        # Create a new reading data instance if one doesn't exist already
+        # with the primary key. It returns a tuple with the StudentReadingData
+        # object and a boolean about whether it created it or not
+        reading_data = StudentReadingData.objects.get(pk=reading_data_id)
+
+        # TODO: Use this when we answer collect the document question responses
         # print(reading_data)
         # Link each global response to the reading data
         # for data in global_data:
@@ -192,8 +188,7 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
             # 'document_responses',
             'segment_responses',
             'segment_data',
-            'document_id',
-            'student_id',
+            'reading_data_id',
         )
 
 
@@ -219,6 +214,7 @@ class DocumentSerializer(serializers.ModelSerializer):
     """
     segments = SegmentSerializer(many=True, read_only=True)
     questions = DocumentQuestionSerializer(many=True, read_only=True)
+    new_reading_data_id = serializers.SerializerMethodField()
 
     class Meta:
         model = Document
@@ -229,7 +225,20 @@ class DocumentSerializer(serializers.ModelSerializer):
             'author',
             'questions',
             'segments',
+            'new_reading_data_id',
         )
+
+    def get_new_reading_data_id(self, obj):
+        """
+        Creates a new StudentReadingData object and return its id
+        :param obj: The document object that is being sent to the front end
+        :return: The id of the new StudentReadingData object
+        """
+        # TODO: When students are implemented, modify this
+        # Currently, student id is set to 15 temporarily
+        reading_data = StudentReadingData.objects.create(document=obj,
+                                                         student=Student.objects.get(id=15))
+        return reading_data.id
 
 
 class DocumentAnalysisSerializer(serializers.Serializer):

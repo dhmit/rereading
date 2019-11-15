@@ -348,17 +348,28 @@ export class ReadingView extends React.Component {
         if (!this.state.is_reading){
             return (
                 <div className={"container"}>
-                    What is your name?
-                    <br/>
-                    <input
-                        type={"text"}
-                        onChange={(e) => this.handleStudentName(e)}
-                    />
-                    <button
-                        onClick={() => this.startReading()}
+                    <h3
+                        className={"text-center mt-5"}
                     >
-                        Start Reading
-                    </button>
+                        What is your name?
+                    </h3>
+                    <div className={"input-group"}>
+                        <input
+                            className={"form-control"}
+                            type={"text"}
+                            onChange={(e) => this.handleStudentName(e)}
+                            required
+                        />
+                        <div className={"input-group-append"}>
+                            <button
+                                className={"btn btn-outline-dark "}
+                                onClick={() => this.startReading()}
+                            >
+                                Start Reading
+                            </button>
+                        </div>
+
+                    </div>
                 </div>
             )
         }

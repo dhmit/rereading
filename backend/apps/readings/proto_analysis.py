@@ -349,10 +349,14 @@ class PrototypeRereadingAnalysis:
             if context not in question_context_count_map[question]:
                 question_context_count_map[question][context] = 0
 
-            if PrototypeRereadingAnalysis.description_has_relevant_words(row.response, relevant_words):
+            if PrototypeRereadingAnalysis.description_has_relevant_words(
+                    row.response,
+                    relevant_words):
                 question_context_count_map[question][context] += 1
 
-        flattened_data = PrototypeRereadingAnalysis.transform_nested_dict_to_list(question_context_count_map)
+        flattened_data = \
+            PrototypeRereadingAnalysis.transform_nested_dict_to_list( question_context_count_map)
+
         flattened_data.sort()
         return flattened_data
 

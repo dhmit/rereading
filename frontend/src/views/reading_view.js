@@ -34,16 +34,91 @@ Segment.propTypes = {
     segment_ref: PropTypes.shape({current: PropTypes.instanceOf(Element)})
 };
 
+class NavBar extends React.Component {
+    render() {
+        const on_last_segment_and_rereading =
+            this.props.segment_num == this.props.document_segments.length - 1
+            && this.props.rereading;
+
+        return (
+            <div id="nav_panel">
+                <div className={"row"}>
+                    <div className={"col-2"}>
+                        {this.props.segment_num > 0 &&
+                        <button
+                            className={"btn btn-outline-dark mr-2"}
+                            onClick={() => this.props.prevSegment()}
+                        >
+                            Back
+                        </button>
+                        }
+                    </div>
+                    <div className={"col-4 input-group"}>
+                        <input
+                            className={"form-control"}
+                            type="text"
+                            placeholder={"Page #"}
+                            onChange={this.props.handleJumpToFieldChange}
+                        />
+                        <button
+                            className={"btn btn-outline-dark form-control"}
+                            onClick={this.props.handleJumpToButton}
+                            // Checks isNaN so that an empty string
+                            // doesn't count as 0
+                            disabled={Number.isNaN(this.props.jump_to_value) ||
+                            !this.props.segments_viewed.includes(
+                                this.props.jump_to_value)}
+                        >
+                            Jump
+                        </button>
+                    </div>
+                    <div className={"col-4"}>
+                        {!on_last_segment_and_rereading
+                            ? <button
+                                className={"btn btn-outline-dark"}
+                                onClick={() => this.props.nextSegment()}
+                            >
+                                {this.props.rereading ? 'Next' : 'Reread'}
+                            </button>
+                            : <button
+                                className={"btn btn-outline-dark"}
+                                onClick={() => this.props.toOverview()}
+                            >
+                                To Overview
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}
+NavBar.propTypes = {
+    document_segments: PropTypes.array,
+    segment_num: PropTypes.number,
+    jump_to_value: PropTypes.number,
+    segments_viewed: PropTypes.array,
+    rereading: PropTypes.bool,
+    prevSegment: PropTypes.func,
+    nextSegment: PropTypes.func,
+    toOverview: PropTypes.func,
+    handleJumpToFieldChange: PropTypes.func,
+    handleJumpToButton: PropTypes.func,
+}
 
 class OverviewWindow extends React.Component {
     render() {
+        const full_document_text = [];
+        this.props.all_segments.map((el) => full_document_text.push(el.text.split("\r\n")));
         return (
             <div className={"row"}>
                 <div className={"col-8"}>
                     <div className="scroll_overview">
-                        {this.props.all_segments.map((el, i) => (
-                            <p key={i}>{el.text}</p>)
-                        )}
+                        {full_document_text.map((segment_text_array) => (
+                            segment_text_array.map((text,i) => (
+                                <p key={i}>{text}</p>
+                            ))
+                        ))}
                     </div>
                 </div>
                 <div className={"col-4"}>
@@ -74,11 +149,12 @@ class ReadingView extends React.Component {
             timer: null,
             scroll_top: 0,
             scroll_data: [],
+            segments_viewed: [0],
+            jump_to_value: null,
             rereading: false,  // we alternate reading and rereading
             document: null,
             interval_timer: null,
             segmentQuestionNum: 0,
-            segmentContextNum: 0,
             segmentResponseArray: [],
             student_id: 15, //temporary
         };
@@ -86,6 +162,11 @@ class ReadingView extends React.Component {
 
         this.segment_ref = React.createRef();
         this.handleSegmentResponseChange = this.handleSegmentResponseChange.bind(this);
+        this.prevSegment = this.prevSegment.bind(this);
+        this.nextSegment = this.nextSegment.bind(this);
+        this.toOverview = this.toOverview.bind(this);
+        this.handleJumpToFieldChange = this.handleJumpToFieldChange.bind(this);
+        this.handleJumpToButton = this.handleJumpToButton.bind(this);
     }
 
     async componentDidMount() {
@@ -112,8 +193,7 @@ class ReadingView extends React.Component {
             this.setState({scroll_data: []});
             const url = '/api/add-response/';
             const reading_data = {
-                document_id: this.state.document.id,
-                student_id: this.state.student_id,
+                reading_data_id: this.state.document.new_reading_data_id,
                 segment_responses: this.state.segmentResponseArray,
                 segment_data: [{
                     id: this.state.document.segments[this.state.segment_num].id,
@@ -122,7 +202,6 @@ class ReadingView extends React.Component {
                     is_rereading: this.state.rereading,
                 }],
             };
-            console.log(JSON.stringify(reading_data));
             fetch(url, {
                 method: 'POST',
                 body: JSON.stringify(reading_data),
@@ -175,60 +254,67 @@ class ReadingView extends React.Component {
 
     prevSegment () {
         this.sendData(false);
-        if (this.state.segment_num > 0) {
-            this.setState({
-                segment_num: this.state.segment_num - 1,
-                rereading: true,
-                segmentQuestionNum: 0,
-                segmentContextNum: 0,
-            });
-        }
+        this.gotoSegment(this.state.segment_num - 1);
         this.segment_ref.current.scrollTo(0,0);
     }
 
     nextSegment () {
         this.sendData(false);
-        const length = this.state.document.segments.length;
-        const current_segment = this.state.segment_num;
-        if (current_segment < length){
-            if (this.state.rereading) {
-                // If we're already rereading, move to the next segment
-                this.setState({
-                    rereading: false,
-                    segment_num: this.state.segment_num + 1,
-                    segmentQuestionNum: 0,
-                    segmentContextNum: 0,
-                    segmentResponseArray: [],
-                });
-            } else {
-                // Otherwise, move on to the rereading layout
-                this.setState({rereading: true});
-            }
+
+        if (this.state.rereading) {
+            // If we're already rereading, move to the next segment
+            this.gotoSegment(this.state.segment_num + 1);
+            this.setState({segmentResponseArray: []})
+            //TODO Figure out if this can be integrated into gotoSegment. I wasn't exactly
+            // sure why it was being set here but not prevSegment().
+        } else {
+            // Otherwise, move on to the rereading layout
+            this.setState({rereading: true});
         }
 
         this.segment_ref.current.scrollTo(0,0);
     }
 
+    gotoSegment(segmentNum) {
+        let segmentCount = this.state.document.segments.length;
+        if (segmentNum >= 0 && segmentNum < segmentCount) {
+            const segments_viewed = this.state.segments_viewed.slice();
+            let rereading = segments_viewed.includes(segmentNum);
+
+            //The segment number is pushed regardless of whether or not the user has read the page
+            // before so that page reread order can also be determined.
+            segments_viewed.push(segmentNum);
+            this.setState({
+                rereading,
+                segments_viewed,
+                segment_num: segmentNum,
+                segmentQuestionNum: 0,
+            });
+        }
+    }
+
+    handleJumpToFieldChange = (e) => {
+        let numericValue = parseInt(e.target.value) - 1;
+        this.setState({jump_to_value: numericValue});
+    };
+
+    handleJumpToButton = () => {
+        this.gotoSegment(this.state.jump_to_value);
+    };
+
     toOverview () {
         this.setState({overview: true})
     }
 
-    buildQuestionFields(questions, context_text) {
+    buildQuestionFields(questions) {
         return questions.map((question, id) => (
             <React.Fragment key={id}>
-                <div>
-                    <h4>Context:</h4>
-                    <div className='segment-context-text'>
-                        {context_text}
-                    </div>
-                    <h4>Question:</h4>
+                <div className="mb-2">
                     <div className='segment-question-text'>
                         {question.text}
                     </div>
-
-                    <label><h4>Response:</h4></label>
-                    <input
-                        type='text'
+                    <textarea
+                        className={'form-control'}
                         onChange={
                             this.handleSegmentResponseChange.bind(this, question.id)
                         }
@@ -246,18 +332,11 @@ class ReadingView extends React.Component {
                 <div>Loading!</div>
             );
         }
-
         const current_segment = doc.segments[this.state.segment_num];
         const segment_questions = current_segment.questions;
-        const segment_contexts = current_segment.contexts;
-        const current_context =
-            this.segmentContextNum < segment_contexts.length
-                ? segment_contexts[this.segmentContextNum].text
-                : 'No segment context given';
 
         // Generate response fields for each of the questions
-        const segment_response_fields =
-            this.buildQuestionFields(segment_questions, current_context);
+        const segment_response_fields = this.buildQuestionFields(segment_questions);
 
         const document_questions = doc.questions;
 
@@ -271,55 +350,51 @@ class ReadingView extends React.Component {
                         document_questions={document_questions}
                     />
                     :
-                    <div className={"row"}>
-                        <div className={'col-8'}>
-                            <p>Segment Number: {this.state.segment_num + 1}</p>
-                            <Segment
-                                text={current_segment.text}
-                                handleScroll={(e) => this.handleScroll(e)}
-                                segment_ref={this.segment_ref}
-                            />
-                            {this.state.segment_num > 0 &&
-                            <button
-                                className={"btn btn-outline-dark mr-2"}
-                                onClick={() => this.prevSegment()}
-                            >
-                                Back
-                            </button>
-                            }
-                            {this.state.segment_num < doc.segments.length - 1 ?
-                                <button
-                                    className={"btn btn-outline-dark"}
-                                    onClick={() => this.nextSegment()}
-                                >
-                                    {this.state.rereading ? 'Next' : 'Reread'}
-                                </button> :
-                                <button
-                                    className={"btn btn-outline-dark"}
-                                    onClick={() => this.toOverview()}
-                                >
-                                    To Overview
-                                </button>
+                    <React.Fragment>
+                        <div className={"row"}>
+                            <div className={'col-8'}>
+                                <p>Segment Number: {this.state.segment_num + 1}</p>
+                                <Segment
+                                    text={current_segment.text}
+                                    handleScroll={(e) => this.handleScroll(e)}
+                                    segment_ref={this.segment_ref}
+                                />
+                            </div>
+
+                            {this.state.rereading &&
+                                <div className={"analysis col-4"}>
+                                    {segment_response_fields}
+
+                                    {document_questions && (
+                                        <div>
+                                            <p><b>Document Questions: </b></p>
+                                            {document_questions.map((el,i) =>
+                                                <p key={i}>
+                                                    {el.is_overview_question ? null : el.text}
+                                                </p>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
                             }
                         </div>
-
-                        {this.state.rereading &&
-                            <div className={"analysis col-4"}>
-                                {segment_response_fields}
-
-                                {document_questions && (
-                                    <div>
-                                        <p><b>Document Questions: </b></p>
-                                        {document_questions.map((el,i) =>
-                                            <p key={i}>
-                                                {el.is_overview_question ? null : el.text}
-                                            </p>
-                                        )}
-                                    </div>
-                                )}
+                        <div className={"row"}>
+                            <div className={"col-8"}>
+                                <NavBar
+                                    document_segments={doc.segments}
+                                    segment_num={this.state.segment_num}
+                                    rereading={this.state.rereading}
+                                    jump_to_value={this.state.jump_to_value}
+                                    segments_viewed={this.state.segments_viewed}
+                                    prevSegment={this.prevSegment}
+                                    nextSegment={this.nextSegment}
+                                    toOverview={this.toOverview}
+                                    handleJumpToFieldChange={this.handleJumpToFieldChange}
+                                    handleJumpToButton={this.handleJumpToButton}
+                                />
                             </div>
-                        }
-                    </div>
+                        </div>
+                    </React.Fragment>
                 }
             </div>
         );

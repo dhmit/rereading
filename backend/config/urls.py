@@ -20,6 +20,7 @@ from django.urls import path
 
 from apps.common import render_react_view
 from apps.readings import views as readings_views
+from apps.readings import proto_views
 
 
 urlpatterns = [
@@ -27,19 +28,24 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # API endpoints
-    path('api/documents/', readings_views.ListDocument.as_view()),
     path('api/add-response/', readings_views.ListReadingData.as_view()),
     path('api/documents/<int:pk>/', readings_views.reading_view),
     path('api/analysis/', readings_views.analysis),
-    path('api/document_analysis/', readings_views.document_analysis),
 
     # Prototyping API endpoints
-    path('api_proto/', readings_views.ListStoryPrototype.as_view()),
-    path('api_proto/add-response/', readings_views.ListStudentPrototype.as_view()),
-    path('api_proto/<int:pk>/', readings_views.DetailStoryPrototype.as_view()),
-    path('instructor_proto/', render_react_view, {'component_name': 'InstructorView'}),
-    path('student_proto/', render_react_view, {'component_name': 'StudentView'}),
-    path('analysis_proto/', render_react_view, {'component_name': 'AnalysisView'}),
+    path('api_proto/', proto_views.ListStoryPrototype.as_view()),
+    path('api_proto/add-response/', proto_views.ListStudentPrototype.as_view()),
+    path('api_proto/<int:pk>/', proto_views.DetailStoryPrototype.as_view()),
+    path('api_proto/analysis/', proto_views.analysis),
+
+    path('prototype/instructor/',
+         render_react_view,
+         {'component_name': 'PrototypeInstructorView'}),
+    path('prototype/student/',
+         render_react_view,
+         {'component_name': 'PrototypeStudentView'}),
+    path('prototype/analysis/',
+         render_react_view, {'component_name': 'PrototypeAnalysisView'}),
 
     # React views
     path('', lambda request: redirect('project_overview')),  # redirect / to project overview

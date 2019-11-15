@@ -3,11 +3,11 @@ import ReactDOM from 'react-dom';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import StudentView from './views/student_view';
-import InstructorView from './views/instructor_view';
-import { AnalysisView } from './views/analysis_view';
-import { DocumentAnalysisView } from "./views/document_analysis_view";
-import ReadingView from './views/reading_view';
+import { PrototypeStudentView } from './prototype/student_view';
+import { PrototypeInstructorView } from './prototype/instructor_view';
+import { PrototypeAnalysisView } from './prototype/analysis_view';
+
+import { ReadingView } from './views/reading_view';
 import { ProjectView } from './views/overview_view';
 
 window.app_modules = {
@@ -15,11 +15,12 @@ window.app_modules = {
     ReactDOM,  // Make ReactDOM accessible from the base template
 
     // Add all frontend views here
-    StudentView,
-    InstructorView,
-    AnalysisView,
     ReadingView,
-    DocumentAnalysisView,
     ProjectView,
+
+    // Prototype views
+    PrototypeAnalysisView,
+    PrototypeStudentView,
+    PrototypeInstructorView,
 };
 

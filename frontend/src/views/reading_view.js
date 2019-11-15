@@ -141,7 +141,7 @@ OverviewWindow.propTypes = {
 };
 
 
-class ReadingView extends React.Component {
+export class ReadingView extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -413,5 +413,3 @@ class ReadingView extends React.Component {
 
     }
 }
-
-export default ReadingView;

@@ -204,7 +204,7 @@ RelevantWordPercentages.propTypes = {
     entryData: PropTypes.array,
 };
 
-export class AnalysisView extends React.Component {
+export class PrototypeAnalysisView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -220,7 +220,7 @@ export class AnalysisView extends React.Component {
      */
     async componentDidMount() {
         try {
-            const response = await fetch('/api/analysis/');
+            const response = await fetch('/api_proto/analysis/');
             const analysis = await response.json();
             this.setState({analysis});
         } catch (e) {

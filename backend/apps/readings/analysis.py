@@ -16,4 +16,9 @@ class RereadingAnalysis:
     def __init__(self):
         self.readings = StudentReadingData.objects.all()
 
+    def total_view_times(self):
+        segment_data = self.readings.segment_data.all()
+        for datum in segment_data:
+            datum.view_times
+        qrs = segment_data.segment_responses.all()
 

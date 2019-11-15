@@ -34,7 +34,7 @@ def get_responses_for_question(all_responses, question, context):
         responses_frequency[answer] += 1
     return responses_frequency
 
-
+# yes - sandy wants to port
 def most_common_response_by_question_and_context(all_responses, question, context):
     """
     Returns a list of the most common response(s) given a set of data, a question,
@@ -66,6 +66,7 @@ class PrototypeRereadingAnalysis:
         """ On initialization, we load all of the StudentResponses from the db """
         self.responses = StudentResponsePrototype.objects.all()
 
+    # maybe - possibly port to new app
     def total_view_time(self):
         """
         Queries the db for all StudentResponses,
@@ -79,6 +80,7 @@ class PrototypeRereadingAnalysis:
                 total_view_time += view_time
         return round(total_view_time)
 
+    # yes - sandy wants to port
     def all_responses(self):
         """
         Given a list of student response dicts, returns the most common responses for each
@@ -109,6 +111,7 @@ class PrototypeRereadingAnalysis:
 
         return all_responses
 
+    # yes - sandy wants to port
     def frequency_feelings(self):
         """
         Compute the frequencies of all the responses. Not sensitive to case.
@@ -131,6 +134,7 @@ class PrototypeRereadingAnalysis:
         frequent_words.sort(key=lambda x: x[1], reverse=True)
         return frequent_words
 
+    # not porting to main app
     def context_vs_read_time(self):
         """
         Compares mean view times of all contexts
@@ -156,6 +160,7 @@ class PrototypeRereadingAnalysis:
                                       for context in total_contexts_view_times}
         return average_context_view_times
 
+    # yes - sandy wants to port
     def question_sentiment_analysis(self):
         """
         Uses database to create a list of sentiment scores for
@@ -215,6 +220,7 @@ class PrototypeRereadingAnalysis:
 
         return mean_reading_time_results_data
 
+    # yes - sandy wants to port
     def mean_reading_time_for_a_question(self, question, context):
         """
         Given the student response dicts, computes the mean read time for a
@@ -253,6 +259,7 @@ class PrototypeRereadingAnalysis:
 
         return [question, context, mean_time, number_of_readers]
 
+    # yes - sandy wants to port
     def compute_median_view_time(self):
         """
         Given a list of student response dicts,
@@ -270,6 +277,7 @@ class PrototypeRereadingAnalysis:
             median_view_time = statistics.median(list_of_times)
         return round(median_view_time)
 
+    # not porting to main app
     def compute_mean_response_length(self):
         """
         Given a list of student response dicts,
@@ -281,6 +289,7 @@ class PrototypeRereadingAnalysis:
             mean_response_length += len(row.response)
         return round(mean_response_length / len(self.responses), 2)
 
+    # yes - sandy wants to port
     def get_number_of_unique_students(self):
         """
         Count the number of unique students that gave responses
@@ -291,6 +300,7 @@ class PrototypeRereadingAnalysis:
             unique_students.add(row.student)
         return len(unique_students)
 
+    # maybe - possibly port to new app
     @staticmethod
     def description_has_relevant_words(story_meaning_description, relevant_words):
         """
@@ -329,6 +339,7 @@ class PrototypeRereadingAnalysis:
                 flattened_list.append((key1, key2, value))
         return flattened_list
 
+    # yes - sandy wants to port
     def students_using_relevant_words_by_context_and_question(self):
         """
         Return a list of tuples of the form (question, context, count), where count is
@@ -360,6 +371,7 @@ class PrototypeRereadingAnalysis:
         flattened_data.sort()
         return flattened_data
 
+    # yes - sandy wants to port
     def percent_using_relevant_words_by_context_and_question(self):
         """
         Return a list of tuples of the form (question, context, percent), where percent is
@@ -402,6 +414,7 @@ class PrototypeRereadingAnalysis:
 
         return compute_reread_counts_data
 
+    # yes - sandy wants to port
     def compute_reread_counts(self, question, context):
         """"
         Given a list of student response dicts,

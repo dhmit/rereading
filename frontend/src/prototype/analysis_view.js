@@ -3,13 +3,20 @@ import PropTypes from 'prop-types';
 
 export class SingleValueAnalysis extends React.Component {
     render() {
+        let display_value;
+        if (this.props.value !== undefined && this.props.round_digits !== undefined) {
+            display_value = this.props.value.toFixed(2);
+        } else {
+            display_value = this.props.value;
+        }
+
         return(
             <div className={"row"}>
                 <strong className={"col-2"}>
                     {this.props.header}
                 </strong>
                 <p className={"col-2 mb-1 text-left d-block d-md-inline"}>
-                    {this.props.value} {this.props.unit}
+                    {display_value} {this.props.unit}
                 </p>
             </div>
         );
@@ -22,6 +29,7 @@ SingleValueAnalysis.propTypes = {
         PropTypes.string,
     ]),
     unit: PropTypes.string,
+    round_digits: PropTypes.number,
 };
 
 export class TabularAnalysis extends React.Component{
@@ -120,12 +128,14 @@ export class SentimentScores extends React.Component {
             <div>
                 <SingleValueAnalysis
                     header={"Average Positivity Score"}
-                    value={this.props.sentiment_average.toFixed(2)}
+                    value={this.props.sentiment_average}
+                    round_digits={2}
                 />
 
                 <SingleValueAnalysis
                     header={"Standard Deviation of Positivity Score"}
-                    value={this.props.sentiment_std.toFixed(2)}
+                    value={this.props.sentiment_std}
+                    round_digits={2}
                 />
             </div>
         );
@@ -179,11 +189,11 @@ RereadCountTable.propTypes = {
 export class RelevantWordPercentages extends React.Component {
     formatDataWithPercentSign(rawData) {
         //Formats the given data (usually in decimal form) as a percentage
-        let formattedData = []
+        let formattedData = [];
         for (let [question, context, decimal] of rawData) {
-            formattedData.push([question, context, `${Math.round(100 * decimal)}%`])
+            formattedData.push([question, context, `${Math.round(100 * decimal)}%`]);
         }
-        return formattedData
+        return formattedData;
     }
 
     render() {

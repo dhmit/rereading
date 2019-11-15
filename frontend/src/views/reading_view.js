@@ -151,10 +151,7 @@ export class ReadingView extends React.Component {
             scroll_data: [],
             segments_viewed: [0],
             jump_to_value: null,
-            rereading: true,  // we alternate reading and rereading
-            /*
-            CHANGE BACK TO FALSE
-             */
+            rereading: false,  // we alternate reading and rereading
             document: null,
             reading_data: null,
             interval_timer: null,

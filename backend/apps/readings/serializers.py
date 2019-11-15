@@ -127,19 +127,18 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
 
     segment_data = StudentSegmentDataSerializer(many=True)
     # document_responses = DocumentQuestionResponseSerializer(many=True)
-    segment_responses = SegmentQuestionResponseSerializer(many=True)
+    # segment_responses = SegmentQuestionResponseSerializer(many=True)
     reading_data_id = serializers.IntegerField(write_only=True)
 
     def create(self, validated_data):
         """
-        Creates a new reading data instance
+        Creates or updates a new reading data instance
         :param validated_data:
         :return:
         """
         # Separate out the responses
         segment_question_data = validated_data.pop("segment_responses")
         seg_data = validated_data.pop("segment_data")
-
         reading_data_id = validated_data.pop("reading_data_id")
 
         # Create a new reading data instance if one doesn't exist already
@@ -185,7 +184,7 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             # 'document_responses',
-            'segment_responses',
+            # 'segment_responses',
             'segment_data',
             'reading_data_id',
         )

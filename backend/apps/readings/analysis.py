@@ -4,6 +4,8 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
 
+from .models import StudentReadingData
+
 
 class RereadingAnalysis:
     """
@@ -13,3 +15,6 @@ class RereadingAnalysis:
 
     def __init__(self):
         pass
+        self.readings = StudentReadingData.objects.all()
+
+

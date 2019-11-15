@@ -156,6 +156,7 @@ export class ReadingView extends React.Component {
             CHANGE BACK TO FALSE
              */
             document: null,
+            reading_data: null,
             interval_timer: null,
             segmentQuestionNum: 0,
             segmentResponseArray: [],
@@ -189,8 +190,9 @@ export class ReadingView extends React.Component {
             });
             const response_json = await response.json();
             const document = response_json.document;
+            const reading_data = response_json.reading_data;
             const interval_timer = setInterval(() => this.recordScroll(), 2000);
-            this.setState({document, interval_timer});
+            this.setState({document, interval_timer, reading_data});
             this.sendData(true);
         } catch (e) {
             console.log(e);
@@ -208,7 +210,7 @@ export class ReadingView extends React.Component {
             this.setState({scroll_data: []});
             const url = '/api/add-response/';
             const reading_data = {
-                reading_data_id: this.state.document.new_reading_data_id,
+                reading_data_id: this.state.reading_data.id,
                 segment_responses: this.state.segmentResponseArray,
                 segment_data: [{
                     id: this.state.document.segments[this.state.segment_num].id,
@@ -375,6 +377,18 @@ export class ReadingView extends React.Component {
                                     handleScroll={(e) => this.handleScroll(e)}
                                     segment_ref={this.segment_ref}
                                 />
+                                <NavBar
+                                    document_segments={doc.segments}
+                                    segment_num={this.state.segment_num}
+                                    rereading={this.state.rereading}
+                                    jump_to_value={this.state.jump_to_value}
+                                    segments_viewed={this.state.segments_viewed}
+                                    prevSegment={this.prevSegment}
+                                    nextSegment={this.nextSegment}
+                                    toOverview={this.toOverview}
+                                    handleJumpToFieldChange={this.handleJumpToFieldChange}
+                                    handleJumpToButton={this.handleJumpToButton}
+                                />
                             </div>
 
                             {this.state.rereading &&
@@ -393,22 +407,6 @@ export class ReadingView extends React.Component {
                                     )}
                                 </div>
                             }
-                        </div>
-                        <div className={"row"}>
-                            <div className={"col-8"}>
-                                <NavBar
-                                    document_segments={doc.segments}
-                                    segment_num={this.state.segment_num}
-                                    rereading={this.state.rereading}
-                                    jump_to_value={this.state.jump_to_value}
-                                    segments_viewed={this.state.segments_viewed}
-                                    prevSegment={this.prevSegment}
-                                    nextSegment={this.nextSegment}
-                                    toOverview={this.toOverview}
-                                    handleJumpToFieldChange={this.handleJumpToFieldChange}
-                                    handleJumpToButton={this.handleJumpToButton}
-                                />
-                            </div>
                         </div>
                     </React.Fragment>
                 }

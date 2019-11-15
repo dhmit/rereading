@@ -185,7 +185,6 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'document_responses',
-            'segment_responses',
             'segment_data',
             'reading_data_id',
         )

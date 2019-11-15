@@ -191,8 +191,8 @@ class SegmentQuestionResponse(models.Model):
         on_delete=models.CASCADE,
         related_name='segment_question'
     )
-    student_reading_data = models.ForeignKey(
-        StudentReadingData,
+    student_segment_data = models.ForeignKey(
+        StudentSegmentData,
         on_delete=models.CASCADE,
         related_name='segment_responses'
     )

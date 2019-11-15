@@ -355,7 +355,7 @@ class PrototypeRereadingAnalysis:
                 question_context_count_map[question][context] += 1
 
         flattened_data = \
-            PrototypeRereadingAnalysis.transform_nested_dict_to_list( question_context_count_map)
+            PrototypeRereadingAnalysis.transform_nested_dict_to_list(question_context_count_map)
 
         flattened_data.sort()
         return flattened_data

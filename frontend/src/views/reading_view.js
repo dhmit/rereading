@@ -202,7 +202,7 @@ export class ReadingView extends React.Component {
      * corresponds to the segment number of the segments and is updated
      * with new segment data every time the buttons are clicked
      */
-    sendData(firstTime){
+    async sendData(firstTime){
         if (!firstTime && this.state.rereading) {
             const time = this.state.timer.stop();
             this.setState({scroll_data: []});
@@ -217,7 +217,7 @@ export class ReadingView extends React.Component {
                     is_rereading: this.state.rereading,
                 }],
             };
-            fetch(url, {
+            const response = await fetch(url, {
                 method: 'POST',
                 body: JSON.stringify(reading_data),
                 headers: {
@@ -225,8 +225,11 @@ export class ReadingView extends React.Component {
                     'X-CSRFToken': this.csrftoken,
                 }
 
-            }).then(res => res.json()).then(response => console.log(JSON.stringify(response)))
-                .catch(err => console.log(err));
+            })
+            const response_json = await response.json();
+            const new_reading_data = response_json.reading_data;
+            console.log(new_reading_data);
+            this.setState({reading_data: new_reading_data});
         }
         const timer = new TimeIt();
         this.setState({timer});

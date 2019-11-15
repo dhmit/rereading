@@ -26,8 +26,8 @@ class RereadingAnalysis:
         :return: float, mean number of characters in the user's response
         """
         mean_response_length = {}
-        for entry in self.segmentData.segment.text:
-            mean_response_length[entry] = len(entry)
+        for entry in self.segmentData:
+            mean_response_length[entry.segment.text] = len(entry.segment.text)
         return mean_response_length
 
 

@@ -8,3 +8,29 @@
     margin: 1em 1em 1em 1em;
 }
 
+
+.--evidence-mode-active .segment {
+  background: #fafafa;
+}
+
+.evidence-section {
+  margin-bottom: 20px;
+}
+
+.evidence-toggle-button {
+  font-size: 10px;
+  text-transform: uppercase;
+  background: #666;
+  border: none;
+  outline: none;
+  color: #fff;
+  padding: 4px 10px;
+}
+
+.form-hint-text {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #444;
+  display: block;
+  padding: 10px 0;
+}

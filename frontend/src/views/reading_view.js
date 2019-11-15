@@ -158,6 +158,7 @@ export class ReadingView extends React.Component {
             segmentQuestionNum: 0,
             segmentResponseArray: [],
             student_id: 15, //temporary
+            evidenceModeActive: false,
         };
         this.csrftoken = getCookie('csrftoken');
 
@@ -320,7 +321,28 @@ export class ReadingView extends React.Component {
         this.setState({overview: true})
     }
 
+    toggleShowEvidenceMode() {
+        this.setState({
+            evidenceModeActive: !this.state.evidenceModeActive,
+        });
+    }
+
+    addEvidence() {
+        const _document = Object.assign({}, this.state.document);
+        //  const selectedQuestion = null;
+
+        // get active question that is being tagged
+
+        // does sleected question have an Evidence Values array?
+
+
+        this.setState({
+            document: _document,
+        });
+    }
+
     buildQuestionFields(questions) {
+        const { evidenceModeActive } = this.state;
         return questions.map((question, id) => (
             <React.Fragment key={id}>
                 <div className="mb-2">
@@ -334,6 +356,43 @@ export class ReadingView extends React.Component {
                         }
                     />
 
+                </div>
+                <div className="evidence-section">
+                    {evidenceModeActive ?
+                        <React.Fragment>
+                            <button
+                                className="evidence-toggle-button"
+                                onClick={this.toggleShowEvidenceMode.bind(this)}
+                            >
+                                Stop Tagging
+                            </button>
+                            <span className="form-hint-text">
+                                Highlight parts of the text to save as evidence.
+                            </span>
+                        </React.Fragment>
+                        :
+                        <button
+                            className="evidence-toggle-button"
+                            onClick={this.toggleShowEvidenceMode.bind(this)}
+                        >
+                            Tag Evidence
+                        </button>
+                    }
+
+                    {question.evidenceValues && question.evidenceValues.length ?
+                        <div className="evidence-values-section">
+                            <label>Evidence:</label>
+                            <div className="evidence-values">
+                                {question.evidenceValues.map((value, i) => {
+                                    <span className="evidence-value" key={i}>
+                                        {value}
+                                    </span>
+                                })}
+                            </div>
+                        </div>
+                        :
+                        ''
+                    }
                 </div>
             </React.Fragment>
         ))
@@ -353,9 +412,10 @@ export class ReadingView extends React.Component {
         const segment_response_fields = this.buildQuestionFields(segment_questions);
 
         const document_questions = doc.questions;
+        const evidenceModeActive = this.state.evidenceModeActive;
 
         return (
-            <div className={"container"}>
+            <div className={`container ${evidenceModeActive ? '--evidence-mode-active' : ''}`}>
                 <h1 className={"display-4 py-3 pr-3"}>{doc.title}</h1>
 
                 {this.state.overview ?

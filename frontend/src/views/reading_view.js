@@ -371,6 +371,18 @@ export class ReadingView extends React.Component {
                                     handleScroll={(e) => this.handleScroll(e)}
                                     segment_ref={this.segment_ref}
                                 />
+                                <NavBar
+                                    document_segments={doc.segments}
+                                    segment_num={this.state.segment_num}
+                                    rereading={this.state.rereading}
+                                    jump_to_value={this.state.jump_to_value}
+                                    segments_viewed={this.state.segments_viewed}
+                                    prevSegment={this.prevSegment}
+                                    nextSegment={this.nextSegment}
+                                    toOverview={this.toOverview}
+                                    handleJumpToFieldChange={this.handleJumpToFieldChange}
+                                    handleJumpToButton={this.handleJumpToButton}
+                                />
                             </div>
 
                             {this.state.rereading &&
@@ -389,22 +401,6 @@ export class ReadingView extends React.Component {
                                     )}
                                 </div>
                             }
-                        </div>
-                        <div className={"row"}>
-                            <div className={"col-8"}>
-                                <NavBar
-                                    document_segments={doc.segments}
-                                    segment_num={this.state.segment_num}
-                                    rereading={this.state.rereading}
-                                    jump_to_value={this.state.jump_to_value}
-                                    segments_viewed={this.state.segments_viewed}
-                                    prevSegment={this.prevSegment}
-                                    nextSegment={this.nextSegment}
-                                    toOverview={this.toOverview}
-                                    handleJumpToFieldChange={this.handleJumpToFieldChange}
-                                    handleJumpToButton={this.handleJumpToButton}
-                                />
-                            </div>
                         </div>
                     </React.Fragment>
                 }

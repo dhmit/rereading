@@ -43,7 +43,7 @@ class NavBar extends React.Component {
         return (
             <div id="nav_panel">
                 <div className="row">
-                    <div className="col-3">
+                    <div className="col-2">
                         {this.props.segment_num > 0 &&
                         <button
                             className="btn btn-outline-dark"
@@ -72,7 +72,7 @@ class NavBar extends React.Component {
                             Jump
                         </button>
                     </div>
-                    <div className="col-3">
+                    <div className="col-4">
                         {!on_last_segment_and_rereading
                             ? <button
                                 className="btn btn-outline-dark"

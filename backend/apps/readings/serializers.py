@@ -175,8 +175,11 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
 
             segment_question_responses = data.pop('segment_responses')
             for response in segment_question_responses:
+                question_id = response.pop('id')
+                question = SegmentQuestion.objects.get(pk=question_id)
                 SegmentQuestionResponse.objects.create(
                     student_segment_data=segment_data,
+                    question=question,
                     **response,
                 )
 

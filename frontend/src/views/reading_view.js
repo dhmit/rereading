@@ -226,7 +226,7 @@ export class ReadingView extends React.Component {
                     'X-CSRFToken': this.csrftoken,
                 }
 
-            })
+            });
             const response_json = await response.json();
             const new_reading_data = response_json.reading_data;
             console.log(new_reading_data);

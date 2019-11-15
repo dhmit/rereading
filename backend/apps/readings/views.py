@@ -27,6 +27,7 @@ class DetailDocument(generics.RetrieveUpdateDestroyAPIView):
 
 
 class Reading:
+    """ Class to aggregate all of the models we need to serialize for the reading view """
     def __init__(self, document, reading_data):
         self.document = document
         self.reading_data = reading_data
@@ -34,6 +35,9 @@ class Reading:
 
 @api_view(['POST'])
 def reading_view(request, pk):
+    """ Primary API endpoint for the reading view -- called with the student's name
+        from the view (to be written) where we collect that
+    """
     student_name = request.data.get('name')
     student = Student(name=student_name)
     student.save()

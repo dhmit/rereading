@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import {getCookie, TimeIt} from "../common";
 import './reading_view.css';
+import {Button, Popover } from '@material-ui/core';
 
 
 /*
@@ -169,6 +170,8 @@ export class ReadingView extends React.Component {
         this.toOverview = this.toOverview.bind(this);
         this.handleJumpToFieldChange = this.handleJumpToFieldChange.bind(this);
         this.handleJumpToButton = this.handleJumpToButton.bind(this);
+
+
     }
 
     async componentDidMount() {
@@ -327,19 +330,26 @@ export class ReadingView extends React.Component {
         });
     }
 
-    addEvidence() {
+
+    /*addEvidence(question_id, event) {
         const _document = Object.assign({}, this.state.document);
-        //  const selectedQuestion = null;
+        const selectedQuestion = question.id;
 
         // get active question that is being tagged
+        // does selected question have an Evidence Values array?
+        let evidence = window.getSelection().toString();
+        if(this.state.segment_response_array){
+            window.getSelection().toString();
+        }
 
-        // does sleected question have an Evidence Values array?
-
+           const selection = window.getSelection();
+            const getRange = selection.getRangeAt(0);
+            setAnchorEl(getRange);
 
         this.setState({
             document: _document,
         });
-    }
+    }*/
 
     buildQuestionFields(questions) {
         const { evidenceModeActive } = this.state;
@@ -399,6 +409,21 @@ export class ReadingView extends React.Component {
     }
 
     render() {
+
+
+
+        const handlePopoverClose = () => {
+            if (window.getSelection) {
+                if (window.getSelection().empty) {  // Chrome
+                    window.getSelection().empty();
+                } else if (window.getSelection().removeAllRanges) {  // Firefox
+                    window.getSelection().removeAllRanges();
+                }
+            } else if (document.selection) {  // IE?
+                document.selection.empty();
+            }
+        };
+
         const doc = this.state.document;
         if (!doc) {
             return (
@@ -424,47 +449,71 @@ export class ReadingView extends React.Component {
                         document_questions={document_questions}
                     />
                     :
-                    <React.Fragment>
-                        <div className={"row"}>
-                            <div className={'col-8'}>
-                                <p>Segment Number: {this.state.segment_num + 1}</p>
-                                <Segment
-                                    text={current_segment.text}
-                                    handleScroll={(e) => this.handleScroll(e)}
-                                    segment_ref={this.segment_ref}
-                                />
-                                <NavBar
-                                    document_segments={doc.segments}
-                                    segment_num={this.state.segment_num}
-                                    rereading={this.state.rereading}
-                                    jump_to_value={this.state.jump_to_value}
-                                    segments_viewed={this.state.segments_viewed}
-                                    prevSegment={this.prevSegment}
-                                    nextSegment={this.nextSegment}
-                                    toOverview={this.toOverview}
-                                    handleJumpToFieldChange={this.handleJumpToFieldChange}
-                                    handleJumpToButton={this.handleJumpToButton}
-                                />
-                            </div>
+                    <div>
+                        <Popover
+                            id="reader-tooltip-popover"
+                            open={evidenceModeActive && window.getSelection().anchorNode}
+                            anchorEl={window.getSelection().anchorNode}
+                            onClose={handlePopoverClose}
+                            anchorOrigin={{
+                                vertical: window.getSelection().anchorOffset,
+                                horizontal: 'center',
+                            }}
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'center',
+                            }}
+                        >
+                            <React.Fragment>
+                                <Button aria-label="Edit" onClick={() =>{}}>
+                                    Add evidence
+                                </Button>
 
-                            {this.state.rereading &&
-                                <div className={"analysis col-4"}>
-                                    {segment_response_fields}
+                            </React.Fragment>
+                        </Popover>
 
-                                    {document_questions && (
-                                        <div>
-                                            <p><b>Document Questions: </b></p>
-                                            {document_questions.map((el,i) =>
-                                                <p key={i}>
-                                                    {el.is_overview_question ? null : el.text}
-                                                </p>
-                                            )}
-                                        </div>
-                                    )}
+                        <React.Fragment>
+                            <div className={"row"}>
+                                <div className={'col-8'}>
+                                    <p>Segment Number: {this.state.segment_num + 1}</p>
+                                    <Segment
+                                        text={current_segment.text}
+                                        handleScroll={(e) => this.handleScroll(e)}
+                                        segment_ref={this.segment_ref}
+                                    />
+                                    <NavBar
+                                        document_segments={doc.segments}
+                                        segment_num={this.state.segment_num}
+                                        rereading={this.state.rereading}
+                                        jump_to_value={this.state.jump_to_value}
+                                        segments_viewed={this.state.segments_viewed}
+                                        prevSegment={this.prevSegment}
+                                        nextSegment={this.nextSegment}
+                                        toOverview={this.toOverview}
+                                        handleJumpToFieldChange={this.handleJumpToFieldChange}
+                                        handleJumpToButton={this.handleJumpToButton}
+                                    />
                                 </div>
-                            }
-                        </div>
-                    </React.Fragment>
+
+                                {this.state.rereading &&
+                                    <div className={"analysis col-4"}>
+                                        {segment_response_fields}
+
+                                        {document_questions && (
+                                            <div>
+                                                <p><b>Document Questions: </b></p>
+                                                {document_questions.map((el,i) =>
+                                                    <p key={i}>
+                                                        {el.is_overview_question ? null : el.text}
+                                                    </p>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                }
+                            </div>
+                        </React.Fragment>
+                    </div>
                 }
             </div>
         );

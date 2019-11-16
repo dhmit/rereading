@@ -35,6 +35,86 @@ Segment.propTypes = {
     segment_ref: PropTypes.shape({current: PropTypes.instanceOf(Element)})
 };
 
+class Question extends React.Component {
+    constructor (props){
+        super(props);
+        this.state = {
+            evidenceModeActive: false,
+            evidenceValues: [],
+        }
+    }
+
+    toggleShowEvidenceMode() {
+        this.setState({
+            evidenceModeActive: !this.state.evidenceModeActive,
+        });
+    }
+
+    render(){
+        const evidenceModeActive = this.state.evidenceModeActive;
+        return(
+            <div className={"container"}>
+                <div className="mb-2">
+                    <div className='segment-question-text'>
+                        {this.props.question_text}
+                    </div>
+                    <textarea
+                        className={'form-control'}
+                        onChange={
+                            this.props.handleSegmentResponseChange.bind(this,
+                                this.props.question_text)
+                        }
+                    />
+
+                </div>
+                <div className="evidence-section">
+                    {evidenceModeActive ?
+                        <React.Fragment>
+                            <button
+                                className="evidence-toggle-button"
+                                onClick={this.toggleShowEvidenceMode.bind(this)}
+                            >
+                                Stop Tagging
+                            </button>
+                            <span className="form-hint-text">
+                            Highlight parts of the text to save as evidence.
+                            </span>
+                        </React.Fragment>
+                        :
+                        <button
+                            className="evidence-toggle-button"
+                            onClick={this.toggleShowEvidenceMode.bind(this)}
+                        >
+                            Tag Evidence
+                        </button>
+                    }
+
+                    {this.state.evidenceValues && this.state.evidenceValues.length ?
+                        <div className="evidence-values-section">
+                            <label>Evidence:</label>
+                            <div className="evidence-values">
+                                {this.state.evidenceValues.map((value, i) => {
+                                    <span className="evidence-value" key={i}>
+                                        {value}
+                                    </span>
+                                })}
+                            </div>
+                        </div>
+                        :
+                        ''
+                    }
+                </div>
+            </div>
+        )
+    }
+}
+
+Question.propTypes = {
+    key: PropTypes.number,
+    question_text: PropTypes.string,
+    handleSegmentResponseChange: PropTypes.func,
+}
+
 class NavBar extends React.Component {
     render() {
         const on_last_segment_and_rereading =
@@ -159,7 +239,6 @@ export class ReadingView extends React.Component {
             segmentQuestionNum: 0,
             segmentResponseArray: [],
             student_id: 15, //temporary
-            evidenceModeActive: false,
         };
         this.csrftoken = getCookie('csrftoken');
 
@@ -332,6 +411,7 @@ export class ReadingView extends React.Component {
 
 
     /*addEvidence(question_id, event) {
+    addEvidence() {
         const _document = Object.assign({}, this.state.document);
         const selectedQuestion = question.id;
 
@@ -352,59 +432,10 @@ export class ReadingView extends React.Component {
     }*/
 
     buildQuestionFields(questions) {
-        const { evidenceModeActive } = this.state;
         return questions.map((question, id) => (
-            <React.Fragment key={id}>
-                <div className="mb-2">
-                    <div className='segment-question-text'>
-                        {question.text}
-                    </div>
-                    <textarea
-                        className={'form-control'}
-                        onChange={
-                            this.handleSegmentResponseChange.bind(this, question.id)
-                        }
-                    />
-
-                </div>
-                <div className="evidence-section">
-                    {evidenceModeActive ?
-                        <React.Fragment>
-                            <button
-                                className="evidence-toggle-button"
-                                onClick={this.toggleShowEvidenceMode.bind(this)}
-                            >
-                                Stop Tagging
-                            </button>
-                            <span className="form-hint-text">
-                                Highlight parts of the text to save as evidence.
-                            </span>
-                        </React.Fragment>
-                        :
-                        <button
-                            className="evidence-toggle-button"
-                            onClick={this.toggleShowEvidenceMode.bind(this)}
-                        >
-                            Tag Evidence
-                        </button>
-                    }
-
-                    {question.evidenceValues && question.evidenceValues.length ?
-                        <div className="evidence-values-section">
-                            <label>Evidence:</label>
-                            <div className="evidence-values">
-                                {question.evidenceValues.map((value, i) => {
-                                    <span className="evidence-value" key={i}>
-                                        {value}
-                                    </span>
-                                })}
-                            </div>
-                        </div>
-                        :
-                        ''
-                    }
-                </div>
-            </React.Fragment>
+            <Question key={id}
+                question_text={question.text}
+                handleSegmentResponseChange={this.handleSegmentResponseChange} />
         ))
     }
 

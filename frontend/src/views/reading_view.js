@@ -48,7 +48,7 @@ class Question extends React.Component {
 
 
     render(){
-        const evidenceModeActive = this.state.evidenceModeActive;
+        const evidenceModeActive = this.props.evidenceModeActive;
         return(
             <div className={"container"}>
                 <div className="mb-2">
@@ -65,26 +65,19 @@ class Question extends React.Component {
 
                 </div>
                 <div className="evidence-section">
-                    {evidenceModeActive ?
-                        <React.Fragment>
-                            <button
-                                className="evidence-toggle-button"
-                                onClick={this.props.toggleShowEvidenceMode}
-                            >
-                                Stop Tagging
-                            </button>
-                            <span className="form-hint-text">
-                            Highlight parts of the text to save as evidence.
-                            </span>
-                        </React.Fragment>
-                        :
+                    <React.Fragment>
                         <button
                             className="evidence-toggle-button"
                             onClick={this.props.toggleShowEvidenceMode}
                         >
-                            Tag Evidence
+                            {evidenceModeActive ? 'Stop Tagging' : 'Tag Evidence'}
                         </button>
-                    }
+                        {evidenceModeActive &&
+                            <span className="form-hint-text">
+                                Highlight parts of the text to save as evidence.
+                            </span>
+                        }
+                    </React.Fragment>
 
                     {this.state.evidenceValues && this.state.evidenceValues.length ?
                         <div className="evidence-values-section">
@@ -109,6 +102,7 @@ class Question extends React.Component {
 Question.propTypes = {
     key: PropTypes.number,
     question_text: PropTypes.string,
+    evidenceModeActive: PropTypes.bool,
     handleSegmentResponseChange: PropTypes.func,
     toggleShowEvidenceMode: PropTypes.func,
 }

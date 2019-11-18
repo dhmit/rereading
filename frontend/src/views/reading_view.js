@@ -14,6 +14,7 @@ class Segment extends React.Component {
         super(props);
     }
 
+
     render() {
         const segment_lines = this.props.text.split("\r\n");
         return (
@@ -21,6 +22,7 @@ class Segment extends React.Component {
                 className="segment my-3"
                 ref={this.props.segment_ref}
                 onScroll={this.props.handleScroll}
+                onMouseUp={this.props.handleSelectionDragEnd}
             >
                 {segment_lines.map(
                     (line, k) => (<p key={k}>{line}</p>)
@@ -32,6 +34,7 @@ class Segment extends React.Component {
 Segment.propTypes = {
     text: PropTypes.string,
     handleScroll: PropTypes.func,
+    handleSelectionDragEnd: PropTypes.func,
     segment_ref: PropTypes.shape({current: PropTypes.instanceOf(Element)})
 };
 
@@ -39,16 +42,10 @@ class Question extends React.Component {
     constructor (props){
         super(props);
         this.state = {
-            evidenceModeActive: false,
             evidenceValues: [],
         }
     }
 
-    toggleShowEvidenceMode() {
-        this.setState({
-            evidenceModeActive: !this.state.evidenceModeActive,
-        });
-    }
 
     render(){
         const evidenceModeActive = this.state.evidenceModeActive;
@@ -72,7 +69,7 @@ class Question extends React.Component {
                         <React.Fragment>
                             <button
                                 className="evidence-toggle-button"
-                                onClick={this.toggleShowEvidenceMode.bind(this)}
+                                onClick={this.props.toggleShowEvidenceMode}
                             >
                                 Stop Tagging
                             </button>
@@ -83,7 +80,7 @@ class Question extends React.Component {
                         :
                         <button
                             className="evidence-toggle-button"
-                            onClick={this.toggleShowEvidenceMode.bind(this)}
+                            onClick={this.props.toggleShowEvidenceMode}
                         >
                             Tag Evidence
                         </button>
@@ -113,6 +110,7 @@ Question.propTypes = {
     key: PropTypes.number,
     question_text: PropTypes.string,
     handleSegmentResponseChange: PropTypes.func,
+    toggleShowEvidenceMode: PropTypes.func,
 }
 
 class NavBar extends React.Component {
@@ -239,6 +237,8 @@ export class ReadingView extends React.Component {
             segmentQuestionNum: 0,
             segmentResponseArray: [],
             student_id: 15, //temporary
+            evidenceModeActive: false,
+            current_selection: null,
         };
         this.csrftoken = getCookie('csrftoken');
 
@@ -271,7 +271,13 @@ export class ReadingView extends React.Component {
             const response_json = await response.json();
             const document = response_json.document;
             const reading_data = response_json.reading_data;
-            const interval_timer = setInterval(() => this.recordScroll(), 2000);
+            const interval_timer = setInterval(() => this.recordScroll(), 100000000);
+            // CHANGE ME BACK!
+            // CHANGE ME BACK!
+            // CHANGE ME BACK!
+            // CHANGE ME BACK!
+            // CHANGE ME BACK!
+            // CHANGE ME BACK!
             this.setState({document, interval_timer, reading_data});
             this.sendData(true);
         } catch (e) {
@@ -409,6 +415,11 @@ export class ReadingView extends React.Component {
         });
     }
 
+    handleSelectionDragEnd() {
+        this.setState({
+            current_selection: window.getSelection(),
+        });
+    }
 
     /*addEvidence(question_id, event) {
     addEvidence() {
@@ -435,14 +446,12 @@ export class ReadingView extends React.Component {
         return questions.map((question, id) => (
             <Question key={id}
                 question_text={question.text}
-                handleSegmentResponseChange={this.handleSegmentResponseChange} />
+                handleSegmentResponseChange={this.handleSegmentResponseChange}
+                toggleShowEvidenceMode={() => this.toggleShowEvidenceMode()} />
         ))
     }
 
     render() {
-
-
-
         const handlePopoverClose = () => {
             if (window.getSelection) {
                 if (window.getSelection().empty) {  // Chrome
@@ -469,6 +478,9 @@ export class ReadingView extends React.Component {
 
         const document_questions = doc.questions;
         const evidenceModeActive = this.state.evidenceModeActive;
+        const open_popover = evidenceModeActive && (this.state.current_selection !== null);
+
+        console.log(this.state.current_selection);
 
         return (
             <div className={`container ${evidenceModeActive ? '--evidence-mode-active' : ''}`}>
@@ -481,28 +493,30 @@ export class ReadingView extends React.Component {
                     />
                     :
                     <div>
-                        <Popover
-                            id="reader-tooltip-popover"
-                            open={evidenceModeActive && window.getSelection().anchorNode}
-                            anchorEl={window.getSelection().anchorNode}
-                            onClose={handlePopoverClose}
-                            anchorOrigin={{
-                                vertical: window.getSelection().anchorOffset,
-                                horizontal: 'center',
-                            }}
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'center',
-                            }}
-                        >
-                            <React.Fragment>
-                                <Button aria-label="Edit" onClick={() =>{}}>
-                                    Add evidence
-                                </Button>
+                        {open_popover &&
+                            <Popover
+                                id="reader-tooltip-popover"
+                                anchorEl={this.state.current_selection.anchorNode}
+                                open={true}
+                                onClose={handlePopoverClose}
+                                anchorOrigin={{
+                                    vertical: this.state.current_selection.anchorOffset,
+                                    horizontal: 'center',
+                                }}
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'center',
+                                }}
+                            >
+                                <React.Fragment>
+                                    <Button aria-label="Edit" onClick={() => {
+                                    }}>
+                                        Add evidence
+                                    </Button>
 
-                            </React.Fragment>
-                        </Popover>
-
+                                </React.Fragment>
+                            </Popover>
+                        }
                         <React.Fragment>
                             <div className={"row"}>
                                 <div className={'col-8'}>
@@ -511,6 +525,7 @@ export class ReadingView extends React.Component {
                                         text={current_segment.text}
                                         handleScroll={(e) => this.handleScroll(e)}
                                         segment_ref={this.segment_ref}
+                                        handleSelectionDragEnd={() => this.handleSelectionDragEnd()}
                                     />
                                     <NavBar
                                         document_segments={doc.segments}

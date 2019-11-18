@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import {getCookie, TimeIt} from "../common";
 import './reading_view.css';
-import {Button, Popover } from '@material-ui/core';
+// import {Button, Popover } from '@material-ui/core';
 
 
 /*
@@ -68,7 +68,7 @@ class Question extends React.Component {
                     <React.Fragment>
                         <button
                             className="evidence-toggle-button"
-                            onClick={this.props.toggleShowEvidenceMode}
+                            onClick={(e) => this.props.toggleAddEvidenceMode(e)}
                         >
                             {evidenceModeActive ? 'Stop Tagging' : 'Tag Evidence'}
                         </button>
@@ -104,7 +104,7 @@ Question.propTypes = {
     question_text: PropTypes.string,
     evidenceModeActive: PropTypes.bool,
     handleSegmentResponseChange: PropTypes.func,
-    toggleShowEvidenceMode: PropTypes.func,
+    toggleAddEvidenceMode: PropTypes.func,
 }
 
 class NavBar extends React.Component {
@@ -403,7 +403,12 @@ export class ReadingView extends React.Component {
         this.setState({overview: true})
     }
 
-    toggleShowEvidenceMode() {
+    toggleAddEvidenceMode(e) {
+        const question = e.target;
+        if (this.state.evidenceModeActive) {
+            this.addEvidence(question);
+        }
+
         this.setState({
             evidenceModeActive: !this.state.evidenceModeActive,
         });
@@ -415,49 +420,39 @@ export class ReadingView extends React.Component {
         });
     }
 
-    /*addEvidence(question_id, event) {
-    addEvidence() {
+    addEvidence(question) {
         const _document = Object.assign({}, this.state.document);
-        const selectedQuestion = question.id;
+        console.log(question);
+        // const selectedQuestion = question.id;
 
         // get active question that is being tagged
         // does selected question have an Evidence Values array?
-        let evidence = window.getSelection().toString();
-        if(this.state.segment_response_array){
-            window.getSelection().toString();
-        }
+        // let evidence = window.getSelection().toString();
+        // if(this.state.segment_response_array){
+        //     window.getSelection().toString();
+        // }
 
-           const selection = window.getSelection();
-            const getRange = selection.getRangeAt(0);
-            setAnchorEl(getRange);
+        // const selection = window.getSelection();
+        // const getRange = selection.getRangeAt(0);
+        // setAnchorEl(getRange);
 
         this.setState({
             document: _document,
         });
-    }*/
+    }
 
     buildQuestionFields(questions) {
         return questions.map((question, id) => (
             <Question key={id}
                 question_text={question.text}
+                evidenceModeActive={this.state.evidenceModeActive}
                 handleSegmentResponseChange={this.handleSegmentResponseChange}
-                toggleShowEvidenceMode={() => this.toggleShowEvidenceMode()} />
+                toggleAddEvidenceMode={() => this.toggleAddEvidenceMode()}
+            />
         ))
     }
 
     render() {
-        const handlePopoverClose = () => {
-            if (window.getSelection) {
-                if (window.getSelection().empty) {  // Chrome
-                    window.getSelection().empty();
-                } else if (window.getSelection().removeAllRanges) {  // Firefox
-                    window.getSelection().removeAllRanges();
-                }
-            } else if (document.selection) {  // IE?
-                document.selection.empty();
-            }
-        };
-
         const doc = this.state.document;
         if (!doc) {
             return (
@@ -472,7 +467,6 @@ export class ReadingView extends React.Component {
 
         const document_questions = doc.questions;
         const evidenceModeActive = this.state.evidenceModeActive;
-        const open_popover = evidenceModeActive && (this.state.current_selection !== null);
 
         console.log(this.state.current_selection);
 
@@ -487,30 +481,6 @@ export class ReadingView extends React.Component {
                     />
                     :
                     <div>
-                        {open_popover &&
-                            <Popover
-                                id="reader-tooltip-popover"
-                                anchorEl={this.state.current_selection.anchorNode}
-                                open={true}
-                                onClose={handlePopoverClose}
-                                anchorOrigin={{
-                                    vertical: this.state.current_selection.anchorOffset,
-                                    horizontal: 'center',
-                                }}
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'center',
-                                }}
-                            >
-                                <React.Fragment>
-                                    <Button aria-label="Edit" onClick={() => {
-                                    }}>
-                                        Add evidence
-                                    </Button>
-
-                                </React.Fragment>
-                            </Popover>
-                        }
                         <React.Fragment>
                             <div className={"row"}>
                                 <div className={'col-8'}>

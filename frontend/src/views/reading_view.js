@@ -161,6 +161,7 @@ export class ReadingView extends React.Component {
             interval_timer: null,
             segmentQuestionNum: 0,
             segmentResponseArray: [],
+            documentResponseArray: [],
             student_id: 15, //temporary
         };
         this.csrftoken = getCookie('csrftoken');
@@ -205,30 +206,32 @@ export class ReadingView extends React.Component {
      * corresponds to the segment number of the segments and is updated
      * with new segment data every time the buttons are clicked
      */
-    sendData(firstTime){
+    async sendData(firstTime){
         if (!firstTime && this.state.rereading) {
             const time = this.state.timer.stop();
             this.setState({scroll_data: []});
             const url = '/api/add-response/';
             const reading_data = {
                 reading_data_id: this.state.reading_data.id,
-                segment_responses: this.state.segmentResponseArray,
                 segment_data: [{
                     id: this.state.document.segments[this.state.segment_num].id,
                     scroll_data: JSON.stringify(this.state.scroll_data),
                     view_time: time,
                     is_rereading: this.state.rereading,
+                    segment_responses: this.state.segmentResponseArray,
                 }],
+                document_responses: this.state.documentResponseArray,
             };
-            fetch(url, {
+            const response = await fetch(url, {
                 method: 'POST',
                 body: JSON.stringify(reading_data),
                 headers: {
                     'Content-type': 'application/json',
                     'X-CSRFToken': this.csrftoken,
                 }
-            }).then(res => res.json()).then(response => console.log(JSON.stringify(response)))
-                .catch(err => console.log(err));
+            });
+            const new_reading_data = await response.json();
+            this.setState({reading_data: new_reading_data});
         }
         const timer = new TimeIt();
         this.setState({timer});
@@ -267,6 +270,27 @@ export class ReadingView extends React.Component {
         question_entry.response = event.target.value;
 
         this.setState({segmentResponseArray});
+    }
+
+    handleDocumentResponseChange(question_id, event) {
+        const documentResponseArray = this.state.documentResponseArray.slice();
+
+        let document_entry = null;
+        for (let el of documentResponseArray) {
+            if (el.id === question_id) {
+                document_entry = el;
+            }
+        }
+
+        if (document_entry === null) {
+            document_entry = {id: question_id};
+            documentResponseArray.push(document_entry);
+        }
+
+        document_entry.response = event.target.value;
+        document_entry.response_segment = this.state.segment_num;
+
+        this.setState({documentResponseArray});
     }
 
     prevSegment () {
@@ -346,6 +370,25 @@ export class ReadingView extends React.Component {
                     />
                 </div>
             </React.Fragment>
+        ));
+    }
+
+    populateDocumentQuestions(document_questions)
+    {
+        return document_questions.map((question, id) => (
+            <React.Fragment key={id}>
+                <div className="mb-2">
+                    <div className='document-question-text'>
+                        {question.text}
+                    </div>
+                    <textarea
+                        className='form-control'
+                        onChange={
+                            this.handleDocumentResponseChange.bind(this, question.id)
+                        }
+                    />
+                </div>
+            </React.Fragment>
         ))
     }
 
@@ -394,8 +437,8 @@ export class ReadingView extends React.Component {
 
         // Generate response fields for each of the questions
         const segment_response_fields = this.buildQuestionFields(segment_questions);
+        const document_questions = this.populateDocumentQuestions(doc.questions);
 
-        const document_questions = doc.questions;
         return (
             <div className="container">
                 <h1 className="display-4 py-3 pr-3">{doc.title}</h1>
@@ -437,11 +480,7 @@ export class ReadingView extends React.Component {
                                     {document_questions && (
                                         <div>
                                             <p><b>Document Questions: </b></p>
-                                            {document_questions.map((el,i) =>
-                                                <p key={i}>
-                                                    {el.is_overview_question ? null : el.text}
-                                                </p>
-                                            )}
+                                            {document_questions}
                                         </div>
                                     )}
                                 </div>

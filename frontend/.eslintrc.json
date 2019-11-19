@@ -16,6 +16,7 @@
 
     "rules": {
         "camelcase": ["off"],
+        "eqeqeq": ["error", "always"],
         "indent": ["error", 4],
         "line-endings": ["off"],
         "max-len": ["error", {

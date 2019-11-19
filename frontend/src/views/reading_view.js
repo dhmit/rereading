@@ -4,6 +4,12 @@ import PropTypes from 'prop-types';
 import {getCookie, TimeIt} from "../common";
 import './reading_view.css';
 
+// enum representing which view to show in reading view
+const VIEWS = {
+    INSTRUCTIONS_NAME: 0,
+    READING: 1,
+    OVERVIEW: 2,
+};
 
 /*
  * Represents the actual Segment window
@@ -108,7 +114,7 @@ NavBar.propTypes = {
     handleJumpToButton: PropTypes.func,
 };
 
-class OverviewWindow extends React.Component {
+class OverviewView extends React.Component {
     render() {
         const full_document_text = [];
         this.props.all_segments.map((el) => full_document_text.push(el.text.split("\r\n")));
@@ -122,7 +128,7 @@ class OverviewWindow extends React.Component {
                 <div className="col-8">
                     <div className="scroll-overview">
                         {full_document_text.map((segment_text_array) => (
-                            segment_text_array.map((text,i) => (
+                            segment_text_array.map((text, i) => (
                                 <p key={i}>{text}</p>
                             ))
                         ))}
@@ -138,19 +144,66 @@ class OverviewWindow extends React.Component {
         );
     }
 }
-OverviewWindow.propTypes = {
+OverviewView.propTypes = {
     all_segments: PropTypes.array,
     document_questions: PropTypes.array,
     overview_questions: PropTypes.array,
     buildQuestionFields: PropTypes.func,
 };
 
+export class InstructionsNameView extends React.Component {
+    render() {
+        return (
+            <div className={"container"}>
+                <div>
+                    Do a close reading of the text by following
+                    these steps:
+                    Read each segment of the text one segment at a time, from
+                    segment 1 to segment 5, while answering
+                    questions for each segment along the way.
+                    <ol>
+                        <li>After your first reading of a segment, click the “reread”
+                        button in order to access the questions for that particular
+                        segment.</li>
+                        <li>Provide an answer to each question posed for that segment,
+                        including the two “common questions.”</li>
+                        <li>After you finish answering the questions for that segment,
+                        click the “next” button in order to access the next segment.</li>
+                        <li>For each segment, highlight passages that provide evidence
+                        to support your answer to common question #2.</li>
+                    </ol>
+                </div>
+                <div className={"input-group"}>
+                    <label>What is your name?</label>
+                    <input
+                        className={"form-control"}
+                        type={"text"}
+                        onChange={(e) => this.props.handleStudentName(e)}
+                        required
+                    />
+                    <div className={"input-group-append"}>
+                        <button
+                            className={"btn btn-outline-dark "}
+                            onClick={() => this.props.startReading()}
+                        >
+                            Start Reading
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}
+InstructionsNameView.propTypes = {
+    handleStudentName: PropTypes.func,
+    startReading: PropTypes.func,
+};
 
 export class ReadingView extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            is_reading: false,
+            current_view: VIEWS.INSTRUCTIONS_NAME,
             student_name: "",
             segment_num: 0,
             timer: null,
@@ -165,7 +218,6 @@ export class ReadingView extends React.Component {
             segmentQuestionNum: 0,
             segmentResponseArray: [],
             documentResponseArray: [],
-            student_id: 15, //temporary
         };
         this.csrftoken = getCookie('csrftoken');
 
@@ -177,6 +229,8 @@ export class ReadingView extends React.Component {
         this.handleJumpToFieldChange = this.handleJumpToFieldChange.bind(this);
         this.handleJumpToButton = this.handleJumpToButton.bind(this);
         this.buildQuestionFields = this.buildQuestionFields.bind(this);
+        this.startReading = this.startReading.bind(this);
+        this.handleStudentName = this.handleStudentName.bind(this);
     }
 
     async startReading() {
@@ -198,7 +252,12 @@ export class ReadingView extends React.Component {
             const document = response_json.document;
             const reading_data = response_json.reading_data;
             const interval_timer = setInterval(() => this.recordScroll(), 2000);
-            this.setState({document, interval_timer, reading_data, is_reading: true});
+            this.setState({
+                document,
+                interval_timer,
+                reading_data,
+                current_view: VIEWS.READING,
+            });
             this.sendData(true);
         } catch (e) {
             console.log(e);
@@ -339,7 +398,7 @@ export class ReadingView extends React.Component {
     }
 
     handleJumpToFieldKeyDown = (e) => {
-        if (e.key == 'Enter') {
+        if (e.key === 'Enter') {
             this.handleJumpToButton(); //The enter key should be treated the same the jump button
         }
     }
@@ -354,7 +413,7 @@ export class ReadingView extends React.Component {
     };
 
     toOverview () {
-        this.setState({overview: true})
+        this.setState({current_view: VIEWS.OVERVIEW})
     }
 
     buildQuestionFields(questions, is_document_question) {
@@ -384,41 +443,21 @@ export class ReadingView extends React.Component {
     }
 
     render() {
-        if (!this.state.is_reading){
+        if (this.state.current_view === VIEWS.INSTRUCTIONS_NAME) {
             return (
-                <div className={"container"}>
-                    <h3
-                        className={"text-center mt-5"}
-                    >
-                        What is your name?
-                    </h3>
-                    <div className={"input-group"}>
-                        <input
-                            className={"form-control"}
-                            type={"text"}
-                            onChange={(e) => this.handleStudentName(e)}
-                            required
-                        />
-                        <div className={"input-group-append"}>
-                            <button
-                                className={"btn btn-outline-dark "}
-                                onClick={() => this.startReading()}
-                            >
-                                Start Reading
-                            </button>
-                        </div>
+                <InstructionsNameView
+                    handleStudentName={this.handleStudentName}
+                    startReading={this.startReading}
+                />
 
-                    </div>
-                </div>
             )
         }
 
         const doc = this.state.document;
         if (!doc) {
-            return (
-                <div>Loading!</div>
-            );
+            return ( <div>Loading!</div> );
         }
+
         const current_segment = doc.segments[this.state.segment_num];
         const segment_questions = current_segment.questions;
         const document_questions = doc.document_questions;
@@ -432,14 +471,15 @@ export class ReadingView extends React.Component {
             <div className="container">
                 <h1 className="display-4 py-3 pr-3">{doc.title}</h1>
 
-                {this.state.overview ?
-                    <OverviewWindow
+                {this.state.current_view === VIEWS.OVERVIEW &&
+                    <OverviewView
                         all_segments={doc.segments}
                         document_questions={document_questions}
                         overview_questions={overview_questions}
                         buildQuestionFields={this.buildQuestionFields}
                     />
-                    :
+                }
+                {this.state.current_view === VIEWS.READING &&
                     <React.Fragment>
                         <div className="row">
                             <div className='col-8'>

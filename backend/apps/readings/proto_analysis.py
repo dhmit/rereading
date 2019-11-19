@@ -196,7 +196,6 @@ class PrototypeRereadingAnalysis:
         prints it in a nice readable format.
         :return: the info wed like to put on js
         """
-
         questions = []
         contexts = []
         student_data = self.responses[:]

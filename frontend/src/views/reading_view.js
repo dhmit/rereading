@@ -42,26 +42,27 @@ class NavBar extends React.Component {
 
         return (
             <div id="nav_panel">
-                <div className={"row"}>
-                    <div className={"col-2"}>
+                <div className="row">
+                    <div className="col-2">
                         {this.props.segment_num > 0 &&
                         <button
-                            className={"btn btn-outline-dark mr-2"}
+                            className="btn btn-outline-dark"
                             onClick={() => this.props.prevSegment()}
                         >
                             Back
                         </button>
                         }
                     </div>
-                    <div className={"col-4 input-group"}>
+                    <div className="col-6 input-group">
                         <input
-                            className={"form-control"}
+                            className="form-control "
                             type="text"
-                            placeholder={"Page #"}
+                            placeholder="Page #"
                             onChange={this.props.handleJumpToFieldChange}
+                            onKeyDown={this.props.handleJumpToFieldKeyDown}
                         />
                         <button
-                            className={"btn btn-outline-dark form-control"}
+                            className="btn btn-outline-dark form-control"
                             onClick={this.props.handleJumpToButton}
                             // Checks isNaN so that an empty string
                             // doesn't count as 0
@@ -72,16 +73,16 @@ class NavBar extends React.Component {
                             Jump
                         </button>
                     </div>
-                    <div className={"col-4"}>
+                    <div className="col-4">
                         {!on_last_segment_and_rereading
                             ? <button
-                                className={"btn btn-outline-dark"}
+                                className="btn btn-outline-dark"
                                 onClick={() => this.props.nextSegment()}
                             >
                                 {this.props.rereading ? 'Next' : 'Reread'}
                             </button>
                             : <button
-                                className={"btn btn-outline-dark"}
+                                className="btn btn-outline-dark"
                                 onClick={() => this.props.toOverview()}
                             >
                                 To Overview
@@ -102,6 +103,7 @@ NavBar.propTypes = {
     prevSegment: PropTypes.func,
     nextSegment: PropTypes.func,
     toOverview: PropTypes.func,
+    handleJumpToFieldKeyDown: PropTypes.func,
     handleJumpToFieldChange: PropTypes.func,
     handleJumpToButton: PropTypes.func,
 }
@@ -111,8 +113,8 @@ class OverviewWindow extends React.Component {
         const full_document_text = [];
         this.props.all_segments.map((el) => full_document_text.push(el.text.split("\r\n")));
         return (
-            <div className={"row"}>
-                <div className={"col-8"}>
+            <div className="row">
+                <div className="col-8">
                     <div className="scroll_overview">
                         {full_document_text.map((segment_text_array) => (
                             segment_text_array.map((text,i) => (
@@ -121,7 +123,7 @@ class OverviewWindow extends React.Component {
                         ))}
                     </div>
                 </div>
-                <div className={"col-4"}>
+                <div className="col-4">
                     <p><b>Document Questions</b></p>
                     {this.props.document_questions.map((el, i) => (
                         <p key={i}>{el.is_overview_question ? null : el.text}</p>)
@@ -145,6 +147,8 @@ export class ReadingView extends React.Component {
     constructor(props){
         super(props);
         this.state = {
+            is_reading: false,
+            student_name: "",
             segment_num: 0,
             timer: null,
             scroll_top: 0,
@@ -171,12 +175,12 @@ export class ReadingView extends React.Component {
         this.handleJumpToButton = this.handleJumpToButton.bind(this);
     }
 
-    async componentDidMount() {
+    async startReading() {
         try {
             // Hard code the document we know exists for now -- generalize later...
             const url = '/api/documents/1/';
             const data = {
-                name: 'SOMEONE',
+                name: this.state.student_name,
             };
             const response = await fetch(url, {
                 method: 'POST',
@@ -190,7 +194,7 @@ export class ReadingView extends React.Component {
             const document = response_json.document;
             const reading_data = response_json.reading_data;
             const interval_timer = setInterval(() => this.recordScroll(), 2000);
-            this.setState({document, interval_timer, reading_data});
+            this.setState({document, interval_timer, reading_data, is_reading: true});
             this.sendData(true);
         } catch (e) {
             console.log(e);
@@ -225,10 +229,8 @@ export class ReadingView extends React.Component {
                     'Content-type': 'application/json',
                     'X-CSRFToken': this.csrftoken,
                 }
-
             });
             const new_reading_data = await response.json();
-            console.log(new_reading_data);
             this.setState({reading_data: new_reading_data});
         }
         const timer = new TimeIt();
@@ -332,6 +334,12 @@ export class ReadingView extends React.Component {
         }
     }
 
+    handleJumpToFieldKeyDown = (e) => {
+        if (e.key == 'Enter') {
+            this.handleJumpToButton(); //The enter key should be treated the same the jump button
+        }
+    }
+
     handleJumpToFieldChange = (e) => {
         let numericValue = parseInt(e.target.value) - 1;
         this.setState({jump_to_value: numericValue});
@@ -348,23 +356,25 @@ export class ReadingView extends React.Component {
     buildQuestionFields(questions) {
         return questions.map((question, id) => (
             <React.Fragment key={id}>
-                <div className="mb-2">
-                    <div className='segment-question-text'>
+                <div className="mb-5">
+                    <div className='segment-question-text question-text'>
                         {question.text}
                     </div>
                     <textarea
-                        className={'form-control'}
+                        className='form-control form-control-lg questions_boxes'
+                        id="exampleFormControlTextarea1"
+                        rows="4"
                         onChange={
                             this.handleSegmentResponseChange.bind(this, question.id)
                         }
                     />
-
                 </div>
             </React.Fragment>
-        ))
+        ));
     }
 
-    populateDocumentQuestions(document_questions) {
+    populateDocumentQuestions(document_questions)
+    {
         return document_questions.map((question, id) => (
             <React.Fragment key={id}>
                 <div className="mb-2">
@@ -382,7 +392,40 @@ export class ReadingView extends React.Component {
         ))
     }
 
+    handleStudentName(e) {
+        this.setState({student_name: e.target.value});
+    }
+
     render() {
+        if (!this.state.is_reading){
+            return (
+                <div className={"container"}>
+                    <h3
+                        className={"text-center mt-5"}
+                    >
+                        What is your name?
+                    </h3>
+                    <div className={"input-group"}>
+                        <input
+                            className={"form-control"}
+                            type={"text"}
+                            onChange={(e) => this.handleStudentName(e)}
+                            required
+                        />
+                        <div className={"input-group-append"}>
+                            <button
+                                className={"btn btn-outline-dark "}
+                                onClick={() => this.startReading()}
+                            >
+                                Start Reading
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            )
+        }
+
         const doc = this.state.document;
         if (!doc) {
             return (
@@ -394,12 +437,11 @@ export class ReadingView extends React.Component {
 
         // Generate response fields for each of the questions
         const segment_response_fields = this.buildQuestionFields(segment_questions);
-
         const document_questions = this.populateDocumentQuestions(doc.questions);
 
         return (
-            <div className={"container"}>
-                <h1 className={"display-4 py-3 pr-3"}>{doc.title}</h1>
+            <div className="container">
+                <h1 className="display-4 py-3 pr-3">{doc.title}</h1>
 
                 {this.state.overview ?
                     <OverviewWindow
@@ -408,8 +450,8 @@ export class ReadingView extends React.Component {
                     />
                     :
                     <React.Fragment>
-                        <div className={"row"}>
-                            <div className={'col-8'}>
+                        <div className="row">
+                            <div className='col-8'>
                                 <p>Segment Number: {this.state.segment_num + 1}</p>
                                 <Segment
                                     text={current_segment.text}
@@ -427,11 +469,12 @@ export class ReadingView extends React.Component {
                                     toOverview={this.toOverview}
                                     handleJumpToFieldChange={this.handleJumpToFieldChange}
                                     handleJumpToButton={this.handleJumpToButton}
+                                    handleJumpToFieldKeyDown={this.handleJumpToFieldKeyDown}
                                 />
                             </div>
 
                             {this.state.rereading &&
-                                <div className={"analysis col-4"}>
+                                <div className="analysis col-4 questions-overview">
                                     {segment_response_fields}
 
                                     {document_questions && (

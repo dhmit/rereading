@@ -357,7 +357,7 @@ export class ReadingView extends React.Component {
         this.setState({overview: true})
     }
 
-    buildQuestionFields(questions) {
+    buildQuestionFields(questions, is_document_question) {
         return questions.map((question, id) => (
             <React.Fragment key={id}>
                 <div className="mb-5">
@@ -369,31 +369,14 @@ export class ReadingView extends React.Component {
                         id="exampleFormControlTextarea1"
                         rows="4"
                         onChange={
-                            this.handleSegmentResponseChange.bind(this, question.id)
+                            is_document_question
+                                ? this.handleDocumentResponseChange.bind(this, question.id)
+                                : this.handleSegmentResponseChange.bind(this, question.id)
                         }
                     />
                 </div>
             </React.Fragment>
         ));
-    }
-
-    populateDocumentQuestions(document_questions)
-    {
-        return document_questions.map((question, id) => (
-            <React.Fragment key={id}>
-                <div className="mb-2">
-                    <div className='document-question-text'>
-                        {question.text}
-                    </div>
-                    <textarea
-                        className='form-control'
-                        onChange={
-                            this.handleDocumentResponseChange.bind(this, question.id)
-                        }
-                    />
-                </div>
-            </React.Fragment>
-        ))
     }
 
     handleStudentName(e) {
@@ -442,8 +425,8 @@ export class ReadingView extends React.Component {
         const overview_questions = doc.overview_questions;
 
         // Generate response fields for each of the questions
-        const segment_response_fields = this.buildQuestionFields(segment_questions);
-        const document_response_fields = this.buildQuestionFields(document_questions);
+        const segment_response_fields = this.buildQuestionFields(segment_questions, false);
+        const document_response_fields = this.buildQuestionFields(document_questions, true);
 
         return (
             <div className="container">
@@ -483,14 +466,8 @@ export class ReadingView extends React.Component {
 
                             {this.state.rereading &&
                                 <div className="col-4 questions-overview">
+                                    {document_response_fields}
                                     {segment_response_fields}
-
-                                    {document_questions && (
-                                        <div>
-                                            <p><b>Document Questions</b></p>
-                                            {document_response_fields}
-                                        </div>
-                                    )}
                                 </div>
                             }
                         </div>
@@ -498,6 +475,5 @@ export class ReadingView extends React.Component {
                 }
             </div>
         );
-
     }
 }

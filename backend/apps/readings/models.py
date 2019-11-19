@@ -74,6 +74,9 @@ class Student(models.Model):
     """
     name = models.TextField(default='')
 
+    def __str__(self):
+        return f'{self.pk} - {self.name}'
+
 
 class Question(models.Model):
     """
@@ -82,6 +85,9 @@ class Question(models.Model):
     """
     text = models.TextField()
     response_word_limit = models.IntegerField(default=0, null=True)
+
+    def __str__(self):
+        return self.text
 
     class Meta:
         # as an abstract base class, Django won't create separate database tables for Question and
@@ -191,8 +197,8 @@ class SegmentQuestionResponse(models.Model):
         on_delete=models.CASCADE,
         related_name='segment_question'
     )
-    student_reading_data = models.ForeignKey(
-        StudentReadingData,
+    student_segment_data = models.ForeignKey(
+        StudentSegmentData,
         on_delete=models.CASCADE,
         related_name='segment_responses'
     )
@@ -206,6 +212,8 @@ class DocumentQuestionResponse(models.Model):
           a single response
     """
     response = models.TextField()
+    response_segment = models.IntegerField(default=1)
+
     question = models.ForeignKey(
         DocumentQuestion,
         on_delete=models.CASCADE,
@@ -223,6 +231,16 @@ class DocumentQuestionResponse(models.Model):
 # The models below were in use for the summer prototype and initial development
 # of the rereading app.
 ################################################################################
+class StudentPrototype(models.Model):
+    """
+    A user who reads stories and responds to questions.
+    """
+    name = models.TextField(default='')
+
+    def __str__(self):
+        return f'{self.pk} - {self.name}'
+
+
 class StoryPrototype(models.Model):
     """
     A single story with its text.
@@ -285,7 +303,7 @@ class StudentResponsePrototype(models.Model):
     views = models.TextField(default='')  # do not use me directly! see get_parsed_views()
     scroll_ups = models.IntegerField(default=0)
     student = models.ForeignKey(
-        Student,
+        StudentPrototype,
         on_delete=models.CASCADE,  # if the Student is deleted, all her/his responses are too.
         related_name='student_responses',
     )

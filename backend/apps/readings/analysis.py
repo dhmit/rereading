@@ -14,7 +14,6 @@ class RereadingAnalysis:
     """
 
     def __init__(self):
-        pass
         self.readings = StudentReadingData.objects.all()
 
 

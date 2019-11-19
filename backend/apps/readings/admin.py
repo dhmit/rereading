@@ -9,8 +9,10 @@ from .models import (
     Document,
     Segment,
     SegmentQuestion,
+    SegmentQuestionResponse,
     SegmentContext,
     DocumentQuestion,
+    DocumentQuestionResponse,
     StudentSegmentData,
     StudentReadingData,
 )
@@ -53,6 +55,27 @@ class SegmentAdmin(admin.ModelAdmin):
 
 
 ################################################################################
+# Questions admin views
+################################################################################
+class SegmentQuestionResponseInline(admin.TabularInline):
+    model = SegmentQuestionResponse
+
+
+class DocumentQuestionResponseInline(admin.TabularInline):
+    model = DocumentQuestionResponse
+
+
+class DocumentQuestionAdmin(admin.ModelAdmin):
+    model = DocumentQuestion
+    inlines = [DocumentQuestionResponseInline]
+
+
+class SegmentQuestionAdmin(admin.ModelAdmin):
+    model = SegmentQuestionResponse
+    inlines = [SegmentQuestionResponseInline]
+
+
+################################################################################
 # Student data admin view
 ################################################################################
 class StudentSegmentDataInline(admin.TabularInline):
@@ -64,9 +87,15 @@ class StudentReadingDataAdmin(admin.ModelAdmin):
     inlines = [StudentSegmentDataInline]
 
 
+class StudentSegmentDataAdmin(admin.ModelAdmin):
+    model = StudentSegmentData
+    inlines = [SegmentQuestionResponseInline]
+
+
+admin.site.register(Student)
 admin.site.register(Document, DocumentAdmin)
 admin.site.register(Segment, SegmentAdmin)
-admin.site.register(Student)
 admin.site.register(StudentReadingData, StudentReadingDataAdmin)
-admin.site.register(StudentSegmentData)
-
+admin.site.register(StudentSegmentData, StudentSegmentDataAdmin)
+admin.site.register(SegmentQuestion, SegmentQuestionAdmin)
+admin.site.register(DocumentQuestion, DocumentQuestionAdmin)

@@ -423,18 +423,11 @@ export class ReadingView extends React.Component {
     addEvidence(question) {
         const _document = Object.assign({}, this.state.document);
         console.log(question);
-        // const selectedQuestion = question.id;
 
         // get active question that is being tagged
         // does selected question have an Evidence Values array?
-        // let evidence = window.getSelection().toString();
-        // if(this.state.segment_response_array){
-        //     window.getSelection().toString();
-        // }
-
-        // const selection = window.getSelection();
-        // const getRange = selection.getRangeAt(0);
-        // setAnchorEl(getRange);
+        let evidence = this.state.current_selection.toString();
+        question.evidenceValues.add(evidence);
 
         this.setState({
             document: _document,

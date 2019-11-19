@@ -42,7 +42,9 @@ def reading_view(request, pk):
 def add_response(request):
     """ API endpoint for updating student reading data as the student reads """
     data = request.data
-    serializer = StudentReadingDataSerializer(data=data)
+    reading_data_id = data.get('reading_data_id')
+    reading_data = StudentReadingData.objects.get(pk=reading_data_id)
+    serializer = StudentReadingDataSerializer(instance=reading_data, data=data)
     serializer.is_valid()
     serializer.save()
     return Response(serializer.data)

@@ -5,6 +5,7 @@ Rereading project's "readings" app.
 
 from django.contrib import admin
 from .models import (
+    StudentPrototype,
     Student,
     Document,
     Segment,
@@ -87,10 +88,16 @@ class StudentReadingDataAdmin(admin.ModelAdmin):
     inlines = [StudentSegmentDataInline]
 
 
+class StudentSegmentDataAdmin(admin.ModelAdmin):
+    model = StudentSegmentData
+    inlines = [SegmentQuestionResponseInline]
+
+
+admin.site.register(Student)
+admin.site.register(StudentPrototype)
 admin.site.register(Document, DocumentAdmin)
 admin.site.register(Segment, SegmentAdmin)
-admin.site.register(Student)
 admin.site.register(StudentReadingData, StudentReadingDataAdmin)
-admin.site.register(StudentSegmentData)
+admin.site.register(StudentSegmentData, StudentSegmentDataAdmin)
 admin.site.register(SegmentQuestion, SegmentQuestionAdmin)
 admin.site.register(DocumentQuestion, DocumentQuestionAdmin)

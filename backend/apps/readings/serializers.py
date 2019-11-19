@@ -133,29 +133,15 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
     reading_data_id = serializers.IntegerField(write_only=True)
 
     def update(self, instance, validated_data):
-        # this is a horrible hack. do not do this, friends. (RA)
-        self.create(validated_data)
+        """ Updates a StudentReadingData instance """
 
-    def create(self, validated_data):
-        """
-        Creates or updates a new reading data instance
-        :param validated_data:
-        :return:
-        """
         # Separate out the responses
-        seg_data = validated_data.pop("segment_data")
-        reading_data_id = validated_data.pop("reading_data_id")
-        global_data = validated_data.pop("document_responses")
+        segment_data = validated_data.pop("segment_data")
+        document_responses = validated_data.pop("document_responses")
+        reading_data = instance
 
-        # Create a new reading data instance if one doesn't exist already
-        # with the primary key. It returns a tuple with the StudentReadingData
-        # object and a boolean about whether it created it or not
-        reading_data = StudentReadingData.objects.get(pk=reading_data_id)
-
-        # TODO: Use this when we answer collect the document question responses
-
-        # Link each global response to the reading data
-        for data in global_data:
+        # Link each document response to the reading data
+        for data in document_responses:
             document_question = DocumentQuestion.objects.get(id=data['id'])
             DocumentQuestionResponse.objects.create(
                 student_reading_data=reading_data,
@@ -164,21 +150,19 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
                 response_segment=data['response_segment'],
             )
 
-        # Link each segment response to the reading data
-
-        for data in seg_data:
-            # create seg responses
-
-            segment = Segment.objects.get(id=data['id'])
+        # Save student segment data
+        for this_segment_data in segment_data:
+            segment = Segment.objects.get(id=this_segment_data['id'])
             segment_data = StudentSegmentData.objects.create(
                 segment=segment,
                 reading_data=reading_data,
-                scroll_data=data['scroll_data'],
-                view_time=data['view_time'],
-                is_rereading=data['is_rereading']
+                scroll_data=this_segment_data['scroll_data'],
+                view_time=this_segment_data['view_time'],
+                is_rereading=this_segment_data['is_rereading']
             )
 
-            segment_question_responses = data.pop('segment_responses')
+            # Save responses for this segment
+            segment_question_responses = this_segment_data.pop('segment_responses')
             for response in segment_question_responses:
                 question_id = response.pop('id')
                 question = SegmentQuestion.objects.get(pk=question_id)

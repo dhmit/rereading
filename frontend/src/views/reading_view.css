@@ -36,3 +36,10 @@
     font-family: Perpetua;
     font-size: 16pt;
 }
+
+
+#nav_panel {
+    width: 500px;
+    margin: 0em 0em 0em 8.75em;
+}
+

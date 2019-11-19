@@ -46,19 +46,20 @@ class NavBar extends React.Component {
                     <div className="col-2">
                         {this.props.segment_num > 0 &&
                         <button
-                            className="btn btn-outline-dark mr-2"
+                            className="btn btn-outline-dark"
                             onClick={() => this.props.prevSegment()}
                         >
                             Back
                         </button>
                         }
                     </div>
-                    <div className="col-4 input-group">
+                    <div className="col-6 input-group">
                         <input
-                            className="form-control"
+                            className="form-control "
                             type="text"
                             placeholder="Page #"
                             onChange={this.props.handleJumpToFieldChange}
+                            onKeyDown={this.props.handleJumpToFieldKeyDown}
                         />
                         <button
                             className="btn btn-outline-dark form-control"
@@ -102,6 +103,7 @@ NavBar.propTypes = {
     prevSegment: PropTypes.func,
     nextSegment: PropTypes.func,
     toOverview: PropTypes.func,
+    handleJumpToFieldKeyDown: PropTypes.func,
     handleJumpToFieldChange: PropTypes.func,
     handleJumpToButton: PropTypes.func,
 };
@@ -148,6 +150,8 @@ export class ReadingView extends React.Component {
     constructor(props){
         super(props);
         this.state = {
+            is_reading: false,
+            student_name: "",
             segment_num: 0,
             timer: null,
             scroll_top: 0,
@@ -160,6 +164,7 @@ export class ReadingView extends React.Component {
             interval_timer: null,
             segmentQuestionNum: 0,
             segmentResponseArray: [],
+            documentResponseArray: [],
             student_id: 15, //temporary
         };
         this.csrftoken = getCookie('csrftoken');
@@ -174,12 +179,12 @@ export class ReadingView extends React.Component {
         this.buildQuestionFields = this.buildQuestionFields.bind(this);
     }
 
-    async componentDidMount() {
+    async startReading() {
         try {
             // Hard code the document we know exists for now -- generalize later...
             const url = '/api/documents/1/';
             const data = {
-                name: 'SOMEONE',
+                name: this.state.student_name,
             };
             const response = await fetch(url, {
                 method: 'POST',
@@ -193,7 +198,7 @@ export class ReadingView extends React.Component {
             const document = response_json.document;
             const reading_data = response_json.reading_data;
             const interval_timer = setInterval(() => this.recordScroll(), 2000);
-            this.setState({document, interval_timer, reading_data});
+            this.setState({document, interval_timer, reading_data, is_reading: true});
             this.sendData(true);
         } catch (e) {
             console.log(e);
@@ -205,31 +210,32 @@ export class ReadingView extends React.Component {
      * corresponds to the segment number of the segments and is updated
      * with new segment data every time the buttons are clicked
      */
-    sendData(firstTime){
+    async sendData(firstTime){
         if (!firstTime && this.state.rereading) {
             const time = this.state.timer.stop();
             this.setState({scroll_data: []});
             const url = '/api/add-response/';
             const reading_data = {
                 reading_data_id: this.state.reading_data.id,
-                segment_responses: this.state.segmentResponseArray,
                 segment_data: [{
                     id: this.state.document.segments[this.state.segment_num].id,
                     scroll_data: JSON.stringify(this.state.scroll_data),
                     view_time: time,
                     is_rereading: this.state.rereading,
+                    segment_responses: this.state.segmentResponseArray,
                 }],
+                document_responses: this.state.documentResponseArray,
             };
-            fetch(url, {
+            const response = await fetch(url, {
                 method: 'POST',
                 body: JSON.stringify(reading_data),
                 headers: {
                     'Content-type': 'application/json',
                     'X-CSRFToken': this.csrftoken,
                 }
-
-            }).then(res => res.json()).then(response => console.log(JSON.stringify(response)))
-                .catch(err => console.log(err));
+            });
+            const new_reading_data = await response.json();
+            this.setState({reading_data: new_reading_data});
         }
         const timer = new TimeIt();
         this.setState({timer});
@@ -268,6 +274,27 @@ export class ReadingView extends React.Component {
         question_entry.response = event.target.value;
 
         this.setState({segmentResponseArray});
+    }
+
+    handleDocumentResponseChange(question_id, event) {
+        const documentResponseArray = this.state.documentResponseArray.slice();
+
+        let document_entry = null;
+        for (let el of documentResponseArray) {
+            if (el.id === question_id) {
+                document_entry = el;
+            }
+        }
+
+        if (document_entry === null) {
+            document_entry = {id: question_id};
+            documentResponseArray.push(document_entry);
+        }
+
+        document_entry.response = event.target.value;
+        document_entry.response_segment = this.state.segment_num;
+
+        this.setState({documentResponseArray});
     }
 
     prevSegment () {
@@ -311,6 +338,12 @@ export class ReadingView extends React.Component {
         }
     }
 
+    handleJumpToFieldKeyDown = (e) => {
+        if (e.key == 'Enter') {
+            this.handleJumpToButton(); //The enter key should be treated the same the jump button
+        }
+    }
+
     handleJumpToFieldChange = (e) => {
         let numericValue = parseInt(e.target.value) - 1;
         this.setState({jump_to_value: numericValue});
@@ -341,10 +374,62 @@ export class ReadingView extends React.Component {
                     />
                 </div>
             </React.Fragment>
+        ));
+    }
+
+    populateDocumentQuestions(document_questions)
+    {
+        return document_questions.map((question, id) => (
+            <React.Fragment key={id}>
+                <div className="mb-2">
+                    <div className='document-question-text'>
+                        {question.text}
+                    </div>
+                    <textarea
+                        className='form-control'
+                        onChange={
+                            this.handleDocumentResponseChange.bind(this, question.id)
+                        }
+                    />
+                </div>
+            </React.Fragment>
         ))
     }
 
+    handleStudentName(e) {
+        this.setState({student_name: e.target.value});
+    }
+
     render() {
+        if (!this.state.is_reading){
+            return (
+                <div className={"container"}>
+                    <h3
+                        className={"text-center mt-5"}
+                    >
+                        What is your name?
+                    </h3>
+                    <div className={"input-group"}>
+                        <input
+                            className={"form-control"}
+                            type={"text"}
+                            onChange={(e) => this.handleStudentName(e)}
+                            required
+                        />
+                        <div className={"input-group-append"}>
+                            <button
+                                className={"btn btn-outline-dark "}
+                                onClick={() => this.startReading()}
+                            >
+                                Start Reading
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            )
+        }
+
         const doc = this.state.document;
         if (!doc) {
             return (
@@ -392,6 +477,7 @@ export class ReadingView extends React.Component {
                                     toOverview={this.toOverview}
                                     handleJumpToFieldChange={this.handleJumpToFieldChange}
                                     handleJumpToButton={this.handleJumpToButton}
+                                    handleJumpToFieldKeyDown={this.handleJumpToFieldKeyDown}
                                 />
                             </div>
 

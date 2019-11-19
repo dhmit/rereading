@@ -2,7 +2,6 @@
 These classes describe one way of entering into the web site.
 """
 
-from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -12,7 +11,6 @@ from .serializers import (
     AnalysisSerializer,
     ReadingSerializer,
     StudentReadingDataSerializer,
-    StudentSerializer,
 )
 
 
@@ -42,6 +40,7 @@ def reading_view(request, pk):
 
 @api_view(['POST'])
 def add_response(request):
+    """ API endpoint for updating student reading data as the student reads """
     data = request.data
     serializer = StudentReadingDataSerializer(data=data)
     serializer.is_valid()

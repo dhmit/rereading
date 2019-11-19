@@ -134,7 +134,7 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         # this is a horrible hack. do not do this, friends. (RA)
-        self.create(self, validated_data)
+        self.create(validated_data)
 
     def create(self, validated_data):
         """

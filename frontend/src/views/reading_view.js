@@ -20,7 +20,6 @@ class Segment extends React.Component {
         super(props);
     }
 
-
     render() {
         const segment_lines = this.props.text.split("\r\n");
         return (
@@ -55,8 +54,8 @@ class Question extends React.Component {
     render(){
         const evidenceModeActive = this.props.evidenceModeActive;
         return(
-            <React.Fragment key={this.props.key}>
-                <div className="mb-5">
+            <React.Fragment>
+                <div className="mb-1">
                     <div className='segment-question-text question-text'>
                         {this.props.question_text}
                     </div>
@@ -72,7 +71,7 @@ class Question extends React.Component {
                 <div className="evidence-section">
                     <button
                         className="evidence-toggle-button"
-                        onClick={(e) => this.props.toggleAddEvidenceMode(e)}
+                        onClick={(e) => this.props.toggleAddEvidenceMode(this.props.question_id, e)}
                     >
                         {evidenceModeActive ? 'Stop Tagging' : 'Tag Evidence'}
                     </button>
@@ -103,7 +102,7 @@ class Question extends React.Component {
 }
 
 Question.propTypes = {
-    key: PropTypes.number,
+    question_id: PropTypes.number,
     question_text: PropTypes.string,
     evidenceModeActive: PropTypes.bool,
     handleResponseChange: PropTypes.func,
@@ -303,6 +302,7 @@ export class ReadingView extends React.Component {
         this.buildQuestionFields = this.buildQuestionFields.bind(this);
         this.startReading = this.startReading.bind(this);
         this.handleStudentName = this.handleStudentName.bind(this);
+        this.toggleAddEvidenceMode = this.toggleAddEvidenceMode.bind(this);
     }
 
     async startReading() {
@@ -494,11 +494,12 @@ export class ReadingView extends React.Component {
         this.setState({current_view: VIEWS.OVERVIEW})
     }
 
-    toggleAddEvidenceMode(e) {
-        const question = e.target;
-        if (this.state.evidenceModeActive) {
-            this.addEvidence(question);
-        }
+    toggleAddEvidenceMode(question_id, e) {
+        const button = e.target;
+        console.log(button);
+        //if (this.state.evidenceModeActive) {
+        //    this.addEvidence(question);
+        //}
 
         this.setState({
             evidenceModeActive: !this.state.evidenceModeActive,
@@ -529,6 +530,7 @@ export class ReadingView extends React.Component {
         return questions.map((question, id) => (
             <Question
                 key={id}
+                question_id={id}
                 question_text={question.text}
                 evidenceModeActive={this.state.evidenceModeActive}
                 handleResponseChange={
@@ -536,7 +538,7 @@ export class ReadingView extends React.Component {
                         ? this.handleDocumentResponseChange.bind(this, question.id)
                         : this.handleSegmentResponseChange.bind(this, question.id)
                 }
-                toggleAddEvidenceMode={() => this.toggleAddEvidenceMode()}
+                toggleAddEvidenceMode={this.toggleAddEvidenceMode}
             />
         ));
     }

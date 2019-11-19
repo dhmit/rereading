@@ -5,7 +5,6 @@ Rereading project's "readings" app.
 
 from django.contrib import admin
 from .models import (
-    StudentPrototype,
     Student,
     Document,
     Segment,
@@ -94,7 +93,6 @@ class StudentSegmentDataAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Student)
-admin.site.register(StudentPrototype)
 admin.site.register(Document, DocumentAdmin)
 admin.site.register(Segment, SegmentAdmin)
 admin.site.register(StudentReadingData, StudentReadingDataAdmin)

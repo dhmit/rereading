@@ -270,7 +270,7 @@ export class ReadingView extends React.Component {
      * with new segment data every time the buttons are clicked
      */
     async sendData(firstTime){
-        if (!firstTime && this.state.rereading) {
+        if (!firstTime) {
             const time = this.state.timer.stop();
             this.setState({scroll_data: []});
             const url = '/api/add-response/';

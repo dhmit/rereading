@@ -34,7 +34,7 @@ export class ReadingRedux extends React.Component {
     render() {
         return (
             <div className="row"><div className="col">
-                <a name="overview"><h1>The Reading Redux</h1></a>
+                <a id="overview"><h1>The Reading Redux</h1></a>
                 <h3>The Values of Rereading</h3>
                 <p>
                     In literary studies we have a word to describe a novel that traces the
@@ -115,7 +115,7 @@ export class RereadingSample extends React.Component {
     render() {
         return(
             <div className="row"><div className="col">
-                <a name="sample"><h1>The Reading Sample: Recitatif</h1></a>
+                <a id="sample"><h1>The Reading Sample: Recitatif</h1></a>
                 <h3>
                     <q>The only short story I have ever written, <q>Recitatif,</q> was an 
                     experiment in the removal of all racial codes from a narrative about two
@@ -193,7 +193,7 @@ export class RereadingVisuals extends React.Component {
         return(
             <div className="row">
                 <div className="col">
-                    <a name="visuals"><h1>Rereading Visuals</h1></a>
+                    <a id="visuals"><h1>Rereading Visuals</h1></a>
                     <h3>
                         How does one represent a reader’s multiple readings of one text?
                         How does one visualize a reader’s re-readings?
@@ -209,7 +209,7 @@ export class RereadingValues extends React.Component {
         return(
             <div className="row">
                 <div className="col">
-                    <a name="values"><h1>Rereading Values</h1></a>
+                    <a id="values"><h1>Rereading Values</h1></a>
                     <h3>What are the numbers and statistics saying about rereading?</h3>
                 </div>
             </div>

@@ -4,7 +4,6 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
 import statistics
-from collections import defaultdict
 
 from .models import StudentReadingData, StudentSegmentData
 
@@ -21,10 +20,14 @@ class RereadingAnalysis:
 
     def total_and_median_view_time(self):
         total_time = 0
-        ret_dict = defaultdict(list)
+        ret_dict = {}
         for segment in self.segments:
             view_time = segment.view_time
-            ret_dict[segment.reading_data] = view_time
+            reading_data = segment.reading_data
+            if reading_data not in ret_dict.keys():
+                ret_dict[reading_data] = [view_time]
+            else:
+                ret_dict[reading_data].append(view_time)
             total_time += view_time
         student_total_view_time = []
         if not ret_dict.values():

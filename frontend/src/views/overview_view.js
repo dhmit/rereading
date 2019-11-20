@@ -221,7 +221,7 @@ export class RereadingValues extends React.Component {
     }
 }
 
-export class QuantitiveQuestions extends React.Component {
+export class QuantitativeQuestions extends React.Component {
     render() {
         return (
             <div className = "row">
@@ -279,6 +279,8 @@ export class QuantitiveQuestions extends React.Component {
     }
 }
 
+
+public class Sources
 function render_participate_btn() {
     return (
         <div className="row mt-4"><div className="col text-center">
@@ -302,7 +304,7 @@ export class ProjectView extends React.Component {
                     <RereadingSample />
                     <RereadingVisuals />
                     <RereadingValues />
-                    <QuantitiveQuestions />
+                    <QuantitativeQuestions />
                     {render_participate_btn()}
                 </div>
             </React.Fragment>

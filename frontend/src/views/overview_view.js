@@ -278,6 +278,7 @@ export class QuantitiveQuestions extends React.Component {
         )
     }
 }
+
 function render_participate_btn() {
     return (
         <div className="row mt-4"><div className="col text-center">

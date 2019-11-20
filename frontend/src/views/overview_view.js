@@ -217,6 +217,63 @@ export class RereadingValues extends React.Component {
     }
 }
 
+export class QuantitiveQuestions extends React.Component {
+    render() {
+        return (
+            <div className = "row">
+                <div className="col">
+                    <h1>Quantitative Questions</h1>
+                    <p>
+                        Since this story is an intentionally calculated attempt at crafting a very
+                        particular experience of reading, it prompts the question: What is the
+                        recipe for this narrative experiment’s success? Or, what exactly is the
+                        formula for this particular reading experience?
+                    </p>
+                    <p>So, here are some quantitative questions “Recitatif” raises:</p>
+                    <ol>
+                        <li>
+                            How many stereotypical assumptions about racial identity constitute
+                            enough plausibility to keep the story going without arousing
+                            suspicion in the reader about the story’s intentions?
+                        </li>
+
+                        <li>
+                            What did Toni Morrison determine is the word-count threshold for
+                            such a narrative experiment? (In other words, not only did Morrison
+                            determine it had to be a short story but that it also had to be a
+                            very specific length.)
+                        </li>
+
+                        <li>
+                            How long can a writer sustain such a ruse? (In other words, what is
+                            the final length of the short story Morrison decided on after her
+                            own edits? *See Toni Morrison Papers.)
+                        </li>
+
+                        <li>
+                            How does the story’s structure of five “acts” help distract the
+                            reader from the story’s motives?
+                        </li>
+
+                        <li>
+                            How do the story’s narrated time and narrative time
+                            contribute to the story’s plausibility?
+
+                            <br />
+
+                            <u>Narrated time</u>: period of time covered by the narrative;
+                            the period of time during which the narrative is set.
+
+                            <br />
+
+                            <u>Narrative time</u>: temporal structure of the narrative.
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        )
+    }
+}
 function render_participate_btn() {
     return (
         <div className="row mt-4"><div className="col text-center">
@@ -240,6 +297,7 @@ export class ProjectView extends React.Component {
                     <RereadingSample />
                     <RereadingVisuals />
                     <RereadingValues />
+                    <QuantitiveQuestions />
                     {render_participate_btn()}
                 </div>
             </React.Fragment>

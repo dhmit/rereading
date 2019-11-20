@@ -23,6 +23,10 @@ class Navigation_Bar extends React.Component {
                         className={"nav-link nav-item text-dark font-weight-bold"}
                         href={"#values"}
                     >Rereading Values</a>
+                    <a
+                        className={"nav-link nav-item text-dark font-weight-bold"}
+                        href={"#quantitative"}
+                    >Quantitative Questions</a>
                 </div>
             </nav>
         );
@@ -222,7 +226,7 @@ export class QuantitiveQuestions extends React.Component {
         return (
             <div className = "row">
                 <div className="col">
-                    <h1>Quantitative Questions</h1>
+                    <a id="quantitative"><h1>Quantitative Questions</h1></a>
                     <p>
                         Since this story is an intentionally calculated attempt at crafting a very
                         particular experience of reading, it prompts the question: What is the

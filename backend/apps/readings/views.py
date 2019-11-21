@@ -2,7 +2,6 @@
 These classes describe one way of entering into the web site.
 """
 
-from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -12,7 +11,6 @@ from .serializers import (
     AnalysisSerializer,
     ReadingSerializer,
     StudentReadingDataSerializer,
-    StudentSerializer,
 )
 
 
@@ -40,28 +38,16 @@ def reading_view(request, pk):
     return Response(serializer.data)
 
 
-class ListStudent(generics.ListCreateAPIView):
-    """View a list of students or create a new one"""
-    queryset = Student.objects.all()
-    serializer_class = StudentSerializer
-
-
-class DetailStudent(generics.RetrieveUpdateDestroyAPIView):
-    """Get a single student's data or update/delete it"""
-    queryset = Student.objects.all()
-    serializer_class = StudentSerializer
-
-
-class DetailReadingData(generics.RetrieveUpdateDestroyAPIView):
-    """Get a single group of reading data or update/delete it"""
-    queryset = StudentReadingData.objects.all()
-    serializer_class = StudentReadingDataSerializer
-
-
-class ListReadingData(generics.ListCreateAPIView):
-    """View all instances of reading data"""
-    queryset = StudentReadingData.objects.all()
-    serializer_class = StudentReadingDataSerializer
+@api_view(['POST'])
+def add_response(request):
+    """ API endpoint for updating student reading data as the student reads """
+    data = request.data
+    reading_data_id = data.get('reading_data_id')
+    reading_data = StudentReadingData.objects.get(pk=reading_data_id)
+    serializer = StudentReadingDataSerializer(instance=reading_data, data=data)
+    serializer.is_valid()
+    serializer.save()
+    return Response(serializer.data)
 
 
 @api_view(['GET'])
@@ -72,3 +58,4 @@ def analysis(request):
     analysis_obj = RereadingAnalysis()
     serializer = AnalysisSerializer(instance=analysis_obj)
     return Response(serializer.data)
+

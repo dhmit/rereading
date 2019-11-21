@@ -27,6 +27,10 @@ class Navigation_Bar extends React.Component {
                         className={"nav-link nav-item text-dark font-weight-bold"}
                         href={"#quantitative"}
                     >Quantitative Questions</a>
+                    <a
+                        className={"nav-link nav-item text-dark font-weight-bold"}
+                        href={"#sources"}
+                    >Sources</a>
                 </div>
             </nav>
         );
@@ -275,7 +279,53 @@ export class QuantitativeQuestions extends React.Component {
                     </ol>
                 </div>
             </div>
-        )
+        );
+    }
+}
+
+export class Sources extends React.Component {
+    render() {
+        return (
+            <div className="row">
+                <div className="column">
+                    <a id="sources"><h1>Sources</h1></a>
+                    <ul>
+                        <li>
+                            Gavin, Michael. “Vector Semantics, William Empson,
+                            and the Study of Ambiguity,” Critical Inquiry 44, Summer 2018.
+                        </li>
+
+                        <li>
+                            Morrison, Toni. “Recitatif.” Confirmation: An Anthology of African
+                            American Women, edited by Amiri Baraka (LeRoi Jones) and Amina Baraka.
+                            New York: Quill, 1983. pp. 243-261.
+                        </li>
+
+                        <li>
+                            Morrison, Toni. Remember: The Journey to School Integration.
+                            New York: Houghton Mifflin Company, 2004.
+                        </li>
+
+                        <li>
+                            <a href="https://www.newyorker.com/magazine/2015/02/09/setness-2">
+                                Morrison, Toni. “Sweetness,” The New Yorker, February 2, 2015.
+                            </a>
+                        </li>
+
+                        <li>
+                            Richard, I. A. “Introductory.” Practical Criticism: A Study of Literary
+                            Judgment. San Diego, New York, London: Harcourt Brace Jovanovich,
+                            1962. pp. 3-16.
+                        </li>
+
+                        <li>
+                            Spacks, Patricia Meyer. On Rereading. Cambridge, Mass.:
+                            Belknap Press of Harvard University Press, 2011.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        );
     }
 }
 
@@ -303,6 +353,7 @@ export class ProjectView extends React.Component {
                     <RereadingVisuals />
                     <RereadingValues />
                     <QuantitativeQuestions />
+                    <Sources />
                     {render_participate_btn()}
                 </div>
             </React.Fragment>

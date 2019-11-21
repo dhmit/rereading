@@ -223,6 +223,7 @@ export class ReadingView extends React.Component {
 
         this.segment_ref = React.createRef();
         this.handleSegmentResponseChange = this.handleSegmentResponseChange.bind(this);
+        this.allowSegmentChange = this.allowSegmentChange.bind(this);
         this.prevSegment = this.prevSegment.bind(this);
         this.nextSegment = this.nextSegment.bind(this);
         this.toOverview = this.toOverview.bind(this);
@@ -234,6 +235,10 @@ export class ReadingView extends React.Component {
     }
 
     async startReading() {
+        if (this.state.student_name.trim() === "") {
+            alert("Please write your name before you start!");
+            return;
+        }
         try {
             // Hard code the document we know exists for now -- generalize later...
             const url = '/api/documents/1/';
@@ -356,13 +361,50 @@ export class ReadingView extends React.Component {
         this.setState({documentResponseArray});
     }
 
+    allowSegmentChange () {
+        const doc = this.state.document;
+        const current_segment = doc.segments[this.state.segment_num];
+        const segment_questions = current_segment.questions;
+        const document_questions = doc.document_questions;
+        const document_responses = this.state.documentResponseArray;
+        const segment_responses = this.state.segmentResponseArray;
+        let allowChange = true;
+        if (document_responses.length === document_questions.length &&
+            segment_responses.length === segment_questions.length) {
+            for (let i=0; i<document_responses.length; i++) {
+                if (document_responses[i].response.trim() === ""){
+                    allowChange = false;
+                    break;
+                }
+            }
+            for (let i=0; i<segment_responses.length; i++) {
+                if (segment_responses[i].response.trim() === ""){
+                    allowChange = false;
+                    break;
+                }
+            }
+        }
+        else {
+            allowChange = false;
+        }
+        if (!allowChange) {
+            alert("Please respond to every question");
+            return false;
+        }
+        return true;
+    }
+
     prevSegment () {
+        if (this.state.rereading && !this.allowSegmentChange()) {return;}
         this.sendData(false);
         this.gotoSegment(this.state.segment_num - 1);
         this.segment_ref.current.scrollTo(0,0);
     }
 
     nextSegment () {
+        console.log(this.state.rereading);
+        if (this.state.rereading && !this.allowSegmentChange()) {return;}
+        console.log("went through");
         this.sendData(false);
 
         if (this.state.rereading) {
@@ -401,7 +443,7 @@ export class ReadingView extends React.Component {
         if (e.key === 'Enter') {
             this.handleJumpToButton(); //The enter key should be treated the same the jump button
         }
-    }
+    };
 
     handleJumpToFieldChange = (e) => {
         let numericValue = parseInt(e.target.value) - 1;

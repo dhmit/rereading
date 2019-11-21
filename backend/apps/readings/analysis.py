@@ -30,6 +30,7 @@ class RereadingAnalysis:
             # prime two variable to reduce calls to database
             view_time = segment.view_time
             reading_data = segment.reading_data
+            # add the segment view times to a dictionary entry for each student reading session
             if reading_data not in in_dict:
                 ret_dict[reading_data] = [view_time]
                 in_dict.append(reading_data)

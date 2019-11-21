@@ -12,7 +12,6 @@
 .segment,
 .scroll-overview {
     height: 500px;
-    width: 600px;
     overflow: auto;
     font-family: Perpetua;
     font-size: 18pt;
@@ -39,7 +38,7 @@
 
 
 #nav_panel {
-    width: 500px;
+    /*width: 500px;*/
     margin: 0em 0em 0em 8.75em;
 }
 

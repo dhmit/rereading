@@ -28,7 +28,7 @@ class Segment extends React.Component {
                 onScroll={this.props.handleScroll}
             >
                 {segment_lines.map(
-                    (line, k) => (<p key={k}>{line}</p>)
+                    (line, k) => (<div className='my-3' key={k}>{line}</div>)
                 )}
             </div>
         );
@@ -47,7 +47,7 @@ class NavBar extends React.Component {
             && this.props.rereading;
 
         return (
-            <div id="nav_panel">
+            <div className='m-3 align-content-center'>
                 <div className="row">
                     <div className="col-2">
                         {this.props.segment_num > 0 &&
@@ -419,7 +419,7 @@ export class ReadingView extends React.Component {
     buildQuestionFields(questions, is_document_question) {
         return questions.map((question, id) => (
             <React.Fragment key={id}>
-                <div className="mb-5">
+                <div className="mb-5 mx-5">
                     <div className='segment-question-text question-text'>
                         {question.text}
                     </div>
@@ -482,8 +482,10 @@ export class ReadingView extends React.Component {
                 {this.state.current_view === VIEWS.READING &&
                     <React.Fragment>
                         <div className="row">
-                            <div className='col-8'>
-                                <p>Segment Number: {this.state.segment_num + 1}</p>
+                            <div className='col-sm-8 col-12'>
+                                <div className='my-3'>
+                                    Segment Number: {this.state.segment_num + 1}
+                                </div>
                                 <Segment
                                     text={current_segment.text}
                                     handleScroll={(e) => this.handleScroll(e)}
@@ -505,7 +507,7 @@ export class ReadingView extends React.Component {
                             </div>
 
                             {this.state.rereading &&
-                                <div className="col-4 questions-overview">
+                                <div className="col-sm-4 col-12 my-3 my-sm-0 questions-overview">
                                     {document_response_fields}
                                     {segment_response_fields}
                                 </div>

@@ -71,7 +71,8 @@ class Question extends React.Component {
                 <div className="evidence-section">
                     <button
                         className="evidence-toggle-button"
-                        onClick={(e) => this.props.toggleAddEvidenceMode(this.props.question_id, e)}
+                        onClick={(e) => this.props.toggleAddEvidenceMode(this.state.evidenceValues,
+                            e)}
                     >
                         {evidenceModeActive ? 'Stop Tagging' : 'Tag Evidence'}
                     </button>
@@ -494,12 +495,12 @@ export class ReadingView extends React.Component {
         this.setState({current_view: VIEWS.OVERVIEW})
     }
 
-    toggleAddEvidenceMode(question_id, e) {
+    toggleAddEvidenceMode(evidenceArray, e) {
         const button = e.target;
         console.log(button);
-        //if (this.state.evidenceModeActive) {
-        //    this.addEvidence(question);
-        //}
+        if (this.state.evidenceModeActive && window.getSelection().toString() !== "") {
+            this.addEvidence(evidenceArray);
+        }
 
         this.setState({
             evidenceModeActive: !this.state.evidenceModeActive,
@@ -512,14 +513,17 @@ export class ReadingView extends React.Component {
         });
     }
 
-    addEvidence(question) {
+    addEvidence(evidenceArray) {
         const _document = Object.assign({}, this.state.document);
-        console.log(question);
+        console.log(evidenceArray);
 
         // get active question that is being tagged
         // does selected question have an Evidence Values array?
         let evidence = this.state.current_selection.toString();
-        question.evidenceValues.add(evidence);
+        //console.log(question.evidenceValues);
+        console.log(evidence);
+        evidenceArray.push(evidence);
+        console.log(evidenceArray)
 
         this.setState({
             document: _document,

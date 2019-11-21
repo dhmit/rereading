@@ -23,6 +23,10 @@ class Navigation_Bar extends React.Component {
                         className={"nav-link nav-item text-dark font-weight-bold"}
                         href={"#values"}
                     >Rereading Values</a>
+                    <a
+                        className={"nav-link nav-item text-dark font-weight-bold"}
+                        href={"#quantitative"}
+                    >Quantitative Questions</a>
                 </div>
             </nav>
         );
@@ -34,7 +38,7 @@ export class ReadingRedux extends React.Component {
     render() {
         return (
             <div className="row"><div className="col">
-                <a name="overview"><h1>The Reading Redux</h1></a>
+                <a id="overview"><h1>The Reading Redux</h1></a>
                 <h3>The Values of Rereading</h3>
                 <p>
                     In literary studies we have a word to describe a novel that traces the
@@ -115,7 +119,7 @@ export class RereadingSample extends React.Component {
     render() {
         return(
             <div className="row"><div className="col">
-                <a name="sample"><h1>The Reading Sample: Recitatif</h1></a>
+                <a id="sample"><h1>The Reading Sample: Recitatif</h1></a>
                 <h3>
                     <q>The only short story I have ever written, <q>Recitatif,</q> was an 
                     experiment in the removal of all racial codes from a narrative about two
@@ -193,7 +197,7 @@ export class RereadingVisuals extends React.Component {
         return(
             <div className="row">
                 <div className="col">
-                    <a name="visuals"><h1>Rereading Visuals</h1></a>
+                    <a id="visuals"><h1>Rereading Visuals</h1></a>
                     <h3>
                         How does one represent a reader’s multiple readings of one text?
                         How does one visualize a reader’s re-readings?
@@ -209,11 +213,69 @@ export class RereadingValues extends React.Component {
         return(
             <div className="row">
                 <div className="col">
-                    <a name="values"><h1>Rereading Values</h1></a>
+                    <a id="values"><h1>Rereading Values</h1></a>
                     <h3>What are the numbers and statistics saying about rereading?</h3>
                 </div>
             </div>
         );
+    }
+}
+
+export class QuantitativeQuestions extends React.Component {
+    render() {
+        return (
+            <div className = "row">
+                <div className="col">
+                    <a id="quantitative"><h1>Quantitative Questions</h1></a>
+                    <p>
+                        Since this story is an intentionally calculated attempt at crafting a very
+                        particular experience of reading, it prompts the question: What is the
+                        recipe for this narrative experiment’s success? Or, what exactly is the
+                        formula for this particular reading experience?
+                    </p>
+                    <p>So, here are some quantitative questions “Recitatif” raises:</p>
+                    <ol>
+                        <li>
+                            How many stereotypical assumptions about racial identity constitute
+                            enough plausibility to keep the story going without arousing
+                            suspicion in the reader about the story’s intentions?
+                        </li>
+
+                        <li>
+                            What did Toni Morrison determine is the word-count threshold for
+                            such a narrative experiment? (In other words, not only did Morrison
+                            determine it had to be a short story but that it also had to be a
+                            very specific length.)
+                        </li>
+
+                        <li>
+                            How long can a writer sustain such a ruse? (In other words, what is
+                            the final length of the short story Morrison decided on after her
+                            own edits? *See Toni Morrison Papers.)
+                        </li>
+
+                        <li>
+                            How does the story’s structure of five “acts” help distract the
+                            reader from the story’s motives?
+                        </li>
+
+                        <li>
+                            How do the story’s narrated time and narrative time
+                            contribute to the story’s plausibility?
+
+                            <br />
+
+                            <u>Narrated time</u>: period of time covered by the narrative;
+                            the period of time during which the narrative is set.
+
+                            <br />
+
+                            <u>Narrative time</u>: temporal structure of the narrative.
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        )
     }
 }
 
@@ -240,6 +302,7 @@ export class ProjectView extends React.Component {
                     <RereadingSample />
                     <RereadingVisuals />
                     <RereadingValues />
+                    <QuantitativeQuestions />
                     {render_participate_btn()}
                 </div>
             </React.Fragment>

@@ -5,7 +5,7 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 """
 from .models import StudentReadingData, SegmentQuestionResponse
 from .proto_analysis import PrototypeRereadingAnalysis
-description_has_relevant_words = PrototypeRereadingAnalysis.description_has_relevant_words()
+description_has_relevant_words = PrototypeRereadingAnalysis.description_has_relevant_words
 
 
 class RereadingAnalysis:

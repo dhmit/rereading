@@ -402,9 +402,7 @@ export class ReadingView extends React.Component {
     }
 
     nextSegment () {
-        console.log(this.state.rereading);
         if (this.state.rereading && !this.allowSegmentChange()) {return;}
-        console.log("went through");
         this.sendData(false);
 
         if (this.state.rereading) {
@@ -459,8 +457,14 @@ export class ReadingView extends React.Component {
     }
 
     buildQuestionFields(questions, is_document_question) {
-        return questions.map((question, id) => (
-            <React.Fragment key={id}>
+        return questions.map((question, id) => {
+            const responseArray = is_document_question ?
+                this.state.documentResponseArray :
+                this.state.segmentResponseArray;
+            const currentTexts = responseArray.filter(
+                response => response.id === question.id
+            );
+            return (<React.Fragment key={id}>
                 <div className="mb-5">
                     <div className='segment-question-text question-text'>
                         {question.text}
@@ -469,6 +473,7 @@ export class ReadingView extends React.Component {
                         className='form-control form-control-lg questions-boxes'
                         id="exampleFormControlTextarea1"
                         rows="4"
+                        value={currentTexts.length !== 0 ? currentTexts[0].response : ""}
                         onChange={
                             is_document_question
                                 ? this.handleDocumentResponseChange.bind(this, question.id)
@@ -477,7 +482,7 @@ export class ReadingView extends React.Component {
                     />
                 </div>
             </React.Fragment>
-        ));
+            )});
     }
 
     handleStudentName(e) {

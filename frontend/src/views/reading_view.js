@@ -125,7 +125,7 @@ class OverviewView extends React.Component {
 
         return (
             <div className="row">
-                <div className="col-8">
+                <div className="col-sm-8 col-12">
                     <div className="scroll-overview">
                         {full_document_text.map((segment_text_array) => (
                             segment_text_array.map((text, i) => (
@@ -134,11 +134,14 @@ class OverviewView extends React.Component {
                         ))}
                     </div>
                 </div>
-                <div className="col-4 questions-overview">
-                    <p><b>Document Questions</b></p>
-                    {document_response_fields}
-                    <p><b>Overview Questions</b></p>
-                    {overview_response_fields}
+
+                <div className='col-sm-4 col-12 m-3'>
+                    <div className="questions-overview">
+                        <p><b>Document Questions</b></p>
+                        {document_response_fields}
+                        <p><b>Overview Questions</b></p>
+                        {overview_response_fields}
+                    </div>
                 </div>
             </div>
         );

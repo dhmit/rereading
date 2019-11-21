@@ -24,7 +24,7 @@ class Document(models.Model):
 
     def __len__(self):
         """
-        The length of a document is the number of segments
+        The length of a document is the number of sefgments
         ... maybe this should be total wordcount instead?
         """
         return self.segments.count()

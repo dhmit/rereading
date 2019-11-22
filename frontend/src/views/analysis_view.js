@@ -1,4 +1,5 @@
 import React from "react";
+import {SingleValueAnalysis} from "../prototype/analysis_view";
 // import PropTypes from 'prop-types';
 
 
@@ -34,7 +35,10 @@ export class AnalysisView extends React.Component {
             );
         }
 
-        // const { } = this.state.analysis;
+        const { // object destructuring:
+            total_and_median_view_time,
+            get_number_of_unique_students,
+        } = this.state.analysis;
         return (
             <div className={"container"}>
                 <nav className={"navbar navbar-expand-lg"}>
@@ -54,6 +58,21 @@ export class AnalysisView extends React.Component {
                     className={"text-center display-4 mb-4"}
                     id={"page-title"}
                 >Analysis of Student Responses</h1>
+                <SingleValueAnalysis
+                    header={"Total view time"}
+                    value={total_and_median_view_time[0]}
+                    unit={"seconds"}
+                />
+                <SingleValueAnalysis
+                    header={"Median view time"}
+                    value={total_and_median_view_time[1]}
+                    unit={"seconds"}
+                />
+                <SingleValueAnalysis
+                    header={"Number of Unique Students"}
+                    value={get_number_of_unique_students}
+                    unit={"students"}
+                />
             </div>
         );
     }

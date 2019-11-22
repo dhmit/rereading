@@ -53,16 +53,17 @@ class RereadingAnalysis:
 
     def all_responses(self):
         """
-        This function
-        :return:
+        This function creates a dictionary that maps every question to all the responses for that
+        question.
+        :return: dictionary with question text as the keys and a list of response as the value
         """
         response_dict = {}
         for segment_question_response in self.segment_question_responses:
             question_text = segment_question_response.question.text
             if question_text in response_dict:
-                response_dict[question_text].append(segment_question_response.response)
+                response_dict[question_text].append(segment_question_response.response + "\n")
             else:
-                response_dict[question_text] = [segment_question_response.response]
+                response_dict[question_text] = [segment_question_response.response + "\n"]
 
         return response_dict
 

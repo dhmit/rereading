@@ -83,6 +83,10 @@ class RereadingAnalysis:
         # return length of set (represents unique number of students)
         return len(student_names)
 
+    def mean_reading_time_for_a_segment(self):
+        total_and_median_time = self.total_and_median_view_time()
+        segment_count = len(self.segments)
+        return round(total_and_median_time[0] / segment_count, 2)
     def question_sentiment_analysis(self):
         """
         Uses database to create a list of sentiment scores for

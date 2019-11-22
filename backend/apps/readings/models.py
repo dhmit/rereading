@@ -152,6 +152,9 @@ class StudentReadingData(models.Model):
         related_name='reading_data'
     )
 
+    start_time = models.DateTimeField(auto_now_add=True)
+    last_update = models.DateTimeField(auto_now=True)
+
 
 class StudentSegmentData(models.Model):
     """
@@ -173,6 +176,7 @@ class StudentSegmentData(models.Model):
     scroll_data = models.TextField(default='[]')
     view_time = models.FloatField(default=0)
     is_rereading = models.BooleanField(default=None)
+    submission_time = models.DateTimeField(auto_now_add=True)
 
     def get_parsed_scroll_data(self):
         """
@@ -203,6 +207,7 @@ class SegmentQuestionResponse(models.Model):
         related_name='segment_responses'
     )
     response = models.TextField()
+    last_edit = models.DateTimeField(auto_now=True)
 
 
 class DocumentQuestionResponse(models.Model):
@@ -213,6 +218,7 @@ class DocumentQuestionResponse(models.Model):
     """
     response = models.TextField()
     response_segment = models.IntegerField(default=1)
+    last_edit = models.DateTimeField(auto_now=True)
 
     question = models.ForeignKey(
         DocumentQuestion,

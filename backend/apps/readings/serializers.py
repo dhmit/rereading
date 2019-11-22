@@ -38,7 +38,9 @@ class DocumentQuestionResponseSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'response',
-            'response_segment'
+            'response_segment',
+            'last_edit',
+
         )
 
 
@@ -100,6 +102,7 @@ class SegmentQuestionResponseSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'response',
+            'last_edit',
         )
 
 
@@ -119,6 +122,7 @@ class StudentSegmentDataSerializer(serializers.ModelSerializer):
             'scroll_data',
             'view_time',
             'is_rereading',
+            'submission_time',
             'segment_responses',
         )
 
@@ -179,6 +183,8 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
 
         fields = (
             'id',
+            'start_time',
+            'last_update',
             'document_responses',
             'segment_data',
             'reading_data_id',

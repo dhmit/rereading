@@ -31,6 +31,7 @@ urlpatterns = [
     path('api/add-response/', readings_views.add_response),
     path('api/documents/<int:pk>/', readings_views.reading_view),
     path('api/analysis/', readings_views.analysis),
+    path('api/responses/', readings_views.ListStudentReadingData.as_view()),
 
     # React views
     path('', lambda request: redirect('project_overview')),  # redirect / to project overview

@@ -393,7 +393,6 @@ export class ReadingView extends React.Component {
 
     prevSegment () {
         this.gotoSegment(this.state.segment_num - 1);
-        this.segment_ref.current.scrollTo(0,0);
     }
 
     nextSegment () {
@@ -405,8 +404,6 @@ export class ReadingView extends React.Component {
             this.sendData(false);
             this.setState({rereading: true});
         }
-
-        this.segment_ref.current.scrollTo(0,0);
     }
 
     gotoSegment(segmentNum) {
@@ -426,6 +423,7 @@ export class ReadingView extends React.Component {
         }
 
         if (segmentNum >= 0 && segmentNum < segmentCount) {
+
             const segments_viewed = this.state.segments_viewed.slice();
             let rereading = segments_viewed.includes(segmentNum);
             //The segment number is pushed regardless of whether or not the user has read the page
@@ -451,6 +449,7 @@ export class ReadingView extends React.Component {
                 previousSegmentResponses,
                 maximum_jump_allowed
             });
+            this.segment_ref.current.scrollTo(0,0);
         }
     }
 

@@ -84,7 +84,11 @@ class Question extends React.Component {
                             <div className="evidence-values">
                                 {this.props.evidence.map((value, i) => (
                                     <div className="my-3 evidence-value" key={i}>
-                                        {'"' + value[0] + '"'}
+                                        <button onClick={
+                                            this.props.handleRemoveEvidence(i)
+                                        }>REMOVE ME!
+                                        </button>
+                                        {'"' + value + '"'}
                                     </div>
                                 ))}
                             </div>
@@ -105,6 +109,7 @@ Question.propTypes = {
     evidenceModeState: PropTypes.object,
     evidence: PropTypes.array,
     handleResponseChange: PropTypes.func,
+    handleRemoveEvidence: PropTypes.func,
     toggleAddEvidenceMode: PropTypes.func,
 }
 
@@ -292,7 +297,6 @@ export class ReadingView extends React.Component {
                 is_document_question: false,
             },
             current_selection: '',
-            evidenceId: 0,
         };
         this.csrftoken = getCookie('csrftoken');
 
@@ -307,6 +311,7 @@ export class ReadingView extends React.Component {
         this.handleStudentName = this.handleStudentName.bind(this);
         this.toggleAddEvidenceMode = this.toggleAddEvidenceMode.bind(this);
         this.handleResponseChange.bind(this);
+        this.handleRemoveEvidence.bind(this);
     }
 
     async startReading() {
@@ -394,7 +399,7 @@ export class ReadingView extends React.Component {
     }
 
 
-    handleResponseChange(is_document_question, question_id, evidenceId, event) {
+    handleResponseChange(is_document_question, question_id, event) {
         const update_dict = {
             response: event.target.value,
         };
@@ -532,7 +537,6 @@ export class ReadingView extends React.Component {
 
     addEvidence(is_document_question, question_id) {
         const new_evidence = this.state.current_selection.toString();
-        console.log(new_evidence);
 
         // eslint-disable-next-line no-unused-vars
         const [response, _responseArr] =
@@ -540,18 +544,28 @@ export class ReadingView extends React.Component {
 
         let new_evidence_arr;
         if (response.evidence === undefined) {
-            new_evidence_arr = [[new_evidence, this.state.evidenceId]];
+            new_evidence_arr = [new_evidence];
         } else {
             new_evidence_arr = response.evidence.slice();
-            new_evidence_arr.push([new_evidence, this.state.evidenceId]);
+            new_evidence_arr.push(new_evidence);
         }
 
         const update_dict = {
             evidence: new_evidence_arr,
         }
         this.updateResponseObject(is_document_question, question_id, update_dict);
+    }
 
-        this.setState({evidenceId: this.state.evidenceId + 1,});
+    handleRemoveEvidence(is_document_question, question_id, evidence_index) {
+        // eslint-disable-next-line no-unused-vars
+        const [response, _responseArr] =
+            this.getOrCreateResponseObjectAndArray(is_document_question, question_id);
+        const ev = response.evidence;
+        const updated_evidence_arr = ev.slice(0, evidence_index) + ev.slice(evidence_index);
+        const update_dict = {
+            evidence: updated_evidence_arr,
+        }
+        this.updateResponseObject(is_document_question, question_id, update_dict);
     }
 
     buildQuestionFields(questions, is_document_question) {
@@ -572,6 +586,9 @@ export class ReadingView extends React.Component {
                     }
                     toggleAddEvidenceMode={
                         () => this.toggleAddEvidenceMode(is_document_question, question.id)
+                    }
+                    handleRemoveEvidence={
+                        () => this.handleRemoveEvidence(is_document_question, question.id)
                     }
                 />
             );

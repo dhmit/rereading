@@ -397,22 +397,19 @@ export class ReadingView extends React.Component {
 
     prevSegment () {
         if (this.state.rereading && !this.allowSegmentChange()) {return;}
-        this.sendData(false);
         this.gotoSegment(this.state.segment_num - 1);
         this.segment_ref.current.scrollTo(0,0);
     }
 
     nextSegment () {
         if (this.state.rereading && !this.allowSegmentChange()) {return;}
-        this.sendData(false);
 
         if (this.state.rereading) {
             // If we're already rereading, move to the next segment
             this.gotoSegment(this.state.segment_num + 1);
-            //TODO Figure out if this can be integrated into gotoSegment. I wasn't exactly
-            // sure why it was being set here but not prevSegment().
         } else {
             // Otherwise, move on to the rereading layout
+            this.sendData(false);
             this.setState({rereading: true});
         }
 
@@ -420,7 +417,10 @@ export class ReadingView extends React.Component {
     }
 
     gotoSegment(segmentNum) {
+        this.sendData(false);
+
         let segmentCount = this.state.document.segments.length;
+
         if (segmentNum >= 0 && segmentNum < segmentCount) {
             const segments_viewed = this.state.segments_viewed.slice();
             let rereading = segments_viewed.includes(segmentNum);

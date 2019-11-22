@@ -4,8 +4,9 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
 import statistics
+from collections import Counter
 
-from .models import StudentReadingData, StudentSegmentData
+from .models import StudentReadingData, StudentSegmentData, SegmentQuestionResponse, DocumentQuestionResponse
 
 
 class RereadingAnalysis:
@@ -17,6 +18,9 @@ class RereadingAnalysis:
     def __init__(self):
         self.readings = StudentReadingData.objects.all()
         self.segments = StudentSegmentData.objects.all()
+        self.questions =
+        self.segment_responses = SegmentQuestionResponse.objects.all()
+        self.question_responses = DocumentQuestionResponse.objects.all()
 
     def total_and_median_view_time(self):
         """
@@ -66,5 +70,39 @@ class RereadingAnalysis:
             student_names.add(name)
         # return length of set (represents unique number of students)
         return len(student_names)
+
+    def get_responses_for_question(self, question):
+        """
+        For a certain question and context, returns the set of responses as a dictionary with keys
+        being the response and values being the frequency.
+        :param question: string, question
+        :return: dictionary mapping strings to integers
+        """
+        responses_frequency = Counter()
+        response_list = []
+        for response in self.segment_responses:
+            student_question = response.question.text
+            student_answer = response.response.lower()
+            if student_question == question:
+                response_list.append(student_answer)
+        for answer in response_list:
+            responses_frequency[answer] += 1
+        return responses_frequency
+
+    def most_common_response_by_question(self, question):
+        """
+        Returns a list of the most common response(s) given a set of data, a question,
+        and a context.
+        :param question: string, question
+        :return: list of strings
+        """
+        max_response = []
+        response_dict = self.get_responses_for_question(question)
+        max_response_frequency = max(response_dict.values())
+        for response in response_dict:
+            if response_dict[response] == max_response_frequency:
+                max_response.append(response)
+        return max_response
+
 
 

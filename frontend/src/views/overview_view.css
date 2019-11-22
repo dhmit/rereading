@@ -2,7 +2,7 @@ p {
     text-align: left;
 }
 
-p, ul {
+p, ul, ol {
     font-family: "Arial", serif;
     font-size: 15pt;
     padding: 5px 20% 5px 20%;
@@ -11,4 +11,8 @@ p, ul {
 h1, h3 {
     padding-left: 20%;
     padding-right: 20%;
+}
+
+li:not(:last-child) {
+    margin-bottom: 5px;
 }

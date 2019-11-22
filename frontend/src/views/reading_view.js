@@ -44,13 +44,6 @@ Segment.propTypes = {
 };
 
 class Question extends React.Component {
-    constructor (props){
-        super(props);
-        this.state = {
-            evidenceValues: [],
-        }
-    }
-
     render(){
         const evidenceModeActive = this.props.evidenceModeActive;
         return(
@@ -62,17 +55,14 @@ class Question extends React.Component {
                     <textarea
                         className={'form-control form-control-lg questions-boxes'}
                         rows="4"
-                        onChange={
-                            this.props.handleResponseChange.bind(this, this.props.question_text)
-                        }
+                        onChange={this.props.handleResponseChange}
                     />
 
                 </div>
                 <div className="evidence-section">
                     <button
                         className="evidence-toggle-button"
-                        onClick={(e) => this.props.toggleAddEvidenceMode(this.state.evidenceValues,
-                            e)}
+                        onClick={this.props.toggleAddEvidenceMode}
                     >
                         {evidenceModeActive ? 'Stop Tagging' : 'Tag Evidence'}
                     </button>
@@ -82,11 +72,11 @@ class Question extends React.Component {
                         </span>
                     }
 
-                    {this.state.evidenceValues && this.state.evidenceValues.length ?
+                    {this.props.evidence && this.props.evidence.length ?
                         <div className="evidence-values-section">
                             <label>Evidence:</label>
                             <div className="evidence-values">
-                                {this.state.evidenceValues.map((value, i) => (
+                                {this.props.evidence.map((value, i) => (
                                     <span className="evidence-value" key={i}>
                                         {value}
                                     </span>
@@ -104,8 +94,10 @@ class Question extends React.Component {
 
 Question.propTypes = {
     question_id: PropTypes.number,
+    is_document_question: PropTypes.bool,
     question_text: PropTypes.string,
     evidenceModeActive: PropTypes.bool,
+    evidence: PropTypes.array,
     handleResponseChange: PropTypes.func,
     toggleAddEvidenceMode: PropTypes.func,
 }
@@ -294,7 +286,6 @@ export class ReadingView extends React.Component {
         this.csrftoken = getCookie('csrftoken');
 
         this.segment_ref = React.createRef();
-        this.handleSegmentResponseChange = this.handleSegmentResponseChange.bind(this);
         this.prevSegment = this.prevSegment.bind(this);
         this.nextSegment = this.nextSegment.bind(this);
         this.toOverview = this.toOverview.bind(this);
@@ -304,6 +295,7 @@ export class ReadingView extends React.Component {
         this.startReading = this.startReading.bind(this);
         this.handleStudentName = this.handleStudentName.bind(this);
         this.toggleAddEvidenceMode = this.toggleAddEvidenceMode.bind(this);
+        this.handleResponseChange.bind(this);
     }
 
     async startReading() {
@@ -390,50 +382,62 @@ export class ReadingView extends React.Component {
         this.setState({scroll_top});
     }
 
-    /**
-     * Allows the user to change their response to a segment question
-     */
-    handleSegmentResponseChange(question_id, event) {
-        const segmentResponseArray = this.state.segmentResponseArray.slice();
 
-        let question_entry = null;
-        for (let el of segmentResponseArray) {
+    handleResponseChange(is_document_question, question_id, event) {
+        const update_dict = {
+            response: event.target.value,
+        };
+        if (is_document_question) {
+            update_dict.response_segment = this.state.segment_num;
+        }
+        this.updateResponseObject(is_document_question, question_id, update_dict);
+    }
+
+
+    getOrCreateResponseObjectAndArray(is_document_question, question_id) {
+        let responseArray;
+        if (is_document_question) {
+            responseArray = this.state.documentResponseArray.slice();
+        } else {
+            responseArray = this.state.segmentResponseArray.slice();
+        }
+
+        // Try to find an existing response
+        let response = null;
+        for (let el of responseArray) {
             if (el.id === question_id) {
-                question_entry = el;
+                response = el;
                 break;
             }
         }
 
-        if (question_entry === null) {
-            question_entry = {id: question_id};
-            segmentResponseArray.push(question_entry);
+        // Add a new response object if there isn't one already
+        if (response === null) {
+            response = {id: question_id};
+            responseArray.push(response);
         }
 
-        question_entry.response = event.target.value;
-
-        this.setState({segmentResponseArray});
+        return [response, responseArray];
     }
 
-    handleDocumentResponseChange(question_id, event) {
-        const documentResponseArray = this.state.documentResponseArray.slice();
+    /**
+     * Allows the user to change their response to a question
+     */
+    updateResponseObject(is_document_question, question_id, update_dict) {
+        const [response, responseArray] =
+            this.getOrCreateResponseObjectAndArray(is_document_question, question_id);
 
-        let document_entry = null;
-        for (let el of documentResponseArray) {
-            if (el.id === question_id) {
-                document_entry = el;
-            }
+        // Update values in response object with update_dict
+        Object.assign(response, update_dict);
+
+        if (is_document_question) {
+            this.setState({documentResponseArray: responseArray});
+        } else {
+            this.setState({segmentResponseArray: responseArray});
         }
-
-        if (document_entry === null) {
-            document_entry = {id: question_id};
-            documentResponseArray.push(document_entry);
-        }
-
-        document_entry.response = event.target.value;
-        document_entry.response_segment = this.state.segment_num;
-
-        this.setState({documentResponseArray});
     }
+
+
 
     prevSegment () {
         this.sendData(false);
@@ -495,16 +499,11 @@ export class ReadingView extends React.Component {
         this.setState({current_view: VIEWS.OVERVIEW})
     }
 
-    toggleAddEvidenceMode(evidenceArray, e) {
-        const button = e.target;
-        console.log(button);
-        if (this.state.evidenceModeActive && window.getSelection().toString() !== "") {
-            this.addEvidence(evidenceArray);
+    toggleAddEvidenceMode(is_document_question, question_id) {
+        if (this.state.evidenceModeActive && this.state.current_selection.toString() !== "") {
+            this.addEvidence(is_document_question, question_id);
         }
-
-        this.setState({
-            evidenceModeActive: !this.state.evidenceModeActive,
-        });
+        this.setState({evidenceModeActive: !this.state.evidenceModeActive});
     }
 
     handleSelectionDragEnd() {
@@ -513,38 +512,49 @@ export class ReadingView extends React.Component {
         });
     }
 
-    addEvidence(evidenceArray) {
-        const _document = Object.assign({}, this.state.document);
-        console.log(evidenceArray);
+    addEvidence(is_document_question, question_id) {
+        const new_evidence = this.state.current_selection.toString();
+        console.log(new_evidence);
 
-        // get active question that is being tagged
-        // does selected question have an Evidence Values array?
-        let evidence = this.state.current_selection.toString();
-        //console.log(question.evidenceValues);
-        console.log(evidence);
-        evidenceArray.push(evidence);
-        console.log(evidenceArray)
+        // eslint-disable-next-line no-unused-vars
+        const [response, _responseArr] =
+            this.getOrCreateResponseObjectAndArray(is_document_question, question_id);
 
-        this.setState({
-            document: _document,
-        });
+        let new_evidence_arr;
+        if (response.evidence === undefined) {
+            new_evidence_arr = [new_evidence];
+        } else {
+            new_evidence_arr = response.evidence.slice();
+        }
+
+        const update_dict = {
+            evidence: new_evidence_arr,
+        }
+        this.updateResponseObject(is_document_question, question_id, update_dict);
     }
 
     buildQuestionFields(questions, is_document_question) {
-        return questions.map((question, id) => (
-            <Question
-                key={id}
-                question_id={id}
-                question_text={question.text}
-                evidenceModeActive={this.state.evidenceModeActive}
-                handleResponseChange={
-                    is_document_question
-                        ? this.handleDocumentResponseChange.bind(this, question.id)
-                        : this.handleSegmentResponseChange.bind(this, question.id)
-                }
-                toggleAddEvidenceMode={this.toggleAddEvidenceMode}
-            />
-        ));
+        return questions.map((question, id) => {
+            // eslint-disable-next-line no-unused-vars
+            const [response, responseArr] =
+                this.getOrCreateResponseObjectAndArray(is_document_question, question.id);
+            return (
+                <Question
+                    key={id}
+                    question_id={id}
+                    is_document_question={is_document_question}
+                    question_text={question.text}
+                    evidence={response.evidence}
+                    evidenceModeActive={this.state.evidenceModeActive}
+                    handleResponseChange={
+                        (e) => this.handleResponseChange(is_document_question, question.id, e)
+                    }
+                    toggleAddEvidenceMode={
+                        () => this.toggleAddEvidenceMode(is_document_question, question.id)
+                    }
+                />
+            );
+        });
     }
 
     handleStudentName(e) {

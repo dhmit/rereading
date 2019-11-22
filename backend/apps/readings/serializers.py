@@ -4,6 +4,7 @@ in ways that can be transported across the backend/frontend divide, or
 allow the frontend to suggest changes to the backend/database.
 """
 from rest_framework import serializers
+import json
 
 from .models import (
     Document, Segment, Student, SegmentQuestion, SegmentContext, SegmentQuestionResponse,
@@ -145,12 +146,14 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
         # Link each document response to the reading data
         for data in document_responses:
             document_question = DocumentQuestion.objects.get(id=data['id'])
+            evidence_list = data.pop('evidence')
+            evidence = json.dumps(evidence_list)
             DocumentQuestionResponse.objects.create(
                 student_reading_data=reading_data,
                 question=document_question,
                 response=data['response'],
                 response_segment=data['response_segment'],
-                evidence=data['evidence'],
+                evidence=evidence,
             )
 
         # Save student segment data
@@ -168,10 +171,13 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
             segment_question_responses = this_segment_data.pop('segment_responses')
             for response in segment_question_responses:
                 question_id = response.pop('id')
+                evidence_list = response.pop('evidence')
+                evidence = json.dumps(evidence_list)
                 question = SegmentQuestion.objects.get(pk=question_id)
                 SegmentQuestionResponse.objects.create(
                     student_segment_data=segment_data,
                     question=question,
+                    evidence=evidence,
                     **response,
                 )
 

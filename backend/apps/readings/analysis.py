@@ -124,28 +124,6 @@ class RereadingAnalysis:
         # return length of set (represents unique number of students)
         return len(student_names)
 
-    def frequency_feelings(self):
-        """
-        Compute the frequencies of all the responses. Not sensitive to case.
-        :return a list of tuples of words that appear more than once, and how often they occur,
-        in order of their frequency
-        """
-        feelings = {}
-        for reading in self.readings:
-            if reading.question.text == "In one word, how does this text make you feel?":
-                lower_case_word = reading.response.lower()
-                if feelings.get(lower_case_word, 0) == 0:
-                    feelings[lower_case_word] = 1
-                else:
-                    feelings[lower_case_word] += 1
-
-        frequent_words = []  # list of tuples in the format (frequency, word)
-        for word in feelings:
-            if feelings[word] > 1:
-                frequent_words.append((word, feelings[word]))
-        frequent_words.sort(key=lambda x: x[1], reverse=True)
-        return frequent_words
-
     def question_sentiment_analysis(self):
         """
         Uses database to create a list of sentiment scores for

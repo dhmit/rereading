@@ -54,7 +54,8 @@ class RereadingAnalysis:
     def all_responses(self):
         """
         This function creates a dictionary that maps every question to all the responses for that
-        question.
+        question. As of now, this funnction returns ALL responses, not only the most recent for
+        the same student.
         :return: dictionary with question text as the keys and a list of response as the value
         """
         response_dict = {}

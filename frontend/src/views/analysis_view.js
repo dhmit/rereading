@@ -37,6 +37,7 @@ export class AnalysisView extends React.Component {
 
         const { // object destructuring:
             total_and_median_view_time,
+            get_number_of_unique_students,
         } = this.state.analysis;
         return (
             <div className={"container"}>
@@ -66,6 +67,11 @@ export class AnalysisView extends React.Component {
                     header={"Median view time"}
                     value={total_and_median_view_time[1]}
                     unit={"seconds"}
+                />
+                <SingleValueAnalysis
+                    header={"Number of Unique Students"}
+                    value={get_number_of_unique_students}
+                    unit={"students"}
                 />
             </div>
         );

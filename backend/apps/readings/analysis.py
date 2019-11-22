@@ -50,19 +50,26 @@ class RereadingAnalysis:
         ret_tuple = (round(total_time), round(median_view_time))
         return ret_tuple
 
-    def compute_reread_counts(self, segment_number):
+    def compute_reread_counts(self):
         """"
         Given a list of student response dicts,
         return a dictionary containing the number of times students had to reread the text
-        :param segment_number: int, segment number to return reread count for
         :return: int, number of times segment with sequence segment_number is reread
         """
-        segment_dictionary = {}
+        segment_dictionary = {5: 1}
+        segment_list = []
+        for segments in self.segments:
+            if (segments.segment.sequence in segment_dictionary and segments.view_time > 1.0 and
+                segments.is_rereading):
+                segment_dictionary[segments.segment.sequence] += 1
+            elif (segments.segment.sequence not in segment_dictionary and segments.view_time > 1.0
+                  and segments.is_rereading):
+                segment_dictionary[segments.segment.sequence] = 1
 
-        for segment in self.segments:
-            if segment.segment.sequence in segment_dictionary and segment.view_time > 1.0:
-                segment_dictionary[segment.sequence] += 1
-            elif segment.segment.sequence not in segment_dictionary and segment.view_time > 1.0:
-                segment_dictionary[segment.sequence] = 1
+        keys_list = list(segment_dictionary.keys())
+        keys_list.sort()
 
-        return segment_dictionary[segment_number]
+        for key in keys_list:
+            segment_list.append([key, round(segment_dictionary[key] / len(self.readings), 2)])
+
+        return segment_list

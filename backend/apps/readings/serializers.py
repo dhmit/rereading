@@ -4,6 +4,7 @@ in ways that can be transported across the backend/frontend divide, or
 allow the frontend to suggest changes to the backend/database.
 """
 from rest_framework import serializers
+from datetime import datetime
 
 from .models import (
     Document, Segment, Student, SegmentQuestion, SegmentContext, SegmentQuestionResponse,
@@ -143,6 +144,8 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
         segment_data = validated_data.pop("segment_data")
         document_responses = validated_data.pop("document_responses")
         reading_data = instance
+        reading_data.last_update = datetime.now()
+        reading_data.save()
 
         # Link each document response to the reading data
         for data in document_responses:

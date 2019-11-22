@@ -3,6 +3,8 @@
 Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
+import statistics
+
 from .models import (
     StudentReadingData,
     StudentSegmentData,
@@ -54,7 +56,7 @@ class RereadingAnalysis:
         return ret_tuple
 
     @staticmethod
-    def relevant_words_by_question(self):
+    def relevant_words_by_question():
         """
             Return a list of tuples of the form (question,count), where count is
             the number of students who used relevant words in response to that question. This list

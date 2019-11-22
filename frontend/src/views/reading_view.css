@@ -43,3 +43,9 @@
     margin: 0em 0em 0em 8.75em;
 }
 
+#instructions-list {
+    padding:0 0 0 2em;
+}
+#instructions-overview {
+    padding: 0 0 0 0;
+}

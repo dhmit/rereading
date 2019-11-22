@@ -155,26 +155,42 @@ export class InstructionsNameView extends React.Component {
     render() {
         return (
             <div className={"container"}>
-                <div>
-                    Do a close reading of the text by following
-                    these steps:
-                    Read each segment of the text one segment at a time, from
-                    segment 1 to segment 5, while answering
-                    questions for each segment along the way.
-                    <ol>
-                        <li>After your first reading of a segment, click the “reread”
-                        button in order to access the questions for that particular
-                        segment.</li>
-                        <li>Provide an answer to each question posed for that segment,
-                        including the two “common questions.”</li>
-                        <li>After you finish answering the questions for that segment,
-                        click the “next” button in order to access the next segment.</li>
-                        <li>For each segment, highlight passages that provide evidence
-                        to support your answer to common question #2.</li>
+                <h1 className={"display-4 text-center mt-4"}>
+                    Rereading Introduction
+                </h1>
+                <div className={"mb-5"}>
+                    <h4>
+                        Instructions
+                    </h4>
+                    <p id={"instructions-overview"}>
+                        Do a close reading of the text by following
+                        these steps:
+                        Read each segment of the text one segment at a time, from
+                        segment 1 to segment 5, while answering
+                        questions for each segment along the way.
+                    </p>
+                    <ol id={"instructions-list"}>
+                        <li>
+                            After your first reading of a segment, click the “reread”
+                            button in order to access the questions for that particular
+                            segment.
+                        </li>
+                        <li>
+                            Provide an answer to each question posed for that segment,
+                            including the two “common questions.”
+                        </li>
+                        <li>
+                            After you finish answering the questions for that segment,
+                            click the “next” button in order to access the next segment.
+                        </li>
+                        <li>
+                            For each segment, highlight passages that provide evidence
+                            to support your answer to common question #2.
+                        </li>
                     </ol>
                 </div>
+                <h4>Enter your name</h4>
                 <div className={"input-group"}>
-                    <label>What is your name?</label>
                     <input
                         className={"form-control"}
                         type={"text"}
@@ -482,8 +498,8 @@ export class ReadingView extends React.Component {
                 {this.state.current_view === VIEWS.READING &&
                     <React.Fragment>
                         <div className="row">
+                            <p>Segment Number: {this.state.segment_num + 1}</p>
                             <div className='col-8'>
-                                <p>Segment Number: {this.state.segment_num + 1}</p>
                                 <Segment
                                     text={current_segment.text}
                                     handleScroll={(e) => this.handleScroll(e)}

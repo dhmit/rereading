@@ -38,7 +38,8 @@ class DocumentQuestionResponseSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'response',
-            'response_segment'
+            'response_segment',
+            'evidence',
         )
 
 
@@ -100,6 +101,7 @@ class SegmentQuestionResponseSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'response',
+            'evidence',
         )
 
 
@@ -148,6 +150,7 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
                 question=document_question,
                 response=data['response'],
                 response_segment=data['response_segment'],
+                evidence=data['evidence'],
             )
 
         # Save student segment data

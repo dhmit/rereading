@@ -2,6 +2,7 @@
 Models for the Rereading app.
 """
 from ast import literal_eval
+import json
 
 from django.db import models
 
@@ -85,6 +86,7 @@ class Question(models.Model):
     """
     text = models.TextField()
     response_word_limit = models.IntegerField(default=0, null=True)
+    require_evidence = models.BooleanField(default=False)
 
     def __str__(self):
         return self.text
@@ -203,6 +205,17 @@ class SegmentQuestionResponse(models.Model):
         related_name='segment_responses'
     )
     response = models.TextField()
+    evidence = models.TextField(default='[]')
+
+    def parse_evidence(self):
+        """
+        Returns the Python representation of the JSON string stored as the reader's
+        evidence for a response
+
+        :return: List object
+        """
+
+        return json.loads(self.evidence)
 
 
 class DocumentQuestionResponse(models.Model):
@@ -213,6 +226,7 @@ class DocumentQuestionResponse(models.Model):
     """
     response = models.TextField()
     response_segment = models.IntegerField(default=1)
+    evidence = models.TextField(default='[]')
 
     question = models.ForeignKey(
         DocumentQuestion,
@@ -224,6 +238,16 @@ class DocumentQuestionResponse(models.Model):
         on_delete=models.CASCADE,
         related_name='document_responses'
     )
+
+    def parse_evidence(self):
+        """
+        Returns the Python representation of the JSON string stored as the reader's
+        evidence for a response
+
+        :return: List object
+        """
+
+        return json.dumps(self.evidence)
 
 
 ################################################################################

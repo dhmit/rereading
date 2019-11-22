@@ -76,7 +76,7 @@ class Question extends React.Component {
                         <div className="evidence-values-section">
                             <label>Evidence:</label>
                             <div className="evidence-values">
-                                {this.state.evidence.map((value, i) => (
+                                {this.props.evidence.map((value, i) => (
                                     <div className="my-3 evidence-value" key={i}>
                                         {'"' + value + '"'}
                                     </div>
@@ -281,7 +281,7 @@ export class ReadingView extends React.Component {
             segmentResponseArray: [],
             documentResponseArray: [],
             evidenceModeActive: false,
-            current_selection: null,
+            current_selection: '',
         };
         this.csrftoken = getCookie('csrftoken');
 

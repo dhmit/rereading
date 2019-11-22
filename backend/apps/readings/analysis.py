@@ -5,7 +5,7 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 """
 import statistics
 
-from .models import StudentReadingData, StudentSegmentData
+from .models import StudentReadingData, StudentSegmentData, SegmentQuestionResponse
 
 
 class RereadingAnalysis:
@@ -17,6 +17,7 @@ class RereadingAnalysis:
     def __init__(self):
         self.readings = StudentReadingData.objects.all()
         self.segments = StudentSegmentData.objects.all()
+        self.question_response = SegmentQuestionResponse.objects.all()
 
     def total_and_median_view_time(self):
         """
@@ -74,4 +75,37 @@ class RereadingAnalysis:
             total_view_time += datum.view_times
         return 5
         # qrs = segment_data.segment_responses.all()
+
+    def frequency_words(self, question, minimum=1):
+        """
+        Compute the frequencies of words among all the responses. Not sensitive to case.
+        Specifically for questions that ask the reader to give a list of words, or ask for one
+        specific word (e.g. black or white.)
+
+        Param: question is a string in exactly the same format as how it appears on the page
+                minumum is the minimum frequency above which we include a word, default being any
+                word that occurs more than once
+
+        :return a list of tuples of words that appear more than once, and how often they occur,
+        in order of their frequency
+        """
+
+        words_dict = {}
+
+        for response in self.question_response:
+            if response.question == question:
+                lower_case_response = response.lower()
+                wordlist = lower_case_response.split()
+                for word in wordlist:
+                    if words_dict.get(word, 0) == 0:
+                        words_dict[word] = 1
+                    else:
+                        words_dict[word] += 1
+
+        frequent_words = []  # list of tuples in the format (word, frequency)
+        for word in words_dict:
+            if words_dict[word] > minimum:
+                frequent_words.append((word, words_dict[word]))
+        frequent_words.sort(key=lambda x: x[1], reverse=True)
+        return frequent_words
 

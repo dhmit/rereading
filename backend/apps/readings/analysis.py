@@ -67,11 +67,15 @@ class RereadingAnalysis:
         # return length of set (represents unique number of students)
         return len(student_names)
 
-    def total_view_times(self):
+    '''def total_view_times(self):
         total_view_time = 0
         segment_data = self.readings.segment_data.all()
         for datum in segment_data:
             total_view_time += datum.view_times
-        return 5
+        return 5'''
         # qrs = segment_data.segment_responses.all()
 
+    def mean_reading_time_for_a_segment(self):
+        total_and_median_time = self.total_and_median_view_time()
+        segment_count = len(self.segments)
+        return round(total_and_median_time[0] / segment_count, 2)

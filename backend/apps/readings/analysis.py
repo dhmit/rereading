@@ -5,7 +5,7 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 """
 import statistics
 
-from .models import StudentReadingData, StudentSegmentData
+from .models import StudentReadingData, StudentSegmentData, SegmentQuestionResponse
 
 
 class RereadingAnalysis:
@@ -17,6 +17,7 @@ class RereadingAnalysis:
     def __init__(self):
         self.readings = StudentReadingData.objects.all()
         self.segments = StudentSegmentData.objects.all()
+        self.segment_question_responses = SegmentQuestionResponse.objects.all()
 
     def total_and_median_view_time(self):
         """
@@ -50,4 +51,18 @@ class RereadingAnalysis:
         ret_tuple = (round(total_time), round(median_view_time))
         return ret_tuple
 
+    def all_responses(self):
+        """
+        This function
+        :return:
+        """
+        response_dict = {}
+        for segment_question_response in self.segment_question_responses:
+            question_text = segment_question_response.question.text
+            if question_text in response_dict:
+                response_dict[question_text].append(segment_question_response.response)
+            else:
+                response_dict[question_text] = [segment_question_response.response]
+
+        return response_dict
 

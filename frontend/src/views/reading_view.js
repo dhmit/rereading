@@ -396,7 +396,6 @@ export class ReadingView extends React.Component {
     }
 
     prevSegment () {
-        if (this.state.rereading && !this.allowSegmentChange()) {return;}
         this.gotoSegment(this.state.segment_num - 1);
         this.segment_ref.current.scrollTo(0,0);
     }

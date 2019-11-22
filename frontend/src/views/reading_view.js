@@ -44,6 +44,7 @@ Segment.propTypes = {
 };
 
 class Question extends React.Component {
+
     render(){
         const ems = this.props.evidenceModeState;
         const evidenceModeActive =
@@ -83,7 +84,7 @@ class Question extends React.Component {
                             <div className="evidence-values">
                                 {this.props.evidence.map((value, i) => (
                                     <div className="my-3 evidence-value" key={i}>
-                                        {'"' + value + '"'}
+                                        {'"' + value[0] + '"'}
                                     </div>
                                 ))}
                             </div>
@@ -291,6 +292,7 @@ export class ReadingView extends React.Component {
                 is_document_question: false,
             },
             current_selection: '',
+            evidenceId: 0,
         };
         this.csrftoken = getCookie('csrftoken');
 
@@ -392,7 +394,7 @@ export class ReadingView extends React.Component {
     }
 
 
-    handleResponseChange(is_document_question, question_id, event) {
+    handleResponseChange(is_document_question, question_id, evidenceId, event) {
         const update_dict = {
             response: event.target.value,
         };
@@ -538,16 +540,18 @@ export class ReadingView extends React.Component {
 
         let new_evidence_arr;
         if (response.evidence === undefined) {
-            new_evidence_arr = [new_evidence];
+            new_evidence_arr = [[new_evidence, this.state.evidenceId]];
         } else {
             new_evidence_arr = response.evidence.slice();
-            new_evidence_arr.push(new_evidence);
+            new_evidence_arr.push([new_evidence, this.state.evidenceId]);
         }
 
         const update_dict = {
             evidence: new_evidence_arr,
         }
         this.updateResponseObject(is_document_question, question_id, update_dict);
+
+        this.setState({evidenceId: this.state.evidenceId + 1,});
     }
 
     buildQuestionFields(questions, is_document_question) {

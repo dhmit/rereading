@@ -45,7 +45,12 @@ Segment.propTypes = {
 
 class Question extends React.Component {
     render(){
-        const evidenceModeActive = this.props.evidenceModeActive;
+        const ems = this.props.evidenceModeState;
+        const evidenceModeActive =
+            ems.active
+            && ems.question_id === this.props.question_id
+            && ems.is_document_question === this.props.is_document_question;
+
         return(
             <React.Fragment>
                 <div className="mb-1">
@@ -96,7 +101,7 @@ Question.propTypes = {
     question_id: PropTypes.number,
     is_document_question: PropTypes.bool,
     question_text: PropTypes.string,
-    evidenceModeActive: PropTypes.bool,
+    evidenceModeState: PropTypes.object,
     evidence: PropTypes.array,
     handleResponseChange: PropTypes.func,
     toggleAddEvidenceMode: PropTypes.func,
@@ -280,7 +285,11 @@ export class ReadingView extends React.Component {
             segmentQuestionNum: 0,
             segmentResponseArray: [],
             documentResponseArray: [],
-            evidenceModeActive: false,
+            evidenceModeState: {
+                active: false,
+                question_id: 0,
+                is_document_question: false,
+            },
             current_selection: '',
         };
         this.csrftoken = getCookie('csrftoken');
@@ -437,8 +446,6 @@ export class ReadingView extends React.Component {
         }
     }
 
-
-
     prevSegment () {
         this.sendData(false);
         this.gotoSegment(this.state.segment_num - 1);
@@ -500,10 +507,19 @@ export class ReadingView extends React.Component {
     }
 
     toggleAddEvidenceMode(is_document_question, question_id) {
-        if (this.state.evidenceModeActive && this.state.current_selection.toString() !== "") {
-            this.addEvidence(is_document_question, question_id);
+        const ems = this.state.evidenceModeState;
+        if (ems.active) {
+            if (ems.is_document_question !== is_document_question
+                || ems.question_id !== question_id) {
+                return;  // ignore clicks from other buttons
+            } else if (this.state.current_selection.toString() !== "") {
+                this.addEvidence(is_document_question, question_id);
+            }
         }
-        this.setState({evidenceModeActive: !this.state.evidenceModeActive});
+        ems.active = !ems.active;
+        ems.is_document_question = is_document_question;
+        ems.question_id = question_id;
+        this.setState({evidenceModeState: ems});
     }
 
     handleSelectionDragEnd() {
@@ -525,6 +541,7 @@ export class ReadingView extends React.Component {
             new_evidence_arr = [new_evidence];
         } else {
             new_evidence_arr = response.evidence.slice();
+            new_evidence_arr.push(new_evidence);
         }
 
         const update_dict = {
@@ -541,11 +558,11 @@ export class ReadingView extends React.Component {
             return (
                 <Question
                     key={id}
-                    question_id={id}
+                    question_id={question.id}
                     is_document_question={is_document_question}
                     question_text={question.text}
                     evidence={response.evidence}
-                    evidenceModeActive={this.state.evidenceModeActive}
+                    evidenceModeState={this.state.evidenceModeState}
                     handleResponseChange={
                         (e) => this.handleResponseChange(is_document_question, question.id, e)
                     }
@@ -585,11 +602,10 @@ export class ReadingView extends React.Component {
         // Generate response fields for each of the questions
         const segment_response_fields = this.buildQuestionFields(segment_questions, false);
         const document_response_fields = this.buildQuestionFields(document_questions, true);
-        const evidenceModeActive = this.state.evidenceModeActive;
 
         console.log(this.state.current_selection);
         return (
-            <div className={`container ${evidenceModeActive ? '--evidence-mode-active' : ''}`}>
+            <div className="container">
                 <h1 className="display-4 py-3 pr-3">{doc.title}</h1>
 
                 {this.state.current_view === VIEWS.OVERVIEW &&

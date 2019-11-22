@@ -56,7 +56,7 @@ class RereadingAnalysis:
         return a dictionary containing the number of times students had to reread the text
         :return: int, number of times segment with sequence segment_number is reread
         """
-        segment_dictionary = {5: 1}
+        segment_dictionary = {}
         segment_list = []
         for segments in self.segments:
             if (segments.segment.sequence in segment_dictionary and segments.view_time > 1.0 and

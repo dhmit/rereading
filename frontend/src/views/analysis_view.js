@@ -9,10 +9,10 @@ export class RereadCountTable extends React.Component {
     render() {
         return (
             <TabularAnalysis
-                title={"Reread Counts Segments"}
+                title={"Reread Counts per Segment"}
                 headers={[
                     "Segment Number",
-                    "Reread Count",
+                    "Mean Reread Count",
                 ]}
                 data={this.props.compute_reread_counts}
             />

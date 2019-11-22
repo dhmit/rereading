@@ -87,9 +87,9 @@ class Question extends React.Component {
                             <label>Evidence:</label>
                             <div className="evidence-values">
                                 {this.state.evidenceValues.map((value, i) => (
-                                    <span className="evidence-value" key={i}>
-                                        {value}
-                                    </span>
+                                    <div className="my-3 evidence-value" key={i}>
+                                        {'"' + value + '"'}
+                                    </div>
                                 ))}
                             </div>
                         </div>
@@ -523,7 +523,7 @@ export class ReadingView extends React.Component {
         //console.log(question.evidenceValues);
         console.log(evidence);
         evidenceArray.push(evidence);
-        console.log(evidenceArray)
+        console.log(evidenceArray);
 
         this.setState({
             document: _document,

@@ -218,11 +218,13 @@ export class ReadingView extends React.Component {
             segmentQuestionNum: 0,
             segmentResponseArray: [],
             documentResponseArray: [],
+            previousSegmentResponses: {},
         };
         this.csrftoken = getCookie('csrftoken');
 
         this.segment_ref = React.createRef();
         this.handleSegmentResponseChange = this.handleSegmentResponseChange.bind(this);
+        this.allowSegmentChange = this.allowSegmentChange.bind(this);
         this.prevSegment = this.prevSegment.bind(this);
         this.nextSegment = this.nextSegment.bind(this);
         this.toOverview = this.toOverview.bind(this);
@@ -234,6 +236,10 @@ export class ReadingView extends React.Component {
     }
 
     async startReading() {
+        if (this.state.student_name.trim() === "") {
+            alert("Please write your name before you start!");
+            return;
+        }
         try {
             // Hard code the document we know exists for now -- generalize later...
             const url = '/api/documents/1/';
@@ -356,19 +362,53 @@ export class ReadingView extends React.Component {
         this.setState({documentResponseArray});
     }
 
+    allowSegmentChange () {
+        const doc = this.state.document;
+        const current_segment = doc.segments[this.state.segment_num];
+        const segment_questions = current_segment.questions;
+        const document_questions = doc.document_questions;
+        const document_responses = this.state.documentResponseArray;
+        const segment_responses = this.state.segmentResponseArray;
+        let allowChange = true;
+        if (document_responses.length === document_questions.length &&
+            segment_responses.length === segment_questions.length) {
+            for (let i=0; i<document_responses.length; i++) {
+                if (document_responses[i].response.trim() === ""){
+                    allowChange = false;
+                    break;
+                }
+            }
+            for (let i=0; i<segment_responses.length; i++) {
+                if (segment_responses[i].response.trim() === ""){
+                    allowChange = false;
+                    break;
+                }
+            }
+        }
+        else {
+            allowChange = false;
+        }
+        if (!allowChange) {
+            alert("Please respond to every question");
+            return false;
+        }
+        return true;
+    }
+
     prevSegment () {
+        if (this.state.rereading && !this.allowSegmentChange()) {return;}
         this.sendData(false);
         this.gotoSegment(this.state.segment_num - 1);
         this.segment_ref.current.scrollTo(0,0);
     }
 
     nextSegment () {
+        if (this.state.rereading && !this.allowSegmentChange()) {return;}
         this.sendData(false);
 
         if (this.state.rereading) {
             // If we're already rereading, move to the next segment
             this.gotoSegment(this.state.segment_num + 1);
-            this.setState({segmentResponseArray: []})
             //TODO Figure out if this can be integrated into gotoSegment. I wasn't exactly
             // sure why it was being set here but not prevSegment().
         } else {
@@ -384,15 +424,22 @@ export class ReadingView extends React.Component {
         if (segmentNum >= 0 && segmentNum < segmentCount) {
             const segments_viewed = this.state.segments_viewed.slice();
             let rereading = segments_viewed.includes(segmentNum);
-
             //The segment number is pushed regardless of whether or not the user has read the page
             // before so that page reread order can also be determined.
             segments_viewed.push(segmentNum);
+            // Store the current segment reading data into state
+            const previousSegmentResponses = this.state.previousSegmentResponses;
+            previousSegmentResponses[this.state.segment_num] = this.state.segmentResponseArray;
+            const segmentResponseArray = segmentNum in previousSegmentResponses ?
+                previousSegmentResponses[segmentNum] : [];
+
             this.setState({
                 rereading,
                 segments_viewed,
                 segment_num: segmentNum,
                 segmentQuestionNum: 0,
+                segmentResponseArray,
+                previousSegmentResponses,
             });
         }
     }
@@ -401,7 +448,7 @@ export class ReadingView extends React.Component {
         if (e.key === 'Enter') {
             this.handleJumpToButton(); //The enter key should be treated the same the jump button
         }
-    }
+    };
 
     handleJumpToFieldChange = (e) => {
         let numericValue = parseInt(e.target.value) - 1;
@@ -417,8 +464,14 @@ export class ReadingView extends React.Component {
     }
 
     buildQuestionFields(questions, is_document_question) {
-        return questions.map((question, id) => (
-            <React.Fragment key={id}>
+        return questions.map((question, id) => {
+            const responseArray = is_document_question ?
+                this.state.documentResponseArray :
+                this.state.segmentResponseArray;
+            const currentTexts = responseArray.filter(
+                response => response.id === question.id
+            );
+            return (<React.Fragment key={id}>
                 <div className="mb-5">
                     <div className='segment-question-text question-text'>
                         {question.text}
@@ -427,6 +480,7 @@ export class ReadingView extends React.Component {
                         className='form-control form-control-lg questions-boxes'
                         id="exampleFormControlTextarea1"
                         rows="4"
+                        value={currentTexts.length !== 0 ? currentTexts[0].response : ""}
                         onChange={
                             is_document_question
                                 ? this.handleDocumentResponseChange.bind(this, question.id)
@@ -435,7 +489,7 @@ export class ReadingView extends React.Component {
                     />
                 </div>
             </React.Fragment>
-        ));
+            )});
     }
 
     handleStudentName(e) {

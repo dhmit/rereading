@@ -460,6 +460,7 @@ export class ReadingView extends React.Component {
     };
 
     toOverview () {
+        this.sendData(false);
         this.setState({current_view: VIEWS.OVERVIEW})
     }
 

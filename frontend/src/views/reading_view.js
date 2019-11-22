@@ -207,6 +207,7 @@ export class ReadingView extends React.Component {
             scroll_top: 0,
             scroll_data: [],
             segments_viewed: [0],
+            maximum_jump_allowed: 0,
             jump_to_value: null,
             rereading: false,  // we alternate reading and rereading
             document: null,
@@ -431,6 +432,11 @@ export class ReadingView extends React.Component {
             const segmentResponseArray = segmentNum in previousSegmentResponses ?
                 previousSegmentResponses[segmentNum] : [];
 
+            let maximum_jump_allowed = this.state.maximum_jump_allowed;
+            if (segmentNum > maximum_jump_allowed) {
+                maximum_jump_allowed = segmentNum;
+            }
+
             this.setState({
                 rereading,
                 segments_viewed,
@@ -438,6 +444,7 @@ export class ReadingView extends React.Component {
                 segmentQuestionNum: 0,
                 segmentResponseArray,
                 previousSegmentResponses,
+                maximum_jump_allowed
             });
         }
     }
@@ -454,10 +461,10 @@ export class ReadingView extends React.Component {
     };
 
     userCanJump = () => {
-        return !Number.isNaN(this.state.jump_to_value) &&
-            this.state.segments_viewed.includes(
-                this.state.jump_to_value);
-    }
+        let jump_to_value = this.state.jump_to_value;
+        return (!isNaN(parseFloat(jump_to_value)) && isFinite(jump_to_value)) &&
+            0 <= jump_to_value && jump_to_value <= this.state.maximum_jump_allowed;
+    };
 
     handleJumpToButton = () => {
         if (this.userCanJump()) {
@@ -553,8 +560,6 @@ export class ReadingView extends React.Component {
                                     document_segments={doc.segments}
                                     segment_num={this.state.segment_num}
                                     rereading={this.state.rereading}
-                                    jump_to_value={this.state.jump_to_value}
-                                    segments_viewed={this.state.segments_viewed}
                                     prevSegment={this.prevSegment}
                                     nextSegment={this.nextSegment}
                                     toOverview={this.toOverview}

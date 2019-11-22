@@ -72,9 +72,7 @@ class NavBar extends React.Component {
                             onClick={this.props.handleJumpToButton}
                             // Checks isNaN so that an empty string
                             // doesn't count as 0
-                            disabled={Number.isNaN(this.props.jump_to_value) ||
-                            !this.props.segments_viewed.includes(
-                                this.props.jump_to_value)}
+                            disabled={!this.props.userCanJump()}
                         >
                             Jump
                         </button>
@@ -103,8 +101,6 @@ class NavBar extends React.Component {
 NavBar.propTypes = {
     document_segments: PropTypes.array,
     segment_num: PropTypes.number,
-    jump_to_value: PropTypes.number,
-    segments_viewed: PropTypes.array,
     rereading: PropTypes.bool,
     prevSegment: PropTypes.func,
     nextSegment: PropTypes.func,
@@ -112,6 +108,7 @@ NavBar.propTypes = {
     handleJumpToFieldKeyDown: PropTypes.func,
     handleJumpToFieldChange: PropTypes.func,
     handleJumpToButton: PropTypes.func,
+    userCanJump: PropTypes.func
 };
 
 class OverviewView extends React.Component {
@@ -230,6 +227,8 @@ export class ReadingView extends React.Component {
         this.toOverview = this.toOverview.bind(this);
         this.handleJumpToFieldChange = this.handleJumpToFieldChange.bind(this);
         this.handleJumpToButton = this.handleJumpToButton.bind(this);
+        this.handleJumpToFieldKeyDown = this.handleJumpToFieldKeyDown.bind(this);
+        this.userCanJump = this.userCanJump.bind(this);
         this.buildQuestionFields = this.buildQuestionFields.bind(this);
         this.startReading = this.startReading.bind(this);
         this.handleStudentName = this.handleStudentName.bind(this);
@@ -454,8 +453,16 @@ export class ReadingView extends React.Component {
         this.setState({jump_to_value: numericValue});
     };
 
+    userCanJump = () => {
+        return !Number.isNaN(this.state.jump_to_value) &&
+            this.state.segments_viewed.includes(
+                this.state.jump_to_value);
+    }
+
     handleJumpToButton = () => {
-        this.gotoSegment(this.state.jump_to_value);
+        if (this.userCanJump()) {
+            this.gotoSegment(this.state.jump_to_value);
+        }
     };
 
     toOverview () {
@@ -554,6 +561,7 @@ export class ReadingView extends React.Component {
                                     handleJumpToFieldChange={this.handleJumpToFieldChange}
                                     handleJumpToButton={this.handleJumpToButton}
                                     handleJumpToFieldKeyDown={this.handleJumpToFieldKeyDown}
+                                    userCanJump={this.userCanJump}
                                 />
                             </div>
 

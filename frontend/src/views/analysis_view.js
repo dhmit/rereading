@@ -70,7 +70,7 @@ export class AnalysisView extends React.Component {
                 />
                 <SingleValueAnalysis
                     header={"Recicitatif Response"}
-                    value={all_responses["What does the word \"recitatif\" mean?"]}
+                    value={all_responses['What does the word “recitatif” mean?']}
                     unit={"Uncertainty"}
                 />
             </div>

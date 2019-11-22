@@ -32,6 +32,7 @@ class DocumentQuestionResponseSerializer(serializers.ModelSerializer):
     Serializes a Student's response to a given document-level question
     """
     id = serializers.ModelField(model_field=DocumentQuestionResponse()._meta.get_field('id'))
+    evidence = serializers.ListField(child=serializers.CharField())
 
     class Meta:
         model = DocumentQuestionResponse
@@ -95,6 +96,7 @@ class SegmentQuestionResponseSerializer(serializers.ModelSerializer):
     Serializes a response provided to a question from a segment
     """
     id = serializers.ModelField(model_field=SegmentQuestionResponse()._meta.get_field('id'))
+    evidence = serializers.ListField(child=serializers.CharField())
 
     class Meta:
         model = SegmentQuestionResponse
@@ -146,15 +148,18 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
         # Link each document response to the reading data
         for data in document_responses:
             document_question = DocumentQuestion.objects.get(id=data['id'])
-            evidence_list = data.pop('evidence')
-            evidence = json.dumps(evidence_list)
-            DocumentQuestionResponse.objects.create(
+            response = DocumentQuestionResponse.objects.create(
                 student_reading_data=reading_data,
                 question=document_question,
                 response=data['response'],
                 response_segment=data['response_segment'],
-                evidence=evidence,
             )
+
+            if 'evidence' in data:
+                evidence_list = data.pop('evidence')
+                evidence_json = json.dumps(evidence_list)
+                response.evidence = evidence_json
+                response.save()
 
         # Save student segment data
         for this_segment_data in segment_data:

@@ -28,7 +28,7 @@ class Segment extends React.Component {
                 onScroll={this.props.handleScroll}
             >
                 {segment_lines.map(
-                    (line, k) => (<p key={k}>{line}</p>)
+                    (line, k) => (<p className={"segment-text text-justify"} key={k}>{line}</p>)
                 )}
             </div>
         );
@@ -47,7 +47,7 @@ class NavBar extends React.Component {
             && this.props.rereading;
 
         return (
-            <div id="nav_panel">
+            <div className={"col-7 mx-0"} id="nav_panel">
                 <div className="row">
                     <div className="col-2">
                         {this.props.segment_num > 0 &&
@@ -156,12 +156,9 @@ export class InstructionsNameView extends React.Component {
         return (
             <div className={"container"}>
                 <h1 className={"display-4 text-center mt-4"}>
-                    Rereading Introduction
+                    Instructions
                 </h1>
                 <div className={"mb-5"}>
-                    <h4>
-                        Instructions
-                    </h4>
                     <p id={"instructions-overview"}>
                         Do a close reading of the text by following
                         these steps:
@@ -189,7 +186,7 @@ export class InstructionsNameView extends React.Component {
                         </li>
                     </ol>
                 </div>
-                <h4>Enter your name</h4>
+                <h4>Enter your name (optional)</h4>
                 <div className={"input-group"}>
                     <input
                         className={"form-control"}
@@ -483,9 +480,12 @@ export class ReadingView extends React.Component {
         const segment_response_fields = this.buildQuestionFields(segment_questions, false);
         const document_response_fields = this.buildQuestionFields(document_questions, true);
 
+        // Hardcoded roman numeral conversions for now.
+        const roman_numeral = { 1: "I", 2:"II", 3:"III", 4:"IV", 5:"V", 6:"VI", 7:"VII"};
+
         return (
             <div className="container">
-                <h1 className="display-4 py-3 pr-3">{doc.title}</h1>
+                <h1 className="display-4 px-0 pt-4 pb-3">{doc.title}</h1>
 
                 {this.state.current_view === VIEWS.OVERVIEW &&
                     <OverviewView
@@ -498,34 +498,39 @@ export class ReadingView extends React.Component {
                 {this.state.current_view === VIEWS.READING &&
                     <React.Fragment>
                         <div className="row">
-                            <p>Segment Number: {this.state.segment_num + 1}</p>
-                            <div className='col-8'>
+                            <p className={"segment-num ml-6 mb-0"}>
+                                Segment {roman_numeral[this.state.segment_num + 1]}
+                            </p>
+                            <div className='col-7'>
                                 <Segment
                                     text={current_segment.text}
                                     handleScroll={(e) => this.handleScroll(e)}
                                     segment_ref={this.segment_ref}
                                 />
-                                <NavBar
-                                    document_segments={doc.segments}
-                                    segment_num={this.state.segment_num}
-                                    rereading={this.state.rereading}
-                                    jump_to_value={this.state.jump_to_value}
-                                    segments_viewed={this.state.segments_viewed}
-                                    prevSegment={this.prevSegment}
-                                    nextSegment={this.nextSegment}
-                                    toOverview={this.toOverview}
-                                    handleJumpToFieldChange={this.handleJumpToFieldChange}
-                                    handleJumpToButton={this.handleJumpToButton}
-                                    handleJumpToFieldKeyDown={this.handleJumpToFieldKeyDown}
-                                />
+
                             </div>
 
                             {this.state.rereading &&
-                                <div className="col-4 questions-overview">
-                                    {document_response_fields}
+                                <div className="col-5 questions-overview">
                                     {segment_response_fields}
+                                    {document_response_fields}
                                 </div>
                             }
+                        </div>
+                        <div className={"row"}>
+                            <NavBar
+                                document_segments={doc.segments}
+                                segment_num={this.state.segment_num}
+                                rereading={this.state.rereading}
+                                jump_to_value={this.state.jump_to_value}
+                                segments_viewed={this.state.segments_viewed}
+                                prevSegment={this.prevSegment}
+                                nextSegment={this.nextSegment}
+                                toOverview={this.toOverview}
+                                handleJumpToFieldChange={this.handleJumpToFieldChange}
+                                handleJumpToButton={this.handleJumpToButton}
+                                handleJumpToFieldKeyDown={this.handleJumpToFieldKeyDown}
+                            />
                         </div>
                     </React.Fragment>
                 }

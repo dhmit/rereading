@@ -1,7 +1,27 @@
 import React from "react";
 import {SingleValueAnalysis} from "../prototype/analysis_view";
+import {TabularAnalysis} from "../prototype/analysis_view";
+import PropTypes from "prop-types";
 // import PropTypes from 'prop-types';
 
+
+export class RereadCountTable extends React.Component {
+    render() {
+        return (
+            <TabularAnalysis
+                title={"Reread Counts Segments"}
+                headers={[
+                    "Segment Number",
+                    "Reread Count",
+                ]}
+                data={this.props.compute_reread_counts}
+            />
+        );
+    }
+}
+RereadCountTable.propTypes = {
+    compute_reread_counts: PropTypes.array,
+};
 
 export class AnalysisView extends React.Component {
     constructor(props) {
@@ -12,6 +32,7 @@ export class AnalysisView extends React.Component {
             analysis: null,
         };
     }
+
 
     /**
      * This function is fired once this component has loaded into the DOM.
@@ -37,6 +58,7 @@ export class AnalysisView extends React.Component {
 
         const { // object destructuring:
             total_and_median_view_time,
+            compute_reread_counts,
         } = this.state.analysis;
         return (
             <div className={"container"}>
@@ -67,6 +89,10 @@ export class AnalysisView extends React.Component {
                     value={total_and_median_view_time[1]}
                     unit={"seconds"}
                 />
+                <RereadCountTable
+                    compute_reread_counts={compute_reread_counts}
+                />
+
             </div>
         );
     }

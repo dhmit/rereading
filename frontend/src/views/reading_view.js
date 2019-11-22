@@ -218,6 +218,7 @@ export class ReadingView extends React.Component {
             segmentQuestionNum: 0,
             segmentResponseArray: [],
             documentResponseArray: [],
+            previousSegmentResponses: {},
         };
         this.csrftoken = getCookie('csrftoken');
 
@@ -408,7 +409,6 @@ export class ReadingView extends React.Component {
         if (this.state.rereading) {
             // If we're already rereading, move to the next segment
             this.gotoSegment(this.state.segment_num + 1);
-            this.setState({segmentResponseArray: []})
             //TODO Figure out if this can be integrated into gotoSegment. I wasn't exactly
             // sure why it was being set here but not prevSegment().
         } else {
@@ -424,15 +424,22 @@ export class ReadingView extends React.Component {
         if (segmentNum >= 0 && segmentNum < segmentCount) {
             const segments_viewed = this.state.segments_viewed.slice();
             let rereading = segments_viewed.includes(segmentNum);
-
             //The segment number is pushed regardless of whether or not the user has read the page
             // before so that page reread order can also be determined.
             segments_viewed.push(segmentNum);
+            // Store the current segment reading data into state
+            const previousSegmentResponses = this.state.previousSegmentResponses;
+            previousSegmentResponses[this.state.segment_num] = this.state.segmentResponseArray;
+            const segmentResponseArray = segmentNum in previousSegmentResponses ?
+                previousSegmentResponses[segmentNum] : [];
+
             this.setState({
                 rereading,
                 segments_viewed,
                 segment_num: segmentNum,
                 segmentQuestionNum: 0,
+                segmentResponseArray,
+                previousSegmentResponses,
             });
         }
     }

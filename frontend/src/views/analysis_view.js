@@ -31,7 +31,7 @@ export class AnalysisView extends React.Component {
     }
 
     render() {
-        if (this.state.analysis === null) {
+        if (this.state.analysis !== null) {
             const { // object destructuring:
                 total_and_median_view_time,
                 get_number_of_unique_students,

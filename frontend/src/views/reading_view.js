@@ -72,9 +72,7 @@ class NavBar extends React.Component {
                             onClick={this.props.handleJumpToButton}
                             // Checks isNaN so that an empty string
                             // doesn't count as 0
-                            disabled={Number.isNaN(this.props.jump_to_value) ||
-                            !this.props.segments_viewed.includes(
-                                this.props.jump_to_value)}
+                            disabled={!this.props.userCanJump()}
                         >
                             Jump
                         </button>
@@ -103,8 +101,6 @@ class NavBar extends React.Component {
 NavBar.propTypes = {
     document_segments: PropTypes.array,
     segment_num: PropTypes.number,
-    jump_to_value: PropTypes.number,
-    segments_viewed: PropTypes.array,
     rereading: PropTypes.bool,
     prevSegment: PropTypes.func,
     nextSegment: PropTypes.func,
@@ -112,6 +108,7 @@ NavBar.propTypes = {
     handleJumpToFieldKeyDown: PropTypes.func,
     handleJumpToFieldChange: PropTypes.func,
     handleJumpToButton: PropTypes.func,
+    userCanJump: PropTypes.func
 };
 
 class OverviewView extends React.Component {
@@ -223,6 +220,7 @@ export class ReadingView extends React.Component {
             scroll_top: 0,
             scroll_data: [],
             segments_viewed: [0],
+            maximum_jump_allowed: 0,
             jump_to_value: null,
             rereading: false,  // we alternate reading and rereading
             document: null,
@@ -237,12 +235,14 @@ export class ReadingView extends React.Component {
 
         this.segment_ref = React.createRef();
         this.handleSegmentResponseChange = this.handleSegmentResponseChange.bind(this);
-        this.allowSegmentChange = this.allowSegmentChange.bind(this);
+        this.allQuestionsAreCompleted = this.allQuestionsAreCompleted.bind(this);
         this.prevSegment = this.prevSegment.bind(this);
         this.nextSegment = this.nextSegment.bind(this);
         this.toOverview = this.toOverview.bind(this);
         this.handleJumpToFieldChange = this.handleJumpToFieldChange.bind(this);
         this.handleJumpToButton = this.handleJumpToButton.bind(this);
+        this.handleJumpToFieldKeyDown = this.handleJumpToFieldKeyDown.bind(this);
+        this.userCanJump = this.userCanJump.bind(this);
         this.buildQuestionFields = this.buildQuestionFields.bind(this);
         this.startReading = this.startReading.bind(this);
         this.handleStudentName = this.handleStudentName.bind(this);
@@ -375,66 +375,68 @@ export class ReadingView extends React.Component {
         this.setState({documentResponseArray});
     }
 
-    allowSegmentChange () {
+    allQuestionsAreCompleted () {
         const doc = this.state.document;
         const current_segment = doc.segments[this.state.segment_num];
         const segment_questions = current_segment.questions;
         const document_questions = doc.document_questions;
         const document_responses = this.state.documentResponseArray;
         const segment_responses = this.state.segmentResponseArray;
-        let allowChange = true;
+
         if (document_responses.length === document_questions.length &&
             segment_responses.length === segment_questions.length) {
-            for (let i=0; i<document_responses.length; i++) {
-                if (document_responses[i].response.trim() === ""){
-                    allowChange = false;
-                    break;
+            for (let element of document_responses) {
+                if (element.response.trim() === ""){
+                    return false;
                 }
             }
-            for (let i=0; i<segment_responses.length; i++) {
-                if (segment_responses[i].response.trim() === ""){
-                    allowChange = false;
-                    break;
+            for (let element of segment_responses) {
+                if (element.response.trim() === ""){
+                    return false;
                 }
             }
         }
-        else {
-            allowChange = false;
-        }
-        if (!allowChange) {
-            alert("Please respond to every question");
+        else
+        {
             return false;
         }
+
         return true;
     }
 
     prevSegment () {
-        if (this.state.rereading && !this.allowSegmentChange()) {return;}
-        this.sendData(false);
         this.gotoSegment(this.state.segment_num - 1);
-        this.segment_ref.current.scrollTo(0,0);
     }
 
     nextSegment () {
-        if (this.state.rereading && !this.allowSegmentChange()) {return;}
-        this.sendData(false);
-
         if (this.state.rereading) {
             // If we're already rereading, move to the next segment
             this.gotoSegment(this.state.segment_num + 1);
-            //TODO Figure out if this can be integrated into gotoSegment. I wasn't exactly
-            // sure why it was being set here but not prevSegment().
         } else {
             // Otherwise, move on to the rereading layout
+            this.sendData(false);
             this.setState({rereading: true});
         }
-
-        this.segment_ref.current.scrollTo(0,0);
     }
 
     gotoSegment(segmentNum) {
+        this.sendData(false);
+
         let segmentCount = this.state.document.segments.length;
+        let segment_num = this.state.segment_num;
+
+        if (!this.allQuestionsAreCompleted()) {
+            //Make sure the user can't jump past the current segment if they haven't completed
+            // all questions
+            this.setState({maximum_jump_allowed: segment_num});
+            if (segmentNum > segment_num) {
+                alert("Please respond to every question");
+                return;
+            }
+        }
+
         if (segmentNum >= 0 && segmentNum < segmentCount) {
+
             const segments_viewed = this.state.segments_viewed.slice();
             let rereading = segments_viewed.includes(segmentNum);
             //The segment number is pushed regardless of whether or not the user has read the page
@@ -446,6 +448,11 @@ export class ReadingView extends React.Component {
             const segmentResponseArray = segmentNum in previousSegmentResponses ?
                 previousSegmentResponses[segmentNum] : [];
 
+            let maximum_jump_allowed = this.state.maximum_jump_allowed;
+            if (segmentNum > maximum_jump_allowed) {
+                maximum_jump_allowed = segmentNum;
+            }
+
             this.setState({
                 rereading,
                 segments_viewed,
@@ -453,7 +460,9 @@ export class ReadingView extends React.Component {
                 segmentQuestionNum: 0,
                 segmentResponseArray,
                 previousSegmentResponses,
+                maximum_jump_allowed
             });
+            this.segment_ref.current.scrollTo(0,0);
         }
     }
 
@@ -468,8 +477,18 @@ export class ReadingView extends React.Component {
         this.setState({jump_to_value: numericValue});
     };
 
+    userCanJump = () => {
+        let jump_to_value = this.state.jump_to_value;
+        let segment_num = this.state.segment_num;
+        return (!isNaN(parseFloat(jump_to_value)) && isFinite(jump_to_value)) &&
+            0 <= jump_to_value && jump_to_value <= this.state.maximum_jump_allowed &&
+            !(jump_to_value > segment_num && !this.allQuestionsAreCompleted());
+    };
+
     handleJumpToButton = () => {
-        this.gotoSegment(this.state.jump_to_value);
+        if (this.userCanJump()) {
+            this.gotoSegment(this.state.jump_to_value);
+        }
     };
 
     toOverview () {
@@ -562,7 +581,6 @@ export class ReadingView extends React.Component {
                                     handleScroll={(e) => this.handleScroll(e)}
                                     segment_ref={this.segment_ref}
                                 />
-
                             </div>
 
                             {this.state.rereading &&
@@ -577,14 +595,13 @@ export class ReadingView extends React.Component {
                                 document_segments={doc.segments}
                                 segment_num={this.state.segment_num}
                                 rereading={this.state.rereading}
-                                jump_to_value={this.state.jump_to_value}
-                                segments_viewed={this.state.segments_viewed}
                                 prevSegment={this.prevSegment}
                                 nextSegment={this.nextSegment}
                                 toOverview={this.toOverview}
                                 handleJumpToFieldChange={this.handleJumpToFieldChange}
                                 handleJumpToButton={this.handleJumpToButton}
                                 handleJumpToFieldKeyDown={this.handleJumpToFieldKeyDown}
+                                userCanJump={this.userCanJump}
                             />
                         </div>
                     </React.Fragment>

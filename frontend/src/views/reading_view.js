@@ -83,10 +83,14 @@ class Question extends React.Component {
                             <label>Evidence:</label>
                             <div className="evidence-values">
                                 {this.props.evidence.map((value, i) => (
-                                    <div className="my-3 evidence-value" key={i}>
+                                    <div className="mb-3 evidence-value" key={i}>
                                         <button onClick={
-                                            this.props.handleRemoveEvidence(i)
-                                        }>REMOVE ME!
+                                            () => this.props.handleRemoveEvidence(
+                                                this.props.is_document_question,
+                                                this.props.question_id,
+                                                i,
+                                            )
+                                        }>X
                                         </button>
                                         {'"' + value + '"'}
                                     </div>
@@ -636,8 +640,9 @@ export class ReadingView extends React.Component {
         // eslint-disable-next-line no-unused-vars
         const [response, _responseArr] =
             this.getOrCreateResponseObjectAndArray(is_document_question, question_id);
-        const ev = response.evidence;
-        const updated_evidence_arr = ev.slice(0, evidence_index) + ev.slice(evidence_index);
+        const evidence = response.evidence;
+        const updated_evidence_arr =
+            evidence.slice(0, evidence_index).concat(evidence.slice(evidence_index + 1));
         const update_dict = {
             evidence: updated_evidence_arr,
         }
@@ -664,7 +669,8 @@ export class ReadingView extends React.Component {
                         () => this.toggleAddEvidenceMode(is_document_question, question.id)
                     }
                     handleRemoveEvidence={
-                        () => this.handleRemoveEvidence(is_document_question, question.id)
+                        (is_doc_q, q_id, evidence_idx) =>
+                            this.handleRemoveEvidence(is_doc_q, q_id, evidence_idx)
                     }
                 />
             );

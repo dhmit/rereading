@@ -3,6 +3,8 @@ Serializers take models or other data structures and present them
 in ways that can be transported across the backend/frontend divide, or
 allow the frontend to suggest changes to the backend/database.
 """
+import json
+
 from rest_framework import serializers
 
 from .models import (
@@ -31,6 +33,7 @@ class DocumentQuestionResponseSerializer(serializers.ModelSerializer):
     Serializes a Student's response to a given document-level question
     """
     id = serializers.ModelField(model_field=DocumentQuestionResponse()._meta.get_field('id'))
+    evidence = serializers.ListField(child=serializers.CharField())
 
     class Meta:
         model = DocumentQuestionResponse
@@ -38,7 +41,8 @@ class DocumentQuestionResponseSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'response',
-            'response_segment'
+            'response_segment',
+            'evidence',
         )
 
 
@@ -93,6 +97,7 @@ class SegmentQuestionResponseSerializer(serializers.ModelSerializer):
     Serializes a response provided to a question from a segment
     """
     id = serializers.ModelField(model_field=SegmentQuestionResponse()._meta.get_field('id'))
+    evidence = serializers.ListField(child=serializers.CharField())
 
     class Meta:
         model = SegmentQuestionResponse
@@ -100,6 +105,7 @@ class SegmentQuestionResponseSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'response',
+            'evidence',
         )
 
 
@@ -143,12 +149,18 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
         # Link each document response to the reading data
         for data in document_responses:
             document_question = DocumentQuestion.objects.get(id=data['id'])
-            DocumentQuestionResponse.objects.create(
+            response = DocumentQuestionResponse.objects.create(
                 student_reading_data=reading_data,
                 question=document_question,
                 response=data['response'],
                 response_segment=data['response_segment'],
             )
+
+            if 'evidence' in data:
+                evidence_list = data.pop('evidence')
+                evidence_json = json.dumps(evidence_list)
+                response.evidence = evidence_json
+                response.save()
 
         # Save student segment data
         for this_segment_data in segment_data:
@@ -165,10 +177,13 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
             segment_question_responses = this_segment_data.pop('segment_responses')
             for response in segment_question_responses:
                 question_id = response.pop('id')
+                evidence_list = response.pop('evidence')
+                evidence = json.dumps(evidence_list)
                 question = SegmentQuestion.objects.get(pk=question_id)
                 SegmentQuestionResponse.objects.create(
                     student_segment_data=segment_data,
                     question=question,
+                    evidence=evidence,
                     **response,
                 )
 

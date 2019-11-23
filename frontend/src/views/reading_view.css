@@ -16,25 +16,34 @@
     overflow: auto;
     font-family: Perpetua;
     font-size: 18pt;
-    margin: 1em 1em 1em 1em;
+}
+.segment-num {
+    font-weight: bold;
+}
+
+.segment-text {
+    padding:5px 5% 5px 0%;
+    font-family: Perpetua;
 }
 
 .questions-boxes {
     overflow: auto;
+    height:500px;
     font-family: Perpetua;
     font-size: 14pt;
     text-decoration-color: dimgrey;
+    padding-bottom: 5px;
 
 }
 
 .questions-overview {
-    height: 550px;
+    height: 520px;
     overflow: auto;
 }
 
 .question-text {
     font-family: Perpetua;
-    font-size: 16pt;
+    font-size: 14pt;
 }
 
 
@@ -43,3 +52,10 @@
     margin: 0em 0em 0em 8.75em;
 }
 
+#instructions-list {
+    padding:0 0 0 2em;
+}
+#instructions-overview {
+    padding: 0 0 0 0;
+    margin-bottom: 2em;
+}

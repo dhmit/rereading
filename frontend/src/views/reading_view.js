@@ -313,7 +313,6 @@ export class ReadingView extends React.Component {
         this.csrftoken = getCookie('csrftoken');
 
         this.segment_ref = React.createRef();
-        this.handleSegmentResponseChange = this.handleSegmentResponseChange.bind(this);
         this.allQuestionsAreCompleted = this.allQuestionsAreCompleted.bind(this);
         this.prevSegment = this.prevSegment.bind(this);
         this.nextSegment = this.nextSegment.bind(this);

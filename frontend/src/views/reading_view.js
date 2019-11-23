@@ -28,7 +28,7 @@ class Segment extends React.Component {
                 onScroll={this.props.handleScroll}
             >
                 {segment_lines.map(
-                    (line, k) => (<p key={k}>{line}</p>)
+                    (line, k) => (<p className={"segment-text text-justify"} key={k}>{line}</p>)
                 )}
             </div>
         );
@@ -47,7 +47,7 @@ class NavBar extends React.Component {
             && this.props.rereading;
 
         return (
-            <div id="nav_panel">
+            <div className={"col-7 mx-0"} id="nav_panel">
                 <div className="row">
                     <div className="col-2">
                         {this.props.segment_num > 0 &&
@@ -152,26 +152,39 @@ export class InstructionsNameView extends React.Component {
     render() {
         return (
             <div className={"container"}>
-                <div>
-                    Do a close reading of the text by following
-                    these steps:
-                    Read each segment of the text one segment at a time, from
-                    segment 1 to segment 5, while answering
-                    questions for each segment along the way.
-                    <ol>
-                        <li>After your first reading of a segment, click the “reread”
-                        button in order to access the questions for that particular
-                        segment.</li>
-                        <li>Provide an answer to each question posed for that segment,
-                        including the two “common questions.”</li>
-                        <li>After you finish answering the questions for that segment,
-                        click the “next” button in order to access the next segment.</li>
-                        <li>For each segment, highlight passages that provide evidence
-                        to support your answer to common question #2.</li>
+                <h1 className={"display-4 text-center mt-4"}>
+                    Instructions
+                </h1>
+                <div className={"mb-5"}>
+                    <p id={"instructions-overview"}>
+                        Do a close reading of the text by following
+                        these steps:
+                        Read each segment of the text one segment at a time, from
+                        segment 1 to segment 5, while answering
+                        questions for each segment along the way.
+                    </p>
+                    <ol id={"instructions-list"}>
+                        <li>
+                            After your first reading of a segment, click the “reread”
+                            button in order to access the questions for that particular
+                            segment.
+                        </li>
+                        <li>
+                            Provide an answer to each question posed for that segment,
+                            including the two “common questions.”
+                        </li>
+                        <li>
+                            After you finish answering the questions for that segment,
+                            click the “next” button in order to access the next segment.
+                        </li>
+                        <li>
+                            For each segment, highlight passages that provide evidence
+                            to support your answer to common question #2.
+                        </li>
                     </ol>
                 </div>
+                <h4>Enter your name (optional)</h4>
                 <div className={"input-group"}>
-                    <label>What is your name?</label>
                     <input
                         className={"form-control"}
                         type={"text"}
@@ -479,6 +492,7 @@ export class ReadingView extends React.Component {
     };
 
     toOverview () {
+        this.sendData(false);
         this.setState({current_view: VIEWS.OVERVIEW})
     }
 
@@ -540,9 +554,12 @@ export class ReadingView extends React.Component {
         const segment_response_fields = this.buildQuestionFields(segment_questions, false);
         const document_response_fields = this.buildQuestionFields(document_questions, true);
 
+        // Hardcoded roman numeral conversions for now.
+        const roman_numeral = { 1: "I", 2:"II", 3:"III", 4:"IV", 5:"V", 6:"VI", 7:"VII"};
+
         return (
             <div className="container">
-                <h1 className="display-4 py-3 pr-3">{doc.title}</h1>
+                <h1 className="display-4 px-0 pt-4 pb-3">{doc.title}</h1>
 
                 {this.state.current_view === VIEWS.OVERVIEW &&
                     <OverviewView
@@ -555,33 +572,37 @@ export class ReadingView extends React.Component {
                 {this.state.current_view === VIEWS.READING &&
                     <React.Fragment>
                         <div className="row">
-                            <div className='col-8'>
-                                <p>Segment Number: {this.state.segment_num + 1}</p>
+                            <p className={"segment-num ml-6 mb-0"}>
+                                Segment {roman_numeral[this.state.segment_num + 1]}
+                            </p>
+                            <div className='col-7'>
                                 <Segment
                                     text={current_segment.text}
                                     handleScroll={(e) => this.handleScroll(e)}
                                     segment_ref={this.segment_ref}
                                 />
-                                <NavBar
-                                    document_segments={doc.segments}
-                                    segment_num={this.state.segment_num}
-                                    rereading={this.state.rereading}
-                                    prevSegment={this.prevSegment}
-                                    nextSegment={this.nextSegment}
-                                    toOverview={this.toOverview}
-                                    handleJumpToFieldChange={this.handleJumpToFieldChange}
-                                    handleJumpToButton={this.handleJumpToButton}
-                                    handleJumpToFieldKeyDown={this.handleJumpToFieldKeyDown}
-                                    userCanJump={this.userCanJump}
-                                />
                             </div>
 
                             {this.state.rereading &&
-                                <div className="col-4 questions-overview">
-                                    {document_response_fields}
+                                <div className="col-5 questions-overview">
                                     {segment_response_fields}
+                                    {document_response_fields}
                                 </div>
                             }
+                        </div>
+                        <div className={"row"}>
+                            <NavBar
+                                document_segments={doc.segments}
+                                segment_num={this.state.segment_num}
+                                rereading={this.state.rereading}
+                                prevSegment={this.prevSegment}
+                                nextSegment={this.nextSegment}
+                                toOverview={this.toOverview}
+                                handleJumpToFieldChange={this.handleJumpToFieldChange}
+                                handleJumpToButton={this.handleJumpToButton}
+                                handleJumpToFieldKeyDown={this.handleJumpToFieldKeyDown}
+                                userCanJump={this.userCanJump}
+                            />
                         </div>
                     </React.Fragment>
                 }

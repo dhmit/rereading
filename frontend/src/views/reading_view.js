@@ -186,7 +186,7 @@ export class InstructionsNameView extends React.Component {
                         </li>
                     </ol>
                 </div>
-                <h4>Enter your name (optional)</h4>
+                <h4>Enter your name or leave blank to remain anonymous</h4>
                 <div className={"input-group"}>
                     <input
                         className={"form-control"}
@@ -249,10 +249,6 @@ export class ReadingView extends React.Component {
     }
 
     async startReading() {
-        if (this.state.student_name.trim() === "") {
-            alert("Please write your name before you start!");
-            return;
-        }
         try {
             // Hard code the document we know exists for now -- generalize later...
             const url = '/api/documents/1/';

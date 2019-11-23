@@ -52,6 +52,9 @@ class Question extends React.Component {
             && ems.question_id === this.props.question_id
             && ems.is_document_question === this.props.is_document_question;
 
+        const evidence = this.props.response.evidence;
+        const response_text = this.props.response.response;
+
         return(
             <React.Fragment>
                 <div className="mb-1">
@@ -62,6 +65,7 @@ class Question extends React.Component {
                         className={'form-control form-control-lg questions-boxes'}
                         rows="4"
                         onChange={this.props.handleResponseChange}
+                        value={response_text}
                     />
 
                 </div>
@@ -78,11 +82,11 @@ class Question extends React.Component {
                         </span>
                     }
 
-                    {this.props.evidence && this.props.evidence.length ?
+                    {evidence && evidence.length ?
                         <div className="evidence-values-section">
                             <label>Evidence:</label>
                             <div className="evidence-values">
-                                {this.props.evidence.map((value, i) => (
+                                {evidence.map((value, i) => (
                                     <div className="mb-3 evidence-value" key={i}>
                                         <button onClick={
                                             () => this.props.handleRemoveEvidence(
@@ -111,7 +115,7 @@ Question.propTypes = {
     is_document_question: PropTypes.bool,
     question_text: PropTypes.string,
     evidenceModeState: PropTypes.object,
-    evidence: PropTypes.array,
+    response: PropTypes.object,
     handleResponseChange: PropTypes.func,
     handleRemoveEvidence: PropTypes.func,
     toggleAddEvidenceMode: PropTypes.func,
@@ -660,7 +664,7 @@ export class ReadingView extends React.Component {
                     question_id={question.id}
                     is_document_question={is_document_question}
                     question_text={question.text}
-                    evidence={response.evidence}
+                    response={response}
                     evidenceModeState={this.state.evidenceModeState}
                     handleResponseChange={
                         (e) => this.handleResponseChange(is_document_question, question.id, e)

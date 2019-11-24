@@ -35,10 +35,21 @@ urlpatterns = [
     # React views
     path('', lambda request: redirect('project_overview')),  # redirect / to project overview
     path('project_overview/',
-         render_react_view, {'component_name': 'ProjectView'},
+         render_react_view, {'component_name': 'ReadingRedux'},
          name='project_overview'),
+    path('project_overview/sample/',
+         render_react_view, {'component_name': 'RereadingSample'}),
+    path('project_overview/visuals/',
+             render_react_view, {'component_name': 'RereadingVisuals'}),
+    path('project_overview/values/',
+             render_react_view, {'component_name': 'RereadingValues'}),
+    path('project_overview/quantitative/',
+             render_react_view, {'component_name': 'QuantitativeQuestions'}),
+    path('project_overview/sources/',
+             render_react_view, {'component_name': 'Sources'}),
 
-    path('reading/', render_react_view, {'component_name': 'ReadingView'}),
+    path('reading/',
+         render_react_view, {'component_name': 'ReadingView'}),
     path('analysis/', render_react_view, {'component_name': 'AnalysisView'}),
 
 

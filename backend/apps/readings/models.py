@@ -2,6 +2,7 @@
 Models for the Rereading app.
 """
 from ast import literal_eval
+import json
 
 from django.db import models
 
@@ -85,6 +86,7 @@ class Question(models.Model):
     """
     text = models.TextField()
     response_word_limit = models.IntegerField(default=0, null=True)
+    require_evidence = models.BooleanField(default=False)
 
     def __str__(self):
         return self.text
@@ -153,7 +155,7 @@ class StudentReadingData(models.Model):
     )
 
     start_time = models.DateTimeField(auto_now_add=True)
-    last_update = models.DateTimeField(auto_now=True)
+    last_updated_time = models.DateTimeField(auto_now=True)
 
 
 class StudentSegmentData(models.Model):
@@ -190,11 +192,6 @@ class StudentSegmentData(models.Model):
 class SegmentQuestionResponse(models.Model):
     """
     Response to a SegmentQuestion
-    TODO: This might be a bit half-baked; it currently doesn't conveniently
-          reference the StudentSegmentData. I wanted each segment to be able
-          to have multiple Questions and Contexts, but that adds a bit of
-          complexity to this design... (RA 2019-10-24)
-
     """
     question = models.ForeignKey(
         SegmentQuestion,
@@ -207,7 +204,18 @@ class SegmentQuestionResponse(models.Model):
         related_name='segment_responses'
     )
     response = models.TextField()
-    last_edit = models.DateTimeField(auto_now=True)
+    submission_time = models.DateTimeField(auto_now=True)
+    evidence = models.TextField(default='[]')
+
+    def parse_evidence(self):
+        """
+        Returns the Python representation of the JSON string stored as the reader's
+        evidence for a response
+
+        :return: List object
+        """
+
+        return json.loads(self.evidence)
 
 
 class DocumentQuestionResponse(models.Model):
@@ -218,7 +226,8 @@ class DocumentQuestionResponse(models.Model):
     """
     response = models.TextField()
     response_segment = models.IntegerField(default=1)
-    last_edit = models.DateTimeField(auto_now=True)
+    submission_time = models.DateTimeField(auto_now=True)
+    evidence = models.TextField(default='[]')
 
     question = models.ForeignKey(
         DocumentQuestion,
@@ -230,6 +239,16 @@ class DocumentQuestionResponse(models.Model):
         on_delete=models.CASCADE,
         related_name='document_responses'
     )
+
+    def parse_evidence(self):
+        """
+        Returns the Python representation of the JSON string stored as the reader's
+        evidence for a response
+
+        :return: List object
+        """
+
+        return json.dumps(self.evidence)
 
 
 ################################################################################

@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './index.scss'
 
 import { PrototypeStudentView } from './prototype/student_view';
 import { PrototypeInstructorView } from './prototype/instructor_view';

@@ -2,8 +2,6 @@ import React from "react";
 import PropTypes from 'prop-types';
 
 import {getCookie, TimeIt} from "../common";
-import './reading_view.css';
-// import {Button, Popover } from '@material-ui/core';
 
 // enum representing which view to show in reading view
 const VIEWS = {

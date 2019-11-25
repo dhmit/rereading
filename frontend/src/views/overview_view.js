@@ -1,5 +1,4 @@
 import React from "react";
-import './overview_view.css';
 
 class Navigation_Bar extends React.Component {
     render() {

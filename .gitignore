@@ -168,3 +168,4 @@ package-lock.json
 .idea/dataSources.local.xml
 static/* 
 assets/*  # static and assets are all built by webpack and collectstatic for this project
+frontend/package-lock.json

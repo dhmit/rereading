@@ -1,3 +1,7 @@
+.author {
+    font-size: 50%;
+}
+
 
 /*
  * Scrollbar -- show always, and style it
@@ -13,6 +17,13 @@
     -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
 }
 
+
+.segment-container {
+    @extend .col;
+    @extend .col-lg-8;
+    max-width: 600px;
+}
+
 .segment,
 .scroll-overview {
     height: 500px;
@@ -22,6 +33,7 @@
     font-size: 18pt;
 }
 .segment-num {
+    @extend .mb-0;
     font-weight: bold;
 }
 
@@ -30,6 +42,20 @@
     font-family: Perpetua;
 }
 
+.questions-container {
+    @extend .col;
+    @extend .col-lg-4;
+    @extend .pl-lg-5;
+    height: 500px;
+    overflow: auto;
+
+    @extend .mt-3;
+    @extend .mt-lg-0;
+    @media (min-width: 1140px) {
+        max-width: 600px;
+        min-width: 500px;
+    }
+}
 
 .questions-boxes {
     overflow: auto;
@@ -66,19 +92,10 @@
   padding: 10px 0;
 }
 
-.questions-overview {
-    height: 520px;
-    overflow: auto;
-}
 
 .question-text {
     font-family: Perpetua;
     font-size: 14pt;
-}
-
-#nav_panel {
-    width: 500px;
-    margin: 0em 0em 0em 8.75em;
 }
 
 #instructions-list {
@@ -87,4 +104,15 @@
 #instructions-overview {
     padding: 0 0 0 0;
     margin-bottom: 2em;
+}
+
+
+/*
+ *  Navbar styles
+ */
+
+.next-btn {
+    @extend .btn;
+    @extend .btn-outline-dark;
+    @extend .float-right;
 }

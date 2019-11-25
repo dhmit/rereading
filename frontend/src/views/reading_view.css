@@ -1,3 +1,6 @@
+/*
+ * Scrollbar -- show always, and style it
+ */
 ::-webkit-scrollbar {
     -webkit-appearance: none;
     background-color: rgba(0, 0, 0, 0.05);
@@ -16,30 +19,71 @@
     overflow: auto;
     font-family: Perpetua;
     font-size: 18pt;
-    margin: 1em 1em 1em 1em;
+}
+.segment-num {
+    font-weight: bold;
+}
+
+.segment-text {
+    padding:5px 5% 5px 0%;
+    font-family: Perpetua;
+}
+
+.--evidence-mode-active .segment {
+  background: #fafafa;
+}
+
+.evidence-section {
+  margin-bottom: 20px;
+}
+
+.evidence-toggle-button {
+  font-size: 10px;
+  text-transform: uppercase;
+  background: #666;
+  border: none;
+  outline: none;
+  color: #fff;
+  padding: 4px 10px;
+}
+
+.form-hint-text {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #444;
+  display: block;
+  padding: 10px 0;
 }
 
 .questions-boxes {
     overflow: auto;
+    height:500px;
     font-family: Perpetua;
     font-size: 14pt;
     text-decoration-color: dimgrey;
+    padding-bottom: 5px;
 
 }
 
 .questions-overview {
-    height: 550px;
+    height: 520px;
     overflow: auto;
 }
 
 .question-text {
     font-family: Perpetua;
-    font-size: 16pt;
+    font-size: 14pt;
 }
-
 
 #nav_panel {
     width: 500px;
     margin: 0em 0em 0em 8.75em;
 }
 
+#instructions-list {
+    padding:0 0 0 2em;
+}
+#instructions-overview {
+    padding: 0 0 0 0;
+    margin-bottom: 2em;
+}

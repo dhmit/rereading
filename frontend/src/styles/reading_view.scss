@@ -1,3 +1,4 @@
+
 /*
  * Scrollbar -- show always, and style it
  */
@@ -29,12 +30,13 @@
     font-family: Perpetua;
 }
 
-.--evidence-mode-active .segment {
-  background: #fafafa;
-}
 
-.evidence-section {
-  margin-bottom: 20px;
+.questions-boxes {
+    overflow: auto;
+    height:500px;
+    font-family: Perpetua;
+    font-size: 14pt;
+    text-decoration-color: dimgrey;
 }
 
 .evidence-toggle-button {
@@ -44,7 +46,16 @@
   border: none;
   outline: none;
   color: #fff;
-  padding: 4px 10px;
+}
+
+.remove-evidence-button {
+    @extend .btn;
+    @extend .btn-sm;
+    @extend .btn-outline-danger;
+    @extend .d-inline;
+    @extend .float-right;
+
+    width: 50px;
 }
 
 .form-hint-text {
@@ -53,16 +64,6 @@
   color: #444;
   display: block;
   padding: 10px 0;
-}
-
-.questions-boxes {
-    overflow: auto;
-    height:500px;
-    font-family: Perpetua;
-    font-size: 14pt;
-    text-decoration-color: dimgrey;
-    padding-bottom: 5px;
-
 }
 
 .questions-overview {

@@ -14,19 +14,6 @@ from .models import (
 )
 
 
-class DocumentQuestionSerializer(serializers.ModelSerializer):
-    """
-    Serializes Document-level questions
-    """
-
-    class Meta:
-        model = DocumentQuestion
-
-        fields = (
-            'id',
-            'text',
-            'is_overview_question',
-        )
 
 
 class DocumentQuestionResponseSerializer(serializers.ModelSerializer):
@@ -58,20 +45,24 @@ class SegmentQuestionSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'text',
+            'require_evidence',
             'response_word_limit',
         )
 
 
-class SegmentContextSerializer(serializers.ModelSerializer):
+class DocumentQuestionSerializer(serializers.ModelSerializer):
     """
-    Serializes the contexts provided with a given segment
+    Serializes Document-level questions
     """
+
     class Meta:
-        model = SegmentContext
+        model = DocumentQuestion
 
         fields = (
             'id',
             'text',
+            'require_evidence',
+            'is_overview_question',
         )
 
 
@@ -80,7 +71,6 @@ class SegmentSerializer(serializers.ModelSerializer):
     Serializes data related to a given segment of a document
     """
     questions = SegmentQuestionSerializer(many=True)
-    contexts = SegmentContextSerializer(many=True)
 
     class Meta:
         model = Segment

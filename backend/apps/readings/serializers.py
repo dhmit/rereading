@@ -80,7 +80,6 @@ class SegmentSerializer(serializers.ModelSerializer):
             'text',
             'sequence',
             'questions',
-            'contexts',
         )
 
 

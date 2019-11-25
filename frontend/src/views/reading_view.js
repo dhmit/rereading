@@ -47,73 +47,80 @@ class Question extends React.Component {
         const ems = this.props.evidenceModeState;
         const evidenceModeActive =
             ems.active
-            && ems.question_id === this.props.question_id
+            && ems.question_id === this.props.question.id
             && ems.is_document_question === this.props.is_document_question;
 
         const evidence = this.props.response.evidence;
         const response_text = this.props.response.response;
 
         return(
-            <React.Fragment>
-                <div className="mb-1">
+            <div className="card mb-4">
+                <div className="card-header">
                     <div className='segment-question-text question-text'>
-                        {this.props.question_text}
+                        {this.props.question.text}
                     </div>
+                </div>
+                <div className="card-body">
                     <textarea
                         className={'form-control form-control-lg questions-boxes'}
                         rows="4"
                         onChange={this.props.handleResponseChange}
                         value={response_text}
                     />
-
-                </div>
-                <div className="evidence-section">
-                    <button
-                        className="evidence-toggle-button"
-                        onClick={this.props.toggleAddEvidenceMode}
-                    >
-                        {evidenceModeActive ? 'Stop Tagging' : 'Tag Evidence'}
-                    </button>
-                    {evidenceModeActive &&
-                        <span className="form-hint-text">
-                            Highlight parts of the text to save as evidence.
-                        </span>
-                    }
-
-                    {evidence && evidence.length ?
-                        <div className="evidence-values-section">
-                            <label>Evidence:</label>
-                            <div className="evidence-values">
-                                {evidence.map((value, i) => (
-                                    <div className="mb-3 evidence-value" key={i}>
-                                        <button onClick={
-                                            () => this.props.handleRemoveEvidence(
-                                                this.props.is_document_question,
-                                                this.props.question_id,
-                                                i,
-                                            )
-                                        }>X
-                                        </button>
-                                        {'"' + value + '"'}
+                    {this.props.question.require_evidence && (
+                        <div className="evidence-section">
+                            {evidence && evidence.length ?
+                                <div className="evidence-values-section mt-1">
+                                    <div className="evidence-values">
+                                        {evidence.map((evidence_text, i) => (
+                                            <div
+                                                className="card card-body mb-3 evidence-value"
+                                                key={i}
+                                            >
+                                                {'"' + evidence_text + '"'}
+                                                <div className="text-right">
+                                                    <button
+                                                        className="remove-evidence-button"
+                                                        onClick={
+                                                            () => this.props.handleRemoveEvidence(
+                                                                this.props.is_document_question,
+                                                                this.props.question.id,
+                                                                i,
+                                                            )
+                                                        }
+                                                    >X</button>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
-                            </div>
+                                </div>
+                                :
+                                ''
+                            }
+                            <button
+                                className="evidence-toggle-button"
+                                onClick={this.props.toggleAddEvidenceMode}
+                            >
+                                {evidenceModeActive ? 'Stop Tagging' : 'Add Evidence'}
+                            </button>
+                            {evidenceModeActive &&
+                            <span className="form-hint-text">
+                                Highlight parts of the text to save as evidence.
+                            </span>
+                            }
                         </div>
-                        :
-                        ''
-                    }
+                    )}
                 </div>
-            </React.Fragment>
+            </div>
         );
     }
 }
 
 Question.propTypes = {
-    question_id: PropTypes.number,
-    is_document_question: PropTypes.bool,
-    question_text: PropTypes.string,
-    evidenceModeState: PropTypes.object,
+    question: PropTypes.object,
     response: PropTypes.object,
+    is_document_question: PropTypes.bool,
+    evidenceModeState: PropTypes.object,
     handleResponseChange: PropTypes.func,
     handleRemoveEvidence: PropTypes.func,
     toggleAddEvidenceMode: PropTypes.func,
@@ -529,7 +536,7 @@ export class ReadingView extends React.Component {
             // all questions
             this.setState({maximum_jump_allowed: segment_num});
             if (segmentNum > segment_num) {
-                alert("Please respond to every question");
+                alert("Please respond to every question before moving on.");
                 return;
             }
         }
@@ -659,10 +666,9 @@ export class ReadingView extends React.Component {
             return (
                 <Question
                     key={id}
-                    question_id={question.id}
-                    is_document_question={is_document_question}
-                    question_text={question.text}
+                    question={question}
                     response={response}
+                    is_document_question={is_document_question}
                     evidenceModeState={this.state.evidenceModeState}
                     handleResponseChange={
                         (e) => this.handleResponseChange(is_document_question, question.id, e)

@@ -149,7 +149,7 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
         segment_data = validated_data.pop("segment_data")
         document_responses = validated_data.pop("document_responses")
         reading_data = instance
-        reading_data.last_update = datetime.now()
+        reading_data.last_updated_time = datetime.now()
         reading_data.save()
 
         # Link each document response to the reading data
@@ -201,7 +201,7 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'start_time',
-            'last_update',
+            'last_updated_time',
             'document_responses',
             'segment_data',
             'reading_data_id',

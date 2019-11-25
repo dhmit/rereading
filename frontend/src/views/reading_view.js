@@ -22,7 +22,7 @@ class Segment extends React.Component {
         const segment_lines = this.props.text.split("\r\n");
         return (
             <div
-                className="segment my-3"
+                className="segment"
                 ref={this.props.segment_ref}
                 onScroll={this.props.handleScroll}
                 onMouseUp={this.props.handleSelectionDragEnd}
@@ -133,52 +133,34 @@ class NavBar extends React.Component {
             && this.props.rereading;
 
         return (
-            <div className={"col-7 mx-0"} id="nav_panel">
-                <div className="row">
-                    <div className="col-2">
-                        {this.props.segment_num > 0 &&
-                        <button
-                            className="btn btn-outline-dark"
-                            onClick={() => this.props.prevSegment()}
-                        >
-                            Back
-                        </button>
-                        }
-                    </div>
-                    <div className="col-6 input-group">
-                        <input
-                            className="form-control "
-                            type="text"
-                            placeholder="Page #"
-                            onChange={this.props.handleJumpToFieldChange}
-                            onKeyDown={this.props.handleJumpToFieldKeyDown}
-                        />
-                        <button
-                            className="btn btn-outline-dark form-control"
-                            onClick={this.props.handleJumpToButton}
-                            // Checks isNaN so that an empty string
-                            // doesn't count as 0
-                            disabled={!this.props.userCanJump()}
-                        >
-                            Jump
-                        </button>
-                    </div>
-                    <div className="col-4">
-                        {!on_last_segment_and_rereading
-                            ? <button
-                                className="btn btn-outline-dark"
+            <div className="row">
+                <div className="col">
+                    {this.props.segment_num > 0 &&
+                    <button
+                        className="btn btn-outline-dark"
+                        onClick={() => this.props.prevSegment()}
+                    >
+                        Back
+                    </button>
+                    }
+                    {!on_last_segment_and_rereading
+                        ? (
+                            <button
+                                className="next-btn"
                                 onClick={() => this.props.nextSegment()}
                             >
                                 {this.props.rereading ? 'Next' : 'Reread'}
                             </button>
-                            : <button
-                                className="btn btn-outline-dark"
+                        )
+                        : (
+                            <button
+                                className="next-btn"
                                 onClick={() => this.props.toOverview()}
                             >
                                 To Overview
                             </button>
-                        }
-                    </div>
+                        )
+                    }
                 </div>
             </div>
         )
@@ -217,7 +199,7 @@ class OverviewView extends React.Component {
                         ))}
                     </div>
                 </div>
-                <div className="col-4 questions-overview">
+                <div className="col-4 questions-container">
                     <p><b>Document Questions</b></p>
                     {document_response_fields}
                     <p><b>Overview Questions</b></p>
@@ -718,8 +700,12 @@ export class ReadingView extends React.Component {
         const roman_numeral = { 1: "I", 2:"II", 3:"III", 4:"IV", 5:"V", 6:"VI", 7:"VII"};
 
         return (
-            <div className="container">
-                <h1 className="display-4 px-0 pt-4 pb-3">{doc.title}</h1>
+            <div className="container py-5">
+                <div className="row mb-4"><div className="col">
+                    <h1 className="display-4">
+                        {doc.title} <span className="author">by {doc.author}</span>
+                    </h1>
+                </div></div>
 
                 {this.state.current_view === VIEWS.OVERVIEW &&
                     <OverviewView
@@ -732,10 +718,13 @@ export class ReadingView extends React.Component {
                 {this.state.current_view === VIEWS.READING &&
                     <React.Fragment>
                         <div className="row">
-                            <p className={"segment-num ml-6 mb-0"}>
-                                Segment {roman_numeral[this.state.segment_num + 1]}
-                            </p>
-                            <div className='col-7'>
+                            <div className="col-12">
+                                <h5 className="segment-num">
+                                    Segment {roman_numeral[this.state.segment_num + 1]}
+                                </h5>
+                                <hr/>
+                            </div>
+                            <div className='segment-container'>
                                 <Segment
                                     text={current_segment.text}
                                     handleScroll={(e) => this.handleScroll(e)}
@@ -744,26 +733,22 @@ export class ReadingView extends React.Component {
                                 />
                             </div>
 
-                            {this.state.rereading &&
-                                <div className="col-5 questions-overview">
-                                    {segment_response_fields}
-                                    {document_response_fields}
-                                </div>
-                            }
-                        </div>
-                        <div className={"row"}>
-                            <NavBar
-                                document_segments={doc.segments}
-                                segment_num={this.state.segment_num}
-                                rereading={this.state.rereading}
-                                prevSegment={this.prevSegment}
-                                nextSegment={this.nextSegment}
-                                toOverview={this.toOverview}
-                                handleJumpToFieldChange={this.handleJumpToFieldChange}
-                                handleJumpToButton={this.handleJumpToButton}
-                                handleJumpToFieldKeyDown={this.handleJumpToFieldKeyDown}
-                                userCanJump={this.userCanJump}
-                            />
+                            <div className="questions-container">
+                                {this.state.rereading && segment_response_fields}
+                                {this.state.rereading && document_response_fields}
+                                <NavBar
+                                    document_segments={doc.segments}
+                                    segment_num={this.state.segment_num}
+                                    rereading={this.state.rereading}
+                                    prevSegment={this.prevSegment}
+                                    nextSegment={this.nextSegment}
+                                    toOverview={this.toOverview}
+                                    handleJumpToFieldChange={this.handleJumpToFieldChange}
+                                    handleJumpToButton={this.handleJumpToButton}
+                                    handleJumpToFieldKeyDown={this.handleJumpToFieldKeyDown}
+                                    userCanJump={this.userCanJump}
+                                />
+                            </div>
                         </div>
                     </React.Fragment>
                 }

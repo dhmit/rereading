@@ -76,7 +76,8 @@ class Student(models.Model):
     name = models.TextField(default='')
 
     def __str__(self):
-        return f'{self.pk} - {self.name}'
+        name = self.name if self.name else 'Anonymous'
+        return f'{self.pk} - {name}'
 
 
 class Question(models.Model):
@@ -120,19 +121,6 @@ class SegmentQuestion(Question):
         Segment,
         on_delete=models.CASCADE,
         related_name='questions'
-    )
-
-
-class SegmentContext(models.Model):
-    """
-    A model representing a given context provided to a document segment
-    """
-    text = models.TextField()
-    segment = models.ForeignKey(
-        Segment,
-        null=False,
-        on_delete=models.CASCADE,
-        related_name='contexts'
     )
 
 

@@ -262,6 +262,7 @@ class ReadingSerializer(serializers.Serializer):
 class AnalysisSerializer(serializers.Serializer):
     """ Serializes analysis class """
     total_and_median_view_time = serializers.ReadOnlyField()
+    mean_reading_vs_rereading_time = serializers.ReadOnlyField()
     get_number_of_unique_students = serializers.ReadOnlyField()
 
     def create(self, validated_data):

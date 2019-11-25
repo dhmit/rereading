@@ -3,6 +3,7 @@ Serializers take models or other data structures and present them
 in ways that can be transported across the backend/frontend divide, or
 allow the frontend to suggest changes to the backend/database.
 """
+from datetime import datetime
 import json
 
 from rest_framework import serializers
@@ -42,6 +43,7 @@ class DocumentQuestionResponseSerializer(serializers.ModelSerializer):
             'id',
             'response',
             'response_segment',
+            'submission_time',
             'evidence',
         )
 
@@ -105,6 +107,7 @@ class SegmentQuestionResponseSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'response',
+            'submission_time',
             'evidence',
         )
 
@@ -125,6 +128,7 @@ class StudentSegmentDataSerializer(serializers.ModelSerializer):
             'scroll_data',
             'view_time',
             'is_rereading',
+            'submission_time',
             'segment_responses',
         )
 
@@ -145,6 +149,8 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
         segment_data = validated_data.pop("segment_data")
         document_responses = validated_data.pop("document_responses")
         reading_data = instance
+        reading_data.last_update = datetime.now()
+        reading_data.save()
 
         # Link each document response to the reading data
         for data in document_responses:
@@ -194,6 +200,8 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
 
         fields = (
             'id',
+            'start_time',
+            'last_update',
             'document_responses',
             'segment_data',
             'reading_data_id',

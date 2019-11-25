@@ -154,6 +154,9 @@ class StudentReadingData(models.Model):
         related_name='reading_data'
     )
 
+    start_time = models.DateTimeField(auto_now_add=True)
+    last_updated_time = models.DateTimeField(auto_now=True)
+
 
 class StudentSegmentData(models.Model):
     """
@@ -175,6 +178,7 @@ class StudentSegmentData(models.Model):
     scroll_data = models.TextField(default='[]')
     view_time = models.FloatField(default=0)
     is_rereading = models.BooleanField(default=None)
+    submission_time = models.DateTimeField(auto_now_add=True)
 
     def get_parsed_scroll_data(self):
         """
@@ -188,11 +192,6 @@ class StudentSegmentData(models.Model):
 class SegmentQuestionResponse(models.Model):
     """
     Response to a SegmentQuestion
-    TODO: This might be a bit half-baked; it currently doesn't conveniently
-          reference the StudentSegmentData. I wanted each segment to be able
-          to have multiple Questions and Contexts, but that adds a bit of
-          complexity to this design... (RA 2019-10-24)
-
     """
     question = models.ForeignKey(
         SegmentQuestion,
@@ -205,6 +204,7 @@ class SegmentQuestionResponse(models.Model):
         related_name='segment_responses'
     )
     response = models.TextField()
+    submission_time = models.DateTimeField(auto_now=True)
     evidence = models.TextField(default='[]')
 
     def parse_evidence(self):
@@ -226,6 +226,7 @@ class DocumentQuestionResponse(models.Model):
     """
     response = models.TextField()
     response_segment = models.IntegerField(default=1)
+    submission_time = models.DateTimeField(auto_now=True)
     evidence = models.TextField(default='[]')
 
     question = models.ForeignKey(

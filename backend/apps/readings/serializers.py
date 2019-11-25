@@ -9,11 +9,11 @@ import json
 from rest_framework import serializers
 
 from .models import (
-    Document, Segment, Student, SegmentQuestion, SegmentContext, SegmentQuestionResponse,
-    StudentReadingData, StudentSegmentData, DocumentQuestion, DocumentQuestionResponse,
+    Document, Segment, Student,
+    SegmentQuestion, SegmentQuestionResponse,
+    StudentReadingData, StudentSegmentData,
+    DocumentQuestion, DocumentQuestionResponse,
 )
-
-
 
 
 class DocumentQuestionResponseSerializer(serializers.ModelSerializer):

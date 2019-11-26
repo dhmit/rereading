@@ -1,5 +1,6 @@
 import React from "react";
 import {SingleValueAnalysis} from "../prototype/analysis_view";
+import {RelevantWordPercentages} from "../prototype/analysis_view";
 // import PropTypes from 'prop-types';
 
 
@@ -38,6 +39,7 @@ export class AnalysisView extends React.Component {
         const { // object destructuring:
             total_and_median_view_time,
             get_number_of_unique_students,
+            percent_using_relevant_words_by_question
         } = this.state.analysis;
         return (
             <div className={"container"}>
@@ -73,7 +75,11 @@ export class AnalysisView extends React.Component {
                     value={get_number_of_unique_students}
                     unit={"students"}
                 />
+                <RelevantWordPercentages
+                    entryData={percent_using_relevant_words_by_question}
+                />
             </div>
+
         );
     }
 }

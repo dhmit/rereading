@@ -5,7 +5,8 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 """
 import statistics
 
-from .models import StudentReadingData, StudentSegmentData
+from .models import StudentReadingData, StudentSegmentData, SegmentQuestionResponse, \
+    DocumentQuestionResponse
 
 
 class RereadingAnalysis:
@@ -17,6 +18,8 @@ class RereadingAnalysis:
     def __init__(self):
         self.readings = StudentReadingData.objects.all()
         self.segments = StudentSegmentData.objects.all()
+        self.questions = SegmentQuestionResponse.objects.all()
+        self.docquestions = DocumentQuestionResponse.objects.all()
 
     def total_and_median_view_time(self):
         """
@@ -67,4 +70,65 @@ class RereadingAnalysis:
         # return length of set (represents unique number of students)
         return len(student_names)
 
+    @staticmethod
+    def description_has_relevant_words(story_meaning_description, relevant_words):
+        """
+        Determine if the user's description contains a word relevant to the story's meaning
+        :param story_meaning_description: The user's three word description of the story
+        :param relevant_words: a list of words which show an understanding of the story's meaning
+        :return True if the description contains one of the relevant words or relevant_words is
+        empty. False otherwise
+        """
+        if not relevant_words:
+            return True
 
+        lowercase_relevant_words = []
+        for word in relevant_words:
+            lowercase_relevant_words.append(word.lower())
+
+        words_used_in_description = story_meaning_description.lower().split(" ")
+
+        for word in lowercase_relevant_words:
+            if word.lower() in words_used_in_description:
+                return True
+        return False
+
+    def percent_using_relevant_words_by_question(self):
+        """
+        Return a list of tuples with (question, percent), for each of the questions in the
+        Segment Data and percent: percent of students who used relevant
+        words in that question
+        :return the return type explained in the function description
+        """
+        # deleted contexts cause segments doesn't have context
+        relevant_words = ["dead", "death", "miscarriage", "killed", "kill", "losing", "loss",
+                          "lost", "deceased", "died", "grief", "pregnancy", "pregnant"]
+        # get the list from sandy
+
+        question_count_map = {}
+
+        for segment in self.questions:
+            # are we doing this on document questions or segment questions?
+            question = segment.question
+            if question not in question_count_map:
+                question_count_map[question] = 0
+            if RereadingAnalysis.description_has_relevant_words(
+                segment.response, relevant_words):
+                question_count_map[question] += 1
+
+        for segment in self.docquestions:
+            # are we doing this on document questions or segment questions?
+            question = segment.question
+            if question not in question_count_map:
+                question_count_map[question] = 0
+            if RereadingAnalysis.description_has_relevant_words(
+                segment.response, relevant_words):
+                question_count_map[question] += 1
+
+        total_student_count = self.get_number_of_unique_students()
+        percent_question_count_map = []
+        for question in question_count_map:
+            percent_question_count_map.append(
+                (question.text, question_count_map[question] / total_student_count)
+            )
+        return percent_question_count_map

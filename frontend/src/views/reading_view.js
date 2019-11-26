@@ -183,23 +183,23 @@ class OverviewView extends React.Component {
     render() {
         const full_document_text = [];
         this.props.all_segments.map((el) => full_document_text.push(el.text.split("\r\n")));
-        const document_questions = this.props.document_questions;
         const overview_questions = this.props.overview_questions;
-        const document_response_fields = this.props.buildQuestionFields(document_questions);
+        const document_response_fields = this.props.document_response_fields;
         const overview_response_fields = this.props.buildQuestionFields(overview_questions);
 
         return (
             <div className="row">
-                <div className="col-8">
+                <div className="col-12"><hr/></div>
+                <div className="segment-container">
                     <div className="scroll-overview">
                         {full_document_text.map((segment_text_array) => (
                             segment_text_array.map((text, i) => (
-                                <p key={i}>{text}</p>
+                                <p className={"segment-text text-justify"} key={i}>{text}</p>
                             ))
                         ))}
                     </div>
                 </div>
-                <div className="col-4 questions-container">
+                <div className="questions-container">
                     <p><b>Document Questions</b></p>
                     {document_response_fields}
                     <p><b>Overview Questions</b></p>
@@ -211,7 +211,7 @@ class OverviewView extends React.Component {
 }
 OverviewView.propTypes = {
     all_segments: PropTypes.array,
-    document_questions: PropTypes.array,
+    document_response_fields: PropTypes.array,
     overview_questions: PropTypes.array,
     buildQuestionFields: PropTypes.func,
 };
@@ -710,7 +710,7 @@ export class ReadingView extends React.Component {
                 {this.state.current_view === VIEWS.OVERVIEW &&
                     <OverviewView
                         all_segments={doc.segments}
-                        document_questions={document_questions}
+                        document_response_fields={document_response_fields}
                         overview_questions={overview_questions}
                         buildQuestionFields={this.buildQuestionFields}
                     />

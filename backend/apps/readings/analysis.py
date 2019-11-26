@@ -73,8 +73,33 @@ class RereadingAnalysis:
         # Turns dictionary data into a list of lists
         keys_list = list(segment_dictionary.keys())
         keys_list.sort()
-
         for key in keys_list:
             segment_list.append([key, round(segment_dictionary[key] / len(self.readings), 2)])
 
         return segment_list
+
+    def mean_reading_vs_rereading_time(self):
+        """
+        Compares mean view times of reading segments vs rereading segments
+        :return a tuple with (mean reading time, mean rereading time)
+        """
+        reading_time = 0
+        rereading_time = 0
+        # cycle through every segment
+        for segment in self.segments:
+            view_time = segment.view_time
+            is_rereading = segment.is_rereading
+            # if rereading, add to total rereading time
+            if is_rereading:
+                rereading_time += view_time
+            # if reading, add to total reading time
+            else:
+                reading_time += view_time
+
+        num_students = len(self.readings)
+        # divide by total number of readings
+        mean_reading_time = reading_time / num_students
+        mean_rereading_time = rereading_time / num_students
+        return round(mean_reading_time), round(mean_rereading_time)
+
+    def get_number_of_unique_students(self):

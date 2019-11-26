@@ -4,6 +4,7 @@ These classes describe one way of entering into the web site.
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import generics
 
 from .models import Student, Document, StudentReadingData
 from .analysis import RereadingAnalysis
@@ -59,3 +60,10 @@ def analysis(request):
     serializer = AnalysisSerializer(instance=analysis_obj)
     return Response(serializer.data)
 
+
+class ListStudentReadingData(generics.ListAPIView):
+    """
+    Lists all of the reading data acquired through the project
+    """
+    queryset = StudentReadingData.objects.all()
+    serializer_class = StudentReadingDataSerializer

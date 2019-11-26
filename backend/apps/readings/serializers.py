@@ -3,27 +3,17 @@ Serializers take models or other data structures and present them
 in ways that can be transported across the backend/frontend divide, or
 allow the frontend to suggest changes to the backend/database.
 """
+from datetime import datetime
+import json
+
 from rest_framework import serializers
 
 from .models import (
-    Document, Segment, Student, SegmentQuestion, SegmentContext, SegmentQuestionResponse,
-    StudentReadingData, StudentSegmentData, DocumentQuestion, DocumentQuestionResponse,
+    Document, Segment, Student,
+    SegmentQuestion, SegmentQuestionResponse,
+    StudentReadingData, StudentSegmentData,
+    DocumentQuestion, DocumentQuestionResponse,
 )
-
-
-class DocumentQuestionSerializer(serializers.ModelSerializer):
-    """
-    Serializes Document-level questions
-    """
-
-    class Meta:
-        model = DocumentQuestion
-
-        fields = (
-            'id',
-            'text',
-            'is_overview_question',
-        )
 
 
 class DocumentQuestionResponseSerializer(serializers.ModelSerializer):
@@ -31,6 +21,7 @@ class DocumentQuestionResponseSerializer(serializers.ModelSerializer):
     Serializes a Student's response to a given document-level question
     """
     id = serializers.ModelField(model_field=DocumentQuestionResponse()._meta.get_field('id'))
+    evidence = serializers.ListField(child=serializers.CharField())
 
     class Meta:
         model = DocumentQuestionResponse
@@ -38,7 +29,9 @@ class DocumentQuestionResponseSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'response',
-            'response_segment'
+            'response_segment',
+            'submission_time',
+            'evidence',
         )
 
 
@@ -52,20 +45,24 @@ class SegmentQuestionSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'text',
+            'require_evidence',
             'response_word_limit',
         )
 
 
-class SegmentContextSerializer(serializers.ModelSerializer):
+class DocumentQuestionSerializer(serializers.ModelSerializer):
     """
-    Serializes the contexts provided with a given segment
+    Serializes Document-level questions
     """
+
     class Meta:
-        model = SegmentContext
+        model = DocumentQuestion
 
         fields = (
             'id',
             'text',
+            'require_evidence',
+            'is_overview_question',
         )
 
 
@@ -74,7 +71,6 @@ class SegmentSerializer(serializers.ModelSerializer):
     Serializes data related to a given segment of a document
     """
     questions = SegmentQuestionSerializer(many=True)
-    contexts = SegmentContextSerializer(many=True)
 
     class Meta:
         model = Segment
@@ -84,7 +80,6 @@ class SegmentSerializer(serializers.ModelSerializer):
             'text',
             'sequence',
             'questions',
-            'contexts',
         )
 
 
@@ -93,6 +88,7 @@ class SegmentQuestionResponseSerializer(serializers.ModelSerializer):
     Serializes a response provided to a question from a segment
     """
     id = serializers.ModelField(model_field=SegmentQuestionResponse()._meta.get_field('id'))
+    evidence = serializers.ListField(child=serializers.CharField())
 
     class Meta:
         model = SegmentQuestionResponse
@@ -100,6 +96,8 @@ class SegmentQuestionResponseSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'response',
+            'submission_time',
+            'evidence',
         )
 
 
@@ -119,6 +117,7 @@ class StudentSegmentDataSerializer(serializers.ModelSerializer):
             'scroll_data',
             'view_time',
             'is_rereading',
+            'submission_time',
             'segment_responses',
         )
 
@@ -139,16 +138,24 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
         segment_data = validated_data.pop("segment_data")
         document_responses = validated_data.pop("document_responses")
         reading_data = instance
+        reading_data.last_updated_time = datetime.now()
+        reading_data.save()
 
         # Link each document response to the reading data
         for data in document_responses:
             document_question = DocumentQuestion.objects.get(id=data['id'])
-            DocumentQuestionResponse.objects.create(
+            response = DocumentQuestionResponse.objects.create(
                 student_reading_data=reading_data,
                 question=document_question,
                 response=data['response'],
                 response_segment=data['response_segment'],
             )
+
+            if 'evidence' in data:
+                evidence_list = data.pop('evidence')
+                evidence_json = json.dumps(evidence_list)
+                response.evidence = evidence_json
+                response.save()
 
         # Save student segment data
         for this_segment_data in segment_data:
@@ -165,10 +172,13 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
             segment_question_responses = this_segment_data.pop('segment_responses')
             for response in segment_question_responses:
                 question_id = response.pop('id')
+                evidence_list = response.pop('evidence')
+                evidence = json.dumps(evidence_list)
                 question = SegmentQuestion.objects.get(pk=question_id)
                 SegmentQuestionResponse.objects.create(
                     student_segment_data=segment_data,
                     question=question,
+                    evidence=evidence,
                     **response,
                 )
 
@@ -179,6 +189,8 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
 
         fields = (
             'id',
+            'start_time',
+            'last_updated_time',
             'document_responses',
             'segment_data',
             'reading_data_id',
@@ -247,6 +259,8 @@ class ReadingSerializer(serializers.Serializer):
 class AnalysisSerializer(serializers.Serializer):
     """ Serializes analysis class """
     total_and_median_view_time = serializers.ReadOnlyField()
+    mean_reading_vs_rereading_time = serializers.ReadOnlyField()
+    get_number_of_unique_students = serializers.ReadOnlyField()
     compute_reread_counts = serializers.ReadOnlyField()
 
     def create(self, validated_data):

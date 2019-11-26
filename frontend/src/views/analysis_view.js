@@ -58,6 +58,8 @@ export class AnalysisView extends React.Component {
 
         const { // object destructuring:
             total_and_median_view_time,
+            mean_reading_vs_rereading_time,
+            get_number_of_unique_students,
             compute_reread_counts,
         } = this.state.analysis;
         return (
@@ -91,6 +93,23 @@ export class AnalysisView extends React.Component {
                 />
                 <RereadCountTable
                     compute_reread_counts={compute_reread_counts}
+                />
+                <SingleValueAnalysis
+                    header={"Mean reading view time"}
+                    value={mean_reading_vs_rereading_time[0]}
+                    unit={"seconds"}
+                />
+                <SingleValueAnalysis
+                    header={"Mean rereading view time"}
+                    value={mean_reading_vs_rereading_time[1]}
+                    unit={"seconds"}
+                />
+
+                <SingleValueAnalysis
+                    header={"Number of Unique Students"}
+                    value={get_number_of_unique_students}
+                    unit={"students"}
+
                 />
 
             </div>

@@ -147,7 +147,8 @@ class RereadingAnalysis:
                 question_count_map[question] = 0
             if RereadingAnalysis.description_has_relevant_words(
                 segment.response, relevant_words):
-                question_count_map[question] += 1
+                if question_count_map[question] == 0:
+                    question_count_map[question] += 1
 
         total_student_count = self.get_number_of_unique_students()
         percent_question_count_map = []

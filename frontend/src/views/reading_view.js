@@ -283,7 +283,7 @@ export class ReadingView extends React.Component {
         this.state = {
             current_view: VIEWS.INSTRUCTIONS_NAME,
             student_name: "",
-            segment_num: 4,
+            segment_num: 0,
             timer: null,
             scroll_top: 0,
             scroll_data: [],

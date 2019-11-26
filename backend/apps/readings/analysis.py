@@ -103,3 +103,18 @@ class RereadingAnalysis:
         return round(mean_reading_time), round(mean_rereading_time)
 
     def get_number_of_unique_students(self):
+        """
+        This function finds the number of unique students who have participated in the study
+        :return: an integer value
+        """
+        student_names = set()
+
+        # go through all data in readings to get name of each user and add to set student_names
+        for reading in self.readings:
+            name = reading.student.name
+            # convert to lower just in case some students forget to capitalize
+            name = name.lower()
+            # add name to set
+            student_names.add(name)
+        # return length of set (represents unique number of students)
+        return len(student_names)

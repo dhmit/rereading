@@ -18,6 +18,11 @@
 }
 
 
+body {
+    background-color: $beige;
+}
+
+
 .segment-container {
     @extend .col;
     @extend .col-lg-8;

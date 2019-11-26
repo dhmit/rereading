@@ -146,7 +146,7 @@ class NavBar extends React.Component {
                     {!on_last_segment_and_rereading
                         ? (
                             <button
-                                className="next-btn"
+                                className="next-btn my-2"
                                 onClick={() => this.props.nextSegment()}
                             >
                                 {this.props.rereading ? 'Next' : 'Reread'}
@@ -700,7 +700,7 @@ export class ReadingView extends React.Component {
         const roman_numeral = { 1: "I", 2:"II", 3:"III", 4:"IV", 5:"V", 6:"VI", 7:"VII"};
 
         return (
-            <div className="container py-5">
+            <div className="container background">
                 <div className="row mb-4"><div className="col">
                     <h1 className="display-4">
                         {doc.title} <span className="author">by {doc.author}</span>

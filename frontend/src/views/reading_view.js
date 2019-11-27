@@ -179,7 +179,7 @@ class OverviewQuestionDisplay extends React.Component {
         const q = q_and_r.question;
         const r = q_and_r.response;
         return (
-            <div className="card">
+            <div className="card mb-5">
                 <div className="card-header">
                     <div className='segment-question-text question-text'>
                         {q.text}
@@ -245,7 +245,7 @@ class OverviewView extends React.Component {
                         <OverviewQuestionDisplay key={i} question_and_response={q_and_r} />
                     )}
                     <button
-                        className="next-btn mt-4"
+                        className="next-btn"
                         onClick={() => window.location.href = '../project_overview'}
                     >Finish Reading
                     </button>

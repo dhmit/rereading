@@ -46,7 +46,6 @@ class SegmentQuestionSerializer(serializers.ModelSerializer):
             'id',
             'text',
             'require_evidence',
-            'response_word_limit',
         )
 
 

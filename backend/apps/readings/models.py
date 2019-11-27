@@ -86,7 +86,6 @@ class Question(models.Model):
     FOR SUBCLASSING ONLY DO NOT USE ME DIRECTLY
     """
     text = models.TextField()
-    response_word_limit = models.IntegerField(default=0, null=True)
     require_evidence = models.BooleanField(default=False)
 
     class Meta:

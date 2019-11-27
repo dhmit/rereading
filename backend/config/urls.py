@@ -34,7 +34,7 @@ urlpatterns = [
     path('api/responses/', readings_views.ListStudentReadingData.as_view()),
 
     # React views
-    path('', lambda request: redirect('project_overview')),  # redirect / to project overview
+    path('', lambda request: redirect('reading_view')),  # redirect / to project overview
     path('project_overview/',
          render_react_view, {'component_name': 'ReadingRedux'},
          name='project_overview'),
@@ -50,7 +50,9 @@ urlpatterns = [
          render_react_view, {'component_name': 'Sources'}),
 
     path('reading/',
-         render_react_view, {'component_name': 'ReadingView'}),
+         render_react_view,
+         {'component_name': 'ReadingView'},
+         name='reading_view'),
     path('analysis/', render_react_view, {'component_name': 'AnalysisView'}),
 
 

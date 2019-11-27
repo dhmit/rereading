@@ -42,7 +42,6 @@ Segment.propTypes = {
 };
 
 class Question extends React.Component {
-
     render(){
         const ems = this.props.evidenceModeState;
         const evidenceModeActive =
@@ -115,7 +114,6 @@ class Question extends React.Component {
         );
     }
 }
-
 Question.propTypes = {
     question: PropTypes.object,
     response: PropTypes.object,
@@ -250,7 +248,6 @@ export class InstructionsNameView extends React.Component {
                         className={"form-control"}
                         type={"text"}
                         onChange={(e) => this.props.handleStudentName(e)}
-                        required
                     />
                     <div className={"input-group-append"}>
                         <button
@@ -382,7 +379,6 @@ export class ReadingView extends React.Component {
         this.setState({scroll_top});
     }
 
-
     handleResponseChange(is_document_question, question_id, event) {
         const update_dict = {
             response: event.target.value,
@@ -392,7 +388,6 @@ export class ReadingView extends React.Component {
         }
         this.updateResponseObject(is_document_question, question_id, update_dict);
     }
-
 
     getOrCreateResponseObjectAndArray(is_document_question, question_id) {
         let responseArray;
@@ -440,26 +435,38 @@ export class ReadingView extends React.Component {
     allQuestionsAreCompleted () {
         const doc = this.state.document;
         const current_segment = doc.segments[this.state.segment_num];
+
         const segment_questions = current_segment.questions;
         const document_questions = doc.document_questions;
+
         const document_responses = this.state.documentResponseArray;
         const segment_responses = this.state.segmentResponseArray;
 
-        if (document_responses.length === document_questions.length &&
-            segment_responses.length === segment_questions.length) {
-            for (let element of document_responses) {
-                if (element.response.trim() === ""){
+        if (document_responses.length === document_questions.length
+            && segment_responses.length === segment_questions.length) {
+            for (const el of document_responses) {
+                if (el.response.trim() === "") {
                     return false;
                 }
-            }
-            for (let element of segment_responses) {
-                if (element.response.trim() === ""){
-                    return false;
+                const dq = document_questions.find((dq) => dq.id === el.id);
+                if (dq.require_evidence) {
+                    if (el.evidence === undefined || el.evidence.length === 0) {
+                        return false;
+                    }
                 }
             }
-        }
-        else
-        {
+            for (const el of segment_responses) {
+                if (el.response.trim() === ""){
+                    return false;
+                }
+                const sq = segment_questions.find((sq) => sq.id === el.id);
+                if (sq.require_evidence) {
+                    if (el.evidence === undefined || el.evidence.length === 0) {
+                        return false;
+                    }
+                }
+            }
+        } else {
             return false;
         }
 
@@ -494,7 +501,8 @@ export class ReadingView extends React.Component {
         // Check if all questions are completed if advancing
         if (target_segment_num > this.state.segment_num) {
             if (!this.allQuestionsAreCompleted()) {
-                alert("Please respond to every question before moving on.");
+                alert("Please respond to every question and add evidence where indicated " +
+                      "before moving on.");
                 return;
             }
         }

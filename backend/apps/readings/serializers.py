@@ -178,8 +178,8 @@ class StudentReadingDataSerializer(serializers.ModelSerializer):
                     question=question,
                     **response,
                 )
-                if 'evidence' in data:
-                    evidence_list = data.pop('evidence')
+                if 'evidence' in this_segment_data:
+                    evidence_list = this_segment_data.pop('evidence')
                     evidence_json = json.dumps(evidence_list)
                     response.evidence = evidence_json
                     response.save()

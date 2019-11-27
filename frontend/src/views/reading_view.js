@@ -133,36 +133,30 @@ class NavBar extends React.Component {
             && this.props.rereading;
 
         return (
-            <div className="row">
-                <div className="col">
-                    {this.props.segment_num > 0 &&
-                    <button
-                        className="btn btn-outline-dark"
-                        onClick={() => this.props.prevSegment()}
-                    >
-                        Back
-                    </button>
-                    }
-                    {!on_last_segment_and_rereading
-                        ? (
-                            <button
-                                className="next-btn"
-                                onClick={() => this.props.nextSegment()}
-                            >
-                                {this.props.rereading ? 'Next' : 'Reread'}
-                            </button>
-                        )
-                        : (
-                            <button
-                                className="next-btn"
-                                onClick={() => this.props.toOverview()}
-                            >
-                                To Overview
-                            </button>
-                        )
-                    }
+            <React.Fragment>
+                <div className="row">
+                    <div className="col">
+                        {!on_last_segment_and_rereading
+                            ? (
+                                <button
+                                    className="next-btn"
+                                    onClick={() => this.props.nextSegment()}
+                                >
+                                    {this.props.rereading ? 'Next' : 'Continue'}
+                                </button>
+                            )
+                            : (
+                                <button
+                                    className="next-btn"
+                                    onClick={() => this.props.toOverview()}
+                                >
+                                    To Overview
+                                </button>
+                            )
+                        }
+                    </div>
                 </div>
-            </div>
+            </React.Fragment>
         )
     }
 }
@@ -196,10 +190,13 @@ class OverviewView extends React.Component {
                     </div>
                 </div>
                 <div className="questions-container">
-                    <p><b>Document Questions</b></p>
                     {document_response_fields}
-                    <p><b>Overview Questions</b></p>
                     {overview_response_fields}
+                    <button
+                        className="next-btn"
+                        onClick={() => window.location.href = '../project_overview'}
+                    >Finish Reading
+                    </button>
                 </div>
             </div>
         );
@@ -302,7 +299,6 @@ export class ReadingView extends React.Component {
 
         this.segment_ref = React.createRef();
         this.allQuestionsAreCompleted = this.allQuestionsAreCompleted.bind(this);
-        this.prevSegment = this.prevSegment.bind(this);
         this.nextSegment = this.nextSegment.bind(this);
         this.toOverview = this.toOverview.bind(this);
         this.buildQuestionFields = this.buildQuestionFields.bind(this);
@@ -470,8 +466,13 @@ export class ReadingView extends React.Component {
         return true;
     }
 
-    prevSegment () {
-        this.gotoSegment(this.state.segment_num - 1);
+    checkScrolledToBottom() {
+        const segment_dom_el = this.segment_ref.current;
+        const scroll_remaining = segment_dom_el.scrollHeight - segment_dom_el.scrollTop;
+        if (scroll_remaining === segment_dom_el.offsetHeight) {
+            return true;
+        }
+        return false;
     }
 
     nextSegment () {
@@ -479,7 +480,11 @@ export class ReadingView extends React.Component {
             // If we're already rereading, move to the next segment
             this.gotoSegment(this.state.segment_num + 1);
         } else {
-            // Otherwise, move on to the rereading layout
+            // Otherwise, move on to the rereading layout, if user has scrolled to the bottom
+            if (!this.checkScrolledToBottom()) {
+                alert('Please read and scroll to the bottom of the segment before moving on.');
+                return;
+            }
             this.sendData(false);
             this.setState({rereading: true});
         }
@@ -495,6 +500,7 @@ export class ReadingView extends React.Component {
         }
 
         this.sendData(false);
+        this.segment_ref.current.scrollTo(0,0);
         const segments_viewed = this.state.segments_viewed.slice();
 
         // Store the current segment reading data into state
@@ -510,7 +516,6 @@ export class ReadingView extends React.Component {
             segmentQuestionNum: 0,
             segmentResponseArray,
         });
-        this.segment_ref.current.scrollTo(0,0);
     }
 
     toOverview () {

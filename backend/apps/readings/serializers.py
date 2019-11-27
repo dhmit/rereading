@@ -69,7 +69,11 @@ class SegmentSerializer(serializers.ModelSerializer):
     """
     Serializes data related to a given segment of a document
     """
-    questions = SegmentQuestionSerializer(many=True)
+    questions = serializers.SerializerMethodField()
+
+    def get_questions(self, instance):
+        queryset = instance.questions.all().order_by('sequence')
+        return SegmentQuestionSerializer(queryset, many=True).data
 
     class Meta:
         model = Segment

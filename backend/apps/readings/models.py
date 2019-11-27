@@ -87,6 +87,8 @@ class Question(models.Model):
     """
     text = models.TextField()
     require_evidence = models.BooleanField(default=False)
+    # We 1-index sequence bc it's for use by non-dev users in the admin tools
+    sequence = models.IntegerField(default=1)  # position of this Q amongst others
 
     class Meta:
         # as an abstract base class, Django won't create separate database tables for Question and

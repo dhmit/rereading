@@ -124,6 +124,8 @@ Question.propTypes = {
     toggleAddEvidenceMode: PropTypes.func,
 }
 
+
+
 class NavBar extends React.Component {
     render() {
         const on_last_segment_and_rereading =
@@ -167,13 +169,61 @@ NavBar.propTypes = {
     toOverview: PropTypes.func,
 };
 
+
+/*
+ * A component to show the user their responses in the overview view
+ */
+class OverviewQuestionDisplay extends React.Component {
+    render() {
+        const q_and_r = this.props.question_and_response;
+        const q = q_and_r.question;
+        const r = q_and_r.response;
+        return (
+            <div className="card">
+                <div className="card-header">
+                    <div className='segment-question-text question-text'>
+                        {q.text}
+                    </div>
+                </div>
+                <div className="card-body">
+                    {r.response}
+                </div>
+            </div>
+        );
+    }
+}
+OverviewQuestionDisplay.propTypes = {
+    question_and_response: PropTypes.object,
+}
+
+
 class OverviewView extends React.Component {
     render() {
         const full_document_text = [];
         this.props.all_segments.map((el) => full_document_text.push(el.text.split("\r\n")));
-        const overview_questions = this.props.overview_questions;
-        const document_response_fields = this.props.document_response_fields;
-        const overview_response_fields = this.props.buildQuestionFields(overview_questions);
+        console.log(this.props.reading_data);
+        const segment_data = this.props.reading_data.segment_data;
+        const rereadings = segment_data.filter((datum) => datum.is_rereading);
+
+        let all_responses = [];
+        for (const rereading of rereadings) {
+            all_responses = all_responses.concat(rereading.segment_responses);
+        }
+
+        let all_questions = [];
+        for (const segment of this.props.all_segments) {
+            const segment_questions = segment.questions;
+            all_questions = all_questions.concat(segment_questions);
+        }
+
+        const question_and_responses = [];
+        for (const response of all_responses) {
+            const q = all_questions.find((q) => q.id === response.question);
+            question_and_responses.push({
+                question: q,
+                response,
+            });
+        }
 
         return (
             <div className="row">
@@ -188,10 +238,14 @@ class OverviewView extends React.Component {
                     </div>
                 </div>
                 <div className="questions-container">
-                    {document_response_fields}
-                    {overview_response_fields}
+                    <p>
+                        Thank you for participating! Here is a summary of your responses:
+                    </p>
+                    {question_and_responses.map((q_and_r, i) =>
+                        <OverviewQuestionDisplay key={i} question_and_response={q_and_r} />
+                    )}
                     <button
-                        className="next-btn"
+                        className="next-btn mt-4"
                         onClick={() => window.location.href = '../project_overview'}
                     >Finish Reading
                     </button>
@@ -202,9 +256,7 @@ class OverviewView extends React.Component {
 }
 OverviewView.propTypes = {
     all_segments: PropTypes.array,
-    document_response_fields: PropTypes.array,
-    overview_questions: PropTypes.array,
-    buildQuestionFields: PropTypes.func,
+    reading_data: PropTypes.object,
 };
 
 export class InstructionsNameView extends React.Component {
@@ -276,7 +328,6 @@ export class ReadingView extends React.Component {
             segment_num: 0,
             timer: null,
             scroll_top: 0,
-            scroll_data: [],
             segments_viewed: [0],
             rereading: false,  // we alternate reading and rereading
             document: null,
@@ -292,6 +343,7 @@ export class ReadingView extends React.Component {
             },
             current_selection: '',
         };
+        this.scroll_data = [];
         this.csrftoken = getCookie('csrftoken');
 
         this.segment_ref = React.createRef();
@@ -340,13 +392,13 @@ export class ReadingView extends React.Component {
     async sendData(firstTime){
         if (!firstTime) {
             const time = this.state.timer.stop();
-            this.setState({scroll_data: []});
+            this.scroll_data = [];
             const url = '/api/add-response/';
             const reading_data = {
                 reading_data_id: this.state.reading_data.id,
                 segment_data: [{
                     id: this.state.document.segments[this.state.segment_num].id,
-                    scroll_data: JSON.stringify(this.state.scroll_data),
+                    scroll_data: JSON.stringify(this.scroll_data),
                     view_time: time,
                     is_rereading: this.state.rereading,
                     segment_responses: this.state.segmentResponseArray,
@@ -369,9 +421,7 @@ export class ReadingView extends React.Component {
     }
 
     recordScroll() {
-        const scroll_data = this.state.scroll_data;
-        scroll_data.push(this.state.scroll_top);
-        this.setState({scroll_data});
+        this.scroll_data.push(this.state.scroll_top);
     }
 
     handleScroll(e) {
@@ -497,15 +547,18 @@ export class ReadingView extends React.Component {
         }
     }
 
-    gotoSegment(target_segment_num) {
+    validateData() {
         // Check if all questions are completed if advancing
-        if (target_segment_num > this.state.segment_num) {
-            if (!this.allQuestionsAreCompleted()) {
-                alert("Please respond to every question and add evidence where indicated " +
-                      "before moving on.");
-                return;
-            }
+        if (!this.allQuestionsAreCompleted()) {
+            alert("Please respond to every question and add evidence where indicated " +
+                "before moving on.");
+            return false
         }
+        return true;
+    }
+
+    gotoSegment(target_segment_num) {
+        if (!this.validateData()) { return; }
 
         this.sendData(false);
         this.segment_ref.current.scrollTo(0,0);
@@ -527,6 +580,8 @@ export class ReadingView extends React.Component {
     }
 
     toOverview () {
+        if(!this.validateData()) { return; }
+
         this.sendData(false);
         this.setState({current_view: VIEWS.OVERVIEW})
     }
@@ -637,7 +692,6 @@ export class ReadingView extends React.Component {
         const current_segment = doc.segments[this.state.segment_num];
         const segment_questions = current_segment.questions;
         const document_questions = doc.document_questions;
-        const overview_questions = doc.overview_questions;
 
         // Generate response fields for each of the questions
         const segment_response_fields = this.buildQuestionFields(segment_questions, false);
@@ -657,9 +711,7 @@ export class ReadingView extends React.Component {
                 {this.state.current_view === VIEWS.OVERVIEW &&
                     <OverviewView
                         all_segments={doc.segments}
-                        document_response_fields={document_response_fields}
-                        overview_questions={overview_questions}
-                        buildQuestionFields={this.buildQuestionFields}
+                        reading_data={this.state.reading_data}
                     />
                 }
                 {this.state.current_view === VIEWS.READING &&

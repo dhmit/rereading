@@ -92,6 +92,10 @@ class SegmentQuestionResponseSerializer(serializers.ModelSerializer):
     """
     id = serializers.ModelField(model_field=SegmentQuestionResponse()._meta.get_field('id'))
     evidence = serializers.ListField(child=serializers.CharField(), required=False)
+    question = serializers.ModelField(
+        model_field=SegmentQuestionResponse()._meta.get_field('question'),
+        required=False,
+    )
 
     class Meta:
         model = SegmentQuestionResponse
@@ -101,6 +105,7 @@ class SegmentQuestionResponseSerializer(serializers.ModelSerializer):
             'response',
             'submission_time',
             'evidence',
+            'question',
         )
 
 

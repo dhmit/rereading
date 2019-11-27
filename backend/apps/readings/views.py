@@ -46,9 +46,16 @@ def add_response(request):
     reading_data_id = data.get('reading_data_id')
     reading_data = StudentReadingData.objects.get(pk=reading_data_id)
     serializer = StudentReadingDataSerializer(instance=reading_data, data=data)
-    serializer.is_valid()
-    serializer.save()
-    return Response(serializer.data)
+    is_valid = serializer.is_valid()
+
+    if is_valid:
+        serializer.save()
+        return Response(serializer.data)
+    else:
+        # NOTE(ra) -- This is for debugging -- this really needs proper error handling
+        print(serializer.errors)
+        return Response({})
+
 
 
 @api_view(['GET'])

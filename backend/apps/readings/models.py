@@ -89,9 +89,6 @@ class Question(models.Model):
     response_word_limit = models.IntegerField(default=0, null=True)
     require_evidence = models.BooleanField(default=False)
 
-    def __str__(self):
-        return self.text
-
     class Meta:
         # as an abstract base class, Django won't create separate database tables for Question and
         # its subclasses -- instead all of the subclasses will just get these fields
@@ -112,6 +109,9 @@ class DocumentQuestion(Question):
         related_name='questions'
     )
 
+    def __str__(self):
+        return self.text
+
 
 class SegmentQuestion(Question):
     """
@@ -122,6 +122,9 @@ class SegmentQuestion(Question):
         on_delete=models.CASCADE,
         related_name='questions'
     )
+
+    def __str__(self):
+        return f'Segment {self.segment.sequence} - {self.text}'
 
 
 class StudentReadingData(models.Model):

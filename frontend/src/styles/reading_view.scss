@@ -13,7 +13,7 @@
 }
 ::-webkit-scrollbar-thumb {
     border-radius: 1px;
-    background-color: rgba(38, 125, 207, 0.5);
+    background-color: $scarlet;
     -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
 }
 
@@ -22,6 +22,16 @@ body {
     background-color: $beige;
 }
 
+.title {
+    color: $brown;
+}
+
+.instruction-text,
+.text-and-questions {
+    background: white;
+    border: 15px solid white;
+    border-radius: 10px;
+}
 
 .segment-container {
     @extend .col;
@@ -37,14 +47,20 @@ body {
     font-family: Perpetua;
     font-size: 18pt;
 }
+
 .segment-num {
     @extend .mb-0;
     font-weight: bold;
+    color: $brown;
 }
 
 .segment-text {
     padding:5px 5% 5px 0%;
     font-family: Perpetua;
+}
+
+.card-header{
+    background: $mint;
 }
 
 .questions-container {
@@ -118,6 +134,6 @@ body {
 
 .next-btn {
     @extend .btn;
-    @extend .btn-outline-dark;
+    @extend .btn-outline-danger;
     @extend .float-right;
 }

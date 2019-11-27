@@ -137,7 +137,7 @@ class NavBar extends React.Component {
                 <div className="col">
                     {this.props.segment_num > 0 &&
                     <button
-                        className="btn btn-outline-dark"
+                        className="btn btn-outline-danger"
                         onClick={() => this.props.prevSegment()}
                     >
                         Back
@@ -220,10 +220,10 @@ export class InstructionsNameView extends React.Component {
     render() {
         return (
             <div className={"container"}>
-                <h1 className={"display-4 text-center mt-4"}>
+                <h1 className={"display-4 text-center mt-4 title"}>
                     Instructions
                 </h1>
-                <div className={"mb-5"}>
+                <div className={"mb-3 instruction-text"}>
                     <p id={"instructions-overview"}>
                         Do a close reading of the text by following
                         these steps:
@@ -251,7 +251,7 @@ export class InstructionsNameView extends React.Component {
                         </li>
                     </ol>
                 </div>
-                <h4>Enter your name or leave blank to remain anonymous</h4>
+                <h4 className="title">Enter your name or leave blank to remain anonymous</h4>
                 <div className={"input-group"}>
                     <input
                         className={"form-control"}
@@ -261,7 +261,7 @@ export class InstructionsNameView extends React.Component {
                     />
                     <div className={"input-group-append"}>
                         <button
-                            className={"btn btn-outline-dark "}
+                            className={"btn btn-danger "}
                             onClick={() => this.props.startReading()}
                         >
                             Start Reading
@@ -700,9 +700,9 @@ export class ReadingView extends React.Component {
         const roman_numeral = { 1: "I", 2:"II", 3:"III", 4:"IV", 5:"V", 6:"VI", 7:"VII"};
 
         return (
-            <div className="container background">
+            <div className="container background py-3">
                 <div className="row mb-4"><div className="col">
-                    <h1 className="display-4">
+                    <h1 className="display-4 title">
                         {doc.title} <span className="author">by {doc.author}</span>
                     </h1>
                 </div></div>
@@ -717,7 +717,7 @@ export class ReadingView extends React.Component {
                 }
                 {this.state.current_view === VIEWS.READING &&
                     <React.Fragment>
-                        <div className="row">
+                        <div className="row text-and-questions">
                             <div className="col-12">
                                 <h5 className="segment-num">
                                     Segment {roman_numeral[this.state.segment_num + 1]}

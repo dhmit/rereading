@@ -697,8 +697,14 @@ export class ReadingView extends React.Component {
         const segment_response_fields = this.buildQuestionFields(segment_questions, false);
         const document_response_fields = this.buildQuestionFields(document_questions, true);
 
-        // Hardcoded roman numeral conversions for now.
-        const roman_numeral = { 1: "I", 2:"II", 3:"III", 4:"IV", 5:"V", 6:"VI", 7:"VII"};
+        // Hardcoded for now...
+        const roman_numeral_and_segment_date = {
+            1: "I - circa 1950s",
+            2: "II - circa 1960s",
+            3: "III - circa 1970s",
+            4: "IV - circa 1970s",
+            5: "V - circa 1980s",
+        };
 
         return (
             <div className="container py-5">
@@ -719,7 +725,9 @@ export class ReadingView extends React.Component {
                         <div className="row">
                             <div className="col-12">
                                 <h5 className="segment-num">
-                                    Segment {roman_numeral[this.state.segment_num + 1]}
+                                    Segment {
+                                        roman_numeral_and_segment_date[this.state.segment_num + 1]
+                                    }
                                 </h5>
                                 <hr/>
                             </div>

@@ -11,7 +11,7 @@ echo "Starting $NAME as `whoami`"
 
 # Activate the virtual environment
 cd $DJANGODIR
-source venv/bin/activate
+source /home/ubuntu/rereading/venv/bin/activate
 export DJANGO_SETTINGS_MODULE='config.settings.production'
 
 # Create the run directory if it doesn't exist
@@ -26,5 +26,5 @@ exec gunicorn ${DJANGO_WSGI_MODULE}:application \
 --workers $NUM_WORKERS \
 --log-level=warning \
 --log-file=$LOGFILE \
---bind 0:8080  # run directly without nginx for testing
-# --bind=unix:$SOCKFILE
+--bind=unix:$SOCKFILE
+# --bind 0:8080  # run directly without nginx for testing

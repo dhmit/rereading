@@ -268,29 +268,30 @@ export class InstructionsNameView extends React.Component {
                 </h1>
                 <div className={"mb-5"}>
                     <p id={"instructions-overview"}>
-                        Do a close reading of the text by following
-                        these steps:
-                        Read each segment of the text one segment at a time, from
-                        segment 1 to segment 5, while answering
-                        questions for each segment along the way.
+                        Do a close reading of the text by following these steps:
+                        Read all five segments of the text one segment at a time, while answering
+                        questions for each segment along the way (including the two common
+                        questions that recur for each segment).
                     </p>
                     <ol id={"instructions-list"}>
                         <li>
-                            After your first reading of a segment, click the “reread”
-                            button in order to access the questions for that particular
-                            segment.
+                            After you read through the whole segment, click the “Continue” button
+                            in order to access the questions for that particular segment.
                         </li>
                         <li>
-                            Provide an answer to each question posed for that segment,
-                            including the two “common questions.”
+                            As often as you need to, scroll through the segment in order to provide
+                            an answer for each question posed for that segment.
                         </li>
                         <li>
-                            After you finish answering the questions for that segment,
-                            click the “next” button in order to access the next segment.
+                            Provide evidence for questions that require evidence by clicking
+                            “Add Evidence,” highlighting the words or passages from the segment
+                            you want to add, then clicking “Stop Tagging”.
+                            Repeat this process as many times as there are other pieces of evidence
+                            from the segment you want to add.
                         </li>
                         <li>
-                            For each segment, highlight passages that provide evidence
-                            to support your answer to common question #2.
+                            After you’ve answered all questions and added evidence for a segment,
+                            click the “Next” button in order to access the next segment.
                         </li>
                     </ol>
                 </div>

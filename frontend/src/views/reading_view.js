@@ -526,10 +526,16 @@ export class ReadingView extends React.Component {
 
     checkScrolledToBottom() {
         const segment_dom_el = this.segment_ref.current;
+
         const scroll_remaining = segment_dom_el.scrollHeight - segment_dom_el.scrollTop;
-        if (scroll_remaining === segment_dom_el.offsetHeight) {
+
+        // leave a little room for floating point error and general fuzziness
+        const is_at_bottom = Math.abs(scroll_remaining - segment_dom_el.offsetHeight) < 5;
+
+        if (is_at_bottom) {
             return true;
         }
+
         return false;
     }
 

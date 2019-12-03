@@ -266,7 +266,7 @@ export class InstructionsNameView extends React.Component {
                 <h1 className={"display-4 text-center mt-4 title"}>
                     Instructions
                 </h1>
-                <div className={"mb-3 instruction-text"}>
+                <div className={"mb-5 instructions"}>
                     <p id={"instructions-overview"}>
                         Do a close reading of the text by following these steps:
                         Read all five segments of the text one segment at a time, while answering
@@ -294,21 +294,21 @@ export class InstructionsNameView extends React.Component {
                             click the “Next” button in order to access the next segment.
                         </li>
                     </ol>
-                </div>
-                <h4 className="title">Enter your name or leave blank to remain anonymous</h4>
-                <div className={"input-group"}>
-                    <input
-                        className={"form-control"}
-                        type={"text"}
-                        onChange={(e) => this.props.handleStudentName(e)}
-                    />
-                    <div className={"input-group-append"}>
-                        <button
-                            className={"btn btn-danger "}
-                            onClick={() => this.props.startReading()}
-                        >
-                            Start Reading
-                        </button>
+                    <h4 className="title">Enter your name or leave blank to remain anonymous</h4>
+                    <div className={"input-group"}>
+                        <input
+                            className={"form-control"}
+                            type={"text"}
+                            onChange={(e) => this.props.handleStudentName(e)}
+                        />
+                        <div className={"input-group-append"}>
+                            <button
+                                className={"btn btn-danger "}
+                                onClick={() => this.props.startReading()}
+                            >
+                                Start Reading
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

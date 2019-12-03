@@ -1,4 +1,5 @@
-$reading-font: 'Noto Serif', serif;
+$reading-font: 'EB Garamond', serif;
+//$reading-font: Perpetua;
 $header-font: Helvetica;
 
 /*
@@ -36,6 +37,7 @@ body {
     color: $brown;
 }
 
+.instructions,
 .text-and-questions {
     background: white;
     border: 15px solid white;
@@ -129,12 +131,9 @@ body {
 
 #instructions-list {
     padding:0 0 0 2em;
-    li {
-        font-family: $reading-font;
-    }
+    margin-bottom: 2em;
 }
 #instructions-overview {
-    font-family: $reading-font;
     padding: 0 0 0 0;
     margin-bottom: 2em;
 }

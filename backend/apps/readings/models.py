@@ -86,11 +86,9 @@ class Question(models.Model):
     FOR SUBCLASSING ONLY DO NOT USE ME DIRECTLY
     """
     text = models.TextField()
-    response_word_limit = models.IntegerField(default=0, null=True)
     require_evidence = models.BooleanField(default=False)
-
-    def __str__(self):
-        return self.text
+    # We 1-index sequence bc it's for use by non-dev users in the admin tools
+    sequence = models.IntegerField(default=1)  # position of this Q amongst others
 
     class Meta:
         # as an abstract base class, Django won't create separate database tables for Question and
@@ -112,6 +110,9 @@ class DocumentQuestion(Question):
         related_name='questions'
     )
 
+    def __str__(self):
+        return self.text
+
 
 class SegmentQuestion(Question):
     """
@@ -122,6 +123,9 @@ class SegmentQuestion(Question):
         on_delete=models.CASCADE,
         related_name='questions'
     )
+
+    def __str__(self):
+        return f'Segment {self.segment.sequence} - {self.text}'
 
 
 class StudentReadingData(models.Model):

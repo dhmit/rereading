@@ -66,6 +66,7 @@ class DocumentQuestionAdmin(admin.ModelAdmin):
 
 class SegmentQuestionAdmin(admin.ModelAdmin):
     model = SegmentQuestionResponse
+    list_display = ('segment', 'sequence', 'text',)
     inlines = [SegmentQuestionResponseInline]
 
 

@@ -36,7 +36,6 @@ body {
     color: $brown;
 }
 
-.instruction-text,
 .text-and-questions {
     background: white;
     border: 15px solid white;
@@ -55,24 +54,21 @@ body {
     height: 500px;
     width: 600px;
     overflow: auto;
-    font-family: Perpetua;
+    font-family: $reading-font;
     font-size: 18pt;
 }
 
 .segment-num {
     @extend .mb-0;
-    font-family: Perpetua;
+    font-family: $reading-font;
     font-size: 2em;
+    color: $brown;
 }
 
 .segment-text {
     text-indent: 1em;
     padding: 0 5% 0 0%;
-    font-family: Perpetua;
-}
-
-.card-header{
-    background: $mint;
+    font-family: $reading-font;
 }
 
 .questions-container {
@@ -93,7 +89,7 @@ body {
 .questions-boxes {
     overflow: auto;
     height:500px;
-    font-family: Perpetua;
+    font-family: $reading-font;
     font-size: 14pt;
     text-decoration-color: dimgrey;
 }
@@ -127,13 +123,15 @@ body {
 
 
 .question-text {
-    font-family: Perpetua;
+    font-family: $reading-font;
     font-size: 14pt;
 }
 
 #instructions-list {
     padding:0 0 0 2em;
-    font-family: $reading-font;
+    li {
+        font-family: $reading-font;
+    }
 }
 #instructions-overview {
     font-family: $reading-font;

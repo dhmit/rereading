@@ -5,8 +5,7 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 """
 import statistics
 
-from .models import StudentReadingData, StudentSegmentData, SegmentQuestionResponse, \
-    DocumentQuestionResponse
+from .models import StudentReadingData, StudentSegmentData, SegmentQuestionResponse
 
 
 class RereadingAnalysis:
@@ -19,7 +18,6 @@ class RereadingAnalysis:
         self.readings = StudentReadingData.objects.all()
         self.segments = StudentSegmentData.objects.all()
         self.questions = SegmentQuestionResponse.objects.all()
-        self.docquestions = DocumentQuestionResponse.objects.all()
 
     def total_and_median_view_time(self):
         """
@@ -98,7 +96,7 @@ class RereadingAnalysis:
     def description_has_relevant_words(story_meaning_description, relevant_words):
         """
         Determine if the user's description contains a word relevant to the story's meaning
-        :param story_meaning_description: The user's three word description of the story
+        :param story_meaning_description: The user's response
         :param relevant_words: a list of words which show an understanding of the story's meaning
         :return True if the description contains one of the relevant words or relevant_words is
         empty. False otherwise
@@ -124,33 +122,19 @@ class RereadingAnalysis:
         words in that question
         :return the return type explained in the function description
         """
-        # deleted contexts cause segments doesn't have context
         relevant_words = ["dead", "death", "miscarriage", "killed", "kill", "losing", "loss",
                           "lost", "deceased", "died", "grief", "pregnancy", "pregnant"]
         # get the list from sandy
 
         question_count_map = {}
-        #what happens when students go back and retype their responses, isn't it a new segment?
         for segment in self.questions:
-            # are we doing this on document questions or segment questions?
             question = segment.question
             if question not in question_count_map:
                 question_count_map[question] = 0
-            if RereadingAnalysis.description_has_relevant_words(
-                segment.response, relevant_words):
+            if RereadingAnalysis.description_has_relevant_words(segment.response, relevant_words):
                 question_count_map[question] += 1
 
-        for docquestion in self.docquestions:
-            # are we doing this on document questions or segment questions?
-            question = docquestion.question
-            if question not in question_count_map:
-                question_count_map[question] = 0
-            if RereadingAnalysis.description_has_relevant_words(
-                    docquestion.response, relevant_words):
-                if question_count_map[question] == 0:
-                    question_count_map[question] += 1
-
-        total_student_count = self.get_number_of_unique_students()
+        total_student_count = len(self.readings)
         percent_question_count_map = []
         for question in question_count_map:
             percent_question_count_map.append(

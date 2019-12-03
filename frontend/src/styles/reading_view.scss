@@ -1,3 +1,13 @@
+$reading-font: Perpetua;
+$header-font: Arial;
+
+/*
+ * Hides the horizontal scroll bar
+ */
+* {
+    overflow-x: hidden;
+}
+
 .author {
     font-size: 50%;
 }
@@ -17,7 +27,6 @@
     -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
 }
 
-
 body {
     background-color: $beige;
 }
@@ -30,7 +39,7 @@ body {
 .text-and-questions {
     background: white;
     border: 15px solid white;
-    border-radius: 10px;
+    border-radius: 5px;
 }
 
 .segment-container {
@@ -89,7 +98,7 @@ body {
 .evidence-toggle-button {
   font-size: 10px;
   text-transform: uppercase;
-  background: #666;
+  background: $grey;
   border: none;
   outline: none;
   color: #fff;
@@ -121,8 +130,10 @@ body {
 
 #instructions-list {
     padding:0 0 0 2em;
+    font-family: $reading-font;
 }
 #instructions-overview {
+    font-family: $reading-font;
     padding: 0 0 0 0;
     margin-bottom: 2em;
 }

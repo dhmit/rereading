@@ -130,7 +130,7 @@ class RereadingAnalysis:
         # get the list from sandy
 
         question_count_map = {}
-
+        #what happens when students go back and retype their responses, isn't it a new segment?
         for segment in self.questions:
             # are we doing this on document questions or segment questions?
             question = segment.question
@@ -140,13 +140,13 @@ class RereadingAnalysis:
                 segment.response, relevant_words):
                 question_count_map[question] += 1
 
-        for segment in self.docquestions:
+        for docquestion in self.docquestions:
             # are we doing this on document questions or segment questions?
-            question = segment.question
+            question = docquestion.question
             if question not in question_count_map:
                 question_count_map[question] = 0
             if RereadingAnalysis.description_has_relevant_words(
-                segment.response, relevant_words):
+                    docquestion.response, relevant_words):
                 if question_count_map[question] == 0:
                     question_count_map[question] += 1
 

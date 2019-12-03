@@ -5,7 +5,7 @@ $header-font: Helvetica;
  * Standardizes all fonts
  */
 * {
-    //font-family: $header-font;
+    font-family: $header-font;
 
 }
 
@@ -47,6 +47,7 @@ body {
     @extend .col;
     @extend .col-lg-8;
     max-width: 600px;
+    z-index: 999;
 }
 
 .segment,
@@ -60,12 +61,13 @@ body {
 
 .segment-num {
     @extend .mb-0;
-    font-weight: bold;
-    color: $brown;
+    font-family: Perpetua;
+    font-size: 2em;
 }
 
 .segment-text {
-    padding:5px 5% 5px 0%;
+    text-indent: 1em;
+    padding: 0 5% 0 0%;
     font-family: Perpetua;
 }
 

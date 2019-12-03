@@ -42,7 +42,6 @@ Segment.propTypes = {
 };
 
 class Question extends React.Component {
-
     render(){
         const ems = this.props.evidenceModeState;
         const evidenceModeActive =
@@ -115,7 +114,6 @@ class Question extends React.Component {
         );
     }
 }
-
 Question.propTypes = {
     question: PropTypes.object,
     response: PropTypes.object,
@@ -126,6 +124,8 @@ Question.propTypes = {
     toggleAddEvidenceMode: PropTypes.func,
 }
 
+
+
 class NavBar extends React.Component {
     render() {
         const on_last_segment_and_rereading =
@@ -133,36 +133,30 @@ class NavBar extends React.Component {
             && this.props.rereading;
 
         return (
-            <div className="row">
-                <div className="col">
-                    {this.props.segment_num > 0 &&
-                    <button
-                        className="btn btn-outline-danger"
-                        onClick={() => this.props.prevSegment()}
-                    >
-                        Back
-                    </button>
-                    }
-                    {!on_last_segment_and_rereading
-                        ? (
-                            <button
-                                className="next-btn my-2"
-                                onClick={() => this.props.nextSegment()}
-                            >
-                                {this.props.rereading ? 'Next' : 'Reread'}
-                            </button>
-                        )
-                        : (
-                            <button
-                                className="next-btn"
-                                onClick={() => this.props.toOverview()}
-                            >
-                                To Overview
-                            </button>
-                        )
-                    }
+            <React.Fragment>
+                <div className="row">
+                    <div className="col">
+                        {!on_last_segment_and_rereading
+                            ? (
+                                <button
+                                    className="next-btn"
+                                    onClick={() => this.props.nextSegment()}
+                                >
+                                    {this.props.rereading ? 'Next' : 'Continue'}
+                                </button>
+                            )
+                            : (
+                                <button
+                                    className="next-btn"
+                                    onClick={() => this.props.toOverview()}
+                                >
+                                    To Overview
+                                </button>
+                            )
+                        }
+                    </div>
                 </div>
-            </div>
+            </React.Fragment>
         )
     }
 }
@@ -173,37 +167,88 @@ NavBar.propTypes = {
     prevSegment: PropTypes.func,
     nextSegment: PropTypes.func,
     toOverview: PropTypes.func,
-    handleJumpToFieldKeyDown: PropTypes.func,
-    handleJumpToFieldChange: PropTypes.func,
-    handleJumpToButton: PropTypes.func,
-    userCanJump: PropTypes.func
 };
+
+
+/*
+ * A component to show the user their responses in the overview view
+ */
+class OverviewQuestionDisplay extends React.Component {
+    render() {
+        const q_and_r = this.props.question_and_response;
+        const q = q_and_r.question;
+        const r = q_and_r.response;
+        return (
+            <div className="card mb-5">
+                <div className="card-header">
+                    <div className='segment-question-text question-text'>
+                        {q.text}
+                    </div>
+                </div>
+                <div className="card-body">
+                    {r.response}
+                </div>
+            </div>
+        );
+    }
+}
+OverviewQuestionDisplay.propTypes = {
+    question_and_response: PropTypes.object,
+}
+
 
 class OverviewView extends React.Component {
     render() {
         const full_document_text = [];
         this.props.all_segments.map((el) => full_document_text.push(el.text.split("\r\n")));
-        const document_questions = this.props.document_questions;
-        const overview_questions = this.props.overview_questions;
-        const document_response_fields = this.props.buildQuestionFields(document_questions);
-        const overview_response_fields = this.props.buildQuestionFields(overview_questions);
+        console.log(this.props.reading_data);
+        const segment_data = this.props.reading_data.segment_data;
+        const rereadings = segment_data.filter((datum) => datum.is_rereading);
+
+        let all_responses = [];
+        for (const rereading of rereadings) {
+            all_responses = all_responses.concat(rereading.segment_responses);
+        }
+
+        let all_questions = [];
+        for (const segment of this.props.all_segments) {
+            const segment_questions = segment.questions;
+            all_questions = all_questions.concat(segment_questions);
+        }
+
+        const question_and_responses = [];
+        for (const response of all_responses) {
+            const q = all_questions.find((q) => q.id === response.question);
+            question_and_responses.push({
+                question: q,
+                response,
+            });
+        }
 
         return (
             <div className="row">
-                <div className="col-8">
+                <div className="col-12"><hr/></div>
+                <div className="segment-container">
                     <div className="scroll-overview">
                         {full_document_text.map((segment_text_array) => (
                             segment_text_array.map((text, i) => (
-                                <p key={i}>{text}</p>
+                                <p className={"segment-text text-justify"} key={i}>{text}</p>
                             ))
                         ))}
                     </div>
                 </div>
-                <div className="col-4 questions-container">
-                    <p><b>Document Questions</b></p>
-                    {document_response_fields}
-                    <p><b>Overview Questions</b></p>
-                    {overview_response_fields}
+                <div className="questions-container">
+                    <p>
+                        Thank you for participating! Here is a summary of your responses:
+                    </p>
+                    {question_and_responses.map((q_and_r, i) =>
+                        <OverviewQuestionDisplay key={i} question_and_response={q_and_r} />
+                    )}
+                    <button
+                        className="next-btn"
+                        onClick={() => window.location.href = '../project_overview'}
+                    >Finish Reading
+                    </button>
                 </div>
             </div>
         );
@@ -211,9 +256,7 @@ class OverviewView extends React.Component {
 }
 OverviewView.propTypes = {
     all_segments: PropTypes.array,
-    document_questions: PropTypes.array,
-    overview_questions: PropTypes.array,
-    buildQuestionFields: PropTypes.func,
+    reading_data: PropTypes.object,
 };
 
 export class InstructionsNameView extends React.Component {
@@ -225,29 +268,30 @@ export class InstructionsNameView extends React.Component {
                 </h1>
                 <div className={"mb-3 instruction-text"}>
                     <p id={"instructions-overview"}>
-                        Do a close reading of the text by following
-                        these steps:
-                        Read each segment of the text one segment at a time, from
-                        segment 1 to segment 5, while answering
-                        questions for each segment along the way.
+                        Do a close reading of the text by following these steps:
+                        Read all five segments of the text one segment at a time, while answering
+                        questions for each segment along the way (including the two common
+                        questions that recur for each segment).
                     </p>
                     <ol id={"instructions-list"}>
                         <li>
-                            After your first reading of a segment, click the “reread”
-                            button in order to access the questions for that particular
-                            segment.
+                            After you read through the whole segment, click the “Continue” button
+                            in order to access the questions for that particular segment.
                         </li>
                         <li>
-                            Provide an answer to each question posed for that segment,
-                            including the two “common questions.”
+                            As often as you need to, scroll through the segment in order to provide
+                            an answer for each question posed for that segment.
                         </li>
                         <li>
-                            After you finish answering the questions for that segment,
-                            click the “next” button in order to access the next segment.
+                            Provide evidence for questions that require evidence by clicking
+                            “Add Evidence,” highlighting the words or passages from the segment
+                            you want to add, then clicking “Stop Tagging”.
+                            Repeat this process as many times as there are other pieces of evidence
+                            from the segment you want to add.
                         </li>
                         <li>
-                            For each segment, highlight passages that provide evidence
-                            to support your answer to common question #2.
+                            After you’ve answered all questions and added evidence for a segment,
+                            click the “Next” button in order to access the next segment.
                         </li>
                     </ol>
                 </div>
@@ -257,7 +301,6 @@ export class InstructionsNameView extends React.Component {
                         className={"form-control"}
                         type={"text"}
                         onChange={(e) => this.props.handleStudentName(e)}
-                        required
                     />
                     <div className={"input-group-append"}>
                         <button
@@ -286,10 +329,7 @@ export class ReadingView extends React.Component {
             segment_num: 0,
             timer: null,
             scroll_top: 0,
-            scroll_data: [],
             segments_viewed: [0],
-            maximum_jump_allowed: 0,
-            jump_to_value: null,
             rereading: false,  // we alternate reading and rereading
             document: null,
             reading_data: null,
@@ -303,19 +343,14 @@ export class ReadingView extends React.Component {
                 is_document_question: false,
             },
             current_selection: '',
-            previousSegmentResponses: {},
         };
+        this.scroll_data = [];
         this.csrftoken = getCookie('csrftoken');
 
         this.segment_ref = React.createRef();
         this.allQuestionsAreCompleted = this.allQuestionsAreCompleted.bind(this);
-        this.prevSegment = this.prevSegment.bind(this);
         this.nextSegment = this.nextSegment.bind(this);
         this.toOverview = this.toOverview.bind(this);
-        this.handleJumpToFieldChange = this.handleJumpToFieldChange.bind(this);
-        this.handleJumpToButton = this.handleJumpToButton.bind(this);
-        this.handleJumpToFieldKeyDown = this.handleJumpToFieldKeyDown.bind(this);
-        this.userCanJump = this.userCanJump.bind(this);
         this.buildQuestionFields = this.buildQuestionFields.bind(this);
         this.startReading = this.startReading.bind(this);
         this.handleStudentName = this.handleStudentName.bind(this);
@@ -342,13 +377,7 @@ export class ReadingView extends React.Component {
             const response_json = await response.json();
             const document = response_json.document;
             const reading_data = response_json.reading_data;
-            const interval_timer = setInterval(() => this.recordScroll(), 100000000);
-            // CHANGE ME BACK!
-            // CHANGE ME BACK!
-            // CHANGE ME BACK!
-            // CHANGE ME BACK!
-            // CHANGE ME BACK!
-            // CHANGE ME BACK!
+            const interval_timer = setInterval(() => this.recordScroll(), 1000);
             this.setState({
                 document,
                 interval_timer,
@@ -361,21 +390,16 @@ export class ReadingView extends React.Component {
         }
     }
 
-    /**
-     * segment_data is an array of arrays. The index of each array
-     * corresponds to the segment number of the segments and is updated
-     * with new segment data every time the buttons are clicked
-     */
     async sendData(firstTime){
         if (!firstTime) {
             const time = this.state.timer.stop();
-            this.setState({scroll_data: []});
+            this.scroll_data = [];
             const url = '/api/add-response/';
             const reading_data = {
                 reading_data_id: this.state.reading_data.id,
                 segment_data: [{
                     id: this.state.document.segments[this.state.segment_num].id,
-                    scroll_data: JSON.stringify(this.state.scroll_data),
+                    scroll_data: JSON.stringify(this.scroll_data),
                     view_time: time,
                     is_rereading: this.state.rereading,
                     segment_responses: this.state.segmentResponseArray,
@@ -398,16 +422,13 @@ export class ReadingView extends React.Component {
     }
 
     recordScroll() {
-        const scroll_data = this.state.scroll_data;
-        scroll_data.push(this.state.scroll_top);
-        this.setState({scroll_data});
+        this.scroll_data.push(this.state.scroll_top);
     }
 
     handleScroll(e) {
         const scroll_top = e.target.scrollTop;
         this.setState({scroll_top});
     }
-
 
     handleResponseChange(is_document_question, question_id, event) {
         const update_dict = {
@@ -418,7 +439,6 @@ export class ReadingView extends React.Component {
         }
         this.updateResponseObject(is_document_question, question_id, update_dict);
     }
-
 
     getOrCreateResponseObjectAndArray(is_document_question, question_id) {
         let responseArray;
@@ -466,34 +486,57 @@ export class ReadingView extends React.Component {
     allQuestionsAreCompleted () {
         const doc = this.state.document;
         const current_segment = doc.segments[this.state.segment_num];
+
         const segment_questions = current_segment.questions;
         const document_questions = doc.document_questions;
+
         const document_responses = this.state.documentResponseArray;
         const segment_responses = this.state.segmentResponseArray;
 
-        if (document_responses.length === document_questions.length &&
-            segment_responses.length === segment_questions.length) {
-            for (let element of document_responses) {
-                if (element.response.trim() === ""){
+        if (document_responses.length === document_questions.length
+            && segment_responses.length === segment_questions.length) {
+            for (const el of document_responses) {
+                if (el.response.trim() === "") {
                     return false;
                 }
-            }
-            for (let element of segment_responses) {
-                if (element.response.trim() === ""){
-                    return false;
+                const dq = document_questions.find((dq) => dq.id === el.id);
+                if (dq.require_evidence) {
+                    if (el.evidence === undefined || el.evidence.length === 0) {
+                        return false;
+                    }
                 }
             }
-        }
-        else
-        {
+            for (const el of segment_responses) {
+                if (el.response.trim() === ""){
+                    return false;
+                }
+                const sq = segment_questions.find((sq) => sq.id === el.id);
+                if (sq.require_evidence) {
+                    if (el.evidence === undefined || el.evidence.length === 0) {
+                        return false;
+                    }
+                }
+            }
+        } else {
             return false;
         }
 
         return true;
     }
 
-    prevSegment () {
-        this.gotoSegment(this.state.segment_num - 1);
+    checkScrolledToBottom() {
+        const segment_dom_el = this.segment_ref.current;
+
+        const scroll_remaining = segment_dom_el.scrollHeight - segment_dom_el.scrollTop;
+
+        // leave a little room for floating point error and general fuzziness
+        const is_at_bottom = Math.abs(scroll_remaining - segment_dom_el.offsetHeight) < 5;
+
+        if (is_at_bottom) {
+            return true;
+        }
+
+        return false;
     }
 
     nextSegment () {
@@ -501,85 +544,51 @@ export class ReadingView extends React.Component {
             // If we're already rereading, move to the next segment
             this.gotoSegment(this.state.segment_num + 1);
         } else {
-            // Otherwise, move on to the rereading layout
+            // Otherwise, move on to the rereading layout, if user has scrolled to the bottom
+            if (!this.checkScrolledToBottom()) {
+                alert('Please read and scroll to the bottom of the segment before moving on.');
+                return;
+            }
             this.sendData(false);
             this.setState({rereading: true});
         }
     }
 
-    gotoSegment(segmentNum) {
-        this.sendData(false);
-
-        let segmentCount = this.state.document.segments.length;
-        let segment_num = this.state.segment_num;
-
+    validateData() {
+        // Check if all questions are completed if advancing
         if (!this.allQuestionsAreCompleted()) {
-            //Make sure the user can't jump past the current segment if they haven't completed
-            // all questions
-            this.setState({maximum_jump_allowed: segment_num});
-            if (segmentNum > segment_num) {
-                alert("Please respond to every question before moving on.");
-                return;
-            }
+            alert("Please respond to every question and add evidence where indicated " +
+                "before moving on.");
+            return false
         }
-
-        if (segmentNum >= 0 && segmentNum < segmentCount) {
-
-            const segments_viewed = this.state.segments_viewed.slice();
-            let rereading = segments_viewed.includes(segmentNum);
-            //The segment number is pushed regardless of whether or not the user has read the page
-            // before so that page reread order can also be determined.
-            segments_viewed.push(segmentNum);
-            // Store the current segment reading data into state
-            const previousSegmentResponses = this.state.previousSegmentResponses;
-            previousSegmentResponses[this.state.segment_num] = this.state.segmentResponseArray;
-            const segmentResponseArray = segmentNum in previousSegmentResponses ?
-                previousSegmentResponses[segmentNum] : [];
-
-            let maximum_jump_allowed = this.state.maximum_jump_allowed;
-            if (segmentNum > maximum_jump_allowed) {
-                maximum_jump_allowed = segmentNum;
-            }
-
-            this.setState({
-                rereading,
-                segments_viewed,
-                segment_num: segmentNum,
-                segmentQuestionNum: 0,
-                segmentResponseArray,
-                previousSegmentResponses,
-                maximum_jump_allowed
-            });
-            this.segment_ref.current.scrollTo(0,0);
-        }
+        return true;
     }
 
-    handleJumpToFieldKeyDown = (e) => {
-        if (e.key === 'Enter') {
-            this.handleJumpToButton(); //The enter key should be treated the same the jump button
-        }
-    };
+    gotoSegment(target_segment_num) {
+        if (!this.validateData()) { return; }
 
-    handleJumpToFieldChange = (e) => {
-        let numericValue = parseInt(e.target.value) - 1;
-        this.setState({jump_to_value: numericValue});
-    };
+        this.sendData(false);
+        this.segment_ref.current.scrollTo(0,0);
+        const segments_viewed = this.state.segments_viewed.slice();
 
-    userCanJump = () => {
-        let jump_to_value = this.state.jump_to_value;
-        let segment_num = this.state.segment_num;
-        return (!isNaN(parseFloat(jump_to_value)) && isFinite(jump_to_value)) &&
-            0 <= jump_to_value && jump_to_value <= this.state.maximum_jump_allowed &&
-            !(jump_to_value > segment_num && !this.allQuestionsAreCompleted());
-    };
+        // Store the current segment reading data into state
+        const segmentResponseArray = [];
 
-    handleJumpToButton = () => {
-        if (this.userCanJump()) {
-            this.gotoSegment(this.state.jump_to_value);
-        }
-    };
+        const rereading = segments_viewed.includes(target_segment_num);
+        segments_viewed.push(target_segment_num);
+
+        this.setState({
+            rereading,
+            segments_viewed,
+            segment_num: target_segment_num,
+            segmentQuestionNum: 0,
+            segmentResponseArray,
+        });
+    }
 
     toOverview () {
+        if(!this.validateData()) { return; }
+
         this.sendData(false);
         this.setState({current_view: VIEWS.OVERVIEW})
     }
@@ -690,14 +699,19 @@ export class ReadingView extends React.Component {
         const current_segment = doc.segments[this.state.segment_num];
         const segment_questions = current_segment.questions;
         const document_questions = doc.document_questions;
-        const overview_questions = doc.overview_questions;
 
         // Generate response fields for each of the questions
         const segment_response_fields = this.buildQuestionFields(segment_questions, false);
         const document_response_fields = this.buildQuestionFields(document_questions, true);
 
-        // Hardcoded roman numeral conversions for now.
-        const roman_numeral = { 1: "I", 2:"II", 3:"III", 4:"IV", 5:"V", 6:"VI", 7:"VII"};
+        // Hardcoded for now...
+        const roman_numeral_and_segment_date = {
+            1: "I - circa 1950s",
+            2: "II - circa 1960s",
+            3: "III - circa 1970s",
+            4: "IV - circa 1970s",
+            5: "V - circa 1980s",
+        };
 
         return (
             <div className="container background py-3">
@@ -710,9 +724,7 @@ export class ReadingView extends React.Component {
                 {this.state.current_view === VIEWS.OVERVIEW &&
                     <OverviewView
                         all_segments={doc.segments}
-                        document_questions={document_questions}
-                        overview_questions={overview_questions}
-                        buildQuestionFields={this.buildQuestionFields}
+                        reading_data={this.state.reading_data}
                     />
                 }
                 {this.state.current_view === VIEWS.READING &&
@@ -720,7 +732,9 @@ export class ReadingView extends React.Component {
                         <div className="row text-and-questions">
                             <div className="col-12">
                                 <h5 className="segment-num">
-                                    Segment {roman_numeral[this.state.segment_num + 1]}
+                                    Segment {
+                                        roman_numeral_and_segment_date[this.state.segment_num + 1]
+                                    }
                                 </h5>
                                 <hr/>
                             </div>
@@ -743,10 +757,6 @@ export class ReadingView extends React.Component {
                                     prevSegment={this.prevSegment}
                                     nextSegment={this.nextSegment}
                                     toOverview={this.toOverview}
-                                    handleJumpToFieldChange={this.handleJumpToFieldChange}
-                                    handleJumpToButton={this.handleJumpToButton}
-                                    handleJumpToFieldKeyDown={this.handleJumpToFieldKeyDown}
-                                    userCanJump={this.userCanJump}
                                 />
                             </div>
                         </div>

@@ -1,11 +1,12 @@
 $reading-font: Perpetua;
-$header-font: Arial;
+$header-font: Helvetica;
 
 /*
- * Hides the horizontal scroll bar
+ * Standardizes all fonts
  */
 * {
-    overflow-x: hidden;
+    //font-family: $header-font;
+
 }
 
 .author {

@@ -5,7 +5,12 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 """
 import statistics
 
-from .models import StudentReadingData, StudentSegmentData
+from .analysis_helpers import (
+    get_sentiments,
+    remove_outliers,
+)
+
+from .models import StudentReadingData, StudentSegmentData, SegmentQuestionResponse
 
 
 class RereadingAnalysis:
@@ -17,6 +22,7 @@ class RereadingAnalysis:
     def __init__(self):
         self.readings = StudentReadingData.objects.all()
         self.segments = StudentSegmentData.objects.all()
+        self.question_response = SegmentQuestionResponse.objects.all()
 
     def total_and_median_view_time(self):
         """
@@ -67,4 +73,34 @@ class RereadingAnalysis:
         # return length of set (represents unique number of students)
         return len(student_names)
 
+    def question_sentiment_analysis(self, question):
+        """
+        Uses database to create a list of sentiment scores for
+        :return:
+        """
+        sentiments = get_sentiments()
+        student_data = self.question_response
+        # question_text = 'In one word'
 
+        # Set up data for calculations
+        num_scores = 0
+        sentiment_sum = 0
+        score_list = list()
+
+        for response in student_data:
+
+            if question in response.question.text:
+                words = response.response.lower().split()
+
+                # Find the sentiment score for each word, and add it to our data
+                for word in words:
+                    # Ignore the word if it's not in the sentiment dictionary
+                    if word in sentiments:
+                        sentiment_sum += sentiments[word]
+                        num_scores += 1
+                        score_list.append(sentiments[word])
+
+        average = sentiment_sum / num_scores
+        standard_dev = statistics.stdev(score_list)
+
+        return average, standard_dev

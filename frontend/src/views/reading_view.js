@@ -393,7 +393,6 @@ export class ReadingView extends React.Component {
     async sendData(firstTime){
         if (!firstTime) {
             const time = this.state.timer.stop();
-            this.scroll_data = [];
             const url = '/api/add-response/';
             const reading_data = {
                 reading_data_id: this.state.reading_data.id,
@@ -415,6 +414,7 @@ export class ReadingView extends React.Component {
                 }
             });
             const new_reading_data = await response.json();
+            this.scroll_data = [];
             this.setState({reading_data: new_reading_data});
         }
         const timer = new TimeIt();

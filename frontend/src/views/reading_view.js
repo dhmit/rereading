@@ -263,10 +263,10 @@ export class InstructionsNameView extends React.Component {
     render() {
         return (
             <div className={"container"}>
-                <h1 className={"display-4 text-center mt-4"}>
+                <h1 className={"display-4 text-center mt-4 title"}>
                     Instructions
                 </h1>
-                <div className={"mb-5"}>
+                <div className={"mb-5 instructions"}>
                     <p id={"instructions-overview"}>
                         Do a close reading of the text by following these steps:
                         Read all five segments of the text one segment at a time, while answering
@@ -294,21 +294,21 @@ export class InstructionsNameView extends React.Component {
                             click the “Next” button in order to access the next segment.
                         </li>
                     </ol>
-                </div>
-                <h4>Enter your name or leave blank to remain anonymous</h4>
-                <div className={"input-group"}>
-                    <input
-                        className={"form-control"}
-                        type={"text"}
-                        onChange={(e) => this.props.handleStudentName(e)}
-                    />
-                    <div className={"input-group-append"}>
-                        <button
-                            className={"btn btn-outline-dark "}
-                            onClick={() => this.props.startReading()}
-                        >
-                            Start Reading
-                        </button>
+                    <h4 className="title">Enter your name or leave blank to remain anonymous</h4>
+                    <div className={"input-group"}>
+                        <input
+                            className={"form-control"}
+                            type={"text"}
+                            onChange={(e) => this.props.handleStudentName(e)}
+                        />
+                        <div className={"input-group-append"}>
+                            <button
+                                className={"btn start-btn "}
+                                onClick={() => this.props.startReading()}
+                            >
+                                Start Reading
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -714,9 +714,9 @@ export class ReadingView extends React.Component {
         };
 
         return (
-            <div className="container py-5">
+            <div className="container background py-3">
                 <div className="row mb-4"><div className="col">
-                    <h1 className="display-4">
+                    <h1 className="display-4 title">
                         {doc.title} <span className="author">by {doc.author}</span>
                     </h1>
                 </div></div>
@@ -729,7 +729,7 @@ export class ReadingView extends React.Component {
                 }
                 {this.state.current_view === VIEWS.READING &&
                     <React.Fragment>
-                        <div className="row">
+                        <div className="row text-and-questions">
                             <div className="col-12">
                                 <h5 className="segment-num">
                                     Segment {

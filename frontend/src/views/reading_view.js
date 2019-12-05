@@ -303,7 +303,7 @@ export class InstructionsNameView extends React.Component {
                         />
                         <div className={"input-group-append"}>
                             <button
-                                className={"btn btn-danger "}
+                                className={"btn start-btn "}
                                 onClick={() => this.props.startReading()}
                             >
                                 Start Reading

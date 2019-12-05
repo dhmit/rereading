@@ -143,8 +143,21 @@ body {
  *  Navbar styles
  */
 
+$btn-color: $forest_green;
+
 .next-btn {
     @extend .btn;
-    @extend .btn-outline-danger;
+    @extend .btn-outline-primary;
     @extend .float-right;
+    @include button-outline-variant($btn-color, $btn-color, lighten($btn-color,5%), $btn-color);
+    &:hover{
+        color: $white;
+    }
 }
+
+.start-btn {
+    @extend .btn;
+    @extend .btn-primary;
+    @include button-variant($btn-color, $btn-color, lighten($btn-color,5%), $btn-color);
+}
+

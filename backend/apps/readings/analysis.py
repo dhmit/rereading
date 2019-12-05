@@ -122,9 +122,18 @@ class RereadingAnalysis:
         words in that question
         :return the return type explained in the function description
         """
-        relevant_words = ["dead", "death", "miscarriage", "killed", "kill", "losing", "loss",
-                          "lost", "deceased", "died", "grief", "pregnancy", "pregnant"]
-        # get the list from sandy
+        relevant_words = ["stereotypes", "bias", "assumptions", "assume", "narrator", "memory",
+                          "forget", "Twyla", "Maggie", "Roberta", "black", "white", "prejudice",
+                          "mothers", "segregation", "hate", "hatred", "love", "love-hate",
+                          "remember", "children", "recall", "kick", "truth", "dance", "sick",
+                          "fade", "old", "Mary", "sandy", "race", "racial", "racism",
+                          "colorblind", "disabled", "marginalized", "poor", "rich", "wealthy",
+                          "middle-class", "working-class", "consumers", "shopping", "read",
+                          "misread", "reread", "reconsider", "confuse", "wrong", "mistaken",
+                          "regret", "mute", "voiceless", "women", "age", "bird", "time", "scene",
+                          "setting", "Hendrix ", "universal", "binary", "deconstruct",
+                          "question", "wrong", "right", "incorrect", "false", "claims", "true",
+                          "truth", "unknown", "ambiguous", "unclear"]
 
         question_count_map = {}
         for segment in self.questions:

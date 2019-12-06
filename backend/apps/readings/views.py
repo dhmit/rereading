@@ -6,12 +6,13 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import generics
 
-from .models import Student, Document, StudentReadingData
+from .models import Student, Document, StudentReadingData, Writeup
 from .analysis import RereadingAnalysis
 from .serializers import (
     AnalysisSerializer,
     ReadingSerializer,
     StudentReadingDataSerializer,
+    WriteupSerializer,
 )
 
 
@@ -74,3 +75,11 @@ class ListStudentReadingData(generics.ListAPIView):
     """
     queryset = StudentReadingData.objects.all()
     serializer_class = StudentReadingDataSerializer
+
+
+class WriteupListView(generics.ListAPIView):
+    """
+    Lists all of the student writeups
+    """
+    queryset = Writeup.objects.all()
+    serializer_class = WriteupSerializer

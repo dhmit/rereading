@@ -163,24 +163,6 @@ class RereadingAnalysis:
         flattened_data.sort()
         return flattened_data
 
-    def percent_using_relevant_words_by_question(self):
-        """
-        Return a list of tuples of the form (question, percent), where percent is
-        the percentage [0.00, 1.00] of students who used relevant words in that context and
-        question. This list is sorted by question first and then context.
-        :return: The return type explained in the function description.
-        """
-        total_student_count = self.get_number_of_unique_students()
-
-        question_count_list = self.students_using_relevant_words_by_question()
-
-        question_percent_list = question_count_list[:]
-        for i in range(len(question_percent_list)):
-            question_percent_list = question_percent_list[i] / total_student_count
-
-        return question_percent_list
-
-
     def run_compute_reread_counts(self):
         """
         Runs the analysis on the data loaded from the CSV file by looking at the reread count for

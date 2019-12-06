@@ -63,7 +63,7 @@ class RereadingAnalysis:
         for segments in self.segments:
             # Increment reread count in dictionary if the entry already in dictionary
             if (segments.segment.sequence in segment_dictionary and segments.view_time > 1.0 and
-                segments.is_rereading):
+                    segments.is_rereading):
                 segment_dictionary[segments.segment.sequence] += 1
             # Add entry to dictionary if entry does not already exist
             elif (segments.segment.sequence not in segment_dictionary and segments.view_time > 1.0
@@ -102,7 +102,7 @@ class RereadingAnalysis:
             mean_reading_time = reading_time / num_students
             mean_rereading_time = rereading_time / num_students
         else:
-            return 0.0 , 0.0
+            return 0.0, 0.0
         return round(mean_reading_time), round(mean_rereading_time)
 
     def get_number_of_unique_students(self):

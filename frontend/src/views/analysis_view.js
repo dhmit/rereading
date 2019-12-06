@@ -9,7 +9,7 @@ export class RereadCountTable extends React.Component {
     render() {
         return (
             <TabularAnalysis
-                title={"Reread Counts per Segment"}
+                title ={"Reread Counts per Segment"}
                 headers={[
                     "Segment Number",
                     "Mean Reread Count",
@@ -91,9 +91,6 @@ export class AnalysisView extends React.Component {
                     value={total_and_median_view_time[1]}
                     unit={"seconds"}
                 />
-                <RereadCountTable
-                    compute_reread_counts={compute_reread_counts}
-                />
                 <SingleValueAnalysis
                     header={"Mean reading view time"}
                     value={mean_reading_vs_rereading_time[0]}
@@ -110,6 +107,9 @@ export class AnalysisView extends React.Component {
                     value={get_number_of_unique_students}
                     unit={"students"}
 
+                />
+                <RereadCountTable
+                    compute_reread_counts={compute_reread_counts}
                 />
 
             </div>

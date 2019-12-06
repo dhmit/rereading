@@ -31,13 +31,31 @@ urlpatterns = [
     path('api/add-response/', readings_views.add_response),
     path('api/documents/<int:pk>/', readings_views.reading_view),
     path('api/analysis/', readings_views.analysis),
+    path('api/responses/', readings_views.ListStudentReadingData.as_view()),
+    path('api/writeups/', readings_views.WriteupListView.as_view()),
 
     # React views
-    path('', lambda request: redirect('project_overview')),  # redirect / to project overview
+    path('', lambda request: redirect('reading_view')),  # redirect / to project overview
     path('project_overview/',
-         render_react_view, {'component_name': 'ProjectView'},
+         render_react_view, {'component_name': 'ReadingRedux'},
          name='project_overview'),
-    path('reading/', render_react_view, {'component_name': 'ReadingView'}),
+    path('project_overview/sample/',
+         render_react_view, {'component_name': 'RereadingSample'}),
+    path('project_overview/visuals/',
+         render_react_view, {'component_name': 'RereadingVisuals'}),
+    path('project_overview/values/',
+         render_react_view, {'component_name': 'RereadingValues'}),
+    path('project_overview/quantitative/',
+         render_react_view, {'component_name': 'QuantitativeQuestions'}),
+    path('project_overview/sources/',
+         render_react_view, {'component_name': 'Sources'}),
+    path('project_overview/writeups/',
+         render_react_view, {'component_name': 'Writeups'}),
+
+    path('reading/',
+         render_react_view,
+         {'component_name': 'ReadingView'},
+         name='reading_view'),
     path('analysis/', render_react_view, {'component_name': 'AnalysisView'}),
 
 

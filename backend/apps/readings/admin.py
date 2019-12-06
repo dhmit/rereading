@@ -10,11 +10,11 @@ from .models import (
     Segment,
     SegmentQuestion,
     SegmentQuestionResponse,
-    SegmentContext,
     DocumentQuestion,
     DocumentQuestionResponse,
     StudentSegmentData,
     StudentReadingData,
+    Writeup,
 )
 
 
@@ -39,11 +39,6 @@ class DocumentAdmin(admin.ModelAdmin):
 ################################################################################
 # Segment admin view
 ################################################################################
-class SegmentContextInline(admin.TabularInline):
-    model = SegmentContext
-    extra = 1
-
-
 class SegmentQuestionInline(admin.TabularInline):
     model = SegmentQuestion
     extra = 1
@@ -51,7 +46,7 @@ class SegmentQuestionInline(admin.TabularInline):
 
 class SegmentAdmin(admin.ModelAdmin):
     model = Segment
-    inlines = [SegmentContextInline, SegmentQuestionInline]
+    inlines = [SegmentQuestionInline]
 
 
 ################################################################################
@@ -72,6 +67,7 @@ class DocumentQuestionAdmin(admin.ModelAdmin):
 
 class SegmentQuestionAdmin(admin.ModelAdmin):
     model = SegmentQuestionResponse
+    list_display = ('segment', 'sequence', 'text',)
     inlines = [SegmentQuestionResponseInline]
 
 
@@ -93,6 +89,7 @@ class StudentSegmentDataAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Student)
+admin.site.register(Writeup)
 admin.site.register(Document, DocumentAdmin)
 admin.site.register(Segment, SegmentAdmin)
 admin.site.register(StudentReadingData, StudentReadingDataAdmin)

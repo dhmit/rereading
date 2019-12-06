@@ -4,13 +4,15 @@ These classes describe one way of entering into the web site.
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import generics
 
-from .models import Student, Document, StudentReadingData
+from .models import Student, Document, StudentReadingData, Writeup
 from .analysis import RereadingAnalysis
 from .serializers import (
     AnalysisSerializer,
     ReadingSerializer,
     StudentReadingDataSerializer,
+    WriteupSerializer,
 )
 
 
@@ -45,9 +47,16 @@ def add_response(request):
     reading_data_id = data.get('reading_data_id')
     reading_data = StudentReadingData.objects.get(pk=reading_data_id)
     serializer = StudentReadingDataSerializer(instance=reading_data, data=data)
-    serializer.is_valid()
-    serializer.save()
-    return Response(serializer.data)
+    is_valid = serializer.is_valid()
+
+    if is_valid:
+        serializer.save()
+        return Response(serializer.data)
+    else:
+        # NOTE(ra) -- This is for debugging -- this really needs proper error handling
+        print(serializer.errors)
+        return Response({})
+
 
 
 @api_view(['GET'])
@@ -59,3 +68,18 @@ def analysis(request):
     serializer = AnalysisSerializer(instance=analysis_obj)
     return Response(serializer.data)
 
+
+class ListStudentReadingData(generics.ListAPIView):
+    """
+    Lists all of the reading data acquired through the project
+    """
+    queryset = StudentReadingData.objects.all()
+    serializer_class = StudentReadingDataSerializer
+
+
+class WriteupListView(generics.ListAPIView):
+    """
+    Lists all of the student writeups
+    """
+    queryset = Writeup.objects.all()
+    serializer_class = WriteupSerializer

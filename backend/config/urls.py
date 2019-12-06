@@ -49,6 +49,8 @@ urlpatterns = [
          render_react_view, {'component_name': 'QuantitativeQuestions'}),
     path('project_overview/sources/',
          render_react_view, {'component_name': 'Sources'}),
+    path('project_overview/writeups/',
+         render_react_view, {'component_name': 'Writeups'}),
 
     path('reading/',
          render_react_view,

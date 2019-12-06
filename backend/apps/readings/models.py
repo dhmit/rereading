@@ -243,6 +243,26 @@ class DocumentQuestionResponse(models.Model):
         return json.dumps(self.evidence)
 
 
+class Writeup(models.Model):
+    """
+    A model for storing the student writeups that will be displayed on the site.
+    """
+    title = models.CharField(
+        blank=True,
+        max_length=255,
+    )
+
+    author = models.CharField(
+        blank=True,
+        max_length=255,
+    )
+
+    text = models.TextField(
+        blank=True,
+        max_length=255,
+    )
+
+
 ################################################################################
 # PROTOTYPING MODELS
 # The models below were in use for the summer prototype and initial development

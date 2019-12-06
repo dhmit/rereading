@@ -367,15 +367,14 @@ export class Writeups extends React.Component {
             }
         });
         const response_json = await response.json();
-        console.log(response_json);
         this.setState({
             writeups: response_json
         });
     }
 
-    render_one_writeup(writeup) {
+    render_one_writeup(writeup, i) {
         return (
-            <div className="card mb-4">
+            <div key={i} className="card mb-4">
                 <div className="card-header">
                     <h5>{writeup.title} by {writeup.author}</h5>
                 </div>
@@ -396,7 +395,7 @@ export class Writeups extends React.Component {
                             <h1>Student Writeups</h1>
                             {this.state.writeups &&
                                 this.state.writeups.map(
-                                    (writeup) => this.render_one_writeup(writeup)
+                                    (writeup, i) => this.render_one_writeup(writeup, i)
                                 )
                             }
                         </div>

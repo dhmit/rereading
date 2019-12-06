@@ -2,6 +2,58 @@ import React from "react";
 import {SingleValueAnalysis} from "../prototype/analysis_view";
 // import PropTypes from 'prop-types';
 
+export function formatTime(timeInSeconds, secondsRoundDigits = undefined) {
+    /*
+        Returns a string in the format "x hours y minutes z seconds".
+        Any quantities equal to zero will not be returned.
+        If secondsRoundDigit is set, the seconds value will be rounded to that decimal place.
+     */
+    const SECONDS_PER_MINUTE = 60;
+    const SECONDS_PER_HOUR = 60 * SECONDS_PER_MINUTE;
+    let remainingTime = timeInSeconds;
+
+    let hours = Math.floor(remainingTime / SECONDS_PER_HOUR);
+    remainingTime %= SECONDS_PER_HOUR;
+    let minutes = Math.floor(remainingTime / SECONDS_PER_MINUTE);
+    remainingTime %= SECONDS_PER_MINUTE;
+    let seconds = remainingTime;
+
+    let hoursFormat = formatPluralUnits(hours, "hour");
+    let minutesFormat = formatPluralUnits(minutes, "minute");
+    let secondsFormat = formatPluralUnits(seconds, "second", secondsRoundDigits);
+
+    let finalFormat = "";
+    for (let str of [hoursFormat, minutesFormat, secondsFormat]) {
+        if (str !== "") {
+            finalFormat += str + " ";
+        }
+    }
+
+    return finalFormat.trim();
+}
+
+function formatPluralUnits(value, singularUnit, roundDigits = undefined) {
+    /*
+    Formats and rounds units that can be singular or plural.
+    A value of zero will return an empty string.
+     */
+    let roundedValue;
+    if (roundDigits !== undefined) {
+        roundedValue = value.toFixed(roundDigits);
+    } else {
+        roundedValue = value;
+    }
+
+    if (roundedValue === 0) {
+        return "";
+    }
+
+    let formattedString = `${value.toFixed(roundedValue)} ${singularUnit}`;
+    if (value !== 1) {
+        formattedString += "s";
+    }
+    return formattedString;
+}
 
 export class AnalysisView extends React.Component {
     constructor(props) {

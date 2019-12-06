@@ -4,8 +4,16 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
 import statistics
+from collections import Counter
 
-from .models import StudentReadingData, StudentSegmentData
+from .models import (
+    StudentReadingData,
+    StudentSegmentData,
+    SegmentQuestion,
+    DocumentQuestion,
+    DocumentQuestionResponse,
+    SegmentQuestionResponse,
+)
 
 
 class RereadingAnalysis:
@@ -69,6 +77,7 @@ class RereadingAnalysis:
                 reading_time += view_time
 
         num_students = len(self.readings)
+        self.most_common_response_by_question()
         # divide by total number of readings
         mean_reading_time = reading_time / num_students
         mean_rereading_time = rereading_time / num_students
@@ -90,4 +99,62 @@ class RereadingAnalysis:
             student_names.add(name)
         # return length of set (represents unique number of students)
         return len(student_names)
+
+    @staticmethod
+    def get_top_response_for_question(question):
+        """
+        Returns the most common response for the given question
+
+
+        :param question: Question object
+        :return: Tuple in the form (response, frequency)
+        """
+
+        # Keep track of frequency of each response
+        responses_frequency = Counter()
+
+        # Get all responses to the given question, based on whether its a doc or segment question
+        if isinstance(question, SegmentQuestion):
+            responses = SegmentQuestionResponse.objects.filter(question=question)
+        else:
+            responses = DocumentQuestionResponse.objects.filter(question=question)
+
+        # Iterate through and count all of the responses
+        for student_response in responses:
+            student_answer = student_response.response.lower()
+            responses_frequency[student_answer] += 1
+
+        # Find the most common response for the question
+        most_common_response = responses_frequency.most_common(1)[0]
+
+        return most_common_response
+
+    def most_common_response_by_question(self):
+        """
+        Returns a dictionary mapping all question texts to their most common responses and
+        frequencies
+
+        :return: Dict mapping question strings to a tuple of the form (response, frequency)
+        """
+
+        # Find the document and segment questions
+        doc_questions = DocumentQuestion.objects.all()
+        segment_questions = SegmentQuestion.objects.all()
+
+        # Initialize a dictionary to keep track of the top responses
+        top_responses = dict()
+
+        # Iterate through the questions to find the top response for each, and store it
+        for question in doc_questions:
+            top_response = self.get_top_response_for_question(question)
+            question_text = question.text
+            top_responses[question_text] = top_response
+
+        for question in segment_questions:
+            top_response = self.get_top_response_for_question(question)
+            question_text = question.text
+            top_responses[question_text] = top_response
+
+        return top_responses
+
 

@@ -55,7 +55,6 @@ class RereadingAnalysis:
         ret_tuple = (round(total_time), round(median_view_time))
         return ret_tuple
 
-    relevant_branch_by_question
     @staticmethod
     def relevant_words_by_question():
         """
@@ -70,6 +69,13 @@ class RereadingAnalysis:
         ]
 
         question_context_count_map = {}
+        for response in SegmentQuestionResponse.objects.all():
+            question = response.question.text
+            question_context_count_map[question] = question_context_count_map.get(question, 0) + 1
+            if description_has_relevant_words(response.response, relevant_words):
+                question_context_count_map[question] += 1
+        question_count_tup = list(question_context_count_map.items())
+        return question_count_tup
 
     def mean_reading_vs_rereading_time(self):
         """
@@ -111,12 +117,3 @@ class RereadingAnalysis:
             student_names.add(name)
         # return length of set (represents unique number of students)
         return len(student_names)
-    master
-
-        for response in SegmentQuestionResponse.objects.all():
-            question = response.question.text
-            question_context_count_map[question] = question_context_count_map.get(question, 0) + 1
-            if description_has_relevant_words(response.response, relevant_words):
-                question_context_count_map[question] += 1
-        question_count_tup = list(question_context_count_map.items())
-        return question_count_tup

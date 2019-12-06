@@ -550,6 +550,7 @@ export class ReadingView extends React.Component {
                 return;
             }
             this.sendData(false);
+            this.segment_ref.current.scrollTo(0,0);
             this.setState({rereading: true});
         }
     }

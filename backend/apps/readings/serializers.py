@@ -13,6 +13,7 @@ from .models import (
     SegmentQuestion, SegmentQuestionResponse,
     StudentReadingData, StudentSegmentData,
     DocumentQuestion, DocumentQuestionResponse,
+    Writeup,
 )
 
 
@@ -278,3 +279,9 @@ class AnalysisSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         """ We will not update data using this serializer """
+
+
+class WriteupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Writeup
+        fields = '__all__'

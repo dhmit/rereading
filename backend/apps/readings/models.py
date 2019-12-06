@@ -149,6 +149,9 @@ class StudentReadingData(models.Model):
     start_time = models.DateTimeField(auto_now_add=True)
     last_updated_time = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f'{self.student} - {self.segment_data.count()} segments completed'
+
 
 class StudentSegmentData(models.Model):
     """
@@ -179,6 +182,7 @@ class StudentSegmentData(models.Model):
         """
 
         return literal_eval(self.scroll_data)
+
 
 
 class SegmentQuestionResponse(models.Model):
@@ -241,6 +245,28 @@ class DocumentQuestionResponse(models.Model):
         """
 
         return json.dumps(self.evidence)
+
+
+class Writeup(models.Model):
+    """
+    A model for storing the student writeups that will be displayed on the site.
+    """
+    title = models.CharField(
+        blank=True,
+        max_length=255,
+    )
+
+    author = models.CharField(
+        blank=True,
+        max_length=255,
+    )
+
+    text = models.TextField(
+        blank=True,
+    )
+
+    def __str__(self):
+        return f'{self.title} by {self.author}'
 
 
 ################################################################################

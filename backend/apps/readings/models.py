@@ -263,7 +263,6 @@ class Writeup(models.Model):
 
     text = models.TextField(
         blank=True,
-        max_length=255,
     )
 
     def __str__(self):

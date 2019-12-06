@@ -98,8 +98,11 @@ class RereadingAnalysis:
 
         num_students = len(self.readings)
         # divide by total number of readings
-        mean_reading_time = reading_time / num_students
-        mean_rereading_time = rereading_time / num_students
+        if num_students != 0:
+            mean_reading_time = reading_time / num_students
+            mean_rereading_time = rereading_time / num_students
+        else:
+            return 0.0 , 0.0
         return round(mean_reading_time), round(mean_rereading_time)
 
     def get_number_of_unique_students(self):

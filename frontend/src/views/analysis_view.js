@@ -1,11 +1,11 @@
 import React from "react";
 import {SingleValueAnalysis} from "../prototype/analysis_view";
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
-export function formatTime(timeInSeconds, secondsRoundDigits = undefined) {
+export function formatTime(timeInSeconds, secondsRoundDigits) {
     /*
         Returns a string in the format "x hours y minutes z seconds".
-        Any quantities equal to zero will not be returned.
+        Any quantities equal to zero will not be included unless the total time is 0 seconds.
         If secondsRoundDigit is set, the seconds value will be rounded to that decimal place.
      */
     const SECONDS_PER_MINUTE = 60;
@@ -22,19 +22,25 @@ export function formatTime(timeInSeconds, secondsRoundDigits = undefined) {
     let minutesFormat = formatPluralUnits(minutes, "minute");
     let secondsFormat = formatPluralUnits(seconds, "second", secondsRoundDigits);
 
+    //Put the three units together
     let finalFormat = "";
     for (let str of [hoursFormat, minutesFormat, secondsFormat]) {
         if (str !== "") {
             finalFormat += str + " ";
         }
     }
+    finalFormat = finalFormat.trim();
 
-    return finalFormat.trim();
+    if (finalFormat === "") {
+        return "0 seconds";
+    }
+
+    return finalFormat;
 }
 
 function formatPluralUnits(value, singularUnit, roundDigits = undefined) {
     /*
-    Formats and rounds units that can be singular or plural.
+    Formats units that can be singular or plural.
     A value of zero will return an empty string.
      */
     let roundedValue;
@@ -48,11 +54,28 @@ function formatPluralUnits(value, singularUnit, roundDigits = undefined) {
         return "";
     }
 
-    let formattedString = `${value.toFixed(roundedValue)} ${singularUnit}`;
+    let formattedString = `${roundedValue} ${singularUnit}`;
     if (value !== 1) {
         formattedString += "s";
     }
     return formattedString;
+}
+
+export class TimeAnalysis extends React.Component {
+    render() {
+        return (
+            <SingleValueAnalysis
+                header={this.props.header}
+                value={formatTime(this.props.time_in_seconds, this.props.round_digits)}
+                unit=""
+            />
+        )
+    }
+}
+TimeAnalysis.propTypes = {
+    header: PropTypes.string,
+    time_in_seconds : PropTypes.number,
+    round_digits: PropTypes.number,
 }
 
 export class AnalysisView extends React.Component {
@@ -111,25 +134,21 @@ export class AnalysisView extends React.Component {
                     className={"text-center display-4 mb-4"}
                     id={"page-title"}
                 >Analysis of Student Responses</h1>
-                <SingleValueAnalysis
+                <TimeAnalysis
                     header={"Total view time"}
-                    value={total_and_median_view_time[0]}
-                    unit={"seconds"}
+                    time_in_seconds={total_and_median_view_time[0]}
                 />
-                <SingleValueAnalysis
+                <TimeAnalysis
                     header={"Median view time"}
-                    value={total_and_median_view_time[1]}
-                    unit={"seconds"}
+                    time_in_seconds={total_and_median_view_time[1]}
                 />
-                <SingleValueAnalysis
+                <TimeAnalysis
                     header={"Mean reading view time"}
-                    value={mean_reading_vs_rereading_time[0]}
-                    unit={"seconds"}
+                    time_in_seconds={mean_reading_vs_rereading_time[0]}
                 />
-                <SingleValueAnalysis
+                <TimeAnalysis
                     header={"Mean rereading view time"}
-                    value={mean_reading_vs_rereading_time[1]}
-                    unit={"seconds"}
+                    time_in_seconds={mean_reading_vs_rereading_time[1]}
                 />
                 <SingleValueAnalysis
                     header={"Number of Unique Students"}

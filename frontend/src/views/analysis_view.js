@@ -39,6 +39,7 @@ export class AnalysisView extends React.Component {
             total_and_median_view_time,
             mean_reading_vs_rereading_time,
             get_number_of_unique_students,
+            most_common_response_by_question,
         } = this.state.analysis;
         return (
             <div className={"container"}>
@@ -84,6 +85,11 @@ export class AnalysisView extends React.Component {
                     value={get_number_of_unique_students}
                     unit={"students"}
                 />
+                <div>
+                    {Object.keys(most_common_response_by_question).map(
+                        (el, i) => (<p key={i}>{most_common_response_by_question[el]}</p>)
+                    )}
+                </div>
             </div>
         );
     }

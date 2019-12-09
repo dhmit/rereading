@@ -95,9 +95,23 @@ class RereadingAnalysis:
         """
         This function shows a heat map for each segment. It will show how long in total was spent
         on different sections of the segment.
-        :return: a list of dictionaries which correspond to the view times of section of segments
+        :return: a dictionary of dictionaries which correspond to the view times of section of
+        segments
         """
-        heat_map = []
+        heat_map = {}
 
         for segment in self.segments:
-            print(segment)
+            segment_identifier = segment.reading_data.document.title + " " +\
+                                 str(segment.segment.sequence)
+            if segment_identifier not in heat_map:
+                heat_map[segment_identifier] = {"reading": {}, "rereading": {}}
+            for scroll_position in segment.get_parsed_scroll_data():
+                section_number = int(scroll_position) // 500
+                section_identifier = str(section_number * 500) + " — " +\
+                    str((section_number + 1) * 500)
+                is_rereading = "rereading" if segment.is_rereading else "reading"
+                if section_identifier not in heat_map[segment_identifier][is_rereading]:
+                    heat_map[segment_identifier][is_rereading][section_identifier] = 1
+                else:
+                    heat_map[segment_identifier][is_rereading][section_identifier] += 1
+        return heat_map

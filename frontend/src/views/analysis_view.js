@@ -1,6 +1,38 @@
 import React from "react";
 import {SingleValueAnalysis} from "../prototype/analysis_view";
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
+
+
+
+class ScrollDataAnalysis extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        const sequence_1 = this.props.scroll_data['1'];
+        const sequence_1_rereading = sequence_1.is_rereading;
+
+        const render_one_scroll = (scroll) => <td className="mr-3">{scroll}</td>;
+        return (
+            <div>
+                <table className="table">
+                    {sequence_1_rereading.map((user_scrolls, i) => {
+                        return (
+                            <tr key={i}>
+                                {user_scrolls.map((scroll) => render_one_scroll(scroll))}
+                            </tr>
+                        );
+                    })}
+                </table>
+            </div>
+        );
+    }
+}
+ScrollDataAnalysis.propTypes = {
+    scroll_data: PropTypes.object,
+};
+
 
 
 export class AnalysisView extends React.Component {
@@ -39,6 +71,7 @@ export class AnalysisView extends React.Component {
             total_and_median_view_time,
             mean_reading_vs_rereading_time,
             get_number_of_unique_students,
+            all_scroll_data,
         } = this.state.analysis;
         return (
             <div className={"container"}>
@@ -83,6 +116,9 @@ export class AnalysisView extends React.Component {
                     header={"Number of Unique Students"}
                     value={get_number_of_unique_students}
                     unit={"students"}
+                />
+                <ScrollDataAnalysis
+                    scroll_data={all_scroll_data}
                 />
             </div>
         );

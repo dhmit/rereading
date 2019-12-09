@@ -5,7 +5,7 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 """
 import statistics
 
-from .models import StudentReadingData, StudentSegmentData
+from .models import StudentReadingData, StudentSegmentData, Document
 
 
 class RereadingAnalysis:
@@ -90,4 +90,32 @@ class RereadingAnalysis:
             student_names.add(name)
         # return length of set (represents unique number of students)
         return len(student_names)
+
+    def all_scroll_data(self):
+        """
+        Get all of the scroll data, organized by segment
+        """
+
+        # Set up the containing dict
+        all_scrolls = {}
+        recit = Document.objects.get(pk=1)  # hard code Recitatif
+        for seg in recit.segments.all():
+            sequence = seg.sequence
+            if not all_scrolls.get(sequence):
+                all_scrolls[sequence] = {
+                    'is_rereading': [],
+                    'is_not_rereading': [],
+                }
+
+        # populate with data
+        for reading in self.readings:
+            for segment_data in reading.segment_data.all():
+                rereading_key = 'is_rereading' if segment_data.is_rereading else 'is_not_rereading'
+                scrolls = segment_data.get_parsed_scroll_data()
+                scrolls = [round(x) for x in scrolls]
+                sequence = segment_data.segment.sequence
+
+                all_scrolls[sequence][rereading_key].append(scrolls)
+
+        return all_scrolls
 

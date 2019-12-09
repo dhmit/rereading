@@ -41,7 +41,6 @@ export class ReadingRedux extends React.Component {
         return (
             <React.Fragment>
                 <Navigation_Bar />
-                {render_participate_btn()}
                 <div className="container">
                     <div className="row"><div className="col">
                         <h1>The Reading Redux</h1>
@@ -127,7 +126,6 @@ export class RereadingSample extends React.Component {
         return(
             <React.Fragment>
                 <Navigation_Bar />
-                {render_participate_btn()}
                 <div className="container">
                     <div className="row"><div className="col">
                         <h1>The Reading Sample: Recitatif</h1>
@@ -197,7 +195,6 @@ export class RereadingVisuals extends React.Component {
         return(
             <React.Fragment>
                 <Navigation_Bar />
-                {render_participate_btn()}
                 <div className="container">
                     <div className="row">
                         <div className="col">
@@ -221,7 +218,6 @@ export class RereadingValues extends React.Component {
         return(
             <React.Fragment>
                 <Navigation_Bar />
-                {render_participate_btn()}
                 <div className="container">
                     <div className="row">
                         <div className="col">
@@ -240,7 +236,6 @@ export class QuantitativeQuestions extends React.Component {
         return (
             <React.Fragment>
                 <Navigation_Bar />
-                {render_participate_btn()}
                 <div className="container">
                     <div className="row">
                         <div className="col">
@@ -304,7 +299,6 @@ export class Sources extends React.Component {
         return (
             <React.Fragment>
                 <Navigation_Bar />
-                {render_participate_btn()}
                 <div className="container">
                     <div className="row">
                         <div className="column">
@@ -355,6 +349,69 @@ export class Sources extends React.Component {
     }
 }
 
+
+export class Writeups extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            writeups: null,
+        };
+    }
+
+    async componentDidMount() {
+        const url = '/api/writeups/';
+        const response = await fetch(url, {
+            headers: {
+                'Content-type': 'application/json',
+                'X-CSRFToken': this.csrftoken,
+            }
+        });
+        const response_json = await response.json();
+        this.setState({
+            writeups: response_json
+        });
+    }
+
+    render_one_writeup(writeup, i) {
+        const create_markup = (tagged_text) => {
+            return {
+                __html: tagged_text
+            };
+        };
+
+        return (
+            <div key={i} className="card mb-4">
+                <div className="card-header">
+                    <h5>{writeup.title} {writeup.title !== '' && 'by'} {writeup.author}</h5>
+                </div>
+                <div className="card-body" dangerouslySetInnerHTML={create_markup(writeup.text)} />
+            </div>
+        );
+    }
+
+    render() {
+        return(
+            <React.Fragment>
+                <Navigation_Bar />
+                <div className="container">
+                    <div className="row">
+                        <div className="col">
+                            <h1>Student Writeups</h1>
+                            {this.state.writeups &&
+                                this.state.writeups.map(
+                                    (writeup, i) => this.render_one_writeup(writeup, i)
+                                )
+                            }
+                        </div>
+                    </div>
+                </div>
+            </React.Fragment>
+        );
+    }
+}
+
+/*
+
 function render_participate_btn() {
     return (
         <div className="row mt-4"><div className="col text-center">
@@ -366,3 +423,5 @@ function render_participate_btn() {
         </div></div>
     );
 }
+
+ */

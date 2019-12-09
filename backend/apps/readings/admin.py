@@ -14,6 +14,7 @@ from .models import (
     DocumentQuestionResponse,
     StudentSegmentData,
     StudentReadingData,
+    Writeup,
 )
 
 
@@ -88,6 +89,7 @@ class StudentSegmentDataAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Student)
+admin.site.register(Writeup)
 admin.site.register(Document, DocumentAdmin)
 admin.site.register(Segment, SegmentAdmin)
 admin.site.register(StudentReadingData, StudentReadingDataAdmin)

@@ -106,62 +106,62 @@ export class AnalysisView extends React.Component {
     render() {
         if (this.state.analysis !== null) {
 
-        const { // object destructuring:
-            total_and_median_view_time,
-            mean_reading_vs_rereading_time,
-            get_number_of_unique_students,
-            mean_reading_time_for_a_segment,
-        } = this.state.analysis;
-        return (
-            <div className={"container"}>
-                <nav className={"navbar navbar-expand-lg"}>
-                    <div className={"navbar-nav"}>
-                        <a
-                            className={"nav-link nav-item text-dark font-weight-bold"}
-                            href={"#"}
-                        >Overview</a>
-                        <a
-                            className={"nav-link nav-item text-dark font-weight-bold"}
-                            href={"#"}
-                        >Analysis</a>
-                    </div>
-                </nav>
+            const { // object destructuring:
+                total_and_median_view_time,
+                mean_reading_vs_rereading_time,
+                get_number_of_unique_students,
+                mean_reading_time_for_a_segment,
+            } = this.state.analysis;
+            return (
+                <div className={"container"}>
+                    <nav className={"navbar navbar-expand-lg"}>
+                        <div className={"navbar-nav"}>
+                            <a
+                                className={"nav-link nav-item text-dark font-weight-bold"}
+                                href={"#"}
+                            >Overview</a>
+                            <a
+                                className={"nav-link nav-item text-dark font-weight-bold"}
+                                href={"#"}
+                            >Analysis</a>
+                        </div>
+                    </nav>
 
-                <h1
-                    className={"text-center display-4 mb-4"}
-                    id={"page-title"}
-                >Analysis of Student Responses</h1>
-                <TimeAnalysis
-                    header={"Total view time"}
-                    time_in_seconds={total_and_median_view_time[0]}
-                />
-                <TimeAnalysis
-                    header={"Median view time"}
-                    time_in_seconds={total_and_median_view_time[1]}
-                />
-                <TimeAnalysis
-                    header={"Mean reading view time"}
-                    time_in_seconds={mean_reading_vs_rereading_time[0]}
-                />
-                <TimeAnalysis
-                    header={"Mean rereading view time"}
-                    time_in_seconds={mean_reading_vs_rereading_time[1]}
-                />
-                <TimeAnalysis
-                    header={"Mean reading time for each segment"}
-                    time_in_seconds={mean_reading_time_for_a_segment}
-                />
-                <SingleValueAnalysis
-                    header={"Number of Unique Students"}
-                    value={get_number_of_unique_students}
-                    unit={"students"}
-                />
-            </div>
-        );
+                    <h1
+                        className={"text-center display-4 mb-4"}
+                        id={"page-title"}
+                    >Analysis of Student Responses</h1>
+                    <TimeAnalysis
+                        header={"Total view time"}
+                        time_in_seconds={total_and_median_view_time[0]}
+                    />
+                    <TimeAnalysis
+                        header={"Median view time"}
+                        time_in_seconds={total_and_median_view_time[1]}
+                    />
+                    <TimeAnalysis
+                        header={"Mean reading view time"}
+                        time_in_seconds={mean_reading_vs_rereading_time[0]}
+                    />
+                    <TimeAnalysis
+                        header={"Mean rereading view time"}
+                        time_in_seconds={mean_reading_vs_rereading_time[1]}
+                    />
+                    <TimeAnalysis
+                        header={"Mean reading time for each segment"}
+                        time_in_seconds={mean_reading_time_for_a_segment}
+                    />
+                    <SingleValueAnalysis
+                        header={"Number of Unique Students"}
+                        value={get_number_of_unique_students}
+                        unit={"students"}
+                    />
+                </div>
+            );
         } else {
-          return (
-        <div>Loading!</div>
-        );
+            return (
+                <div>Loading!</div>
+            );
         }
     }
 }

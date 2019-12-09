@@ -1,5 +1,5 @@
 import React from "react";
-import {SingleValueAnalysis} from "../prototype/analysis_view";
+import {SingleValueAnalysis, TabularAnalysis} from "../prototype/analysis_view";
 import PropTypes from 'prop-types';
 
 export function formatTime(timeInSeconds, secondsRoundDigits) {
@@ -114,6 +114,7 @@ export class AnalysisView extends React.Component {
             total_and_median_view_time,
             mean_reading_vs_rereading_time,
             get_number_of_unique_students,
+            most_common_response_by_question,
         } = this.state.analysis;
         return (
             <div className={"container"}>
@@ -154,6 +155,11 @@ export class AnalysisView extends React.Component {
                     header={"Number of Unique Students"}
                     value={get_number_of_unique_students}
                     unit={"students"}
+                />
+                <TabularAnalysis
+                    title="Top Responses by Question"
+                    headers={["Question Text", "Response", "Frequency"]}
+                    data={most_common_response_by_question}
                 />
             </div>
         );

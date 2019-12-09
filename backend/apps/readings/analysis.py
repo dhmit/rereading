@@ -141,19 +141,25 @@ class RereadingAnalysis:
         doc_questions = DocumentQuestion.objects.all()
         segment_questions = SegmentQuestion.objects.all()
 
-        # Initialize a dictionary to keep track of the top responses
-        top_responses = dict()
+        # Initialize a list of lists to keep track of the top responses
+        top_responses = list()
 
         # Iterate through the questions to find the top response for each, and store it
         for question in doc_questions:
             top_response = self.get_top_response_for_question(question)
             question_text = question.text
-            top_responses[question_text] = top_response
+            response = top_response[0]
+            frequency = top_response[1]
+            data_list = [question_text, response, frequency]
+            top_responses.append(data_list)
 
         for question in segment_questions:
             top_response = self.get_top_response_for_question(question)
             question_text = question.text
-            top_responses[question_text] = top_response
+            response = top_response[0]
+            frequency = top_response[1]
+            data_list = [question_text, response, frequency]
+            top_responses.append(data_list)
 
         return top_responses
 

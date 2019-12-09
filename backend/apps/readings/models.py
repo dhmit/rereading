@@ -2,6 +2,7 @@
 Models for the Rereading app.
 """
 from ast import literal_eval
+import json
 
 from django.db import models
 
@@ -75,7 +76,8 @@ class Student(models.Model):
     name = models.TextField(default='')
 
     def __str__(self):
-        return f'{self.pk} - {self.name}'
+        name = self.name if self.name else 'Anonymous'
+        return f'{self.pk} - {name}'
 
 
 class Question(models.Model):
@@ -84,10 +86,9 @@ class Question(models.Model):
     FOR SUBCLASSING ONLY DO NOT USE ME DIRECTLY
     """
     text = models.TextField()
-    response_word_limit = models.IntegerField(default=0, null=True)
-
-    def __str__(self):
-        return self.text
+    require_evidence = models.BooleanField(default=False)
+    # We 1-index sequence bc it's for use by non-dev users in the admin tools
+    sequence = models.IntegerField(default=1)  # position of this Q amongst others
 
     class Meta:
         # as an abstract base class, Django won't create separate database tables for Question and
@@ -109,6 +110,9 @@ class DocumentQuestion(Question):
         related_name='questions'
     )
 
+    def __str__(self):
+        return self.text
+
 
 class SegmentQuestion(Question):
     """
@@ -120,18 +124,8 @@ class SegmentQuestion(Question):
         related_name='questions'
     )
 
-
-class SegmentContext(models.Model):
-    """
-    A model representing a given context provided to a document segment
-    """
-    text = models.TextField()
-    segment = models.ForeignKey(
-        Segment,
-        null=False,
-        on_delete=models.CASCADE,
-        related_name='contexts'
-    )
+    def __str__(self):
+        return f'Segment {self.segment.sequence} - {self.text}'
 
 
 class StudentReadingData(models.Model):
@@ -151,6 +145,25 @@ class StudentReadingData(models.Model):
         on_delete=models.CASCADE,
         related_name='reading_data'
     )
+
+    start_time = models.DateTimeField(auto_now_add=True)
+    last_updated_time = models.DateTimeField(auto_now=True)
+
+    def get_total_view_time(self):
+        """
+        Returns sum of view_times for all associated StudentSegmentData instances,
+        rounding to the nearest second
+        """
+        total_view_time = 0
+        for seg in self.segment_data.all():
+            total_view_time += seg.view_time
+        return round(total_view_time)
+
+    def __str__(self):
+        return (
+            f'{self.student} - {self.segment_data.count()} segments completed - '
+            + f'{self.get_total_view_time()} seconds'
+        )
 
 
 class StudentSegmentData(models.Model):
@@ -173,6 +186,7 @@ class StudentSegmentData(models.Model):
     scroll_data = models.TextField(default='[]')
     view_time = models.FloatField(default=0)
     is_rereading = models.BooleanField(default=None)
+    submission_time = models.DateTimeField(auto_now_add=True)
 
     def get_parsed_scroll_data(self):
         """
@@ -183,14 +197,10 @@ class StudentSegmentData(models.Model):
         return literal_eval(self.scroll_data)
 
 
+
 class SegmentQuestionResponse(models.Model):
     """
     Response to a SegmentQuestion
-    TODO: This might be a bit half-baked; it currently doesn't conveniently
-          reference the StudentSegmentData. I wanted each segment to be able
-          to have multiple Questions and Contexts, but that adds a bit of
-          complexity to this design... (RA 2019-10-24)
-
     """
     question = models.ForeignKey(
         SegmentQuestion,
@@ -203,6 +213,18 @@ class SegmentQuestionResponse(models.Model):
         related_name='segment_responses'
     )
     response = models.TextField()
+    submission_time = models.DateTimeField(auto_now=True)
+    evidence = models.TextField(default='[]')
+
+    def parse_evidence(self):
+        """
+        Returns the Python representation of the JSON string stored as the reader's
+        evidence for a response
+
+        :return: List object
+        """
+
+        return json.loads(self.evidence)
 
 
 class DocumentQuestionResponse(models.Model):
@@ -213,6 +235,8 @@ class DocumentQuestionResponse(models.Model):
     """
     response = models.TextField()
     response_segment = models.IntegerField(default=1)
+    submission_time = models.DateTimeField(auto_now=True)
+    evidence = models.TextField(default='[]')
 
     question = models.ForeignKey(
         DocumentQuestion,
@@ -224,6 +248,38 @@ class DocumentQuestionResponse(models.Model):
         on_delete=models.CASCADE,
         related_name='document_responses'
     )
+
+    def parse_evidence(self):
+        """
+        Returns the Python representation of the JSON string stored as the reader's
+        evidence for a response
+
+        :return: List object
+        """
+
+        return json.dumps(self.evidence)
+
+
+class Writeup(models.Model):
+    """
+    A model for storing the student writeups that will be displayed on the site.
+    """
+    title = models.CharField(
+        blank=True,
+        max_length=255,
+    )
+
+    author = models.CharField(
+        blank=True,
+        max_length=255,
+    )
+
+    text = models.TextField(
+        blank=True,
+    )
+
+    def __str__(self):
+        return f'{self.title} by {self.author}'
 
 
 ################################################################################

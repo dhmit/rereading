@@ -3,7 +3,6 @@ Miscellaneous utility functions useful throughout the system
 """
 from django.shortcuts import render
 
-
 def render_react_view(request, component_name=None):
     """
     A view function to render views that are entirely managed

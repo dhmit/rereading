@@ -91,3 +91,13 @@ class RereadingAnalysis:
         # return length of set (represents unique number of students)
         return len(student_names)
 
+    def get_all_heat_maps(self):
+        """
+        This function shows a heat map for each segment. It will show how long in total was spent
+        on different sections of the segment.
+        :return: a list of dictionaries which correspond to the view times of section of segments
+        """
+        heat_map = []
+
+        for segment in self.segments:
+            print(segment)

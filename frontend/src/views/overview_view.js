@@ -373,14 +373,18 @@ export class Writeups extends React.Component {
     }
 
     render_one_writeup(writeup, i) {
+        const create_markup = (tagged_text) => {
+            return {
+                __html: tagged_text
+            };
+        };
+
         return (
             <div key={i} className="card mb-4">
                 <div className="card-header">
-                    <h5>{writeup.title} by {writeup.author}</h5>
+                    <h5>{writeup.title} {writeup.title !== '' && 'by'} {writeup.author}</h5>
                 </div>
-                <div className="card-body">
-                    {writeup.text}
-                </div>
+                <div className="card-body" dangerouslySetInnerHTML={create_markup(writeup.text)} />
             </div>
         );
     }

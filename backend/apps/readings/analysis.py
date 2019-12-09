@@ -85,9 +85,9 @@ class RereadingAnalysis:
         for reading in self.readings:
             name = reading.student.name
             if not name:
-                student_names.add('Anonymous')  # count one per anonymous student
+                student_names.append('Anonymous')  # count one per anonymous student
             name = name.lower()
-            student_names.add(name)
+            student_names.append(name)
 
         return len(student_names)
 

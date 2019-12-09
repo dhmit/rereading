@@ -1,0 +1,39 @@
+<p>A lot of the time when students reread texts, they do so because they feel they are obligated to, as a result of a
+classroom assignment. As a result, these rereadings can become robotic perusals of the text, where the student
+is methodically scanning for an answer to the prompt the instructor assigned, instead of actively enjoying and being
+engaged with the text. I believe there are several actions that instructors can take to make rereading more productive
+and enjoyable for students.</p>
+
+<p>One of the most important steps that can be taken is ensuring that the text is a good candidate for rereading.
+Obviously, there are some texts that provide a greater benefit to the reader when they are reread compared to others.
+Some examples of these texts are stories with a deeper meaning hidden underneath a shallow meaning that is easy to
+understand. The deeper meaning would require a slow and deliberate reading to uncover. For many students, they may
+only see and understand the superficial meaning of a text the first time they read it, but then discover the deeper
+meaning after a close rereading. If instructors assign this type of text, then the multiple layers of meaning ensure
+that the students stay engaged with the text when they reread and are more likely to remain interested since they will
+be uncovering a new facet to the story.</p>
+
+<p>Another step to improve the experience of rereading is to add guiding questions throughout the process. I believe this
+is something our project did a great job including and integrating within the web application. These questions would
+prevent the students from becoming lost or unsure of what they should be looking for when they reread. It would
+provide a specific direction and purpose for the students’ rereading. This would also increase their understanding of
+the text, especially if the questions are well thought out, since the students would have specific key ideas they are
+actively seeking to understand as they read.</p>
+
+<p>Finally, breaking up the reading into smaller sections that are easier to tackle and understand is also important.
+When rereading, it can be daunting to face the entire text at once, especially if it is lengthy and complex. Again,
+this is a potential issue that I think our project addressed very well. The Rereading project breaks up the text into
+several shorter segments that are more approachable, with each segment containing questions that are specific to it,
+but also including questions pertaining to the entire text. These segments were not randomly chosen; thought was put
+into how the segments would be formed. The text that we worked with, Recitatif, is divided into five distinct sections,
+where each section has key noticeable differences. This division ensured that each segment shares a common setting and
+discussion. The different segments by themselves are coherent pieces of text, but when combined, the segments form
+the greater text as a whole. This step of breaking up the reading reduces the chance that a reader will become
+distracted or disinterested in each section, and will hopefully increase the benefit the reader gets out of
+rereading, since they will be more focused and engaged.</p>
+
+<p>Overall, I think these are a few of the key steps that can be taken to improve the rereading process for students.
+Our project did a great job of building in features that follow these steps. Most importantly, in order to ensure
+that rereading is happening for a student instead of to him, the rereading process must be enjoyable and not feel as
+if it is forced onto the student. This way, both the instructor and the student can gain a deeper appreciation and
+understanding of a text.</p>

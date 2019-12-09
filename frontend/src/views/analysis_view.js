@@ -1,5 +1,5 @@
 import React from "react";
-import {SingleValueAnalysis} from "../prototype/analysis_view";
+import {SentimentScores, SingleValueAnalysis} from "../prototype/analysis_view";
 // import PropTypes from 'prop-types';
 
 
@@ -39,6 +39,7 @@ export class AnalysisView extends React.Component {
             total_and_median_view_time,
             mean_reading_vs_rereading_time,
             get_number_of_unique_students,
+            question_sentiment_analysis,
         } = this.state.analysis;
         return (
             <div className={"container"}>
@@ -83,6 +84,12 @@ export class AnalysisView extends React.Component {
                     header={"Number of Unique Students"}
                     value={get_number_of_unique_students}
                     unit={"students"}
+                />
+                <SentimentScores
+                    // sentiment_average={question_sentiment_analysis[0]}
+                    // sentiment_std={question_sentiment_analysis[1]}
+                    sentiment_average={question_sentiment_analysis}
+                    sentiment_std={question_sentiment_analysis}
                 />
             </div>
         );

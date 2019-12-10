@@ -10,22 +10,53 @@ p, ul, ol {
 }
 
 li:not(:last-child) {
-    margin-bottom: 5px;
+    margin-bottom: 15px;
 }
 
 .container {
     margin-top: 25px;
 }
 
-h1 {
-    font-weight: 400;
+.page-heading {
     color: $brown;
 }
 
-h3 {
+h2 {
+    font-style: italic;
+    font-size: 14pt;
+    margin-top: 5px;
     color: $brown;
+    letter-spacing: 1px;
 }
 
 .body-text, em, .overview-li {
     font-family: $body-font;
+}
+
+.body-text:not(:first-child) {
+    margin-top: 25px;
+}
+
+.body-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.navbar-nav {
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+.nav-item {
+    margin-right: 25px;
+}
+
+.blockquote {
+    margin-top: 10px;
+}
+
+.blockquote-footer {
+    text-align: right;
 }

@@ -89,18 +89,34 @@ const scroll_range_sort = (a, b) => {
 export class HeatMapAnalysis extends React.Component {
     constructor(props) {
         super(props);
+        this.documents = [];
+        const all_segments = Object.keys(this.props.data);
+        for (let i = 0; i < all_segments.length; i++) {
+            const document_title = all_segments[i].split(" ")[0];
+            if (!this.documents.includes(document_title)) {
+                this.documents.push(document_title);
+            }
+        }
         this.state = {
+            current_document: this.documents[0],
             segment_num: 1,
         };
         this.handleSegmentChange = this.handleSegmentChange.bind(this);
+        this.handleDocumentChange = this.handleDocumentChange.bind(this);
     }
 
     handleSegmentChange(event) {
         this.setState({segment_num: event.target.value});
     }
 
+    handleDocumentChange(event) {
+        this.setState({current_document: event.target.value});
+    }
+
     render() {
-        const current_segment_data = this.props.data["Recitatif " + this.state.segment_num];
+        const current_segment_data = this.props.data[this.state.current_document + " " +
+        this.state.segment_num];
+
         let max_ranges = current_segment_data["reading"];
         if (Object.keys(current_segment_data["reading"]).length <
             Object.keys(current_segment_data["rereading"]).length) {
@@ -108,12 +124,29 @@ export class HeatMapAnalysis extends React.Component {
         }
         const scroll_ranges = Object.keys(max_ranges);
         scroll_ranges.sort(scroll_range_sort);
+
         const num_segments = Object.keys(this.props.data).length;
         let range = n => Array.from(Array(n).keys());
         let indices = range(num_segments+1).slice(1);
+        
         return (
             <div>
-                <h3 className={"mt-4"}> Heat Map for Recitatif</h3>
+                <h3 className={"mt-4"}>
+                    Heat Map for &nbsp;
+                    <select
+                        value={this.state.current_document}
+                        className={"segment-selector"}
+                        onChange={(e) => this.handleDocumentChange(e)}
+                    >
+                        {this.documents.map((k, entry) => {
+                            return (
+                                <option key={k} value={this.documents[entry]}>
+                                    {this.documents[entry]}
+                                </option>
+                            )
+                        })}
+                    </select>
+                </h3>
                 Segment Number: &nbsp;
                 <select
                     value={this.state.segment_num}

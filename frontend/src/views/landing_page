@@ -1,0 +1,29 @@
+import React from "react";
+import PropTypes from "prop-types";
+
+export class LandingPageView extends React.Component {
+    render() {
+        return (
+            <div className={"input-group-append"}>
+                <button
+                    className={"btn start-btn "}
+                    onClick={() => this.props.startReading()}
+                >
+                    Project Overview
+                </button>
+            </div>
+            <div className={"input-group-append"}>
+                <button
+                    className={"btn start-btn "}
+                    onClick={() => this.props.startReading()}
+                >
+                   Start Experiment
+                </button>
+            </div>
+        )
+    }
+}
+InstructionsNameView.propTypes = {
+    handleStudentName: PropTypes.func,
+    startReading: PropTypes.func,
+};

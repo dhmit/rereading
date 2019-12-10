@@ -1,5 +1,6 @@
 import React from "react";
 import {SingleValueAnalysis, TabularAnalysis} from "../prototype/analysis_view";
+import {Segment} from "./reading_view";
 import PropTypes from 'prop-types';
 
 export function formatTime(timeInSeconds, secondsRoundDigits) {
@@ -195,6 +196,12 @@ HeatMapAnalysis.propTypes = {
     data: PropTypes.object,
 };
 
+class HeatMapSegment extends Segment {
+    constructor(props){
+        super(props);
+    }
+}
+
 export class AnalysisView extends React.Component {
     constructor(props) {
         super(props);
@@ -212,8 +219,13 @@ export class AnalysisView extends React.Component {
     async componentDidMount() {
         try {
             const response = await fetch('/api/analysis/');
+            // TODO: We need to fetch the document in order for it to work in the Segment component
+            const response2 = await fetch('/api/documents/1/');
             const analysis = await response.json();
-            this.setState({analysis});
+            const document_response = await response2.json();
+            const document = document_response.document;
+            this.setState({analysis, document});
+            console.log(document)
         } catch (e) {
             // For now, just log errors to the console.
             console.log(e);
@@ -276,6 +288,9 @@ export class AnalysisView extends React.Component {
                 />
                 <HeatMapAnalysis
                     data = {get_all_heat_maps}
+                />
+                <HeatMapSegment
+
                 />
                 <TabularAnalysis
                     title="All Student Responses"

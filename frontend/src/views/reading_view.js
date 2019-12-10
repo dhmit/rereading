@@ -13,7 +13,7 @@ const VIEWS = {
 /*
  * Represents the actual Segment window
  */
-class Segment extends React.Component {
+export class Segment extends React.Component {
     constructor(props) {
         super(props);
     }

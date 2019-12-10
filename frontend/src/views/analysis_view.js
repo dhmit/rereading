@@ -159,7 +159,7 @@ export class AnalysisView extends React.Component {
                 />
                 <TabularAnalysis
                     title="Top Words by Question"
-                    headers={["Segment Number", "Question Number", "Question Text", "Words"]}
+                    headers={["Segment Number", "Question Number", "Question Text", "Top Words"]}
                     data={most_common_words_by_question}
                 />
                 <TabularAnalysis

@@ -128,7 +128,7 @@ export class HeatMapAnalysis extends React.Component {
         const num_segments = Object.keys(this.props.data).length;
         let range = n => Array.from(Array(n).keys());
         let indices = range(num_segments+1).slice(1);
-        
+
         return (
             <div>
                 <h3 className={"mt-4"}>
@@ -161,7 +161,7 @@ export class HeatMapAnalysis extends React.Component {
                         )
                     })}
                 </select>
-                <table className={"table table-bordered"}>
+                <table className={"table analysis-table"}>
                     <tbody>
                         <tr>
                             <th>Scroll Position</th>

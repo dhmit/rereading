@@ -41,7 +41,7 @@ export class TabularAnalysis extends React.Component{
         return(
             <div>
                 <h3 className={"mt-4"}> {this.props.title} </h3>
-                <table className={"table table-bordered"}>
+                <table className={"table analysis-table"}>
                     <tbody>
                         <tr>
                             {/* Auto generate the headers */}

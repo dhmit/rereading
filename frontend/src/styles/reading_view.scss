@@ -165,3 +165,10 @@ $btn-color: $forest_green;
     @include button-variant($btn-color, $btn-color, lighten($btn-color,5%), $btn-color);
 }
 
+.analysis-table,
+.analysis-table th,
+.analysis-table td,
+.analysis-table tr {
+    border: 1px solid #000;
+}
+

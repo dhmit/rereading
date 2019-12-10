@@ -1,7 +1,10 @@
 import React from "react";
-import {SingleValueAnalysis} from "../prototype/analysis_view";
-import {TabularAnalysis} from "../prototype/analysis_view";
-import PropTypes from "prop-types";
+import {
+    SingleValueAnalysis,
+    RelevantWordPercentages,
+    TabularAnalysis,
+} from "../prototype/analysis_view";
+import PropTypes from 'prop-types';
 
 export class RereadCountTable extends React.Component {
     render() {
@@ -39,13 +42,6 @@ export class RelevantWordsByQuestions extends React.Component {
 RelevantWordsByQuestions.propTypes = {
     relevant_words_by_question: PropTypes.array,
 }
-import {
-    SingleValueAnalysis,
-    RelevantWordPercentages,
-    SingleValueAnalysis,
-    TabularAnalysis,
-} from "../prototype/analysis_view";
-import PropTypes from 'prop-types';
 
 export function formatTime(timeInSeconds, secondsRoundDigits) {
     /*
@@ -277,7 +273,7 @@ export class AnalysisView extends React.Component {
             mean_reading_vs_rereading_time,
             get_number_of_unique_students,
             relevant_words_by_question,
-            percent_using_relevant_words_by_question
+            percent_using_relevant_words_by_question,
             get_all_heat_maps,
             all_responses,
         } = this.state.analysis;
@@ -323,8 +319,10 @@ export class AnalysisView extends React.Component {
                 />
                 <RelevantWordsByQuestions
                     relevant_words_by_question= {relevant_words_by_question}
+                />
                 <RelevantWordPercentages
                     entryData={percent_using_relevant_words_by_question}
+                />
                 <HeatMapAnalysis
                     data = {get_all_heat_maps}
                 />

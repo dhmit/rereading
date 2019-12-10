@@ -4,12 +4,6 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
 import statistics
-
-from .models import (
-    StudentReadingData,
-    StudentSegmentData,
-    SegmentQuestionResponse,
-)
 from .analysis_helpers import description_has_relevant_words
 from .models import StudentReadingData, StudentSegmentData, SegmentQuestionResponse
 
@@ -127,7 +121,6 @@ class RereadingAnalysis:
             student_names.append(name)
 
         return len(student_names)
-
 
     @staticmethod
     def description_has_relevant_words(story_meaning_description, relevant_words):

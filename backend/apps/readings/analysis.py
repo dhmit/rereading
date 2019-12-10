@@ -122,6 +122,7 @@ class RereadingAnalysis:
         # Iterate through and count all of the responses
         for student_response in responses:
             student_answer = student_response.response.lower()
+            # TODO: Split based on words
             responses_frequency[student_answer] += 1
 
         # Find the most common response for the question

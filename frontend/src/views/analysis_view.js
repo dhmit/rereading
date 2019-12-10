@@ -76,7 +76,91 @@ TimeAnalysis.propTypes = {
     header: PropTypes.string,
     time_in_seconds : PropTypes.number,
     round_digits: PropTypes.number,
+};
+
+const scroll_range_sort = (a, b) => {
+    const a_ranges = a.split(" — ");
+    const b_ranges = b.split(" — ");
+    const a_value = parseInt(a_ranges[1]);
+    const b_value = parseInt(b_ranges[1]);
+    return a_value - b_value;
+};
+
+export class HeatMapAnalysis extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            segment_num: 1,
+        };
+        this.handleSegmentChange = this.handleSegmentChange.bind(this);
+    }
+
+    handleSegmentChange(event) {
+        this.setState({segment_num: event.target.value});
+    }
+
+    render() {
+        const current_segment_data = this.props.data["Recitatif " + this.state.segment_num];
+        let max_ranges = current_segment_data["reading"];
+        if (Object.keys(current_segment_data["reading"]).length <
+            Object.keys(current_segment_data["rereading"]).length) {
+            max_ranges = current_segment_data["rereading"];
+        }
+        const scroll_ranges = Object.keys(max_ranges);
+        scroll_ranges.sort(scroll_range_sort);
+        const num_segments = Object.keys(this.props.data).length;
+        let range = n => Array.from(Array(n).keys());
+        let indices = range(num_segments+1).slice(1);
+        return (
+            <div>
+                <h3 className={"mt-4"}> Heat Map for Recitatif</h3>
+                Segment Number: &nbsp;
+                <select
+                    value={this.state.segment_num}
+                    className={"segment-selector"}
+                    onChange={(e) => this.handleSegmentChange(e)}
+                >
+                    {indices.map((k, entry) => {
+                        return (
+                            <option key={k} value={indices[entry]}>
+                                {indices[entry]}
+                            </option>
+                        )
+                    })}
+                </select>
+                <table className={"table table-bordered"}>
+                    <tbody>
+                        <tr>
+                            <th>Scroll Position</th>
+                            <th>Reading (seconds)</th>
+                            <th>Rereading (seconds)</th>
+                        </tr>
+                        {scroll_ranges.map( (k, range) => {
+                            range = scroll_ranges[range];
+                            return (
+                                <tr key={k}>
+                                    <th className={"p-3"}>
+                                        {range}
+                                    </th>
+                                    <td className={"p-3"}>
+                                        {current_segment_data["reading"][range]}
+                                    </td>
+                                    <td className={"p-3"}>
+                                        {current_segment_data["rereading"][range]}
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </div>
+        )
+    }
 }
+
+HeatMapAnalysis.propTypes = {
+    data: PropTypes.object,
+};
 
 export class AnalysisView extends React.Component {
     constructor(props) {
@@ -114,6 +198,7 @@ export class AnalysisView extends React.Component {
             total_and_median_view_time,
             mean_reading_vs_rereading_time,
             get_number_of_unique_students,
+            get_all_heat_maps,
             all_responses,
         } = this.state.analysis;
         return (
@@ -155,6 +240,9 @@ export class AnalysisView extends React.Component {
                     header={"Number of Unique Students"}
                     value={get_number_of_unique_students}
                     unit={"students"}
+                />
+                <HeatMapAnalysis
+                    data = {get_all_heat_maps}
                 />
                 <TabularAnalysis
                     title="All Student Responses"

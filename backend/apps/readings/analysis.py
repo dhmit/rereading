@@ -106,6 +106,8 @@ class RereadingAnalysis:
             if segment_identifier not in heat_map:
                 heat_map[segment_identifier] = {"reading": {}, "rereading": {}}
             for scroll_position in segment.get_parsed_scroll_data():
+                if scroll_position < 0:
+                    continue
                 section_number = int(scroll_position) // 500
                 section_identifier = str(section_number * 500) + " — " +\
                     str((section_number + 1) * 500)
@@ -115,7 +117,7 @@ class RereadingAnalysis:
                 else:
                     heat_map[segment_identifier][is_rereading][section_identifier] += 1
         return heat_map
-        
+
     def all_responses(self):
         """
         Returns a list of all of the responses in the DB, in the form:

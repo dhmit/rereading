@@ -1,5 +1,10 @@
 import React from "react";
-import {SingleValueAnalysis, TabularAnalysis} from "../prototype/analysis_view";
+import {
+    SingleValueAnalysis,
+    RelevantWordPercentages,
+    SingleValueAnalysis,
+    TabularAnalysis,
+} from "../prototype/analysis_view";
 import PropTypes from 'prop-types';
 
 export function formatTime(timeInSeconds, secondsRoundDigits) {
@@ -231,6 +236,7 @@ export class AnalysisView extends React.Component {
             total_and_median_view_time,
             mean_reading_vs_rereading_time,
             get_number_of_unique_students,
+            percent_using_relevant_words_by_question
             get_all_heat_maps,
             all_responses,
         } = this.state.analysis;
@@ -274,6 +280,8 @@ export class AnalysisView extends React.Component {
                     value={get_number_of_unique_students}
                     unit={"students"}
                 />
+                <RelevantWordPercentages
+                    entryData={percent_using_relevant_words_by_question}
                 <HeatMapAnalysis
                     data = {get_all_heat_maps}
                 />
@@ -283,6 +291,7 @@ export class AnalysisView extends React.Component {
                     data={all_responses}
                 />
             </div>
+
         );
     }
 }

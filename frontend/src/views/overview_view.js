@@ -6,27 +6,27 @@ class Navigation_Bar extends React.Component {
             <nav className={"navbar navbar-expand-md"}>
                 <div className="navbar-nav row">
                     <a
-                        className={"nav-link nav-item text-dark font-weight-bold"}
+                        className={"nav-link nav-item text-dark"}
                         href={"/project_overview/"}
                     >Project Overview</a>
                     <a
-                        className={"nav-link nav-item text-dark font-weight-bold"}
+                        className={"nav-link nav-item text-dark"}
                         href={"/project_overview/sample/"}
                     >The Reading Sample</a>
                     <a
-                        className={"nav-link nav-item text-dark font-weight-bold"}
+                        className={"nav-link nav-item text-dark"}
                         href={"/project_overview/visuals/"}
                     >Rereading Visuals</a>
                     <a
-                        className={"nav-link nav-item text-dark font-weight-bold"}
+                        className={"nav-link nav-item text-dark"}
                         href={"/project_overview/values/"}
                     >Rereading Values</a>
                     <a
-                        className={"nav-link nav-item text-dark font-weight-bold"}
+                        className={"nav-link nav-item text-dark"}
                         href={"/project_overview/quantitative/"}
                     >Quantitative Questions</a>
                     <a
-                        className={"nav-link nav-item text-dark font-weight-bold"}
+                        className={"nav-link nav-item text-dark"}
                         href={"/project_overview/sources/"}
                     >Sources</a>
                 </div>
@@ -63,36 +63,51 @@ export class ReadingRedux extends React.Component {
                             changes. This Digital Humanities project wants to affirm this claim by
                             studying the effects of the practice of <em>re-reading</em> a work of
                             literature. The scope of the project includes, but is not limited to, an
-                            attempt to answer the following questions: If we can understand the
-                            outcomes of re-reading a text, then what might we be able to deduce
-                            about how formative a text really is and how people think differently,
-                            change their minds, or become entirely different people as time goes by?
+                            attempt to answer the following questions:
                             </p>
                             <ul>
-                                <li className="overview-li">
-                                What can we discover about how exactly a reader is reading
-                                    <em> differently</em> when we evaluate what that reader
-                                annotates differently upon rereading a text?
+                                <li>
+                                    <div className={"bullet-text"}>
+                                If we can understand the outcomes of re-reading a text, then what
+                                might we be able to deduce about how formative a text really is and
+                                how people think differently, change their minds, or become entirely
+                                different people as time goes by?
+                                    </div>
                                 </li>
-                                <li className="overview-li">
+                                <li>
+                                    <div className={"bullet-text"}>
+                                What can we discover about how exactly a reader is reading
+                                        <em> differently</em> when we evaluate what that reader
+                                annotates differently upon rereading a text?
+                                    </div>
+                                </li>
+                                <li>
+                                    <div className={"bullet-text"}>
                                 How many re-readings and over the course of how long a period of
                                 time does it take to generate different meanings of one text? Is
                                 there a way to direct or expedite that process of readers making new
                                 meanings?
+                                    </div>
                                 </li>
-                                <li className="overview-li">
+                                <li>
+                                    <div className={"bullet-text"}>
                                 What are the various factors that motivate people to reread texts in
                                 the first place?
+                                    </div>
                                 </li>
-                                <li className="overview-li">
+                                <li>
+                                    <div className={"bullet-text"}>
                                 What kinds of literary texts are especially conducive to answering
                                 this project’s questions?
+                                    </div>
                                 </li>
-                                <li className="overview-li">
+                                <li>
+                                    <div className={"bullet-text"}>
                                 When a reader’s understanding of the meaning of a text changes over
                                 time, how can we attribute this change to how the reader has also
                                 changed over time—whether with respect to age, mentality, political
                                 perspective, gender, etc.?
+                                    </div>
                                 </li>
                             </ul>
                             <p className="body-text">
@@ -100,12 +115,13 @@ export class ReadingRedux extends React.Component {
                             the nagging question in literacy-education circles about how to help
                             people transform into better readers can become less about trying to get
                             people to read <em>more</em> and perhaps more about trying to get
-                            people to read, again and again (and at different stages in their lives)
-                            , some of the texts already in their stock of texts to read. Indeed,
-                            while reproducibility is a scientific aspiration required to conduct
-                            scientific experiments, the kind of repetition with a difference that I
-                            hope to study here underscores not only how different the Humanities is
-                            from the Sciences but also how the Humanities <em> needs</em> to be
+                            people to read, again and again (and at different stages in their
+                            lives), some of the texts already in their stock of texts to read.
+                            Indeed, while reproducibility is a scientific aspiration required to
+                            conduct scientific experiments, the kind of repetition with a difference
+                            that I hope to study here underscores not only how different the
+                            Humanities is from the Sciences but also how the Humanities
+                                <em> need</em> to be
                             different from scientific protocols in order to make clear that
                             humanists value a changing human in an inevitably changing world. I
                             envision this project being useful to students interested in learning
@@ -147,37 +163,48 @@ export class RereadingSample extends React.Component {
                             project about re-rereading?
                         </h3>
                         <ul>
-                            <li className="overview-li">
+                            <li>
+                                <div className={"bullet-text"}>
                             After completing a first reading of the story, the revelation about the
                             narrative experiment encourages a rereading; it encourages readers to
                             do a double take, as it were.
+                                </div>
                             </li>
-                            <li className="overview-li">
+                            <li>
+                                <div className={"bullet-text"}>
                             The short length and episodic structure—neatly demarcated by five
                             clearly different settings (or time frames)—facilitate a rereading.
+                                </div>
                             </li>
-                            <li className="overview-li">
+                            <li>
+                                <div className={"bullet-text"}>
                             A story that effectively holds a mirror to our biases provides the
                             reader the opportunity to confront the workings and retrace the
                             trajectory of their reading self. The story encourages readers to ask:
                             How are the conclusions we jump to about characters a direct reflection
                             of how we read them—i.e., of how we placed them in a definite racial
                             category?
+                                </div>
                             </li>
-                            <li className="overview-li">
+                            <li>
+                                <div className={"bullet-text"}>
                             It is effectively a cautionary tale against speed reading and making
                             quick judgments.
+                                </div>
                             </li>
-                            <li className="overview-li">
+                            <li>
+                                <div className={"bullet-text"}>
                             Because “Sweetness” is not only a rival short story to some extent, but
                             also shares a similar theme with “Recitatif” (of fraught mother-daughter
                             relations), its existence as—more or less—a foil to “Recitatif” also
                             encourages a re-reading of “Recitatif.” In other words, its very
                             existence in her oeuvre can’t help but compel us to ask the question:
                             What, if anything, does this new short story have to do with Morrison’s
-                                <em> ur</em>-short story?
+                                    <em> ur</em>-short story?
+                                </div>
                             </li>
-                            <li className="overview-li">
+                            <li>
+                                <div className={"bullet-text"}>
                             As narrative time passes, the story’s two main characters, Roberta and
                             Twyla—one of whom is the narrator—forget important details about a third
                             main character, Maggie, as well as a childhood incident involving
@@ -185,6 +212,7 @@ export class RereadingSample extends React.Component {
                             Maggie’s story and of the story of “Recitatif” itself, which puts the
                             onus on the reader to be a more careful reader than they otherwise would
                             have needed to be.
+                                </div>
                             </li>
                         </ul>
                     </div></div>
@@ -225,7 +253,7 @@ export class RereadingValues extends React.Component {
                 <div className="container">
                     <div className="row">
                         <div className="col">
-                            <h1>Rereading Values</h1>
+                            <div className="display-4 page-heading">Rereading Values</div>
                             <h3>What are the numbers and statistics saying about rereading?</h3>
                         </div>
                     </div>
@@ -243,7 +271,7 @@ export class QuantitativeQuestions extends React.Component {
                 <div className="container">
                     <div className="row">
                         <div className="col">
-                            <h1>Quantitative Questions</h1>
+                            <div className="display-4 page-heading">Quantitative Questions</div>
                             <p>
                                 Since this story is an intentionally calculated attempt at crafting
                                 a very particular experience of reading, it prompts the question:
@@ -306,45 +334,57 @@ export class Sources extends React.Component {
                 <div className="container">
                     <div className="row">
                         <div className="column">
-                            <h1>Sources</h1>
-                            <ul>
-                                <li>
-                                    Gavin, Michael. “Vector Semantics, William Empson,
-                                    and the Study of Ambiguity,” <em>Critical Inquiry 44</em>,
-                                    Summer 2018.
-                                </li>
+                            <div className="display-4 page-heading">Sources</div>
+                            <div className="body-container">
+                                <ul>
+                                    <li>
+                                        <div className="bullet-text">
+                                        Gavin, Michael. “Vector Semantics, William Empson,
+                                        and the Study of Ambiguity,” <em>Critical Inquiry 44</em>,
+                                        Summer 2018.
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div className="bullet-text">
+                                        Morrison, Toni. “Recitatif.” <em>Confirmation: An Anthology
+                                        of African American Women</em>, edited by Amiri Baraka
+                                        (LeRoi Jones) and Amina Baraka. New York: Quill, 1983.
+                                        pp. 243-261.
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div className="bullet-text">
+                                        Morrison, Toni. <em>Remember: The Journey to School
+                                        Integration</em>. New York: Houghton Mifflin Company, 2004.
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <a href=
+                                            "https://www.newyorker.com/magazine/
+                                            2015/02/09/sweetness-2">
+                                            <div className="bullet-text">
+                                            Morrison, Toni. “Sweetness,” <em>The New Yorker</em>,
+                                            February 2, 2015.
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <div className="bullet-text">
+                                        Richard, I. A. “Introductory.” <em>Practical Criticism:
+                                        A Study of Literary Judgment</em>. San Diego, New York,
+                                        London: Harcourt Brace Jovanovich, 1962. pp. 3-16.
+                                        </div>
+                                    </li>
 
-                                <li>
-                                    Morrison, Toni. “Recitatif.” <em>Confirmation: An Anthology of
-                                    African American Women</em>, edited by Amiri Baraka
-                                    (LeRoi Jones) and Amina Baraka. New York: Quill, 1983.
-                                    pp. 243-261.
-                                </li>
-
-                                <li>
-                                    Morrison, Toni. <em>Remember: The Journey to School
-                                    Integration</em>. New York: Houghton Mifflin Company, 2004.
-                                </li>
-
-                                <li>
-                                    <a href=
-                                        "https://www.newyorker.com/magazine/2015/02/09/sweetness-2">
-                                        Morrison, Toni. “Sweetness,” <em>The New Yorker</em>,
-                                        February 2, 2015.
-                                    </a>
-                                </li>
-
-                                <li>
-                                    Richard, I. A. “Introductory.” <em>Practical Criticism:
-                                    A Study of Literary Judgment</em>. San Diego, New York,
-                                    London: Harcourt Brace Jovanovich, 1962. pp. 3-16.
-                                </li>
-
-                                <li>
-                                    Spacks, Patricia Meyer. <em>On Rereading</em>. Cambridge, Mass.:
-                                    Belknap Press of Harvard University Press, 2011.
-                                </li>
-                            </ul>
+                                    <li>
+                                        <div className="bullet-text">
+                                        Spacks, Patricia Meyer. <em>On Rereading</em>.
+                                        Cambridge, Mass.: Belknap Press of Harvard University Press,
+                                        2011.
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>

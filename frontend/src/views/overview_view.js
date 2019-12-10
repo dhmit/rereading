@@ -3,8 +3,8 @@ import React from "react";
 class Navigation_Bar extends React.Component {
     render() {
         return (
-            <nav className={"navbar navbar-expand-md bg-light"}>
-                <div className={"navbar-nav"}>
+            <nav className={"navbar navbar-expand-md"}>
+                <div className="navbar-nav row">
                     <a
                         className={"nav-link nav-item text-dark font-weight-bold"}
                         href={"/project_overview/"}
@@ -43,77 +43,80 @@ export class ReadingRedux extends React.Component {
                 <Navigation_Bar />
                 <div className="container">
                     <div className="row"><div className="col">
-                        <h1>The Reading Redux</h1>
-                        <h3>The Values of Rereading</h3>
-                        <p>
-                        In literary studies we have a word to describe a novel that traces the
-                        psychological and moral growth of its protagonist. The word is <em>
-                        bildungsroman.</em> But I think it is at once strange and unfortunate
-                        that we have no such word to describe a category of research or writing that
-                        traces the development of a real-life reader of a novel. This glaring
-                        lacuna might be a consequence of the fact that we just do not have that
-                        kind of data. That is, we do not know enough about if, how, or how much a
-                        reader evolves via each encounter with a text. In a time when it seems that
-                        bigots are getting bolder and louder all while basically insisting that
-                        they are surfeited with learning new things, which could actually help make
-                        them more tolerant (and tolerable) people, it is perhaps consoling to
-                        remember that human beings are in fact changeable. Reading is essential to
-                        galvanizing those human changes. This Digital Humanities project wants to
-                        affirm this claim by studying the effects of the practice of <em>
-                        re-reading</em> a work of literature. The scope of the project includes,
-                        but is not limited to, an attempt to answer the following questions: If we
-                        can understand the outcomes of re-reading a text, then what might we be
-                        able to deduce about how formative a text really is and how people think
-                        differently, change their minds, or become entirely different people as
-                        time goes by?
-                        </p>
-                        <ul>
-                            <li>
-                            What can we discover about how exactly a reader is reading
-                                <em> differently</em> when we evaluate what that reader annotates
-                            differently
-                            upon rereading a text?
-                            </li>
-                            <li>
-                            How many re-readings and over the course of how long a period of time
-                            does it take to generate different meanings of one text? Is there a way
-                            to direct or expedite that process of readers making new meanings?
-                            </li>
-                            <li>
-                            What are the various factors that motivate people to reread texts in the
-                            first place?
-                            </li>
-                            <li>
-                            What kinds of literary texts are especially conducive to answering this
-                            project’s questions?
-                            </li>
-                            <li>
-                            When a reader’s understanding of the meaning of a text changes over
-                            time, how can we attribute this change to how the reader has also
-                            changed over time—whether with respect to age, mentality, political
-                            perspective, gender, etc.?
-                            </li>
-                        </ul>
-                        <p>
-                        At least one positive consequence of this project I anticipate is that the
-                        nagging question in literacy-education circles about how to help people
-                        transform into better readers can become less about trying to get people to
-                        read <em> more</em> and perhaps more about trying to get people to read,
-                        again and again (and at different stages in their lives), some of the texts
-                        already in their stock of texts to read. Indeed, while reproducibility is a
-                        scientific aspiration required to conduct scientific experiments, the kind
-                        of repetition with a difference that I hope to study here underscores not
-                        only how different the Humanities is from the Sciences but also how the
-                        Humanities <em> needs</em> to be different from scientific protocols in
-                        order to make clear that humanists value a changing human in an inevitably
-                        changing world. I envision this project being useful to students interested
-                        in learning how to appreciate the value of rereading books; to instructors
-                        who want and need to make the texts that they re-teach, year in and year
-                        out, “come alive” not only for their students but also for themselves; to
-                        cognitive psychologists curious about the re-reading mind; to a general
-                        audience of readers eager to understand both the qualitative and
-                        quantitative uses of literature.
-                        </p>
+                        <div className="display-4 page-heading">The Reading Redux</div>
+                        <h2>The Values of Rereading</h2>
+                        <div className="body-container">
+                            <p className="body-text">
+                            In literary studies we have a word to describe a novel that traces the
+                            psychological and moral growth of its protagonist. The word is <em>
+                            bildungsroman.</em> But I think it is at once strange and unfortunate
+                            that we have no such word to describe a category of research or writing
+                            that traces the development of a real-life reader of a novel. This
+                            glaring lacuna might be a consequence of the fact that we just do not
+                            have that kind of data. That is, we do not know enough about if, how,
+                            or how much a reader evolves via each encounter with a text. In a time
+                            when it seems that bigots are getting bolder and louder all while
+                            basically insisting that they are surfeited with learning new things,
+                            which could actually help make them more tolerant (and tolerable)
+                            people, it is perhaps consoling to remember that human beings are in
+                            fact changeable. Reading is essential to galvanizing those human
+                            changes. This Digital Humanities project wants to affirm this claim by
+                            studying the effects of the practice of <em>re-reading</em> a work of
+                            literature. The scope of the project includes, but is not limited to, an
+                            attempt to answer the following questions: If we can understand the
+                            outcomes of re-reading a text, then what might we be able to deduce
+                            about how formative a text really is and how people think differently,
+                            change their minds, or become entirely different people as time goes by?
+                            </p>
+                            <ul>
+                                <li className="overview-li">
+                                What can we discover about how exactly a reader is reading
+                                    <em> differently</em> when we evaluate what that reader
+                                annotates differently upon rereading a text?
+                                </li>
+                                <li className="overview-li">
+                                How many re-readings and over the course of how long a period of
+                                time does it take to generate different meanings of one text? Is
+                                there a way to direct or expedite that process of readers making new
+                                meanings?
+                                </li>
+                                <li className="overview-li">
+                                What are the various factors that motivate people to reread texts in
+                                the first place?
+                                </li>
+                                <li className="overview-li">
+                                What kinds of literary texts are especially conducive to answering
+                                this project’s questions?
+                                </li>
+                                <li className="overview-li">
+                                When a reader’s understanding of the meaning of a text changes over
+                                time, how can we attribute this change to how the reader has also
+                                changed over time—whether with respect to age, mentality, political
+                                perspective, gender, etc.?
+                                </li>
+                            </ul>
+                            <p className="body-text">
+                            At least one positive consequence of this project I anticipate is that
+                            the nagging question in literacy-education circles about how to help
+                            people transform into better readers can become less about trying to get
+                            people to read <em>more</em> and perhaps more about trying to get
+                            people to read, again and again (and at different stages in their lives)
+                            , some of the texts already in their stock of texts to read. Indeed,
+                            while reproducibility is a scientific aspiration required to conduct
+                            scientific experiments, the kind of repetition with a difference that I
+                            hope to study here underscores not only how different the Humanities is
+                            from the Sciences but also how the Humanities <em> needs</em> to be
+                            different from scientific protocols in order to make clear that
+                            humanists value a changing human in an inevitably changing world. I
+                            envision this project being useful to students interested in learning
+                            how to appreciate the value of rereading books; to instructors who want
+                            and need to make the texts that they re-teach, year in and year out,
+                            “come alive” not only for their students but also for themselves; to
+                            cognitive psychologists curious about the re-reading mind; to a general
+                            audience of readers eager to understand both the qualitative and
+                            quantitative uses of literature.
+                            </p>
+                        </div>
                     </div></div>
                 </div>
             </React.Fragment>
@@ -128,31 +131,32 @@ export class RereadingSample extends React.Component {
                 <Navigation_Bar />
                 <div className="container">
                     <div className="row"><div className="col">
-                        <h1>The Reading Sample: Recitatif</h1>
-                        <h3>
-                            <q>The only short story I have ever written, <q>Recitatif,</q> was an 
-                            experiment in the removal of all racial codes from a narrative about two
-                            characters of
-                            different races for whom racial identity is crucial.</q>
-                        </h3>
-                        <p>
-
-                        </p>
+                        <div className="display-4 page-heading">The Reading Sample: Recitatif</div>
+                        <blockquote className="blockquote">
+                            <p className="mb-0">
+                                <q>The only short story I have ever written, <q>Recitatif,</q> was
+                                    an experiment in the removal of all racial codes from a
+                                    narrative about two characters of different races for whom
+                                    racial identity is crucial.
+                                </q>
+                            </p>
+                            <footer className="blockquote-footer">Toni Morrison</footer>
+                        </blockquote>
                         <h3>
                             Why is “Recitatif” particularly appropriate for a
                             project about re-rereading?
                         </h3>
                         <ul>
-                            <li>
+                            <li className="overview-li">
                             After completing a first reading of the story, the revelation about the
                             narrative experiment encourages a rereading; it encourages readers to
                             do a double take, as it were.
                             </li>
-                            <li>
+                            <li className="overview-li">
                             The short length and episodic structure—neatly demarcated by five
                             clearly different settings (or time frames)—facilitate a rereading.
                             </li>
-                            <li>
+                            <li className="overview-li">
                             A story that effectively holds a mirror to our biases provides the
                             reader the opportunity to confront the workings and retrace the
                             trajectory of their reading self. The story encourages readers to ask:
@@ -160,11 +164,11 @@ export class RereadingSample extends React.Component {
                             of how we read them—i.e., of how we placed them in a definite racial
                             category?
                             </li>
-                            <li>
+                            <li className="overview-li">
                             It is effectively a cautionary tale against speed reading and making
                             quick judgments.
                             </li>
-                            <li>
+                            <li className="overview-li">
                             Because “Sweetness” is not only a rival short story to some extent, but
                             also shares a similar theme with “Recitatif” (of fraught mother-daughter
                             relations), its existence as—more or less—a foil to “Recitatif” also
@@ -173,7 +177,7 @@ export class RereadingSample extends React.Component {
                             What, if anything, does this new short story have to do with Morrison’s
                                 <em> ur</em>-short story?
                             </li>
-                            <li>
+                            <li className="overview-li">
                             As narrative time passes, the story’s two main characters, Roberta and
                             Twyla—one of whom is the narrator—forget important details about a third
                             main character, Maggie, as well as a childhood incident involving
@@ -198,7 +202,7 @@ export class RereadingVisuals extends React.Component {
                 <div className="container">
                     <div className="row">
                         <div className="col">
-                            <h1>Rereading Visuals</h1>
+                            <div className="display-4 page-heading">Rereading Visuals</div>
                             <h3>
                                 How does one represent a reader’s multiple readings of one text?
                             </h3>

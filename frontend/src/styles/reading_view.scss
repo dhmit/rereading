@@ -1,5 +1,4 @@
 $reading-font: 'EB Garamond', serif;
-//$reading-font: Perpetua;
 $header-font: Helvetica;
 
 /*
@@ -7,13 +6,11 @@ $header-font: Helvetica;
  */
 * {
     font-family: $header-font;
-
 }
 
 .author {
     font-size: 50%;
 }
-
 
 /*
  * Scrollbar -- show always, and style it

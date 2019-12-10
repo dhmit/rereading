@@ -1,7 +1,24 @@
 import React from "react";
 import {SingleValueAnalysis} from "../prototype/analysis_view";
+import {TabularAnalysis} from "../prototype/analysis_view";
+import PropTypes from "prop-types";
+
 // import PropTypes from 'prop-types';
 
+export class RelevantWordsByQuestions extends React.Component {
+    render() {
+        return (
+            <TabularAnalysis
+                title={"Mean Reread Counts for Questions and Context"}
+                headers={[
+                    "Question",
+                    "Context"
+                ]}
+                data={this.props.relevant_words_by_question}
+            />
+        );
+    }
+}
 
 export class AnalysisView extends React.Component {
     constructor(props) {
@@ -39,6 +56,7 @@ export class AnalysisView extends React.Component {
             total_and_median_view_time,
             mean_reading_vs_rereading_time,
             get_number_of_unique_students,
+            relevant_words_by_question,
         } = this.state.analysis;
         return (
             <div className={"container"}>
@@ -83,6 +101,9 @@ export class AnalysisView extends React.Component {
                     header={"Number of Unique Students"}
                     value={get_number_of_unique_students}
                     unit={"students"}
+                />
+                <RelevantWordsByQuestions
+                    relevant_words_by_question= {relevant_words_by_question}
                 />
             </div>
         );

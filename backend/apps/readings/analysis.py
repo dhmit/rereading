@@ -77,7 +77,7 @@ class RereadingAnalysis:
                 reading_time += view_time
 
         num_students = len(self.readings)
-        self.most_common_response_by_question()
+
         # divide by total number of readings
         mean_reading_time = reading_time / num_students
         mean_rereading_time = rereading_time / num_students
@@ -125,13 +125,13 @@ class RereadingAnalysis:
         return responses
 
     @staticmethod
-    def get_top_response_for_question(question):
+    def get_top_words_for_question(question):
         """
-        Returns the most common response for the given question
+        Returns the top 3 most common words used to answer a question
 
 
         :param question: Question object
-        :return: Tuple in the form (response, frequency)
+        :return: List of tuples in the form (response, frequency)
         """
 
         # Keep track of frequency of each response
@@ -143,23 +143,34 @@ class RereadingAnalysis:
         else:
             responses = DocumentQuestionResponse.objects.filter(question=question)
 
-        # Iterate through and count all of the responses
+        # Iterate through and count all of the words in the responses
         for student_response in responses:
-            student_answer = student_response.response.lower()
-            # TODO: Split based on words
-            responses_frequency[student_answer] += 1
+            student_answer_words = student_response.response.lower().split()
+            for word in student_answer_words:
+                responses_frequency[word] += 1
 
-        # Find the most common response for the question
-        most_common_response = responses_frequency.most_common(1)[0]
+        # Find the most common words for the question
+        most_common_words = responses_frequency.most_common(3)
 
-        return most_common_response
+        # Turn the words into a string for it to display properly in the frontend
+        words = ''
+        for frequency_pair in most_common_words:
+            word = frequency_pair[0]
+            frequency = frequency_pair[1]
+            words += word + ', '
 
-    def most_common_response_by_question(self):
+        # Strip the trailing whitespace and comma from the string of words
+        words = words[:-2]
+
+        return words
+
+    def most_common_words_by_question(self):
         """
         Returns a dictionary mapping all question texts to their most common responses and
         frequencies
 
-        :return: Dict mapping question strings to a tuple of the form (response, frequency)
+        :return: List of lists, where each inner list is a question. Lists are of the form
+        [segment_num, question_num, question_text, responses]
         """
 
         # Find the document and segment questions
@@ -167,23 +178,22 @@ class RereadingAnalysis:
         segment_questions = SegmentQuestion.objects.all()
 
         # Initialize a list of lists to keep track of the top responses
-        top_responses = list()
+        top_words = list()
 
         # Iterate through the questions to find the top response for each, and store it
         for question in doc_questions:
-            top_response = self.get_top_response_for_question(question)
+            top_question_words = self.get_top_words_for_question(question)
             question_text = question.text
-            response = top_response[0]
-            frequency = top_response[1]
-            data_list = [question_text, response, frequency]
-            top_responses.append(data_list)
+            question_num = question.sequence
+            data_list = ['Global', question_num, question_text, top_question_words]
+            top_words.append(data_list)
 
         for question in segment_questions:
-            top_response = self.get_top_response_for_question(question)
+            top_question_words = self.get_top_words_for_question(question)
             question_text = question.text
-            response = top_response[0]
-            frequency = top_response[1]
-            data_list = [question_text, response, frequency]
-            top_responses.append(data_list)
+            segment_num = question.segment.sequence
+            question_num = question.sequence
+            data_list = [segment_num, question_num, question_text, top_question_words]
+            top_words.append(data_list)
 
-        return top_responses
+        return top_words

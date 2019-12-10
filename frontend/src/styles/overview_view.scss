@@ -1,12 +1,31 @@
+$body-font: 'EB Garamond', serif;
+$header-font: Helvetica;
+
 p {
     text-align: left;
 }
 
 p, ul, ol {
-    font-family: "Arial", serif;
     font-size: 15pt;
 }
 
 li:not(:last-child) {
     margin-bottom: 5px;
+}
+
+.container {
+    margin-top: 25px;
+}
+
+h1 {
+    font-weight: 400;
+    color: $brown;
+}
+
+h3 {
+    color: $brown;
+}
+
+.body-text, em, .overview-li {
+    font-family: $body-font;
 }

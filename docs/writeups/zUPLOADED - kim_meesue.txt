@@ -1,0 +1,34 @@
+﻿<p>Though it may come off as a simple and maybe even a somewhat pointless group of functions, the ones involving reading
+time can give off a lot of information about a user’s rereading experience. The purpose of these functions is to
+retrieve information on how long it takes someone to read the text, answer the context questions, and reread the text.
+Some people like to spend time reading the text thoroughly the first time around so that they don’t need to scour the
+text later to answer the correlating questions. Others like to skim the text the first time to get a general idea of
+what the text is about and then go back and reread the parts that are important for answering the context questions.
+Some people don’t even read the text until they’ve read the questions. Long story short, analyzing student view times
+gives instructors and researchers useful insight as to what kind of reader the student is.</p>
+
+
+<p>In addition to helping researchers analyze the various reading styles amongst students, the view time function can let
+us know whether the student has already been familiarized with the text or not. If a user’s average reading time is
+zero, that could mean one of two things: the user already knows the text completely or the user is just trying to hurry
+up and finish this survey and get it over with.</p>
+
+
+<p>If a user has already seen the text, then how does this study encourage such users to take the time to actually reread
+the passage? As someone who has reread more passages/novels than I can count whether it be for essays, exams, or class
+discussions, I know that a critical part of rereading is being able to mark up the text as the user sees fit. Therefore,
+being able to virtually mark up a text is crucial for the rereading study. But even simply having tools to highlight or
+underline text might give enough of an incentive for users to reread the passage. In order to solve this issue, some
+context questions include an “Add Evidence” button that would push users to go back and take another look at the reading
+to find proper evidence to answer the question.</p>
+
+
+<p>Not only is giving users the ability to tag evidence directly from the passage important for the rereading study, but
+something as simple as having the text positioned right next to the questions is a feature that should not be
+overlooked. In a lot of SAT Prep books, for example, I remember getting easily frustrated by the tedious task of having
+to flip back and forth between the questions and the passage. To solve this, I used to just take pictures of the passage
+on my phone to refer to right next to the questions. On a website, having to constantly toggle between the page with the
+passage and the page with the questions can be a hassle, especially if a user’s internet connection isn’t the fastest.
+If this was the case for our website, then users would very easily be tempted to not reread at all, which would defeat
+the purpose of the study. Therefore, having the text in an easily accessible place right next to the questions actually
+gives a huge incentive for users to actually revisit the text multiple times throughout the study.</p>

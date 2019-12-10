@@ -99,7 +99,7 @@ class RereadingAnalysis:
         :return: List of lists
         """
 
-        responses = list()
+        responses = []
 
         for segment_data in self.segments:
             segment_num = segment_data.segment.sequence
@@ -109,8 +109,16 @@ class RereadingAnalysis:
                 question_num = question.sequence
                 question_text = question.text
                 student_response = response.response
+                evidence = response.evidence
 
-                response_list = [segment_num, question_num, question_text, student_response]
+                response_list = [
+                    segment_num,
+                    question_num,
+                    question_text,
+                    student_response,
+                    evidence,
+                ]
                 responses.append(response_list)
 
         return responses
+

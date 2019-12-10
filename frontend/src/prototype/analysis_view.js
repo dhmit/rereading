@@ -198,19 +198,23 @@ export class RelevantWordPercentages extends React.Component {
 
     render() {
         return (
-            <TabularAnalysis
-                title={"Percentage of Students Using Relevant Words"}
-                headers={[
-                    "Question",
-                    "Percentage"
-                ]}
-                data={this.formatDataWithPercentSign(this.props.entryData)}
-            />
+            <div>
+                {this.props.relevantWords}
+                <TabularAnalysis
+                    title={"Percentage of Students Using Relevant Words"}
+                    headers={[
+                        "Question",
+                        "Percentage"
+                    ]}
+                    data={this.formatDataWithPercentSign(this.props.entryData)}
+                />
+            </div>
         );
     }
 }
 RelevantWordPercentages.propTypes = {
     entryData: PropTypes.array,
+    relevantWords: PropTypes.array,
 };
 
 export class PrototypeAnalysisView extends React.Component {

@@ -25,6 +25,7 @@ class RereadingAnalysis:
     def __init__(self):
         self.readings = StudentReadingData.objects.all()
         self.segments = StudentSegmentData.objects.all()
+        self.questions = SegmentQuestionResponse.objects.all()
 
     def total_and_median_view_time(self):
         """
@@ -99,6 +100,93 @@ class RereadingAnalysis:
             student_names.append(name)
 
         return len(student_names)
+
+
+    @staticmethod
+    def description_has_relevant_words(story_meaning_description, relevant_words):
+        """
+        Determine if the user's description contains a word relevant to the story's meaning
+        :param story_meaning_description: The user's response
+        :param relevant_words: a list of words which show an understanding of the story's meaning
+        :return True if the description contains one of the relevant words or relevant_words is
+        empty. False otherwise
+        """
+        if not relevant_words:
+            return True
+
+        lowercase_relevant_words = []
+        for word in relevant_words:
+            lowercase_relevant_words.append(word.lower())
+
+        words_used_in_description = story_meaning_description.lower().split(" ")
+
+        for word in lowercase_relevant_words:
+            if word.lower() in words_used_in_description:
+                return True
+        return False
+
+    def percent_using_relevant_words_by_question(self):
+        """
+        Return a list of tuples with (question, percent), for each of the questions in the
+        Segment Data and percent: percent of students who used relevant
+        words in that question
+        :return the return type explained in the function description
+        """
+        relevant_words = ["stereotypes", "bias", "assumptions", "assume", "narrator", "memory",
+                          "forget", "Twyla", "Maggie", "Roberta", "black", "white", "prejudice",
+                          "mothers", "segregation", "hate", "hatred", "love", "love-hate",
+                          "remember", "children", "recall", "kick", "truth", "dance", "sick",
+                          "fade", "old", "Mary", "sandy", "race", "racial", "racism",
+                          "colorblind", "disabled", "marginalized", "poor", "rich", "wealthy",
+                          "middle-class", "working-class", "consumers", "shopping", "read",
+                          "misread", "reread", "reconsider", "confuse", "wrong", "mistaken",
+                          "regret", "mute", "voiceless", "women", "age", "bird", "time", "scene",
+                          "setting", "Hendrix ", "universal", "binary", "deconstruct",
+                          "question", "wrong", "right", "incorrect", "false", "claims", "true",
+                          "truth", "unknown", "ambiguous", "unclear"]
+
+        question_count_map = {}
+        for segment in self.questions:
+            question = segment.question
+            if question not in question_count_map:
+                question_count_map[question] = 0
+            if RereadingAnalysis.description_has_relevant_words(segment.response, relevant_words):
+                question_count_map[question] += 1
+
+        total_student_count = len(self.readings)
+        percent_question_count_map = []
+        for question in question_count_map:
+            percent_question_count_map.append(
+                (question.text, question_count_map[question] / total_student_count)
+            )
+        return percent_question_count_map
+
+    def get_all_heat_maps(self):
+        """
+        This function shows a heat map for each segment. It will show how long in total was spent
+        on different sections of the segment.
+        :return: a dictionary of dictionaries which correspond to the view times of section of
+        segments
+        """
+        heat_map = {}
+
+        for segment in self.segments:
+            segment_identifier = segment.reading_data.document.title + " " +\
+                                 str(segment.segment.sequence)
+            if segment_identifier not in heat_map:
+                heat_map[segment_identifier] = {"reading": {}, "rereading": {}}
+            for scroll_position in segment.get_parsed_scroll_data():
+                if scroll_position < 0:
+                    continue
+                section_number = int(scroll_position) // 500
+                section_identifier = str(section_number * 500) + " — " +\
+                    str((section_number + 1) * 500)
+                is_rereading = "rereading" if segment.is_rereading else "reading"
+                if section_identifier not in heat_map[segment_identifier][is_rereading]:
+                    heat_map[segment_identifier][is_rereading][section_identifier] = 1
+                else:
+                    heat_map[segment_identifier][is_rereading][section_identifier] += 1
+        return heat_map
 
     def all_responses(self):
         """

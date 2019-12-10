@@ -13,6 +13,7 @@ from .models import (
     SegmentQuestion, SegmentQuestionResponse,
     StudentReadingData, StudentSegmentData,
     DocumentQuestion, DocumentQuestionResponse,
+    Writeup,
 )
 
 
@@ -271,9 +272,16 @@ class AnalysisSerializer(serializers.Serializer):
     total_and_median_view_time = serializers.ReadOnlyField()
     mean_reading_vs_rereading_time = serializers.ReadOnlyField()
     get_number_of_unique_students = serializers.ReadOnlyField()
+    all_responses = serializers.ReadOnlyField()
 
     def create(self, validated_data):
         """ We will not create new objects using this serializer """
 
     def update(self, instance, validated_data):
         """ We will not update data using this serializer """
+
+
+class WriteupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Writeup
+        fields = '__all__'

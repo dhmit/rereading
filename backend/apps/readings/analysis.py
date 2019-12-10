@@ -79,15 +79,38 @@ class RereadingAnalysis:
         This function finds the number of unique students who have participated in the study
         :return: an integer value
         """
-        student_names = set()
+        student_names = []
 
         # go through all data in readings to get name of each user and add to set student_names
         for reading in self.readings:
             name = reading.student.name
-            # convert to lower just in case some students forget to capitalize
+            if not name:
+                student_names.append('Anonymous')  # count one per anonymous student
             name = name.lower()
-            # add name to set
-            student_names.add(name)
-        # return length of set (represents unique number of students)
+            student_names.append(name)
+
         return len(student_names)
 
+    def all_responses(self):
+        """
+        Returns a list of all of the responses in the DB, in the form:
+        [Segment Num, Question Seq Num, Question Text, Response]
+
+        :return: List of lists
+        """
+
+        responses = list()
+
+        for segment_data in self.segments:
+            segment_num = segment_data.segment.sequence
+
+            for response in segment_data.segment_responses.all():
+                question = response.question
+                question_num = question.sequence
+                question_text = question.text
+                student_response = response.response
+
+                response_list = [segment_num, question_num, question_text, student_response]
+                responses.append(response_list)
+
+        return responses

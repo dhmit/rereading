@@ -115,3 +115,27 @@ class RereadingAnalysis:
                 else:
                     heat_map[segment_identifier][is_rereading][section_identifier] += 1
         return heat_map
+        
+    def all_responses(self):
+        """
+        Returns a list of all of the responses in the DB, in the form:
+        [Segment Num, Question Seq Num, Question Text, Response]
+
+        :return: List of lists
+        """
+
+        responses = list()
+
+        for segment_data in self.segments:
+            segment_num = segment_data.segment.sequence
+
+            for response in segment_data.segment_responses.all():
+                question = response.question
+                question_num = question.sequence
+                question_text = question.text
+                student_response = response.response
+
+                response_list = [segment_num, question_num, question_text, student_response]
+                responses.append(response_list)
+
+        return responses

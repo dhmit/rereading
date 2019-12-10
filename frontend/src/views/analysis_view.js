@@ -3,21 +3,41 @@ import {SingleValueAnalysis} from "../prototype/analysis_view";
 import {TabularAnalysis} from "../prototype/analysis_view";
 import PropTypes from "prop-types";
 
-// import PropTypes from 'prop-types';
+export class RereadCountTable extends React.Component {
+    render() {
+        return (
+            <TabularAnalysis
+                title ={"Reread Counts per Segment"}
+                headers={[
+                    "Segment Number",
+                    "Mean Reread Count",
+                ]}
+                data={this.props.compute_reread_counts}
+            />
+        );
+    }
+}
+RereadCountTable.propTypes = {
+    compute_reread_counts: PropTypes.array,
+};
 
 export class RelevantWordsByQuestions extends React.Component {
     render() {
         return (
             <TabularAnalysis
-                title={"Mean Reread Counts for Questions and Context"}
+                title={"Frequency Counts for Student Response with Relevant Words"}
                 headers={[
                     "Question",
-                    "Context"
+                    "Count"
                 ]}
                 data={this.props.relevant_words_by_question}
             />
         );
     }
+}
+
+RelevantWordsByQuestions.propTypes = {
+    relevant_words_by_question: PropTypes.array,
 }
 
 export class AnalysisView extends React.Component {

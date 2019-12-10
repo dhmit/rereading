@@ -2,7 +2,6 @@ import React from "react";
 import {
     SingleValueAnalysis,
     RelevantWordPercentages,
-    SingleValueAnalysis,
     TabularAnalysis,
 } from "../prototype/analysis_view";
 import PropTypes from 'prop-types';
@@ -236,7 +235,7 @@ export class AnalysisView extends React.Component {
             total_and_median_view_time,
             mean_reading_vs_rereading_time,
             get_number_of_unique_students,
-            percent_using_relevant_words_by_question
+            percent_using_relevant_words_by_question,
             get_all_heat_maps,
             all_responses,
         } = this.state.analysis;
@@ -303,7 +302,9 @@ export class AnalysisView extends React.Component {
                     unit={"students"}
                 />
                 <RelevantWordPercentages
-                    entryData={percent_using_relevant_words_by_question}
+                    words={percent_using_relevant_words_by_question[0]}
+                    entryData={percent_using_relevant_words_by_question[1]}
+                />
                 <HeatMapAnalysis
                     data = {get_all_heat_maps}
                 />

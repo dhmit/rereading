@@ -150,7 +150,7 @@ class RereadingAnalysis:
             percent_question_count_map.append(
                 (question.text, question_count_map[question] / total_student_count)
             )
-        return percent_question_count_map
+        return [relevant_words, percent_question_count_map]
 
     def get_all_heat_maps(self):
         """

@@ -114,6 +114,7 @@ export class AnalysisView extends React.Component {
             total_and_median_view_time,
             mean_reading_vs_rereading_time,
             get_number_of_unique_students,
+            all_responses,
             most_common_response_by_question,
         } = this.state.analysis;
         return (
@@ -155,6 +156,11 @@ export class AnalysisView extends React.Component {
                     header={"Number of Unique Students"}
                     value={get_number_of_unique_students}
                     unit={"students"}
+                />
+                <TabularAnalysis
+                    title="All Student Responses"
+                    headers={["Segment Number", "Question Number", "Question Text", "Response"]}
+                    data={all_responses}
                 />
                 <TabularAnalysis
                     title="Top Words by Question"

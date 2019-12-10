@@ -100,6 +100,30 @@ class RereadingAnalysis:
 
         return len(student_names)
 
+    def all_responses(self):
+        """
+        Returns a list of all of the responses in the DB, in the form:
+        [Segment Num, Question Seq Num, Question Text, Response]
+
+        :return: List of lists
+        """
+
+        responses = list()
+
+        for segment_data in self.segments:
+            segment_num = segment_data.segment.sequence
+
+            for response in segment_data.segment_responses.all():
+                question = response.question
+                question_num = question.sequence
+                question_text = question.text
+                student_response = response.response
+
+                response_list = [segment_num, question_num, question_text, student_response]
+                responses.append(response_list)
+
+        return responses
+
     @staticmethod
     def get_top_response_for_question(question):
         """
@@ -163,5 +187,3 @@ class RereadingAnalysis:
             top_responses.append(data_list)
 
         return top_responses
-
-

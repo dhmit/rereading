@@ -35,7 +35,8 @@ urlpatterns = [
     path('api/writeups/', readings_views.WriteupListView.as_view()),
 
     # React views
-    path('', lambda request: redirect('reading_view')),  # redirect / to project overview
+    path('', render_react_view, {'component_name': 'LandingPageView'}),
+
     path('project_overview/',
          render_react_view, {'component_name': 'ReadingRedux'},
          name='project_overview'),

@@ -1,7 +1,7 @@
 import React from "react";
 import {SingleValueAnalysis, TabularAnalysis} from "../prototype/analysis_view";
-import {Segment} from "./reading_view";
 import PropTypes from 'prop-types';
+import Promise from "promise";
 
 export function formatTime(timeInSeconds, secondsRoundDigits) {
     /*
@@ -187,6 +187,11 @@ export class HeatMapAnalysis extends React.Component {
                         })}
                     </tbody>
                 </table>
+                <HeatMapSegment
+                    heatMap = {current_segment_data}
+                    text = {this.props.segments[this.state.segment_num - 1].text}
+                    segmentNum={1}
+                />
             </div>
         )
     }
@@ -194,13 +199,80 @@ export class HeatMapAnalysis extends React.Component {
 
 HeatMapAnalysis.propTypes = {
     data: PropTypes.object,
+    segments: PropTypes.array,
 };
 
-class HeatMapSegment extends Segment {
+class HeatMapSegment extends React.Component {
     constructor(props){
         super(props);
+        this.state = {
+            readType: "reading"
+        };
+        this.handleReadingChange = this.handleReadingChange.bind(this);
+    }
+
+    handleReadingChange(event) {
+        this.setState({readType: event.target.value});
+    }
+
+    render() {
+        const segment_lines = this.props.text.split("\r\n");
+        const heat_data = this.props.heatMap[this.state.readType];
+        const max_heat = Math.max(...Object.values(heat_data));
+        // The intensity of the heat map is determined by the amount of seconds spent viewing that
+        // section divided by the maximum time spent viewing any of the sections of that segment
+        const heat_map = Object.keys(heat_data).map(range => {
+            return {
+                start: range.split(" — ")[0],
+                percentage: 0.6 * heat_data[range] / max_heat,
+                range: range,
+            }
+        });
+        const scroll_ranges = Object.keys(heat_data);
+        scroll_ranges.sort(scroll_range_sort);
+        const max_scroll_range = scroll_ranges[scroll_ranges.length - 1];
+        return (
+            <div>
+                This is the heat map for: &nbsp;
+                <select
+                    value={this.state.readType}
+                    className={"segment-selector"}
+                    onChange={(e) => this.handleReadingChange(e)}
+                >
+                    <option value={"reading"}>reading</option>
+                    <option value={"rereading"}>rereading</option>
+                </select>
+                <div
+                    className="segment"
+                >
+                    {segment_lines.map(
+                        (line, k) => (<p className={"segment-text text-justify"} key={k}>{line}</p>)
+                    )}
+                    {heat_map.map((heat, i) => {
+                        return (
+                            <div
+                                style={{
+                                    position: "absolute",
+                                    height: heat.range === max_scroll_range ? "500px" : "500px",
+                                    width: "593px",
+                                    top: heat.start + "px",
+                                    backgroundColor: "rgba(255, 0, 0," + heat.percentage + ")",
+                                }}
+                                key={i}
+                            >
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        );
     }
 }
+HeatMapSegment.propTypes = {
+    text: PropTypes.string,
+    heatMap: PropTypes.object,
+    segmentNum: PropTypes.number,
+};
 
 export class AnalysisView extends React.Component {
     constructor(props) {
@@ -218,14 +290,16 @@ export class AnalysisView extends React.Component {
      */
     async componentDidMount() {
         try {
-            const response = await fetch('/api/analysis/');
-            // TODO: We need to fetch the document in order for it to work in the Segment component
-            const response2 = await fetch('/api/documents/1/');
-            const analysis = await response.json();
-            const document_response = await response2.json();
-            const document = document_response.document;
-            this.setState({analysis, document});
-            console.log(document)
+            // Uses Promise to do multiple fetches at once
+            Promise.all([
+                fetch('/api/analysis/'),
+                fetch('/api/documents/1/')
+            ])
+                .then(([res1, res2]) => Promise.all([res1.json(), res2.json()]))
+                .then(([analysis, document]) => this.setState({
+                    analysis,
+                    document
+                }));
         } catch (e) {
             // For now, just log errors to the console.
             console.log(e);
@@ -288,9 +362,7 @@ export class AnalysisView extends React.Component {
                 />
                 <HeatMapAnalysis
                     data = {get_all_heat_maps}
-                />
-                <HeatMapSegment
-
+                    segments={this.state.document.segments}
                 />
                 <TabularAnalysis
                     title="All Student Responses"

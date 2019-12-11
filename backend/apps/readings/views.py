@@ -13,6 +13,7 @@ from .serializers import (
     ReadingSerializer,
     StudentReadingDataSerializer,
     WriteupSerializer,
+    DocumentSerializer,
 )
 
 
@@ -23,11 +24,16 @@ class Reading:
         self.reading_data = reading_data
 
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 def reading_view(request, pk):
     """ Primary API endpoint for the reading view -- called with the student's name
         from the view (to be written) where we collect that
     """
+    if request.method == "GET":
+        doc = Document.objects.get(pk=pk)
+        serializer = DocumentSerializer(doc)
+        return Response(serializer.data)
+
     student_name = request.data.get('name')
     student = Student(name=student_name)
     student.save()

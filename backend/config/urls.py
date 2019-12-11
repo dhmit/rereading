@@ -15,7 +15,7 @@ Including another URL configuration
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.shortcuts import redirect
+# from django.shortcuts import redirect
 from django.urls import path
 
 from apps.common import render_react_view

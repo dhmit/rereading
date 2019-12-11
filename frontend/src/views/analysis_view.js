@@ -1,5 +1,9 @@
 import React from "react";
-import {SingleValueAnalysis, TabularAnalysis} from "../prototype/analysis_view";
+import {
+    SingleValueAnalysis,
+    RelevantWordPercentages,
+    TabularAnalysis,
+} from "../prototype/analysis_view";
 import PropTypes from 'prop-types';
 
 export function formatTime(timeInSeconds, secondsRoundDigits) {
@@ -76,7 +80,124 @@ TimeAnalysis.propTypes = {
     header: PropTypes.string,
     time_in_seconds : PropTypes.number,
     round_digits: PropTypes.number,
+};
+
+const scroll_range_sort = (a, b) => {
+    const a_ranges = a.split(" — ");
+    const b_ranges = b.split(" — ");
+    const a_value = parseInt(a_ranges[1]);
+    const b_value = parseInt(b_ranges[1]);
+    return a_value - b_value;
+};
+
+export class HeatMapAnalysis extends React.Component {
+    constructor(props) {
+        super(props);
+        this.documents = [];
+        const all_segments = Object.keys(this.props.data);
+        for (let i = 0; i < all_segments.length; i++) {
+            const document_title = all_segments[i].split(" ")[0];
+            if (!this.documents.includes(document_title)) {
+                this.documents.push(document_title);
+            }
+        }
+        this.state = {
+            current_document: this.documents[0],
+            segment_num: 1,
+        };
+        this.handleSegmentChange = this.handleSegmentChange.bind(this);
+        this.handleDocumentChange = this.handleDocumentChange.bind(this);
+    }
+
+    handleSegmentChange(event) {
+        this.setState({segment_num: event.target.value});
+    }
+
+    handleDocumentChange(event) {
+        this.setState({current_document: event.target.value});
+    }
+
+    render() {
+        const current_segment_data = this.props.data[this.state.current_document + " " +
+        this.state.segment_num];
+
+        let max_ranges = current_segment_data["reading"];
+        if (Object.keys(current_segment_data["reading"]).length <
+            Object.keys(current_segment_data["rereading"]).length) {
+            max_ranges = current_segment_data["rereading"];
+        }
+        const scroll_ranges = Object.keys(max_ranges);
+        scroll_ranges.sort(scroll_range_sort);
+
+        const num_segments = Object.keys(this.props.data).length;
+        let range = n => Array.from(Array(n).keys());
+        let indices = range(num_segments+1).slice(1);
+
+        return (
+            <div>
+                <h3 className={"mt-4"}>
+                    Heat Map for &nbsp;
+                    <select
+                        value={this.state.current_document}
+                        className={"segment-selector"}
+                        onChange={(e) => this.handleDocumentChange(e)}
+                    >
+                        {this.documents.map((k, entry) => {
+                            return (
+                                <option key={k} value={this.documents[entry]}>
+                                    {this.documents[entry]}
+                                </option>
+                            )
+                        })}
+                    </select>
+                </h3>
+                Segment Number: &nbsp;
+                <select
+                    value={this.state.segment_num}
+                    className={"segment-selector"}
+                    onChange={(e) => this.handleSegmentChange(e)}
+                >
+                    {indices.map((k, entry) => {
+                        return (
+                            <option key={k} value={indices[entry]}>
+                                {indices[entry]}
+                            </option>
+                        )
+                    })}
+                </select>
+                <table className={"table analysis-table"}>
+                    <tbody>
+                        <tr>
+                            <th>Scroll Position</th>
+                            <th>Reading (seconds)</th>
+                            <th>Rereading (seconds)</th>
+                        </tr>
+                        {scroll_ranges.map( (k, range) => {
+                            range = scroll_ranges[range];
+                            return (
+                                <tr key={k}>
+                                    <th className={"p-3"}>
+                                        {range}
+                                    </th>
+                                    <td className={"p-3"}>
+                                        {current_segment_data["reading"][range]}
+                                    </td>
+                                    <td className={"p-3"}>
+                                        {current_segment_data["rereading"][range]}
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </div>
+        )
+    }
 }
+
+HeatMapAnalysis.propTypes = {
+    data: PropTypes.object,
+};
 
 export class AnalysisView extends React.Component {
     constructor(props) {
@@ -114,8 +235,32 @@ export class AnalysisView extends React.Component {
             total_and_median_view_time,
             mean_reading_vs_rereading_time,
             get_number_of_unique_students,
+            percent_using_relevant_words_by_question,
+            get_all_heat_maps,
             all_responses,
         } = this.state.analysis;
+
+        const sort_responses = (a, b) => {
+            const a_sequence = a[0];
+            const a_question_number = a[1];
+            const b_sequence = b[0];
+            const b_question_number = b[1];
+
+            if (a_sequence === b_sequence) {
+                if (a_question_number < b_question_number) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            } else if (a_sequence < b_sequence) {
+                return -1;
+            }
+
+            return 1;
+        }
+
+        const sorted_all_responses = all_responses.sort(sort_responses);
+
         return (
             <div className={"container"}>
                 <nav className={"navbar navbar-expand-lg"}>
@@ -156,12 +301,26 @@ export class AnalysisView extends React.Component {
                     value={get_number_of_unique_students}
                     unit={"students"}
                 />
+                <RelevantWordPercentages
+                    words={percent_using_relevant_words_by_question[0]}
+                    entryData={percent_using_relevant_words_by_question[1]}
+                />
+                <HeatMapAnalysis
+                    data = {get_all_heat_maps}
+                />
                 <TabularAnalysis
                     title="All Student Responses"
-                    headers={["Segment Number", "Question Number", "Question Text", "Response"]}
-                    data={all_responses}
+                    headers={[
+                        "Segment Number",
+                        "Question Number",
+                        "Question Text",
+                        "Response",
+                        "Evidence",
+                    ]}
+                    data={sorted_all_responses}
                 />
             </div>
+
         );
     }
 }

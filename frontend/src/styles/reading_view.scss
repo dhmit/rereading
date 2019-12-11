@@ -70,6 +70,10 @@ body {
     font-family: $reading-font;
 }
 
+.segment-selector {
+    background-color: $beige;
+}
+
 .questions-container {
     @extend .col;
     @extend .col-lg-4;
@@ -156,5 +160,12 @@ $btn-color: $forest_green;
     @extend .btn;
     @extend .btn-primary;
     @include button-variant($btn-color, $btn-color, lighten($btn-color,5%), $btn-color);
+}
+
+.analysis-table,
+.analysis-table th,
+.analysis-table td,
+.analysis-table tr {
+    border: 1px solid #000;
 }
 

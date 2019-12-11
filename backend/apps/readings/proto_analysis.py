@@ -292,29 +292,6 @@ class PrototypeRereadingAnalysis:
         return len(unique_students)
 
     @staticmethod
-    def description_has_relevant_words(story_meaning_description, relevant_words):
-        """
-        Determine if the user's description contains a word relevant to the story's meaning
-        :param story_meaning_description: The user's three word description of the story
-        :param relevant_words: a list of words which show an understanding of the story's meaning
-        :return True if the description contains one of the relevant words or relevant_words is
-        empty. False otherwise
-        """
-        if not relevant_words:
-            return True
-
-        lowercase_relevant_words = []
-        for word in relevant_words:
-            lowercase_relevant_words.append(word.lower())
-
-        words_used_in_description = story_meaning_description.lower().split(" ")
-
-        for word in lowercase_relevant_words:
-            if word.lower() in words_used_in_description:
-                return True
-        return False
-
-    @staticmethod
     def transform_nested_dict_to_list(nested_dict):
         """
         Transforms a nested dictionary data structure into a flat array of tuples in the form

@@ -9,6 +9,7 @@ from collections import Counter
 from .analysis_helpers import (
     get_sentiments,
     remove_outliers,
+    string_contains_words,
 )
 from .models import StudentResponsePrototype, ContextPrototype
 
@@ -292,29 +293,6 @@ class PrototypeRereadingAnalysis:
         return len(unique_students)
 
     @staticmethod
-    def description_has_relevant_words(story_meaning_description, relevant_words):
-        """
-        Determine if the user's description contains a word relevant to the story's meaning
-        :param story_meaning_description: The user's three word description of the story
-        :param relevant_words: a list of words which show an understanding of the story's meaning
-        :return True if the description contains one of the relevant words or relevant_words is
-        empty. False otherwise
-        """
-        if not relevant_words:
-            return True
-
-        lowercase_relevant_words = []
-        for word in relevant_words:
-            lowercase_relevant_words.append(word.lower())
-
-        words_used_in_description = story_meaning_description.lower().split(" ")
-
-        for word in lowercase_relevant_words:
-            if word.lower() in words_used_in_description:
-                return True
-        return False
-
-    @staticmethod
     def transform_nested_dict_to_list(nested_dict):
         """
         Transforms a nested dictionary data structure into a flat array of tuples in the form
@@ -349,9 +327,7 @@ class PrototypeRereadingAnalysis:
             if context not in question_context_count_map[question]:
                 question_context_count_map[question][context] = 0
 
-            if PrototypeRereadingAnalysis.description_has_relevant_words(
-                    row.response,
-                    relevant_words):
+            if string_contains_words(row.response, relevant_words):
                 question_context_count_map[question][context] += 1
 
         flattened_data = \

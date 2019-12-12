@@ -226,7 +226,7 @@ class OverviewView extends React.Component {
         }
 
         return (
-            <div className="row">
+            <div className="row overview-container">
                 <div className="col-12"><hr/></div>
                 <div className="segment-container">
                     <div className="scroll-overview">

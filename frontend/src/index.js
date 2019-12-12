@@ -8,6 +8,7 @@ import { PrototypeInstructorView } from './prototype/instructor_view';
 import { PrototypeAnalysisView } from './prototype/analysis_view';
 
 import { ReadingView } from './views/reading_view';
+import { LandingPageView } from './views/landing_page';
 
 import {
     ReadingRedux,
@@ -34,6 +35,7 @@ window.app_modules = {
     QuantitativeQuestions,
     Sources,
     Writeups,
+    LandingPageView,
 
     // Prototype views
     PrototypeAnalysisView,

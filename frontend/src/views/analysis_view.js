@@ -91,6 +91,28 @@ const scroll_range_sort = (a, b) => {
     return a_value - b_value;
 };
 
+/**
+ * Sometimes, the backend data records some scroll ranges that go beyond the text so this is to
+ * remove those inconsistencies.
+ * @param scroll_ranges: a list of scroll ranges
+ * @param heat_map: the heat map with scroll range as key and # seconds as value. (optional)
+ */
+const simplify_scroll_range = (scroll_ranges, heat_map) => {
+    let prev_scroll = 0;
+    const simplified_scroll_ranges = [];
+    for (let i = 0; i < scroll_ranges.length; i++){
+        const scroll_end = parseInt(scroll_ranges[i].split(" — ")[1]);
+        if (scroll_end === prev_scroll + 500) {
+            prev_scroll = scroll_end;
+            simplified_scroll_ranges.push(scroll_ranges[i]);
+        }
+        else if (heat_map) {
+            delete heat_map[scroll_ranges[i]];
+        }
+    }
+    return simplified_scroll_ranges;
+};
+
 export class HeatMapAnalysis extends React.Component {
     constructor(props) {
         super(props);
@@ -106,6 +128,7 @@ export class HeatMapAnalysis extends React.Component {
             current_document: this.documents[0],
             segment_num: 1,
         };
+
         this.handleSegmentChange = this.handleSegmentChange.bind(this);
         this.handleDocumentChange = this.handleDocumentChange.bind(this);
     }
@@ -127,8 +150,9 @@ export class HeatMapAnalysis extends React.Component {
             Object.keys(current_segment_data["rereading"]).length) {
             max_ranges = current_segment_data["rereading"];
         }
-        const scroll_ranges = Object.keys(max_ranges);
+        let scroll_ranges = Object.keys(max_ranges);
         scroll_ranges.sort(scroll_range_sort);
+        scroll_ranges = simplify_scroll_range(scroll_ranges);
 
         const num_segments = Object.keys(this.props.data).length;
         let range = n => Array.from(Array(n).keys());
@@ -210,8 +234,10 @@ class HeatMapSegment extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            readType: "reading"
+            readType: "reading",
+            finalHeight: 500,
         };
+        this.segment_ref = React.createRef();
         this.handleReadingChange = this.handleReadingChange.bind(this);
     }
 
@@ -219,9 +245,31 @@ class HeatMapSegment extends React.Component {
         this.setState({readType: event.target.value});
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {// eslint-disable-line no-unused-vars
+        const segment_height = this.segment_ref.current.scrollHeight;
+        const heat_data = this.props.heatMap[this.state.readType];
+        const scroll_ranges = Object.keys(heat_data);
+        scroll_ranges.sort(scroll_range_sort);
+        const max_scroll_range = scroll_ranges[scroll_ranges.length - 1];
+        const height = 500 + segment_height -
+                parseInt(max_scroll_range.split(" — ")[1]);
+        if (this.state.finalHeight !== height) {
+            this.setState({finalHeight: height});
+        }
+    }
+
+    componentDidMount() {
+        this.setState({readType:"reading"});
+    }
+
     render() {
         const segment_lines = this.props.text.split("\r\n");
         const heat_data = this.props.heatMap[this.state.readType];
+        let scroll_ranges = Object.keys(heat_data);
+        scroll_ranges.sort(scroll_range_sort);
+        scroll_ranges = simplify_scroll_range(scroll_ranges, heat_data);
+        const max_scroll_range = scroll_ranges[scroll_ranges.length - 1];
+
         const max_heat = Math.max(...Object.values(heat_data));
         // The intensity of the heat map is determined by the amount of seconds spent viewing that
         // section divided by the maximum time spent viewing any of the sections of that segment
@@ -232,9 +280,7 @@ class HeatMapSegment extends React.Component {
                 range: range,
             }
         });
-        const scroll_ranges = Object.keys(heat_data);
-        scroll_ranges.sort(scroll_range_sort);
-        const max_scroll_range = scroll_ranges[scroll_ranges.length - 1];
+
         return (
             <div>
                 This is the heat map for: &nbsp;
@@ -248,6 +294,7 @@ class HeatMapSegment extends React.Component {
                 </select>
                 <div
                     className="segment"
+                    ref={this.segment_ref}
                 >
                     {segment_lines.map(
                         (line, k) => (<p className={"segment-text text-justify"} key={k}>{line}</p>)
@@ -257,10 +304,13 @@ class HeatMapSegment extends React.Component {
                             <div
                                 style={{
                                     position: "absolute",
-                                    height: heat.range === max_scroll_range ? "500px" : "500px",
+                                    height: heat.range === max_scroll_range ?
+                                        this.state.finalHeight + "px" :
+                                        "500px",
                                     width: "593px",
                                     top: heat.start + "px",
                                     backgroundColor: "rgba(255, 0, 0," + heat.percentage + ")",
+                                    zIndex: -1,
                                 }}
                                 key={i}
                             >
@@ -285,6 +335,7 @@ export class AnalysisView extends React.Component {
             // we initialize analysis to null, so we can check in render() whether
             // we've received a response from the server yet
             analysis: null,
+            document: null,
         };
     }
 
@@ -343,7 +394,7 @@ export class AnalysisView extends React.Component {
             }
 
             return 1;
-        }
+        };
 
         const sorted_all_responses = all_responses.sort(sort_responses);
 
@@ -394,6 +445,7 @@ export class AnalysisView extends React.Component {
                 <HeatMapAnalysis
                     data = {get_all_heat_maps}
                     segments={this.state.document.segments}
+                    segment_ref={this.segment_ref}
                 />
                 <TabularAnalysis
                     title="All Student Responses"

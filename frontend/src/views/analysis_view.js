@@ -238,6 +238,7 @@ export class AnalysisView extends React.Component {
             percent_using_relevant_words_by_question,
             get_all_heat_maps,
             all_responses,
+            most_common_words_by_question,
         } = this.state.analysis;
 
         const sort_responses = (a, b) => {
@@ -307,6 +308,11 @@ export class AnalysisView extends React.Component {
                 />
                 <HeatMapAnalysis
                     data = {get_all_heat_maps}
+                />
+                <TabularAnalysis
+                    title="Top Words by Question"
+                    headers={["Segment Number", "Question Number", "Question Text", "Top Words"]}
+                    data={most_common_words_by_question}
                 />
                 <TabularAnalysis
                     title="All Student Responses"

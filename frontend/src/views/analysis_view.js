@@ -5,7 +5,6 @@ import {
     TabularAnalysis,
 } from "../prototype/analysis_view";
 import PropTypes from 'prop-types';
-import Promise from "promise";
 
 export function formatTime(timeInSeconds, secondsRoundDigits) {
     /*
@@ -116,6 +115,7 @@ const simplify_scroll_range = (scroll_ranges, heat_map) => {
 export class HeatMapAnalysis extends React.Component {
     constructor(props) {
         super(props);
+
         this.documents = [];
         const all_segments = Object.keys(this.props.data);
         for (let i = 0; i < all_segments.length; i++) {
@@ -125,12 +125,25 @@ export class HeatMapAnalysis extends React.Component {
             }
         }
         this.state = {
+            document: null,
             current_document: this.documents[0],
             segment_num: 1,
         };
 
         this.handleSegmentChange = this.handleSegmentChange.bind(this);
         this.handleDocumentChange = this.handleDocumentChange.bind(this);
+    }
+
+    async componentDidMount() {
+        try {
+            // Uses Promise to do multiple fetches at once
+            const response = await fetch('/api/documents/1/');
+            const document = await response.json();
+            this.setState({document});
+        } catch (e) {
+            // For now, just log errors to the console.
+            console.log(e);
+        }
     }
 
     handleSegmentChange(event) {
@@ -142,8 +155,13 @@ export class HeatMapAnalysis extends React.Component {
     }
 
     render() {
-        const current_segment_data = this.props.data[this.state.current_document + " " +
-        this.state.segment_num];
+        if (!this.state.document) {
+            return (
+                <div>Loading!</div>
+            );
+        }
+        const current_segment_data =
+            this.props.data[this.state.current_document + " " + this.state.segment_num];
 
         let max_ranges = current_segment_data["reading"];
         if (Object.keys(current_segment_data["reading"]).length <
@@ -217,7 +235,7 @@ export class HeatMapAnalysis extends React.Component {
                 </table>
                 <HeatMapSegment
                     heatMap = {current_segment_data}
-                    text = {this.props.segments[this.state.segment_num - 1].text}
+                    text = {this.state.document.segments[this.state.segment_num - 1].text}
                     segmentNum={1}
                 />
             </div>
@@ -227,7 +245,6 @@ export class HeatMapAnalysis extends React.Component {
 
 HeatMapAnalysis.propTypes = {
     data: PropTypes.object,
-    segments: PropTypes.array,
 };
 
 class HeatMapSegment extends React.Component {
@@ -345,16 +362,9 @@ export class AnalysisView extends React.Component {
      */
     async componentDidMount() {
         try {
-            // Uses Promise to do multiple fetches at once
-            Promise.all([
-                fetch('/api/analysis/'),
-                fetch('/api/documents/1/')
-            ])
-                .then(([res1, res2]) => Promise.all([res1.json(), res2.json()]))
-                .then(([analysis, document]) => this.setState({
-                    analysis,
-                    document
-                }));
+            const response = await fetch('/api/analysis/');
+            const analysis = await response.json();
+            this.setState({analysis});
         } catch (e) {
             // For now, just log errors to the console.
             console.log(e);
@@ -444,9 +454,7 @@ export class AnalysisView extends React.Component {
                     entryData={percent_using_relevant_words_by_question[1]}
                 />
                 <HeatMapAnalysis
-                    data = {get_all_heat_maps}
-                    segments={this.state.document.segments}
-                    segment_ref={this.segment_ref}
+                    data={get_all_heat_maps}
                 />
                 <TabularAnalysis
                     title="Top Words by Question"

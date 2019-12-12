@@ -109,3 +109,16 @@ def remove_outliers(data):
 
     return data_no_outliers
 
+
+def string_contains_words(input_string, target_words):
+    """ Checks if a given input_string contains any of the words in the list of target_words """
+    if not target_words:
+        return True
+
+    input_string_lowercase = input_string.lower()
+
+    for word in target_words:
+        if word.lower() in input_string_lowercase:
+            return True
+
+    return False

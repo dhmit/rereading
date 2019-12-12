@@ -71,7 +71,7 @@ disable=
     consider-using-get,
     chained-comparison,
     trailing-newlines,  # no big deal
-    too-many-lines  # RYAAN -- are you sure on this?
+    too-many-lines
 
 
 [REPORTS]

@@ -190,28 +190,31 @@ export class RelevantWordPercentages extends React.Component {
     formatDataWithPercentSign(rawData) {
         //Formats the given data (usually in decimal form) as a percentage
         let formattedData = [];
-        for (let [question, context, decimal] of rawData) {
-            formattedData.push([question, context, `${Math.round(100 * decimal)}%`]);
+        for (let [question, decimal] of rawData) {
+            formattedData.push([question, `${Math.round(100 * decimal)}%`]);
         }
         return formattedData;
     }
 
     render() {
         return (
-            <TabularAnalysis
-                title={"Percentage of Students Using Relevant Words"}
-                headers={[
-                    "Question",
-                    "Context",
-                    "Percentage"
-                ]}
-                data={this.formatDataWithPercentSign(this.props.entryData)}
-            />
+            <div>
+                {this.props.relevantWords}
+                <TabularAnalysis
+                    title={"Percentage of Students Using Relevant Words"}
+                    headers={[
+                        "Question",
+                        "Percentage"
+                    ]}
+                    data={this.formatDataWithPercentSign(this.props.entryData)}
+                />
+            </div>
         );
     }
 }
 RelevantWordPercentages.propTypes = {
     entryData: PropTypes.array,
+    relevantWords: PropTypes.array,
 };
 
 export class PrototypeAnalysisView extends React.Component {
@@ -250,7 +253,7 @@ export class PrototypeAnalysisView extends React.Component {
                 compute_median_view_time,
                 run_compute_reread_counts,
                 compute_mean_response_length,
-                percent_using_relevant_words_by_context_and_question
+                percent_using_relevant_words_by_question
             } = this.state.analysis;
             return (
                 <div className={"container"}>
@@ -298,7 +301,7 @@ export class PrototypeAnalysisView extends React.Component {
                     <FrequencyFeelingTable feelings={frequency_feelings}/>
                     <ContextVsViewTime viewTime={context_vs_read_time}/>
                     <RelevantWordPercentages
-                        entryData={percent_using_relevant_words_by_context_and_question}
+                        entryData={percent_using_relevant_words_by_question}
                     />
                 </div>
             );

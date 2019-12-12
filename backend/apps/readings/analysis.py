@@ -5,7 +5,8 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 """
 import statistics
 
-from .models import StudentReadingData, StudentSegmentData
+from .models import StudentReadingData, StudentSegmentData, SegmentQuestionResponse
+from .analysis_helpers import string_contains_words
 
 
 class RereadingAnalysis:
@@ -17,6 +18,7 @@ class RereadingAnalysis:
     def __init__(self):
         self.readings = StudentReadingData.objects.all()
         self.segments = StudentSegmentData.objects.all()
+        self.questions = SegmentQuestionResponse.objects.all()
 
     def total_and_median_view_time(self):
         """
@@ -91,6 +93,42 @@ class RereadingAnalysis:
 
         return len(student_names)
 
+    def percent_using_relevant_words_by_question(self):
+        """
+        Return a list of tuples with (question, percent), for each of the questions in the
+        Segment Data and percent: percent of students who used relevant
+        words in that question
+        :return the return type explained in the function description
+        """
+        relevant_words = ["stereotypes", "bias", "assumptions", "assume", "narrator", "memory",
+                          "forget", "Twyla", "Maggie", "Roberta", "black", "white", "prejudice",
+                          "mothers", "segregation", "hate", "hatred", "love", "love-hate",
+                          "remember", "children", "recall", "kick", "truth", "dance", "sick",
+                          "fade", "old", "Mary", "sandy", "race", "racial", "racism",
+                          "colorblind", "disabled", "marginalized", "poor", "rich", "wealthy",
+                          "middle-class", "working-class", "consumers", "shopping", "read",
+                          "misread", "reread", "reconsider", "confuse", "wrong", "mistaken",
+                          "regret", "mute", "voiceless", "women", "age", "bird", "time", "scene",
+                          "setting", "Hendrix ", "universal", "binary", "deconstruct",
+                          "question", "wrong", "right", "incorrect", "false", "claims", "true",
+                          "truth", "unknown", "ambiguous", "unclear"]
+
+        question_count_map = {}
+        for segment in self.questions:
+            question = segment.question
+            if question not in question_count_map:
+                question_count_map[question] = 0
+            if string_contains_words(segment.response, relevant_words):
+                question_count_map[question] += 1
+
+        total_student_count = len(self.readings)
+        percent_question_count_map = []
+        for question in question_count_map:
+            percent_question_count_map.append(
+                (question.text, question_count_map[question] / total_student_count)
+            )
+        return [relevant_words, percent_question_count_map]
+
     def get_all_heat_maps(self):
         """
         This function shows a heat map for each segment. It will show how long in total was spent
@@ -126,7 +164,7 @@ class RereadingAnalysis:
         :return: List of lists
         """
 
-        responses = list()
+        responses = []
 
         for segment_data in self.segments:
             segment_num = segment_data.segment.sequence
@@ -136,8 +174,16 @@ class RereadingAnalysis:
                 question_num = question.sequence
                 question_text = question.text
                 student_response = response.response
+                evidence = response.evidence
 
-                response_list = [segment_num, question_num, question_text, student_response]
+                response_list = [
+                    segment_num,
+                    question_num,
+                    question_text,
+                    student_response,
+                    evidence,
+                ]
                 responses.append(response_list)
 
         return responses
+

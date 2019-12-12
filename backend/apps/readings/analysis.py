@@ -228,7 +228,6 @@ class RereadingAnalysis:
         words = ''
         for frequency_pair in most_common_words:
             word = frequency_pair[0]
-            frequency = frequency_pair[1]
             words += word + ', '
 
         # Strip the trailing whitespace and comma from the string of words

@@ -109,3 +109,23 @@ def remove_outliers(data):
 
     return data_no_outliers
 
+
+def string_contains_words(input_string, target_words):
+    """
+
+    Determine if the user's description contains a word relevant to the story's meaning
+    :param input_string: The user's three word description of the story
+    :param target_words: a list of words which show an understanding of the story's meaning
+    :return True if the description contains one of the relevant words or relevant_words is
+    empty. False otherwise
+    """
+    if not target_words:
+        return True
+
+    input_string_lowercase = input_string.lower()
+
+    for word in target_words:
+        if word.lower() in input_string_lowercase:
+            return True
+
+    return False

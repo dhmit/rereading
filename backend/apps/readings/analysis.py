@@ -14,6 +14,7 @@ from .models import (
     DocumentQuestionResponse,
     SegmentQuestionResponse,
 )
+from .analysis_helpers import string_contains_words
 
 
 class RereadingAnalysis:
@@ -101,30 +102,6 @@ class RereadingAnalysis:
 
         return len(student_names)
 
-
-    @staticmethod
-    def description_has_relevant_words(story_meaning_description, relevant_words):
-        """
-        Determine if the user's description contains a word relevant to the story's meaning
-        :param story_meaning_description: The user's response
-        :param relevant_words: a list of words which show an understanding of the story's meaning
-        :return True if the description contains one of the relevant words or relevant_words is
-        empty. False otherwise
-        """
-        if not relevant_words:
-            return True
-
-        lowercase_relevant_words = []
-        for word in relevant_words:
-            lowercase_relevant_words.append(word.lower())
-
-        words_used_in_description = story_meaning_description.lower().split(" ")
-
-        for word in lowercase_relevant_words:
-            if word.lower() in words_used_in_description:
-                return True
-        return False
-
     def percent_using_relevant_words_by_question(self):
         """
         Return a list of tuples with (question, percent), for each of the questions in the
@@ -150,7 +127,7 @@ class RereadingAnalysis:
             question = segment.question
             if question not in question_count_map:
                 question_count_map[question] = 0
-            if RereadingAnalysis.description_has_relevant_words(segment.response, relevant_words):
+            if string_contains_words(segment.response, relevant_words):
                 question_count_map[question] += 1
 
         total_student_count = len(self.readings)

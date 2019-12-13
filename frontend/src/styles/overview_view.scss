@@ -1,6 +1,3 @@
-$body-font: 'EB Garamond', serif;
-$header-font: Helvetica;
-
 p {
     text-align: left;
 }
@@ -34,9 +31,6 @@ ul {
     color: $brown;
 }
 
-.body-text, em, .bullet-text {
-    font-family: $body-font;
-}
 
 .body-text:not(:first-child) {
     margin-top: 25px;

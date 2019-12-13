@@ -1,0 +1,50 @@
+$body-font: 'EB Garamond', serif;
+$header-font: Helvetica;
+
+html {
+    position: relative;
+    height: 100% !important;
+}
+
+body {
+    height: 100% !important;
+}
+
+#root {
+    height: 100% !important;
+    @extend .d-flex;
+    @extend .flex-column;
+}
+
+main {
+    @extend .container;
+    @extend .flex-shrink-0;
+    @extend .mb-5;
+}
+
+.body-text, em, .bullet-text {
+    font-family: $body-font;
+}
+
+footer {
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+.footer-img {
+     height: 80px;
+     max-height: 10vh;
+     max-width: 20vw;
+     object-fit: contain;
+}
+
+.loading-spinner {
+    position: fixed;
+    top: 50%;
+    right: 50%;
+}
+
+h1 {
+    color: $brown;
+}

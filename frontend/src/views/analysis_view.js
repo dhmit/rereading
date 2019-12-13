@@ -4,6 +4,7 @@ import {
     RelevantWordPercentages,
     TabularAnalysis,
 } from "../prototype/analysis_view";
+import { Footer, Spinner } from "../common";
 import PropTypes from 'prop-types';
 
 export function formatTime(timeInSeconds, secondsRoundDigits) {
@@ -373,9 +374,7 @@ export class AnalysisView extends React.Component {
 
     render() {
         if (this.state.analysis === null) {
-            return (
-                <div>Loading!</div>
-            );
+            return <Spinner />;
         }
 
         const { // object destructuring:
@@ -410,70 +409,64 @@ export class AnalysisView extends React.Component {
         const sorted_all_responses = all_responses.sort(sort_responses);
 
         return (
-            <div className={"container"}>
-                <nav className={"navbar navbar-expand-lg"}>
-                    <div className={"navbar-nav"}>
-                        <a
-                            className={"nav-link nav-item text-dark font-weight-bold"}
-                            href={"#"}
-                        >Overview</a>
-                        <a
-                            className={"nav-link nav-item text-dark font-weight-bold"}
-                            href={"#"}
-                        >Analysis</a>
-                    </div>
-                </nav>
-
-                <h1
-                    className={"text-center display-4 mb-4"}
-                    id={"page-title"}
-                >Analysis of Student Responses</h1>
-                <TimeAnalysis
-                    header={"Total view time"}
-                    time_in_seconds={total_and_median_view_time[0]}
-                />
-                <TimeAnalysis
-                    header={"Median view time"}
-                    time_in_seconds={total_and_median_view_time[1]}
-                />
-                <TimeAnalysis
-                    header={"Mean reading view time"}
-                    time_in_seconds={mean_reading_vs_rereading_time[0]}
-                />
-                <TimeAnalysis
-                    header={"Mean rereading view time"}
-                    time_in_seconds={mean_reading_vs_rereading_time[1]}
-                />
-                <SingleValueAnalysis
-                    header={"Number of Unique Students"}
-                    value={get_number_of_unique_students}
-                    unit={"students"}
-                />
-                <RelevantWordPercentages
-                    words={percent_using_relevant_words_by_question[0]}
-                    entryData={percent_using_relevant_words_by_question[1]}
-                />
-                <HeatMapAnalysis
-                    data={get_all_heat_maps}
-                />
-                <TabularAnalysis
-                    title="Top Words by Question"
-                    headers={["Segment Number", "Question Number", "Question Text", "Top Words"]}
-                    data={most_common_words_by_question}
-                />
-                <TabularAnalysis
-                    title="All Student Responses"
-                    headers={[
-                        "Segment Number",
-                        "Question Number",
-                        "Question Text",
-                        "Response",
-                        "Evidence",
-                    ]}
-                    data={sorted_all_responses}
-                />
-            </div>
-
+            <>
+                <div className={"container"}>
+                    <h1
+                        className={"text-center display-4 mb-4"}
+                        id={"page-title"}
+                    >Analysis of Student Responses</h1>
+                    <TimeAnalysis
+                        header={"Total view time"}
+                        time_in_seconds={total_and_median_view_time[0]}
+                    />
+                    <TimeAnalysis
+                        header={"Median view time"}
+                        time_in_seconds={total_and_median_view_time[1]}
+                    />
+                    <TimeAnalysis
+                        header={"Mean reading view time"}
+                        time_in_seconds={mean_reading_vs_rereading_time[0]}
+                    />
+                    <TimeAnalysis
+                        header={"Mean rereading view time"}
+                        time_in_seconds={mean_reading_vs_rereading_time[1]}
+                    />
+                    <SingleValueAnalysis
+                        header={"Number of Unique Students"}
+                        value={get_number_of_unique_students}
+                        unit={"students"}
+                    />
+                    <HeatMapAnalysis
+                        data={get_all_heat_maps}
+                    />
+                    <RelevantWordPercentages
+                        words={percent_using_relevant_words_by_question[0]}
+                        entryData={percent_using_relevant_words_by_question[1]}
+                    />
+                    <TabularAnalysis
+                        title="Top Words by Question"
+                        headers={[
+                            "Segment Number",
+                            "Question Number",
+                            "Question Text",
+                            "Top Words"
+                        ]}
+                        data={most_common_words_by_question}
+                    />
+                    <TabularAnalysis
+                        title="All Student Responses"
+                        headers={[
+                            "Segment Number",
+                            "Question Number",
+                            "Question Text",
+                            "Response",
+                            "Evidence",
+                        ]}
+                        data={sorted_all_responses}
+                    />
+                </div>
+                <Footer />
+            </>
         );
     }
 }

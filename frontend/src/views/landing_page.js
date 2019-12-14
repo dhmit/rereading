@@ -28,13 +28,13 @@ export class LandingPageView extends React.Component {
                     <div className="row">
                         <div className="col">
                             <button
-                                className="btn landing-btn col-6"
+                                className="btn landing-btn col col-md-6"
                                 onClick={() =>  window.location.href='/project_overview'}
                             >
                                 Project Overview
                             </button>
                             <button
-                                className="btn landing-btn col-6"
+                                className="btn landing-btn col col-md-6"
                                 onClick={() =>  window.location.href='/reading'}
                             >
                                 Participate

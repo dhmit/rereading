@@ -469,7 +469,7 @@ export class AnalysisView extends React.Component {
                         header={"Mean rereading view time"}
                         time_in_seconds={mean_reading_vs_rereading_time[1]}
                     />
-                    <SingleValueAnalysis
+                    <
                         header={"Number of Unique Students"}
                         value={get_number_of_unique_students}
                         unit={"students"}

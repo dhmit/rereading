@@ -7,7 +7,6 @@ import statistics
 from collections import Counter
 
 from .analysis_helpers import (
-    description_has_relevant_words,
     get_sentiments,
     remove_outliers,
     string_contains_words,

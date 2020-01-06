@@ -7,6 +7,44 @@ import {
 import { Footer, Spinner } from "../common";
 import PropTypes from 'prop-types';
 
+export class RereadCountTable extends React.Component {
+    render() {
+        return (
+            <TabularAnalysis
+                title ={"Reread Counts per Segment"}
+                headers={[
+                    "Segment Number",
+                    "Mean Reread Count",
+                ]}
+                data={this.props.compute_reread_counts}
+            />
+        );
+    }
+}
+RereadCountTable.propTypes = {
+    compute_reread_counts: PropTypes.array,
+};
+
+export class RelevantWordsByQuestions extends React.Component {
+    render() {
+        return (
+            <TabularAnalysis
+                title={"Frequency Counts for Student Response with Relevant Words"}
+                headers={[
+                    "Question",
+                    "Count"
+                ]}
+                data={this.props.relevant_words_by_question}
+            />
+        );
+    }
+}
+
+RelevantWordsByQuestions.propTypes = {
+    relevant_words_by_question: PropTypes.array,
+}
+
+
 export function formatTime(timeInSeconds, secondsRoundDigits) {
     /*
         Returns a string in the format "x hours y minutes z seconds".
@@ -381,6 +419,7 @@ export class AnalysisView extends React.Component {
             total_and_median_view_time,
             mean_reading_vs_rereading_time,
             get_number_of_unique_students,
+            relevant_words_by_question,
             percent_using_relevant_words_by_question,
             get_all_heat_maps,
             all_responses,
@@ -442,6 +481,9 @@ export class AnalysisView extends React.Component {
                     <RelevantWordPercentages
                         words={percent_using_relevant_words_by_question[0]}
                         entryData={percent_using_relevant_words_by_question[1]}
+                    />
+                    <RelevantWordsByQuestions
+                        relevant_words_by_question= {relevant_words_by_question}
                     />
                     <TabularAnalysis
                         title="Top Words by Question"

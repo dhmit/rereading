@@ -14,6 +14,7 @@ from .analysis_helpers import (
 from .models import StudentResponsePrototype, ContextPrototype
 
 
+
 def get_responses_for_question(all_responses, question, context):
     """
     For a certain question and context, returns the set of responses as a dictionary with keys
@@ -197,7 +198,6 @@ class PrototypeRereadingAnalysis:
         prints it in a nice readable format.
         :return: the info wed like to put on js
         """
-
         questions = []
         contexts = []
         student_data = self.responses[:]

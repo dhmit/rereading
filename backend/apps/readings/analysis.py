@@ -15,7 +15,19 @@ from .models import (
     SegmentQuestionResponse,
 )
 from .analysis_helpers import string_contains_words
-
+# all relevant words used for two functions
+RELEVANT_WORDS = ["stereotypes", "bias", "assumptions", "assume", "narrator", "memory",
+                  "forget", "Twyla", "Maggie", "Roberta", "black", "white", "prejudice",
+                  "mothers", "segregation", "hate", "hatred", "love", "love-hate",
+                  "remember", "children", "recall", "kick", "truth", "dance", "sick",
+                  "fade", "old", "Mary", "sandy", "race", "racial", "racism",
+                  "colorblind", "disabled", "marginalized", "poor", "rich", "wealthy",
+                  "middle-class", "working-class", "consumers", "shopping", "read",
+                  "misread", "reread", "reconsider", "confuse", "wrong", "mistaken",
+                  "regret", "mute", "voiceless", "women", "age", "bird", "time", "scene",
+                  "setting", "Hendrix ", "universal", "binary", "deconstruct",
+                  "question", "wrong", "right", "incorrect", "false", "claims", "true",
+                  "truth", "unknown", "ambiguous", "unclear"]
 
 class RereadingAnalysis:
     """
@@ -59,6 +71,24 @@ class RereadingAnalysis:
             median_view_time = statistics.median(student_total_view_time)
         ret_tuple = (round(total_time), round(median_view_time))
         return ret_tuple
+
+    @staticmethod
+    def relevant_words_by_question():
+        """
+            Return a list of tuples of the form (question,count), where count is
+            the number of students who used relevant words in response to that question. This list
+            is sorted by question
+            :return the return type explained in the function description
+        """
+
+        question_context_count_map = {}
+        for response in SegmentQuestionResponse.objects.all():
+            question = response.question.text
+            question_context_count_map[question] = question_context_count_map.get(question, 0) + 1
+            if string_contains_words(response.response, RELEVANT_WORDS):
+                question_context_count_map[question] += 1
+        question_count_tup = list(question_context_count_map.items())
+        return question_count_tup
 
     def mean_reading_vs_rereading_time(self):
         """
@@ -109,25 +139,12 @@ class RereadingAnalysis:
         words in that question
         :return the return type explained in the function description
         """
-        relevant_words = ["stereotypes", "bias", "assumptions", "assume", "narrator", "memory",
-                          "forget", "Twyla", "Maggie", "Roberta", "black", "white", "prejudice",
-                          "mothers", "segregation", "hate", "hatred", "love", "love-hate",
-                          "remember", "children", "recall", "kick", "truth", "dance", "sick",
-                          "fade", "old", "Mary", "sandy", "race", "racial", "racism",
-                          "colorblind", "disabled", "marginalized", "poor", "rich", "wealthy",
-                          "middle-class", "working-class", "consumers", "shopping", "read",
-                          "misread", "reread", "reconsider", "confuse", "wrong", "mistaken",
-                          "regret", "mute", "voiceless", "women", "age", "bird", "time", "scene",
-                          "setting", "Hendrix ", "universal", "binary", "deconstruct",
-                          "question", "wrong", "right", "incorrect", "false", "claims", "true",
-                          "truth", "unknown", "ambiguous", "unclear"]
-
         question_count_map = {}
         for segment in self.questions:
             question = segment.question
             if question not in question_count_map:
                 question_count_map[question] = 0
-            if string_contains_words(segment.response, relevant_words):
+            if string_contains_words(segment.response, RELEVANT_WORDS):
                 question_count_map[question] += 1
 
         total_student_count = len(self.readings)
@@ -136,7 +153,7 @@ class RereadingAnalysis:
             percent_question_count_map.append(
                 (question.text, question_count_map[question] / total_student_count)
             )
-        return [relevant_words, percent_question_count_map]
+        return [RELEVANT_WORDS, percent_question_count_map]
 
     def get_all_heat_maps(self):
         """

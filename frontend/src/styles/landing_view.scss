@@ -1,0 +1,20 @@
+#landing-header {
+    font-family: $reading-font !important;
+    color: $brown;
+
+    font-size: 36px;
+    @media (min-width: 768px) {
+        font-size: 86px;
+    }
+}
+
+.landing-top-link {
+    @extend .body-text;
+    color: inherit;
+}
+
+.landing-btn {
+    @extend .btn-outline-dark;
+    border-radius: 0;
+    border-top: 0;
+}

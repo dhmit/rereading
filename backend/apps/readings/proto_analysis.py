@@ -10,6 +10,7 @@ from .analysis_helpers import (
     description_has_relevant_words,
     get_sentiments,
     remove_outliers,
+    string_contains_words,
 )
 from .models import StudentResponsePrototype, ContextPrototype
 
@@ -292,7 +293,6 @@ class PrototypeRereadingAnalysis:
             unique_students.add(row.student)
         return len(unique_students)
 
-
     @staticmethod
     def transform_nested_dict_to_list(nested_dict):
         """
@@ -328,7 +328,7 @@ class PrototypeRereadingAnalysis:
             if context not in question_context_count_map[question]:
                 question_context_count_map[question][context] = 0
 
-            if description_has_relevant_words(row.response, relevant_words):
+            if string_contains_words(row.response, relevant_words):
                 question_context_count_map[question][context] += 1
 
         flattened_data = \

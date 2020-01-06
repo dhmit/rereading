@@ -1,5 +1,4 @@
 $reading-font: 'EB Garamond', serif;
-//$reading-font: Perpetua;
 $header-font: Helvetica;
 
 /*
@@ -7,13 +6,11 @@ $header-font: Helvetica;
  */
 * {
     font-family: $header-font;
-
 }
 
 .author {
     font-size: 50%;
 }
-
 
 /*
  * Scrollbar -- show always, and style it
@@ -37,6 +34,7 @@ body {
     color: $brown;
 }
 
+.overview-container,
 .instructions,
 .text-and-questions {
     background: white;
@@ -58,6 +56,7 @@ body {
     overflow: auto;
     font-family: $reading-font;
     font-size: 18pt;
+    position: relative;
 }
 
 .segment-num {

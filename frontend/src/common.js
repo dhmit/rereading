@@ -1,8 +1,7 @@
 /**
  * Common.js -- miscellaneous routines useful throughout the system
  */
-
-
+import React from "react";
 import PropTypes from "prop-types";
 
 /**
@@ -93,3 +92,57 @@ export function handleStoryScroll(e, scroll_top, scroll_ups, scrolling_up) {
 // TODO: use set timeout to detect if still scrolling or not. If not, register new scroll position.
 // possible ideas: discrete scroll locations, scroll total, and A STRETCH: cater to lines in the
 // text.
+
+
+export class Footer extends React.Component {
+    render() {
+        return (
+            <footer className="footer bg-white text-dark text-center mt-auto">
+                <div className="container-fluid">
+                    <div className="row">
+                        <div className="col-4 py-3">
+                            <a href="https://digitalhumanities.mit.edu/">
+                                <img
+                                    src="/static/dh_logo.png"
+                                    className='footer-img'
+                                    alt='Digital Humanities at MIT Logo'
+                                />
+                            </a>
+                        </div>
+                        <div className="col-4 py-3">
+                            <a href="https://www.mit.edu/">
+                                <img
+                                    src="/static/mit_logo.svg"
+                                    className='footer-img'
+                                    alt='MIT Logo'
+                                />
+                            </a>
+                        </div>
+                        <div className="col-4 py-3">
+                            <a href="https://www.mellon.org/">
+                                <img
+                                    src="/static/mellon_logo.svg"
+                                    className='footer-img'
+                                    alt="Mellon Foundation Logo"
+                                />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        );
+    }
+}
+
+export class Spinner extends React.Component {
+    render() {
+        return (
+            <div className="loading-spinner">
+                <div className="spinner-border" role="status">
+                    <span className="sr-only">Loading...</span>
+                </div>
+            </div>
+        );
+    }
+}
+

@@ -480,14 +480,12 @@ export class AnalysisView extends React.Component {
                                 unit={"students"}
                             />
                         </Tab>
-
                         <Tab eventKey="Heat Map" title="Heat Map">
                             <HeatMapAnalysis
                                 data={get_all_heat_maps}
                             />
                         </Tab>
-
-                        <Tab eventKey="Tables" title="Tables">
+                        <Tab eventKey="Relevant Words" title="Relevant Words">
                             <RelevantWordPercentages
                                 words={percent_using_relevant_words_by_question[0]}
                                 entryData={percent_using_relevant_words_by_question[1]}
@@ -495,6 +493,8 @@ export class AnalysisView extends React.Component {
                             <RelevantWordsByQuestions
                                 relevant_words_by_question= {relevant_words_by_question}
                             />
+                        </Tab>
+                        <Tab eventKey="Top Words" title="Top Words">
                             <TabularAnalysis
                                 title="Top Words by Question"
                                 headers={[
@@ -505,6 +505,8 @@ export class AnalysisView extends React.Component {
                                 ]}
                                 data={most_common_words_by_question}
                             />
+                        </Tab>
+                        <Tab eventKey="student responses" title="All Responses">
                             <TabularAnalysis
                                 title="All Student Responses"
                                 headers={[

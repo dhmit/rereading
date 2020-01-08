@@ -4,6 +4,7 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
 import statistics
+import string
 from collections import Counter
 
 from .models import (
@@ -28,6 +29,25 @@ RELEVANT_WORDS = ["stereotypes", "bias", "assumptions", "assume", "narrator", "m
                   "setting", "Hendrix ", "universal", "binary", "deconstruct",
                   "question", "wrong", "right", "incorrect", "false", "claims", "true",
                   "truth", "unknown", "ambiguous", "unclear"]
+
+STOPWORDS = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', "you're",
+             "you've", "you'll", "you'd", 'your', 'yours', 'yourself', 'yourselves', 'he',
+             'him', 'his', 'himself', 'she', "she's", 'her', 'hers', 'herself', 'it', "it's",
+             'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which',
+             'who', 'whom', 'this', 'that', "that'll", 'these', 'those', 'am', 'is', 'are',
+             'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does',
+             'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until',
+             'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into',
+             'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down',
+             'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here',
+             'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more',
+             'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so',
+             'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', "don't", 'should',
+             "should've", 'now', 'd', 'll', 'm', 'o', 're', 've', 'y', 'ain', 'aren', "aren't",
+             'couldn', "couldn't", 'didn', "didn't", 'doesn', "doesn't", 'hadn', "hadn't", 'hasn',
+             "hasn't", 'haven', "haven't", 'isn', "isn't", 'ma', 'mightn', "mightn't", 'mustn',
+             "mustn't", 'needn', "needn't", 'shan', "shan't", 'shouldn', "shouldn't", 'wasn',
+             "wasn't", 'weren', "weren't", 'won', "won't", 'wouldn', "wouldn't"]
 
 class RereadingAnalysis:
     """
@@ -235,11 +255,15 @@ class RereadingAnalysis:
         # Iterate through and count all of the words in the responses
         for student_response in responses:
             student_answer_words = student_response.response.lower().split()
-            for word in student_answer_words:
+            filtered_words = filter(lambda x: x not in STOPWORDS and x not in string.punctuation,
+                                    student_answer_words)
+            for word in filtered_words:
+                # If you wanted to, you can remove some of the punctuation attached to words here
                 responses_frequency[word] += 1
 
         # Find the most common words for the question
-        most_common_words = responses_frequency.most_common(3)
+        results_to_show = 5
+        most_common_words = responses_frequency.most_common(results_to_show)
 
         # Turn the words into a string for it to display properly in the frontend
         words = ''
@@ -284,4 +308,5 @@ class RereadingAnalysis:
             data_list = [segment_num, question_num, question_text, top_question_words]
             top_words.append(data_list)
 
+        top_words.sort(key=lambda x: (x[0], x[1]))
         return top_words

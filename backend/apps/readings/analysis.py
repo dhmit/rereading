@@ -191,6 +191,7 @@ class RereadingAnalysis:
         """
 
         responses = []
+        ordered_segment_data = self.segments.order_by(segment_data)
 
         for segment_data in self.segments:
             segment_num = segment_data.segment.sequence

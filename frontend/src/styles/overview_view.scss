@@ -3,10 +3,68 @@ p {
 }
 
 p, ul, ol {
-    font-family: "Arial", serif;
     font-size: 15pt;
 }
 
 li:not(:last-child) {
-    margin-bottom: 5px;
+    margin-bottom: 15px;
+}
+
+h2 {
+    font-style: italic;
+    font-size: 14pt;
+    margin-top: 5px;
+    color: $brown;
+    letter-spacing: 1px;
+}
+
+ul {
+    margin: 25px 10px;
+    padding: 10px 30px;
+}
+
+.container {
+    margin-top: 25px;
+}
+
+.page-heading {
+    color: $brown;
+}
+
+
+.body-text:not(:first-child) {
+    margin-top: 25px;
+}
+
+.body-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 5px;
+    margin-top: 25px;
+}
+
+.bullet-text {
+    margin-left: 20px;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-around;
+}
+
+.nav-item {
+    margin-right: 25px;
+}
+
+.navbar-nav {
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+.blockquote {
+    margin-top: 10px;
+}
+
+.blockquote-footer {
+    text-align: right;
 }

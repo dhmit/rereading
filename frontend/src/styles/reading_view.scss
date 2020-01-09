@@ -1,5 +1,4 @@
 $reading-font: 'EB Garamond', serif;
-//$reading-font: Perpetua;
 $header-font: Helvetica;
 
 /*
@@ -7,13 +6,11 @@ $header-font: Helvetica;
  */
 * {
     font-family: $header-font;
-
 }
 
 .author {
     font-size: 50%;
 }
-
 
 /*
  * Scrollbar -- show always, and style it
@@ -37,6 +34,7 @@ body {
     color: $brown;
 }
 
+.overview-container,
 .instructions,
 .text-and-questions {
     background: white;
@@ -58,6 +56,7 @@ body {
     overflow: auto;
     font-family: $reading-font;
     font-size: 18pt;
+    position: relative;
 }
 
 .segment-num {
@@ -71,6 +70,10 @@ body {
     text-indent: 1em;
     padding: 0 5% 0 0%;
     font-family: $reading-font;
+}
+
+.segment-selector {
+    background-color: $beige;
 }
 
 .questions-container {
@@ -159,5 +162,12 @@ $btn-color: $forest_green;
     @extend .btn;
     @extend .btn-primary;
     @include button-variant($btn-color, $btn-color, lighten($btn-color,5%), $btn-color);
+}
+
+.analysis-table,
+.analysis-table th,
+.analysis-table td,
+.analysis-table tr {
+    border: 1px solid #000;
 }
 

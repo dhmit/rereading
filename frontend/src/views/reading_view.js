@@ -13,7 +13,7 @@ const VIEWS = {
 /*
  * Represents the actual Segment window
  */
-class Segment extends React.Component {
+export class Segment extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -226,7 +226,7 @@ class OverviewView extends React.Component {
         }
 
         return (
-            <div className="row">
+            <div className="row overview-container">
                 <div className="col-12"><hr/></div>
                 <div className="segment-container">
                     <div className="scroll-overview">

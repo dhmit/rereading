@@ -46,7 +46,6 @@ RelevantWordsByQuestions.propTypes = {
     relevant_words_by_question: PropTypes.array,
 }
 
-
 export function formatTime(timeInSeconds, secondsRoundDigits) {
     /*
         Returns a string in the format "x hours y minutes z seconds".

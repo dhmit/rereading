@@ -30,6 +30,8 @@ RELEVANT_WORDS = ["stereotypes", "bias", "assumptions", "assume", "narrator", "m
                   "question", "wrong", "right", "incorrect", "false", "claims", "true",
                   "truth", "unknown", "ambiguous", "unclear"]
 
+RELEVANT_WORDS_DICT = {word:1 for word in RELEVANT_WORDS}
+
 STOPWORDS = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', "you're",
              "you've", "you'll", "you'd", 'your', 'yours', 'yourself', 'yourselves', 'he',
              'him', 'his', 'himself', 'she', "she's", 'her', 'hers', 'herself', 'it', "it's",
@@ -48,6 +50,7 @@ STOPWORDS = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you',
              "hasn't", 'haven', "haven't", 'isn', "isn't", 'ma', 'mightn', "mightn't", 'mustn',
              "mustn't", 'needn', "needn't", 'shan', "shan't", 'shouldn', "shouldn't", 'wasn',
              "wasn't", 'weren', "weren't", 'won', "won't", 'wouldn', "wouldn't"]
+
 
 class RereadingAnalysis:
     """
@@ -110,6 +113,50 @@ class RereadingAnalysis:
         question_count_tup = list(question_context_count_map.items())
         return question_count_tup
 
+    def relevant_words_percent_display_question(self):
+        """
+            Return a list of list which contains the question, the percentage, the count of total
+            relevant words that a student used for the question, and a list of tuple inside each
+            sublist with the words and the counts
+            :return:the return type explained in the function description
+        """
+        # this is the combination + of the relevant words percentage and frequency function with
+        # word frequency display. Need to resolve the duplicated code fragment later
+
+        question_context_count_map = {} # show the relevant word usage with word frequency per
+        # question
+        question_count_map = {}
+        for segment in self.questions:
+            question = segment.question
+            question_context_count_map[question] = {}
+            single_response = segment.response
+            for word in single_response:
+                if word in RELEVANT_WORDS_DICT:
+                    question_context_count_map[question][word] = question_context_count_map[
+                        question].get(word, 0)+1
+
+            if string_contains_words(single_response, RELEVANT_WORDS):
+                question_count_map[question] = question_count_map.get(question, 0) + 1
+            else:
+                question_count_map[question] = question_count_map.get(question, 0)
+
+        total_student_count = len(self.readings)
+        percent_question_count_map = {}
+        for question in question_count_map:
+            percent = str(100 * round((question_count_map[question] / total_student_count),
+                                      3)) + "%"
+            percent_question_count_map[question.text] = percent
+            # (question.text, question_count_map[question] / total_student_count)
+        return_list = [["Question","Percentage of Students Using Relevant Words",
+                        "Count","Relevant Words by Question Frequency Display"]]
+        for question in question_context_count_map:
+            question_row = [question,percent_question_count_map[question],question_count_map[
+                question],question_context_count_map[question]]
+            return_list.append(question_row)
+        return return_list
+
+
+
     def mean_reading_vs_rereading_time(self):
         """
         Compares mean view times of reading segments vs rereading segments
@@ -162,10 +209,10 @@ class RereadingAnalysis:
         question_count_map = {}
         for segment in self.questions:
             question = segment.question
-            if question not in question_count_map:
-                question_count_map[question] = 0
             if string_contains_words(segment.response, RELEVANT_WORDS):
-                question_count_map[question] += 1
+                question_count_map[question] = question_count_map.get(question,0) +1
+            else:
+                question_count_map[question] = question_count_map.get(question, 0)
 
         total_student_count = len(self.readings)
         percent_question_count_map = []

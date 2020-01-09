@@ -197,7 +197,6 @@ class StudentSegmentData(models.Model):
         return literal_eval(self.scroll_data)
 
 
-
 class SegmentQuestionResponse(models.Model):
     """
     Response to a SegmentQuestion

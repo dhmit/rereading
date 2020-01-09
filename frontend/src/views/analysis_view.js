@@ -428,27 +428,6 @@ export class AnalysisView extends React.Component {
             most_common_words_by_question,
         } = this.state.analysis;
 
-        const sort_responses = (a, b) => {
-            const a_sequence = a[0];
-            const a_question_number = a[1];
-            const b_sequence = b[0];
-            const b_question_number = b[1];
-
-            if (a_sequence === b_sequence) {
-                if (a_question_number < b_question_number) {
-                    return -1;
-                } else {
-                    return 1;
-                }
-            } else if (a_sequence < b_sequence) {
-                return -1;
-            }
-
-            return 1;
-        };
-
-        const sorted_all_responses = all_responses.sort(sort_responses);
-
         return (
             <>
                 <div className={"container"}>
@@ -516,7 +495,7 @@ export class AnalysisView extends React.Component {
                                     "Response",
                                     "Evidence (if requested)",
                                 ]}
-                                data={sorted_all_responses}
+                                data={all_responses}
                             />
                         </Tab>
                     </Tabs>

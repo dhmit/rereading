@@ -230,6 +230,7 @@ class RereadingAnalysis:
                     evidence,
                 ]
                 responses.append(response_list)
+        responses = sorted(responses, key = lambda x: (x[0], x[1]))
 
         return responses
 

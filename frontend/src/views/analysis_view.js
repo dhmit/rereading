@@ -6,8 +6,9 @@ import {
 } from "../prototype/analysis_view";
 import { Footer, Spinner } from "../common";
 import PropTypes from 'prop-types';
-import Tabs from 'react-bootstrap/Tabs'
-import Tab from 'react-bootstrap/Tab'
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
+import "../index.scss";
 
 export class RereadCountTable extends React.Component {
     render() {
@@ -452,76 +453,78 @@ export class AnalysisView extends React.Component {
         return (
             <>
                 <div className={"container"}>
-                    <Tabs defaultActiveKey="Time Data" id="tab">
-                        <Tab eventKey="Time Data" title="Time Data">
-                            <h1
-                                className={"text-center display-4 mb-4"}
-                                id={"page-title"}
-                            >Analysis of Student Responses</h1>
-                            <TimeAnalysis
-                                header={"Total view time"}
-                                time_in_seconds={total_and_median_view_time[0]}
-                            />
-                            <TimeAnalysis
-                                header={"Median view time"}
-                                time_in_seconds={total_and_median_view_time[1]}
-                            />
-                            <TimeAnalysis
-                                header={"Mean reading view time"}
-                                time_in_seconds={mean_reading_vs_rereading_time[0]}
-                            />
-                            <TimeAnalysis
-                                header={"Mean rereading view time"}
-                                time_in_seconds={mean_reading_vs_rereading_time[1]}
-                            />
-                            <SingleValueAnalysis
-                                header={"Number of Unique Students"}
-                                value={get_number_of_unique_students}
-                                unit={"students"}
-                            />
-                        </Tab>
-                        <Tab eventKey="Heat Map" title="Heat Map">
-                            <HeatMapAnalysis
-                                data={get_all_heat_maps}
-                            />
-                        </Tab>
-                        <Tab eventKey="Relevant Words" title="Relevant Words">
-                            <RelevantWordPercentages
-                                words={percent_using_relevant_words_by_question[0]}
-                                entryData={percent_using_relevant_words_by_question[1]}
-                            />
-                            <RelevantWordsByQuestions
-                                relevant_words_by_question= {relevant_words_by_question}
-                            />
-                        </Tab>
-                        <Tab eventKey="Top Words" title="Top Words">
-                            <TabularAnalysis
-                                title="Top Words by Question"
-                                headers={[
-                                    "Segment Number",
-                                    "Question Number",
-                                    "Question Text",
-                                    "Top Words"
-                                ]}
-                                data={most_common_words_by_question}
-                            />
-                        </Tab>
-                        <Tab eventKey="student responses" title="All Responses">
-                            <TabularAnalysis
-                                title="All Student Responses"
-                                headers={[
-                                    "Segment Number",
-                                    "Question Number",
-                                    "Question Text",
-                                    "Response",
-                                    "Evidence",
-                                ]}
-                                data={sorted_all_responses}
-                            />
-                        </Tab>
-                    </Tabs>
-                </div>
+                    <h1
+                        className={"text-center display-4 mb-4"}
+                        id={"page-title"}
+                    >Analysis of Student Responses</h1>
+                    <div className={"analysis-container"}>
 
+                        <Tabs defaultActiveKey="Time Data" className="tabs">
+                            <Tab eventKey="Time Data" title="Time Data" className="tab">
+                                <TimeAnalysis
+                                    header={"Total view time"}
+                                    time_in_seconds={total_and_median_view_time[0]}
+                                />
+                                <TimeAnalysis
+                                    header={"Median view time"}
+                                    time_in_seconds={total_and_median_view_time[1]}
+                                />
+                                <TimeAnalysis
+                                    header={"Mean reading view time"}
+                                    time_in_seconds={mean_reading_vs_rereading_time[0]}
+                                />
+                                <TimeAnalysis
+                                    header={"Mean rereading view time"}
+                                    time_in_seconds={mean_reading_vs_rereading_time[1]}
+                                />
+                                <SingleValueAnalysis
+                                    header={"Number of Unique Students"}
+                                    value={get_number_of_unique_students}
+                                    unit={"students"}
+                                />
+                            </Tab>
+                            <Tab eventKey="Heat Map" title="Heat Map">
+                                <HeatMapAnalysis
+                                    data={get_all_heat_maps}
+                                />
+                            </Tab>
+                            <Tab eventKey="Relevant Words" title="Relevant Words">
+                                <RelevantWordPercentages
+                                    words={percent_using_relevant_words_by_question[0]}
+                                    entryData={percent_using_relevant_words_by_question[1]}
+                                />
+                                <RelevantWordsByQuestions
+                                    relevant_words_by_question= {relevant_words_by_question}
+                                />
+                            </Tab>
+                            <Tab eventKey="Top Words" title="Top Words">
+                                <TabularAnalysis
+                                    title="Top Words by Question"
+                                    headers={[
+                                        "Segment Number",
+                                        "Question Number",
+                                        "Question Text",
+                                        "Top Words"
+                                    ]}
+                                    data={most_common_words_by_question}
+                                />
+                            </Tab>
+                            <Tab eventKey="student responses" title="All Responses">
+                                <TabularAnalysis
+                                    title="All Student Responses"
+                                    headers={[
+                                        "Segment Number",
+                                        "Question Number",
+                                        "Question Text",
+                                        "Response",
+                                        "Evidence",
+                                    ]}
+                                    data={sorted_all_responses}
+                                />
+                            </Tab>
+                        </Tabs>
+                    </div>
+                </div>
 
                 <Footer />
             </>

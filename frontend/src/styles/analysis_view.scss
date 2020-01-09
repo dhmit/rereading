@@ -1,0 +1,29 @@
+@import './colors';
+
+.analysis-table,
+.analysis-table th,
+.analysis-table td,
+.analysis-table tr {
+    border: 1px solid #000;
+}
+
+.analysis-container{
+    padding: 1em 2em 2em 2em;
+    border-radius: 1em;
+    background-color: $white;
+
+    nav {
+        margin-bottom: 1em;
+        :hover {
+            color: $scarlet;
+        }
+    }
+    a {
+        color: $grey;
+    }
+}
+
+.segment-selector {
+    background-color: $white;
+}
+

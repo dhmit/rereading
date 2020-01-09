@@ -222,6 +222,9 @@ class RereadingAnalysis:
                 student_response = response.response
                 evidence = response.evidence
 
+                if(len(evidence) == 0):
+                    evidence = ""
+
                 response_list = [
                     segment_num,
                     question_num,
@@ -230,6 +233,9 @@ class RereadingAnalysis:
                     evidence,
                 ]
                 responses.append(response_list)
+
+        # responses = self.segments.segment_data.segment_responses.all().order_by(
+        #     self.segments.segment_data.segment.sequence, self.segments.question.sequence)
         responses = sorted(responses, key = lambda x: (x[0], x[1]))
 
         return responses

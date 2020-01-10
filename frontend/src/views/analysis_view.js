@@ -369,7 +369,7 @@ class HeatMapSegment extends React.Component {
                                     width: "593px",
                                     top: heat.start + "px",
                                     backgroundColor: "rgba(255, 0, 0," + heat.percentage + ")",
-                                    zIndex: -1,
+                                    zIndex: 2,
                                 }}
                                 key={i}
                             >

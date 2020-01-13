@@ -211,6 +211,7 @@ class RereadingAnalysis:
         """
 
         responses = []
+        responses_dict = {}
 
         for response in (SegmentQuestionResponse.objects.all()
                             .order_by('student_segment_data__segment__sequence',
@@ -240,6 +241,7 @@ class RereadingAnalysis:
             responses.append(response_list)
 
         return responses
+
 
     @staticmethod
     def get_top_words_for_question(question):

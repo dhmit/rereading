@@ -238,21 +238,18 @@ class RereadingAnalysis:
         for question in responses_dict:
             segment_num = responses_dict[question][0][0]
             question_num = responses_dict[question][0][1]
-            student_response = []
-            evidence = []
+            response_and_evidence = []
 
             for response in responses_dict[question]:
-                student_response.append(response[2])
-                evidence.append(response[3])
+                response_and_evidence.append((response[2], response[3]))
 
-            student_response = '\n'.join(student_response)
+            # student_response = '\n'.join(student_response)
             responses.append([segment_num,
                               question_num,
                               question,
-                              student_response,
-                              evidence, ])
+                              response_and_evidence,])
 
-        responses = sorted(responses, key=lambda x: (x[0], x[1]))
+        # responses = sorted(responses, key=lambda x: (x[0], x[1]))
 
         return responses
 

@@ -83,7 +83,6 @@ export function formatTime(timeInSeconds, secondsRoundDigits) {
     return finalFormat;
 }
 
-
 function formatPluralUnits(value, singularUnit, roundDigits = undefined) {
     /*
     Formats units that can be singular or plural.

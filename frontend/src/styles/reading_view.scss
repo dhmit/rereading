@@ -22,6 +22,10 @@ body {
 h1, h5 {
     font-family: $text-font;
 }
+.start-btn,
+.form-control {
+    height: 42px;
+}
 
 .author {
     font-size: 50%;
@@ -59,7 +63,7 @@ h1, h5 {
 .segment-num {
     @extend .mb-0;
     font-family: $text-font;
-    font-size: 2em;
+    font-size: $subheader-text-size;
     color: $brown;
 }
 

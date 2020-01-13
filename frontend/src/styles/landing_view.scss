@@ -13,11 +13,10 @@
     @extend .body-text;
     color: inherit;
 
-
-}
-a:hover {
-    text-decoration: none;
-    color: $red;
+    &:hover {
+        text-decoration: none;
+        color: $red;
+    }
 }
 
 .landing-btn {

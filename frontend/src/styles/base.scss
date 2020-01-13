@@ -2,6 +2,8 @@
 
 $text-font: 'EB Garamond', serif;
 $body-text-size: 20px;
+$header-text-size: 40px;
+$subheader-text-size: 24px;
 
 * {
   font-family: $text-font !important;
@@ -58,4 +60,10 @@ h1 {
 
 .btn {
     font-size: $body-text-size;
+}
+
+.form-control:focus,
+.form-control:active {
+    border-color: rgba(225,0,0,0.2);
+    box-shadow: 0 0 0 0.2rem rgba(225,0,0,0.2);
 }

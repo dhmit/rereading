@@ -3,7 +3,7 @@ p {
 }
 
 p, ul, ol {
-    font-size: 15pt;
+    font-size: $body-text-size;
 }
 
 li:not(:last-child) {
@@ -13,14 +13,15 @@ li:not(:last-child) {
 h2 {
     font-family: $text-font;
     font-style: italic;
-    font-size: 14pt;
+    font-size: 40px;
     margin-top: 5px;
     color: $brown;
     letter-spacing: 1px;
+    font-weight: 500;
 }
 
 ul {
-    margin: 25px 10px;
+    margin: 10px;
     padding: 10px 30px;
 }
 
@@ -44,6 +45,17 @@ ul {
     margin-top: 25px;
 }
 
+.body-header {
+    font-size: $header-text-size;
+    color: $brown;
+}
+
+.body-subheader {
+    font-size: $subheader-text-size;
+    color: $brown;
+    margin: 8px 0 8px 0;
+}
+
 .bullet-text {
     margin-left: 20px;
 }
@@ -53,7 +65,11 @@ ul {
     justify-content: space-around;
 
     .navbar-title:hover {
-        text-decoration: none;
+            text-decoration: none;
+    }
+
+    h1 {
+        line-height: 0.9;
     }
 
     .navbar-nav {
@@ -66,13 +82,12 @@ ul {
     font-family: $text-font;
     font-size: $body-text-size;
     color: $dark_grey;
-
     margin-right: 25px;
-}
 
-a:hover {
-    border-bottom: 1px $red solid;
-    color: $red !important;
+    &:hover {
+        border-bottom: 1px $red solid;
+        color: $scarlet !important;
+    }
 }
 
 .blockquote {

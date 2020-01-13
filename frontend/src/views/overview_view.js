@@ -9,7 +9,7 @@ class Navigation_Bar extends React.Component {
                 <div className="navbar-nav row mr-4">
                     <a
                         className="navbar-title"
-                        href="../"
+                        href="../../"
                     >
                         <h1>The<br/>Reading<br/>Redux</h1>
                     </a>
@@ -58,7 +58,7 @@ export class OverviewContent extends React.Component {
                 <main>
                     <div className="row">
                         <div className="col">
-                            <h1>{this.props.subtitle}</h1>
+                            <h1 className="body-header"h1>{this.props.subtitle}</h1>
                             <div className="body-container">
                                 {this.props.content}
                             </div>
@@ -255,7 +255,7 @@ export class RereadingSample extends React.Component {
                     short story. A short story is conducive to re-readings.
                 </p>
 
-                <h4>
+                <h4 className="body-subheader">
                     Why is “Recitatif” particularly appropriate for a
                     project about re-rereading?
                 </h4>
@@ -334,12 +334,12 @@ export class RereadingVisuals extends React.Component {
     render() {
         const content = (
             <React.Fragment>
-                <h3>
+                <h4 className="body-subheader">
                     How does one represent a reader’s multiple readings of one text?
-                </h3>
-                <h3>
+                </h4>
+                <h4 className="body-subheader">
                     How does one visualize a reader’s re-readings?
-                </h3>
+                </h4>
             </React.Fragment>
         );
         return (
@@ -355,7 +355,9 @@ export class RereadingValues extends React.Component {
     render() {
         const content = (
             <React.Fragment>
-                <h3>What are the numbers and statistics saying about rereading?</h3>
+                <h4 className="body-subheader">
+                    What are the numbers and statistics saying about rereading?
+                </h4>
             </React.Fragment>
         );
         return (

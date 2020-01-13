@@ -41,6 +41,9 @@ export class TabularAnalysis extends React.Component{
         return(
             <div>
                 <h3 className={"mt-4"}> {this.props.title} </h3>
+                {this.props.subtitle &&
+                    <h5>{this.props.subtitle}</h5>
+                }
                 <table className={"table analysis-table"}>
                     <tbody>
                         <tr>
@@ -203,6 +206,9 @@ export class RelevantWordPercentages extends React.Component {
                 {this.props.relevantWords}
                 <TabularAnalysis
                     title={"Percentage of Students Using Relevant Words"}
+                    subtitle={"This function calculates the percentage of all responses that" +
+                    " respond to the question with relevant words, signaling the responses that" +
+                    " contain valuable answers."}
                     headers={[
                         "Question",
                         "Percentage"

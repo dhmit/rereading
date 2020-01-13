@@ -36,6 +36,8 @@ export class RelevantWordsByQuestions extends React.Component {
                  question, ommiting stop words such as 'is' or 'the'.
                  */
                 title={"Frequency Counts for Student Response with Relevant Words"}
+                subtitle={"This function counts the number of responses that respond with" +
+                " relevant words."}
                 headers={[
                     "Question",
                     "Count"
@@ -507,6 +509,8 @@ export class AnalysisView extends React.Component {
                         <Tab eventKey="Top Words" title="Top Words">
                             <TabularAnalysis
                                 title="Top Words by Question"
+                                subtitle={"This function finds the words most used in all of the" +
+                                " responses to a certain question."}
                                 headers={[
                                     "Segment Number",
                                     "Question Number",

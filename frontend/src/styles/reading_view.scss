@@ -1,16 +1,5 @@
-$reading-font: 'EB Garamond', serif;
-$header-font: Helvetica;
+@import "./base.scss";
 
-/*
- * Standardizes all fonts
- */
-* {
-    font-family: $header-font;
-}
-
-.author {
-    font-size: 50%;
-}
 
 /*
  * Scrollbar -- show always, and style it
@@ -28,6 +17,14 @@ $header-font: Helvetica;
 
 body {
     background-color: $beige;
+}
+
+h1, h5 {
+    font-family: $text-font;
+}
+
+.author {
+    font-size: 50%;
 }
 
 .title {
@@ -54,14 +51,14 @@ body {
     height: 500px;
     width: 600px;
     overflow: auto;
-    font-family: $reading-font;
+    font-family: $text-font;
     font-size: 18pt;
     position: relative;
 }
 
 .segment-num {
     @extend .mb-0;
-    font-family: $reading-font;
+    font-family: $text-font;
     font-size: 2em;
     color: $brown;
 }
@@ -69,7 +66,7 @@ body {
 .segment-text {
     text-indent: 1em;
     padding: 0 5% 0 0%;
-    font-family: $reading-font;
+    font-family: $text-font;
 }
 
 .segment-selector {
@@ -94,7 +91,7 @@ body {
 .questions-boxes {
     overflow: auto;
     height:500px;
-    font-family: $reading-font;
+    font-family: $text-font;
     font-size: 14pt;
     text-decoration-color: dimgrey;
 }
@@ -128,7 +125,7 @@ body {
 
 
 .question-text {
-    font-family: $reading-font;
+    font-family: $text-font;
     font-size: 14pt;
 }
 

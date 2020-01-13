@@ -11,6 +11,7 @@ li:not(:last-child) {
 }
 
 h2 {
+    font-family: $text-font;
     font-style: italic;
     font-size: 14pt;
     margin-top: 5px;
@@ -50,15 +51,21 @@ ul {
 .navbar {
     display: flex;
     justify-content: space-around;
+
+    .navbar-title:hover {
+        text-decoration: none;
+    }
+
+    .navbar-nav {
+        margin-left: 20px;
+        margin-top: 10px;
+    }
 }
 
 .nav-item {
+    font-family: $text-font;
+    font-size: $body-text-size;
     margin-right: 25px;
-}
-
-.navbar-nav {
-    margin-left: 20px;
-    margin-top: 10px;
 }
 
 .blockquote {

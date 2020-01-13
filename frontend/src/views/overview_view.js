@@ -7,7 +7,12 @@ class Navigation_Bar extends React.Component {
         return (
             <nav className="navbar navbar-expand-md">
                 <div className="navbar-nav row mr-4">
-                    <h1>The<br/>Reading<br/>Redux</h1>
+                    <a
+                        className="navbar-title"
+                        href="../"
+                    >
+                        <h1>The<br/>Reading<br/>Redux</h1>
+                    </a>
                 </div>
                 <div className="navbar-nav row">
                     <a
@@ -17,7 +22,7 @@ class Navigation_Bar extends React.Component {
                     <a
                         className="nav-link nav-item text-dark"
                         href="/project_overview/sample/"
-                    >The Reading Sample</a>
+                    >Reading Sample</a>
                     <a
                         className="nav-link nav-item text-dark"
                         href="/project_overview/visuals/"
@@ -570,7 +575,6 @@ export class Writeups extends React.Component {
 }
 
 /*
-
 function render_participate_btn() {
     return (
         <div className="row mt-4"><div className="col text-center">

@@ -1,5 +1,4 @@
 #landing-header {
-    font-family: $reading-font !important;
     color: $brown;
 
     font-size: 36px;
@@ -11,10 +10,21 @@
 .landing-top-link {
     @extend .body-text;
     color: inherit;
+
+
+}
+a:hover {
+    text-decoration: none;
+    color: $scarlet;
 }
 
 .landing-btn {
     @extend .btn-outline-dark;
     border-radius: 0;
     border-top: 0;
+}
+
+// gets rid of the overlapping border
+.landing-btn + .landing-btn {
+    border-left: 0 !important;
 }

@@ -310,8 +310,8 @@ class HeatMapSegment extends React.Component {
         const scroll_ranges = Object.keys(heat_data);
         scroll_ranges.sort(scroll_range_sort);
         const max_scroll_range = scroll_ranges[scroll_ranges.length - 1];
-        const height = 500 + segment_height -
-                parseInt(max_scroll_range.split(" — ")[1]);
+        const height = 500 - (parseInt(max_scroll_range.split(" — ")[1]) -
+            segment_height);
         if (this.state.finalHeight !== height) {
             this.setState({finalHeight: height});
         }
@@ -352,7 +352,7 @@ class HeatMapSegment extends React.Component {
                     <option value={"rereading"}>rereading</option>
                 </select>
                 <div
-                    className="segment"
+                    className="heat-segment"
                     ref={this.segment_ref}
                 >
                     {segment_lines.map(
@@ -459,7 +459,8 @@ export class AnalysisView extends React.Component {
                     >Analysis of Student Responses</h1>
                     <div className={"analysis-container"}>
 
-                        <Tabs defaultActiveKey="Time Data" className="tabs">
+                        <Tabs defaultActiveKey="Time Data" className="tabs"
+                            mountOnEnter={true} unmountOnExit={true}>
                             <Tab eventKey="Time Data" title="Time Data" className="tab">
                                 <TimeAnalysis
                                     header={"Total view time"}

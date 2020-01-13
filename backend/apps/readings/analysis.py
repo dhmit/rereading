@@ -212,32 +212,32 @@ class RereadingAnalysis:
 
         responses = []
 
-        for segment_data in self.segments:
-            segment_num = segment_data.segment.sequence
+        for response in (SegmentQuestionResponse.objects.all()
+                            .order_by('student_segment_data__segment__sequence',
+                                      'question__sequence',
+                                      )
+                            .prefetch_related('student_segment_data__segment', 'question')
+        ):
+            segment_num = response.student_segment_data.segment.sequence
+            question = response.question
+            question_num = question.sequence
 
-            for response in segment_data.segment_responses.all():
-                question = response.question
-                question_num = question.sequence
-                question_text = question.text
-                student_response = response.response
-                evidence_string = str(response.evidence)
-                if len(response.evidence) > 2:
-                    evidence = evidence_string[1:len(evidence_string)-1]
-                else:
-                    evidence = ['N/A']
+            question_text = question.text
+            student_response = response.response
+            evidence_string = str(response.evidence)
+            if len(response.evidence) > 2:
+                evidence = evidence_string[1:len(evidence_string)-1]
+            else:
+                evidence = ['N/A']
 
-                response_list = [
-                    segment_num,
-                    question_num,
-                    question_text,
-                    student_response,
-                    evidence,
-                ]
-                responses.append(response_list)
-
-        # responses = self.segments.segment_data.segment_responses.all().order_by(
-        #     self.segments.segment_data.segment.sequence, self.segments.question.sequence)
-        responses = sorted(responses, key = lambda x: (x[0], x[1]))
+            response_list = [
+                segment_num,
+                question_num,
+                question_text,
+                student_response,
+                evidence,
+            ]
+            responses.append(response_list)
 
         return responses
 

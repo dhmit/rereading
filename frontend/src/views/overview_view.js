@@ -16,31 +16,31 @@ class Navigation_Bar extends React.Component {
                 </div>
                 <div className="navbar-nav row">
                     <a
-                        className="nav-link nav-item text-dark"
+                        className="nav-link nav-item"
                         href="/project_overview/"
                     >Project Overview</a>
                     <a
-                        className="nav-link nav-item text-dark"
+                        className="nav-link nav-item"
                         href="/project_overview/sample/"
                     >Reading Sample</a>
                     <a
-                        className="nav-link nav-item text-dark"
+                        className="nav-link nav-item"
                         href="/project_overview/visuals/"
                     >Rereading Visuals</a>
                     <a
-                        className="nav-link nav-item text-dark"
+                        className="nav-link nav-item"
                         href="/project_overview/values/"
                     >Rereading Values</a>
                     <a
-                        className="nav-link nav-item text-dark"
+                        className="nav-link nav-item"
                         href="/project_overview/quantitative/"
                     >Quantitative Questions</a>
                     <a
-                        className="nav-link nav-item text-dark"
+                        className="nav-link nav-item"
                         href="/project_overview/sources/"
                     >Sources</a>
                     <a
-                        className="nav-link nav-item text-dark"
+                        className="nav-link nav-item"
                         href="/project_overview/writeups/"
                     >Student Reflections</a>
                 </div>

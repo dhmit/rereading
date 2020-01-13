@@ -65,7 +65,14 @@ ul {
 .nav-item {
     font-family: $text-font;
     font-size: $body-text-size;
+    color: $dark_grey;
+
     margin-right: 25px;
+}
+
+a:hover {
+    border-bottom: 1px $red solid;
+    color: $red !important;
 }
 
 .blockquote {

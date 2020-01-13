@@ -1,3 +1,5 @@
+@import "./colors.scss";
+
 #landing-header {
     color: $brown;
 
@@ -15,7 +17,7 @@
 }
 a:hover {
     text-decoration: none;
-    color: $scarlet;
+    color: $red;
 }
 
 .landing-btn {

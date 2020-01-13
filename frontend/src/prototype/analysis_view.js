@@ -66,6 +66,7 @@ TabularAnalysis.propTypes = {
     headers: PropTypes.array,
     data: PropTypes.array,
     title: PropTypes.string,
+    subtitle: PropTypes.string,
 
 };
 

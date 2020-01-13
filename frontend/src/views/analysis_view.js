@@ -31,6 +31,10 @@ export class RelevantWordsByQuestions extends React.Component {
     render() {
         return (
             <TabularAnalysis
+                /*
+                Gives a list of the most common words in student responses for a particular
+                 question, ommiting stop words such as 'is' or 'the'.
+                 */
                 title={"Frequency Counts for Student Response with Relevant Words"}
                 headers={[
                     "Question",
@@ -235,6 +239,10 @@ export class HeatMapAnalysis extends React.Component {
                         })}
                     </select>
                 </h3>
+                <h2>This function provides a color coded map of time spent on different sections
+                    of the text. The darker the section, the more total time readers spent on it.
+                    A heat map is available for both the reading and the rereading data and for all
+                segments of the text.</h2>
                 Segment Number: &nbsp;
                 <select
                     value={this.state.segment_num}
@@ -458,6 +466,7 @@ export class AnalysisView extends React.Component {
                                 className={"text-center display-4 mb-4"}
                                 id={"page-title"}
                             >Analysis of Student Responses</h1>
+
                             <TimeAnalysis
                                 header={"Total view time"}
                                 time_in_seconds={total_and_median_view_time[0]}
@@ -481,6 +490,7 @@ export class AnalysisView extends React.Component {
                             />
                         </Tab>
                         <Tab eventKey="Heat Map" title="Heat Map">
+
                             <HeatMapAnalysis
                                 data={get_all_heat_maps}
                             />

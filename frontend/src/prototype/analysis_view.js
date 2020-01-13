@@ -69,6 +69,59 @@ TabularAnalysis.propTypes = {
 
 };
 
+export class AllResponsesTable extends React.Component {
+    render() {
+        // Create an array of indices based on the length of the header array
+        // let range = n => Array.from(Array(n).keys());
+        // let indices = range(this.props.headers.length);
+
+        return (
+            <div>
+                <h3 className={"mt-4"}> {this.props.title} </h3>
+                <table className={"table analysis-table"}>
+                    <tbody>
+                        <tr>
+                            {/* Auto generate the headers */}
+                            {this.props.headers.map( (header, k) => (
+                                <th className={"p-2"} key={k}>{header}</th>)
+                            )}
+                        </tr>
+                        {this.props.data.map( (entry, k) => (
+                            <tr key={k}>
+                                <td className={"p-2"} key={k} rowSpan={entry[3].length}>
+                                    {entry[0]}
+                                </td>
+                                <td className={"p-2"} key={k} rowSpan={entry[3].length}>
+                                    {entry[1]}
+                                </td>
+                                <td className={"p-2"} key={k} rowSpan={entry[3].length}>
+                                    {entry[2]}
+                                </td>
+                                {entry[3].map((tuple, k) => (
+                                    <>
+                                        <td className={"p-2"} key={k}>
+                                            {tuple[0]}
+                                        </td>
+                                        <td className={"p-2"} key={k}>
+                                            {tuple[1]}
+                                        </td>
+                                    </>
+                                ))}
+                            </tr>)
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
+        )
+    }
+}
+AllResponsesTable.propTypes = {
+    headers: PropTypes.array,
+    data: PropTypes.array,
+    title: PropTypes.string,
+}
+
 export class CommonResponses extends React.Component {
     render() {
         return (

@@ -2,7 +2,7 @@ import React from "react";
 import {
     SingleValueAnalysis,
     RelevantWordPercentages,
-    TabularAnalysis,
+    TabularAnalysis, AllResponsesTable,
 } from "../prototype/analysis_view";
 import { Footer, Spinner } from "../common";
 import PropTypes from 'prop-types';
@@ -486,7 +486,7 @@ export class AnalysisView extends React.Component {
                             />
                         </Tab>
                         <Tab eventKey="student responses" title="All Responses">
-                            <TabularAnalysis
+                            <AllResponsesTable
                                 title="All Student Responses"
                                 headers={[
                                     "Segment Number",

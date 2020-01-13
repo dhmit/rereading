@@ -206,10 +206,12 @@ class RereadingAnalysis:
         """
         Returns a list of all of the responses in the DB, in the form:
         [Segment Num, Question Seq Num, Question Text, Response]
+
         :return: List of lists
         """
 
         responses = []
+        responses_dict = {}
 
         for segment_data in self.segments:
             segment_num = segment_data.segment.sequence
@@ -219,26 +221,41 @@ class RereadingAnalysis:
                 question_num = question.sequence
                 question_text = question.text
                 student_response = response.response
-                evidence_string = str(response.evidence)
-                if len(response.evidence) > 2:
-                    evidence = evidence_string[1:len(evidence_string)-1]
-                else:
-                    evidence = ['N/A']
-
+                evidence = response.evidence
                 response_list = [
                     segment_num,
                     question_num,
-                    question_text,
                     student_response,
                     evidence,
                 ]
-                responses.append(response_list)
 
-        # responses = self.segments.segment_data.segment_responses.all().order_by(
-        #     self.segments.segment_data.segment.sequence, self.segments.question.sequence)
-        responses = sorted(responses, key = lambda x: (x[0], x[1]))
+                if question_text in responses_dict:
+                    responses_dict[question_text].append(response_list)
+                else:
+                    responses_dict[question_text] = []
+                    responses_dict[question_text].append(response_list)
+
+        for question in responses_dict:
+            segment_num = responses_dict[question][0][0]
+            question_num = responses_dict[question][0][1]
+            student_response = []
+            evidence = []
+
+            for response in responses_dict[question]:
+                student_response.append(response[2])
+                evidence.append(response[3])
+
+            student_response = '\n'.join(student_response)
+            responses.append([segment_num,
+                              question_num,
+                              question,
+                              student_response,
+                              evidence, ])
+
+        responses = sorted(responses, key=lambda x: (x[0], x[1]))
 
         return responses
+
 
     @staticmethod
     def get_top_words_for_question(question):

@@ -202,49 +202,6 @@ class RereadingAnalysis:
                     heat_map[segment_identifier][is_rereading][section_identifier] += 1
         return heat_map
 
-
-    # I thought it might be easier to do a drop down and show only the responses for a certain
-    # question (like the heat map). I wrote a method but didn't get to test if it works or
-    # anything so I left it commented out
-
-    # def get_number_of_questions(self):
-    #     """
-    #     Returns the total number of segment questions throughout the document
-    #     :return: int (number of questions)
-    #     """
-    #     number_of_questions = len(self.questions)
-    #
-    #     return number_of_questions
-    #
-    # def all_responses(self, segment_num, question_num):
-    #     """
-    #     Returns a list of all of the responses in the DB, in the form:
-    #     [Segment Num, Question Seq Num, Question Text, Response]
-    #
-    #     :return: List of lists
-    #     """
-    #     response_dict = {}
-    #     responses = []
-    #     question_text = ""
-    #     requested_segment = self.segments[segment_num - 1]
-    #
-    #     for response in requested_segment.segment_responses.all():
-    #         if response.question.sequence == question_num:
-    #             question_text = response.question.text
-    #             student_response = response.response
-    #             evidence_string = str(response.evidence)
-    #             if len(response.evidence) > 2:
-    #                 evidence = evidence_string[1:len(evidence_string)-1]
-    #             else:
-    #                 evidence = ['N/A']
-    #
-    #             single_response = [student_response, evidence]
-    #             responses.append(single_response);
-    #
-    #     response_dict = {question_text: responses}
-    #
-    #     return response_dict
-
     def all_responses(self):
         """
         Returns a list of all of the responses in the DB, in the form:

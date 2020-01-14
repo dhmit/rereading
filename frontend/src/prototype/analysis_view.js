@@ -84,18 +84,18 @@ export class AllResponsesTable extends React.Component {
                         </tr>
                         {this.props.data.map( (entry, k) => (
                             <tr key={k}>
-                                <td className={"p-2"} key={k} rowSpan={entry[3].length}>
+                                <td className={"p-2"} key={k}>
                                     {entry[0]}
                                 </td>
-                                <td className={"p-2"} key={k} rowSpan={entry[3].length}>
+                                <td className={"p-2"} key={k}>
                                     {entry[1]}
                                 </td>
-                                <td className={"p-2"} key={k} rowSpan={entry[3].length}>
+                                <td className={"p-2"} key={k}>
                                     {entry[2]}
                                 </td>
                                 {entry[3].map((tuple, k) => (
                                     <tr key={k}>
-                                        <td key={k}>
+                                        <td className={"p-2"} key={k}>
                                             {tuple[0]}
                                         </td>
                                         <td className={"p-2"} key={k}>

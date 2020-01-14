@@ -496,8 +496,7 @@ export class AnalysisView extends React.Component {
                                         "Segment Number",
                                         "Question Number",
                                         "Question Text",
-                                        "Response",
-                                        "Evidence (if requested)",
+                                        "Response and Evidence",
                                     ]}
                                     data={all_responses}
                                 />

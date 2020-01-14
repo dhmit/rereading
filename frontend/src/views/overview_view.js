@@ -3,7 +3,13 @@ import PropTypes from "prop-types";
 import { Footer } from "../common";
 
 class Navigation_Bar extends React.Component {
+
     render() {
+        // to highlight the current page
+        const url = window.location.href;
+        const currentPageIndex = url.lastIndexOf("project_overview/") + "project_overview/".length;
+        const currentPage = url.slice(currentPageIndex);
+
         return (
             <nav className="navbar navbar-expand-md">
                 <div className="navbar-nav row mr-4">
@@ -16,31 +22,45 @@ class Navigation_Bar extends React.Component {
                 </div>
                 <div className="navbar-nav row">
                     <a
-                        className="nav-link nav-item"
+                        className={
+                            `nav-link nav-item ${currentPage === "" ? " current" : ""}`
+                        }
                         href="/project_overview/"
                     >Project Overview</a>
                     <a
-                        className="nav-link nav-item"
+                        className={
+                            `nav-link nav-item ${currentPage === "sample/" ? " current" : ""}`
+                        }
                         href="/project_overview/sample/"
                     >Reading Sample</a>
                     <a
-                        className="nav-link nav-item"
+                        className={
+                            `nav-link nav-item ${currentPage === "visuals/" ? " current" : ""}`
+                        }
                         href="/project_overview/visuals/"
                     >Rereading Visuals</a>
                     <a
-                        className="nav-link nav-item"
+                        className={
+                            `nav-link nav-item ${currentPage === "values/" ? " current" : ""}`
+                        }
                         href="/project_overview/values/"
                     >Rereading Values</a>
                     <a
-                        className="nav-link nav-item"
+                        className={
+                            `nav-link nav-item ${currentPage === "quantitative/" ? " current" : ""}`
+                        }
                         href="/project_overview/quantitative/"
                     >Quantitative Questions</a>
                     <a
-                        className="nav-link nav-item"
+                        className={
+                            `nav-link nav-item ${currentPage === "sources/" ? " current" : ""}`
+                        }
                         href="/project_overview/sources/"
                     >Sources</a>
                     <a
-                        className="nav-link nav-item"
+                        className={
+                            `nav-link nav-item ${currentPage === "writeups/" ? " current" : ""}`
+                        }
                         href="/project_overview/writeups/"
                     >Student Reflections</a>
                 </div>

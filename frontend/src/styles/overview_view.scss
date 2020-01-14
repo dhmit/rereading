@@ -83,6 +83,7 @@ ul {
     font-size: $body-text-size;
     color: $dark_grey;
     margin-right: 25px;
+    border-bottom: 1px transparent solid;
 
     &:hover {
         border-bottom: 1px $red solid;

@@ -58,7 +58,7 @@ export class OverviewContent extends React.Component {
                 <main>
                     <div className="row">
                         <div className="col">
-                            <h1 className="body-header"h1>{this.props.subtitle}</h1>
+                            <h1 className="body-header">{this.props.subtitle}</h1>
                             <div className="body-container">
                                 {this.props.content}
                             </div>

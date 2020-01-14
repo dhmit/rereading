@@ -157,6 +157,7 @@ $btn-color: $forest_green;
     &:hover{
         color: $white;
     }
+    margin-bottom: 5px;
 }
 
 .start-btn {
@@ -172,3 +173,6 @@ $btn-color: $forest_green;
     border: 1px solid #000;
 }
 
+div .card .mb-4:last-child {
+    margin-bottom: 0px !important;
+}

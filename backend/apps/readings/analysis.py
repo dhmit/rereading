@@ -238,9 +238,37 @@ class RereadingAnalysis:
                 student_response,
                 evidence,
             ]
+
             responses.append(response_list)
 
-        return responses
+        for response in responses:
+            response_list = [
+                response[0],
+                response[1],
+                response[3],
+                response[4],
+            ]
+            if response[2] in responses_dict:
+                responses_dict[response[2]].append(response_list)
+            else:
+                responses_dict[response[2]] = []
+                responses_dict[response[2]].append(response_list)
+
+        collated_responses = []
+        for question in responses_dict:
+            segment_num = responses_dict[question][0][0]
+            question_num = responses_dict[question][0][1]
+            student_evidence = []
+
+            for response in responses_dict[question]:
+                student_evidence.append((response[2], response[3]))
+
+            collated_responses.append([segment_num,
+                              question_num,
+                              question,
+                              student_evidence,])
+
+        return collated_responses
 
 
     @staticmethod

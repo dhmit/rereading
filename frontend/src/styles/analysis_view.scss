@@ -25,8 +25,13 @@
     }
 }
 
-.nav-link.active {
-    border-color: $grey $grey $white !important;
+.nav-link {
+    &.active {
+        border-color: $grey $grey $white !important;
+    }
+    &:hover:not(&.active) {
+        border-color: $light_grey $light_grey transparent !important;
+    }
 }
 
 a {

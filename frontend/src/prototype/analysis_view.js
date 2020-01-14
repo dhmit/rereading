@@ -206,9 +206,9 @@ export class RelevantWordPercentages extends React.Component {
                 {this.props.relevantWords}
                 <TabularAnalysis
                     title={"Percentage of Students Using Relevant Words"}
-                    subtitle={"This function calculates the percentage of all responses that" +
-                    " respond to the question with relevant words, signaling the responses that" +
-                    " contain valuable answers."}
+                    subtitle={"This function calculates the percentage of all students that" +
+                    " responded to the question using relevant words preselected by the the" +
+                    " reading administer."}
                     headers={[
                         "Question",
                         "Percentage"

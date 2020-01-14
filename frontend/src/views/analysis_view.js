@@ -37,7 +37,7 @@ export class RelevantWordsByQuestions extends React.Component {
                  */
                 title={"Frequency Counts for Student Response with Relevant Words"}
                 subtitle={"This function counts the number of responses that respond with" +
-                " relevant words."}
+                " the relevant words."}
                 headers={[
                     "Question",
                     "Count"
@@ -241,10 +241,10 @@ export class HeatMapAnalysis extends React.Component {
                         })}
                     </select>
                 </h3>
-                <h2>This function provides a color coded map of time spent on different sections
+                <p>This function provides a color coded map of time spent on different sections
                     of the text. The darker the section, the more total time readers spent on it.
-                    A heat map is available for both the reading and the rereading data and for all
-                segments of the text.</h2>
+                    A heat map is available for both the reading and the rereading data for all
+                segments of the text.</p>
                 Segment Number: &nbsp;
                 <select
                     value={this.state.segment_num}
@@ -509,8 +509,8 @@ export class AnalysisView extends React.Component {
                         <Tab eventKey="Top Words" title="Top Words">
                             <TabularAnalysis
                                 title="Top Words by Question"
-                                subtitle={"This function finds the words most used in all of the" +
-                                " responses to a certain question."}
+                                subtitle={"This function finds the most common words used in" +
+                                " student responses to a specific question."}
                                 headers={[
                                     "Segment Number",
                                     "Question Number",

@@ -5,7 +5,8 @@
 .analysis-table th,
 .analysis-table td,
 .analysis-table tr {
-    border: 1px solid #000;
+    border: 1px solid $grey;
+    font-size: $body-text-size;
 }
 
 .analysis-container{
@@ -14,15 +15,33 @@
     border-radius: 5px;
     background-color: $white;
 
-    nav {
-        margin-bottom: 1em;
-        :hover {
-            color: $scarlet;
-        }
+}
+
+.nav-tabs {
+    margin-bottom: 1em;
+    border-bottom-color: $grey !important;
+    &:hover {
+        color: $scarlet;
     }
-    a {
-        color: $grey;
-    }
+}
+
+.nav-link.active {
+    border-color: $grey $grey $white !important;
+}
+
+a {
+    color: $dark_grey;
+}
+
+.analysis-label {
+    font-size: $body-text-size;
+    font-weight: 600;
+}
+
+.analysis-subheader {
+    font-size: $subheader-text-size;
+    color: $brown;
+
 }
 
 .segment-selector {

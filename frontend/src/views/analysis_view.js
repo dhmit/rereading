@@ -2,7 +2,7 @@ import React from "react";
 import {
     SingleValueAnalysis,
     RelevantWordPercentages,
-    TabularAnalysis, AllResponsesTable,
+    TabularAnalysis,
 } from "../prototype/analysis_view";
 import { Footer, Spinner } from "../common";
 import PropTypes from 'prop-types';
@@ -386,6 +386,90 @@ HeatMapSegment.propTypes = {
     heatMap: PropTypes.object,
     segmentNum: PropTypes.number,
 };
+
+export class AllResponsesTable extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            segment_num: 1,
+        };
+        this.handleSegmentChange = this.handleSegmentChange.bind(this);
+    }
+
+    handleSegmentChange(event) {
+        this.setState({segment_num: event.target.value});
+        console.log(event.target.value);
+    }
+
+    render() {
+        let range = n => Array.from(Array(n).keys());
+        let indices = range(5);
+        let segments = [];
+        indices.map((k) => (segments.push(k+1)));
+        const dataFilteredBySegment = this.props.data.filter(
+            (entry) => entry[0] === Number(this.state.segment_num)
+        );
+        console.log(this.state.segment_num);
+        console.log(this.props.data);
+        console.log(dataFilteredBySegment);
+
+        return (
+            <div>
+                <h3 className={"analysis-subheader mt-4"}> {this.props.title} </h3>
+                Segment Number: &nbsp;
+                <select
+                    value={this.state.segment_num}
+                    className={"segment-selector"}
+                    onChange={(e) => this.handleSegmentChange(e)}
+                >
+                    {segments.map((k, entry) => {
+                        return (
+                            <option key={k} value={segments[entry]}>
+                                {segments[entry]}
+                            </option>
+                        )
+                    })}
+                </select>
+                <table className={"table analysis-table"}>
+                    <tbody>
+                        <tr>
+                            {/* Auto generate the headers */}
+                            {this.props.headers.map( (header, k) => (
+                                <th className={"p-2"} key={k}>{header}</th>)
+                            )}
+                        </tr>
+                        {dataFilteredBySegment.map( (entry, k) => (
+                            <tr key={k}>
+                                <td className={"p-2"} key={k * 2}>
+                                    {entry[1]}
+                                </td>
+                                <td className={"p-2"} key={k * 2 + 1}>
+                                    {entry[2]}
+                                </td>
+                                {entry[3].map((tuple, k) => (
+                                    <tr className={"response-tr"} key={k}>
+                                        <td className={"p-2 response-td"} key={k * 2}>
+                                            {tuple[0]}
+                                        </td>
+                                        <td className={"p-2 response-td"} key={k * 2 + 1}>
+                                            {tuple[1]}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tr>)
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
+        )
+    }
+}
+AllResponsesTable.propTypes = {
+    headers: PropTypes.array,
+    data: PropTypes.array,
+    title: PropTypes.string,
+}
 
 export class AnalysisView extends React.Component {
     constructor(props) {

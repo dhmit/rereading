@@ -77,7 +77,7 @@ a {
     padding: 0 !important;
 }
 
-.response-tr:first-child .response-td {
+.response-tr > .response-td {
     border-top: 1px solid transparent !important;
 }
 

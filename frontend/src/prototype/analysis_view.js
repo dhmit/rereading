@@ -75,7 +75,7 @@ export class AllResponsesTable extends React.Component {
         this.state = {
             segment_num: 1,
         };
-        this.handleReadingChange = this.handleReadingChange.bind(this);
+        // this.handleReadingChange = this.handleReadingChange.bind(this);
     }
 
     handleSegmentChange(event) {
@@ -85,8 +85,6 @@ export class AllResponsesTable extends React.Component {
     render() {
         let range = n => Array.from(Array(n).keys());
         let indices = range(this.props.segments);
-        let segments = [];
-        indices.map((k) => (segments.push(k+1)));
         const dataFilteredBySegment = this.props.data.filter(
             (entry) => entry[0] === this.state.segment_num
         );
@@ -102,8 +100,8 @@ export class AllResponsesTable extends React.Component {
                 >
                     {indices.map((k, entry) => {
                         return (
-                            <option key={k} value={segments[entry]}>
-                                {segments[entry]}
+                            <option key={k} value={indices[entry]}>
+                                {indices[entry]}
                             </option>
                         )
                     })}

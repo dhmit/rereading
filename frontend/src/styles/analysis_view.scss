@@ -1,0 +1,63 @@
+@import './colors';
+@import './base';
+
+.analysis-table,
+.analysis-table th,
+.analysis-table td,
+.analysis-table tr {
+    border: 1px solid $grey;
+    font-size: $body-text-size;
+}
+
+.analysis-container{
+    padding: 1em 2em 2em 2em;
+    margin-bottom: 4em;
+    border-radius: 5px;
+    background-color: $white;
+
+}
+
+.nav-tabs {
+    margin-bottom: 1em;
+    border-bottom-color: $grey !important;
+    &:hover {
+        color: $scarlet;
+    }
+}
+
+.nav-link {
+    &.active {
+        border-color: $grey $grey $white !important;
+    }
+    &:hover:not(&.active) {
+        border-color: $light_grey $light_grey transparent !important;
+    }
+}
+
+a {
+    color: $dark_grey;
+}
+
+.analysis-label {
+    font-size: $body-text-size;
+    font-weight: 600;
+}
+
+.analysis-subheader {
+    font-size: $subheader-text-size;
+    color: $brown;
+
+}
+
+.segment-selector {
+    background-color: $white;
+}
+
+.heat-segment {
+    width: 600px;
+    overflow: hidden;
+    font-family: $text-font;
+    font-size: 18pt;
+    position: relative;
+}
+

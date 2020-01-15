@@ -73,15 +73,15 @@ a {
     }
 }
 
-.responses {
+.response-container {
     padding: 0 !important;
 }
 
-.response-tr:first-child .response-td {
+.response-tr > .response-td {
     border-top: 1px solid transparent !important;
 }
 
 .response-tr:last-child .response-td{
-    border-top: 1px solid transparent !important;
+    border-bottom: 1px solid transparent !important;
 }
 

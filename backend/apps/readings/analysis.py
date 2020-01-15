@@ -193,7 +193,6 @@ class RereadingAnalysis:
         segments
         """
         heat_map = {}
-
         for segment in self.segments:
             segment_identifier = segment.reading_data.document.title + " " + \
                                  str(segment.segment.sequence)
@@ -301,10 +300,13 @@ class RereadingAnalysis:
         responses_frequency = Counter()
 
         # Get all responses to the given question, based on whether its a doc or segment question
+
         if isinstance(question, SegmentQuestion):
-            responses = self.responses.filter(question=question)
+            # for res in self.responses:
+            #     print(res.question.id == question.id)
+            responses = filter(lambda x: x.question.id == question.id, self.responses)
         else:
-            responses = self.doc_questions_response.filter(question=question)
+            responses = filter(lambda x: x.question.id == question.id, self.doc_questions_response)
 
         # Iterate through and count all of the words in the responses
         for student_response in responses:
@@ -356,5 +358,4 @@ class RereadingAnalysis:
             data_list = [segment_num, question_num, question_text, top_question_words]
             top_words.append(data_list)
 
-        top_words.sort(key=lambda x: (x[0], x[1]))
         return top_words

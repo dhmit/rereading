@@ -193,7 +193,6 @@ class StudentSegmentData(models.Model):
         Scroll data is stored as a string representing JSON data, so it needs to be converted
         into a Python object before much can be done with it.
         """
-
         return literal_eval(self.scroll_data)
 
 
@@ -222,8 +221,7 @@ class SegmentQuestionResponse(models.Model):
 
         :return: List object
         """
-
-        return json.loads(self.evidence)
+        return literal_eval(self.evidence)
 
 
 class DocumentQuestionResponse(models.Model):
@@ -256,7 +254,7 @@ class DocumentQuestionResponse(models.Model):
         :return: List object
         """
 
-        return json.dumps(self.evidence)
+        return literal_eval(self.evidence)
 
 
 class Writeup(models.Model):

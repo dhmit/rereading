@@ -242,11 +242,7 @@ class RereadingAnalysis:
 
             question_text = question.text
             student_response = response.response
-            evidence_string = str(response.evidence)
-            if len(response.evidence) > 2:
-                evidence = evidence_string[1:len(evidence_string) - 1]
-            else:
-                evidence = ['N/A']
+            evidence = response.parse_evidence()
 
             response_list = [
                 segment_num,

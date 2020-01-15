@@ -45,7 +45,7 @@ export class RelevantWordsByQuestions extends React.Component {
 
 RelevantWordsByQuestions.propTypes = {
     relevant_words_by_question: PropTypes.array,
-}
+};
 
 
 export function formatTime(timeInSeconds, secondsRoundDigits) {
@@ -473,7 +473,7 @@ AllResponsesTable.propTypes = {
     headers: PropTypes.array,
     data: PropTypes.array,
     title: PropTypes.string,
-}
+};
 
 export class AnalysisView extends React.Component {
     constructor(props) {

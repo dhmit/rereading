@@ -27,7 +27,25 @@ export class RereadCountTable extends React.Component {
 RereadCountTable.propTypes = {
     compute_reread_counts: PropTypes.array,
 };
-
+export class RelevantWordsPercentFreqDisplay extends React.Component {
+    render() {
+        return (
+            <TabularAnalysis
+                title = {"Percentage and Frequency of Relevant Words per Question"}
+                headers={[
+                    "Question",
+                    "Percentage",
+                    "Count",
+                    "Relevant Word Count"
+                ]}
+                data={this.props.relevant_words_percent_display_question}
+            />
+        );
+    }
+}
+RelevantWordsPercentFreqDisplay.propTypes = {
+    relevant_words_percent_display_question: PropTypes.array,
+}
 export class RelevantWordsByQuestions extends React.Component {
     render() {
         return (
@@ -426,6 +444,7 @@ export class AnalysisView extends React.Component {
             get_all_heat_maps,
             all_responses,
             most_common_words_by_question,
+            relevant_words_percent_display_question
         } = this.state.analysis;
 
         const sort_responses = (a, b) => {
@@ -488,6 +507,12 @@ export class AnalysisView extends React.Component {
                                 />
                             </Tab>
                             <Tab eventKey="Relevant Words" title="Relevant Words">
+                                <RelevantWordsPercentFreqDisplay
+                                    questions={relevant_words_percent_display_question[0]}
+                                    percentage={relevant_words_percent_display_question[1]}
+                                    count={relevant_words_percent_display_question[2]}
+                                    wordscount={relevant_words_percent_display_question[3]}
+                                />
                                 <RelevantWordPercentages
                                     words={percent_using_relevant_words_by_question[0]}
                                     entryData={percent_using_relevant_words_by_question[1]}

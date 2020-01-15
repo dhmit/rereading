@@ -204,7 +204,7 @@ export class RelevantWordPercentages extends React.Component {
                     title={"Percentage of Students Using Relevant Words"}
                     headers={[
                         "Question",
-                        "Percentage"
+                        "Percentage",
                     ]}
                     data={this.formatDataWithPercentSign(this.props.entryData)}
                 />

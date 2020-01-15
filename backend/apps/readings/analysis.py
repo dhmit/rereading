@@ -74,6 +74,7 @@ class RereadingAnalysis:
         for segment in self.segments:
             # prime two variable to reduce calls to database
             view_time = segment.view_time
+
             reading_data = segment.reading_data
             # add the segment view times to a dictionary entry for each student reading session
             if reading_data not in in_dict:
@@ -132,8 +133,8 @@ class RereadingAnalysis:
             single_response = segment.response
             for word in single_response:
                 if word in RELEVANT_WORDS_DICT:
-                    question_context_count_map[question][word] = question_context_count_map[
-                        question].get(word, 0)+1
+                    question_context_count_map[question][word] = \
+                        question_context_count_map[question].get(word, 0)+1
 
             if string_contains_words(single_response, RELEVANT_WORDS):
                 question_count_map[question] = question_count_map.get(question, 0) + 1
@@ -150,8 +151,12 @@ class RereadingAnalysis:
         return_list = [["Question","Percentage of Students Using Relevant Words",
                         "Count","Relevant Words by Question Frequency Display"]]
         for question in question_context_count_map:
-            question_row = [question,percent_question_count_map[question],question_count_map[
-                question],question_context_count_map[question]]
+            question_row = [
+                question.text,
+                percent_question_count_map[question.text],
+                question_count_map[question],
+                question_context_count_map[question]
+            ]
             return_list.append(question_row)
         return return_list
 
@@ -218,9 +223,12 @@ class RereadingAnalysis:
         percent_question_count_map = []
         for question in question_count_map:
             percent_question_count_map.append(
-                (question.text, question_count_map[question] / total_student_count)
+                (question.text, question_count_map[question] /
+                 total_student_count)
             )
         return [RELEVANT_WORDS, percent_question_count_map]
+
+
 
     def get_all_heat_maps(self):
         """

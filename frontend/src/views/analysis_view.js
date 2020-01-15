@@ -32,7 +32,13 @@ export class RelevantWordsByQuestions extends React.Component {
     render() {
         return (
             <TabularAnalysis
+                /*
+                Gives a list of the most common words in student responses for a particular
+                 question, ommiting stop words such as 'is' or 'the'.
+                 */
                 title={"Frequency Counts for Student Response with Relevant Words"}
+                subtitle={"This function counts the number of responses that respond with" +
+                " the relevant words."}
                 headers={[
                     "Question",
                     "Count"
@@ -236,6 +242,10 @@ export class HeatMapAnalysis extends React.Component {
                         })}
                     </select>
                 </h3>
+                <p>This function provides a color coded map of time spent on different sections
+                    of the text. The darker the section, the more total time readers spent on it.
+                    A heat map is available for both the reading and the rereading data for all
+                segments of the text.</p>
                 <span className={"analysis-label"}> Segment Number: &nbsp; </span>
                 <select
                     value={this.state.segment_num}
@@ -500,6 +510,10 @@ export class AnalysisView extends React.Component {
                             <Tab eventKey="Top Words" title="Top Words">
                                 <TabularAnalysis
                                     title="Top Words by Question"
+                                    subtitle={
+                                        "This function finds the most common words used in "
+                                        + "student responses to a specific question."
+                                    }
                                     headers={[
                                         "Segment Number",
                                         "Question Number",

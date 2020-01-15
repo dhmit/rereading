@@ -3,39 +3,64 @@ import PropTypes from "prop-types";
 import { Footer } from "../common";
 
 class Navigation_Bar extends React.Component {
+
     render() {
+        // to highlight the current page
+        const url = window.location.href;
+        const currentPageIndex = url.lastIndexOf("project_overview/") + "project_overview/".length;
+        const currentPage = url.slice(currentPageIndex);
+
         return (
             <nav className="navbar navbar-expand-md">
                 <div className="navbar-nav row mr-4">
-                    <h1>The<br/>Reading<br/>Redux</h1>
+                    <a
+                        className="navbar-title"
+                        href="../../"
+                    >
+                        <h1>The<br/>Reading<br/>Redux</h1>
+                    </a>
                 </div>
                 <div className="navbar-nav row">
                     <a
-                        className="nav-link nav-item text-dark"
+                        className={
+                            `nav-link nav-item ${currentPage === "" ? " current" : ""}`
+                        }
                         href="/project_overview/"
                     >Project Overview</a>
                     <a
-                        className="nav-link nav-item text-dark"
+                        className={
+                            `nav-link nav-item ${currentPage === "sample/" ? " current" : ""}`
+                        }
                         href="/project_overview/sample/"
-                    >The Reading Sample</a>
+                    >Reading Sample</a>
                     <a
-                        className="nav-link nav-item text-dark"
+                        className={
+                            `nav-link nav-item ${currentPage === "visuals/" ? " current" : ""}`
+                        }
                         href="/project_overview/visuals/"
                     >Rereading Visuals</a>
                     <a
-                        className="nav-link nav-item text-dark"
+                        className={
+                            `nav-link nav-item ${currentPage === "values/" ? " current" : ""}`
+                        }
                         href="/project_overview/values/"
                     >Rereading Values</a>
                     <a
-                        className="nav-link nav-item text-dark"
+                        className={
+                            `nav-link nav-item ${currentPage === "quantitative/" ? " current" : ""}`
+                        }
                         href="/project_overview/quantitative/"
                     >Quantitative Questions</a>
                     <a
-                        className="nav-link nav-item text-dark"
+                        className={
+                            `nav-link nav-item ${currentPage === "sources/" ? " current" : ""}`
+                        }
                         href="/project_overview/sources/"
                     >Sources</a>
                     <a
-                        className="nav-link nav-item text-dark"
+                        className={
+                            `nav-link nav-item ${currentPage === "writeups/" ? " current" : ""}`
+                        }
                         href="/project_overview/writeups/"
                     >Student Reflections</a>
                 </div>
@@ -53,7 +78,7 @@ export class OverviewContent extends React.Component {
                 <main>
                     <div className="row">
                         <div className="col">
-                            <h1>{this.props.subtitle}</h1>
+                            <h1 className="body-header">{this.props.subtitle}</h1>
                             <div className="body-container">
                                 {this.props.content}
                             </div>
@@ -250,7 +275,7 @@ export class RereadingSample extends React.Component {
                     short story. A short story is conducive to re-readings.
                 </p>
 
-                <h4>
+                <h4 className="body-subheader">
                     Why is “Recitatif” particularly appropriate for a
                     project about re-rereading?
                 </h4>
@@ -329,12 +354,12 @@ export class RereadingVisuals extends React.Component {
     render() {
         const content = (
             <React.Fragment>
-                <h3>
+                <h4 className="body-subheader">
                     How does one represent a reader’s multiple readings of one text?
-                </h3>
-                <h3>
+                </h4>
+                <h4 className="body-subheader">
                     How does one visualize a reader’s re-readings?
-                </h3>
+                </h4>
             </React.Fragment>
         );
         return (
@@ -350,7 +375,9 @@ export class RereadingValues extends React.Component {
     render() {
         const content = (
             <React.Fragment>
-                <h3>What are the numbers and statistics saying about rereading?</h3>
+                <h4 className="body-subheader">
+                    What are the numbers and statistics saying about rereading?
+                </h4>
             </React.Fragment>
         );
         return (
@@ -570,7 +597,6 @@ export class Writeups extends React.Component {
 }
 
 /*
-
 function render_participate_btn() {
     return (
         <div className="row mt-4"><div className="col text-center">

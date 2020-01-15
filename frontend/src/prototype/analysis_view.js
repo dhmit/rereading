@@ -12,7 +12,7 @@ export class SingleValueAnalysis extends React.Component {
 
         return(
             <div className={"row"}>
-                <strong className={"col-3"}>
+                <strong className={"analysis-label col-3"}>
                     {this.props.header}
                 </strong>
                 <p className={"col-9 mb-1 text-left d-block d-md-inline"}>
@@ -40,7 +40,7 @@ export class TabularAnalysis extends React.Component{
 
         return(
             <div>
-                <h3 className={"mt-4"}> {this.props.title} </h3>
+                <h3 className={"analysis-subheader mt-4"}> {this.props.title} </h3>
                 <table className={"table analysis-table"}>
                     <tbody>
                         <tr>

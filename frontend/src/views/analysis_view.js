@@ -220,7 +220,7 @@ export class HeatMapAnalysis extends React.Component {
 
         return (
             <div>
-                <h3 className={"mt-4"}>
+                <h3 className={"mt-4 analysis-subheader"}>
                     Heat Map for &nbsp;
                     <select
                         value={this.state.current_document}
@@ -236,7 +236,7 @@ export class HeatMapAnalysis extends React.Component {
                         })}
                     </select>
                 </h3>
-                Segment Number: &nbsp;
+                <span className={"analysis-label"}> Segment Number: &nbsp; </span>
                 <select
                     value={this.state.segment_num}
                     className={"segment-selector"}
@@ -250,7 +250,7 @@ export class HeatMapAnalysis extends React.Component {
                         )
                     })}
                 </select>
-                <table className={"table analysis-table"}>
+                <table className={"table analysis-table mt-2"}>
                     <tbody>
                         <tr>
                             <th>Scroll Position</th>
@@ -342,7 +342,7 @@ class HeatMapSegment extends React.Component {
 
         return (
             <div>
-                This is the heat map for: &nbsp;
+                <span className={"analysis-label"}> This is the heat map for: &nbsp; </span>
                 <select
                     value={this.state.readType}
                     className={"segment-selector"}
@@ -352,7 +352,7 @@ class HeatMapSegment extends React.Component {
                     <option value={"rereading"}>rereading</option>
                 </select>
                 <div
-                    className="heat-segment"
+                    className="heat-segment mt-2"
                     ref={this.segment_ref}
                 >
                     {segment_lines.map(
@@ -439,8 +439,7 @@ export class AnalysisView extends React.Component {
                     >Analysis of Student Responses</h1>
                     <div className={"analysis-container"}>
 
-                        <Tabs defaultActiveKey="Time Data" className="tabs"
-                            mountOnEnter={true} unmountOnExit={true}>
+                        <Tabs defaultActiveKey="Time Data" className="tabs" mountOnEnter={true}>
                             <Tab eventKey="Time Data" title="Time Data" className="tab">
                                 <TimeAnalysis
                                     header={"Total view time"}

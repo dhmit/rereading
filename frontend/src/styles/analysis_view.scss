@@ -66,3 +66,22 @@ a {
     position: relative;
 }
 
+.response-td {
+    border-left: 0.5px solid transparent !important;
+    &:last-child {
+        border-right: 0.5px solid transparent !important;
+    }
+}
+
+.responses {
+    padding: 0 !important;
+}
+
+.response-tr:first-child .response-td {
+    border-top: 1px solid transparent !important;
+}
+
+.response-tr:last-child .response-td{
+    border-top: 1px solid transparent !important;
+}
+

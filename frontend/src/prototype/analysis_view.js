@@ -123,15 +123,16 @@ export class AllResponsesTable extends React.Component {
                                     {entry[2]}
                                 </td>
                                 {entry[3].map((tuple, k) => (
-                                    <tr className={"response-td"} key={k}>
+                                    <tr className={"response-tr"} key={k}>
                                         <td className={"p-2 response-td"} key={k}>
                                             {tuple[0]}
                                         </td>
-                                        <td className={"p-2 response-td"} key={k}>
+                                        <td className={"p-2 response-td"} key={k * 2 + 1}>
                                             {tuple[1]}
                                         </td>
                                     </tr>
                                 ))}
+                                </td>
                             </tr>)
                         )}
                     </tbody>

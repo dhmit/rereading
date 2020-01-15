@@ -402,9 +402,7 @@ export class AllResponsesTable extends React.Component {
 
     render() {
         let range = n => Array.from(Array(n).keys());
-        let indices = range(5);
-        let segments = [];
-        indices.map((k) => (segments.push(k+1)));
+        let segments = range(5);
         const dataFilteredBySegment = this.props.data.filter(
             (entry) => entry[0] === Number(this.state.segment_num)
         );
@@ -423,8 +421,8 @@ export class AllResponsesTable extends React.Component {
                 >
                     {segments.map((k, entry) => {
                         return (
-                            <option key={k} value={segments[entry]}>
-                                {segments[entry]}
+                            <option key={k} value={segments[entry] + 1}>
+                                {segments[entry] + 1}
                             </option>
                         )
                     })}

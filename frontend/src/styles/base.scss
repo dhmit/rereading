@@ -1,5 +1,13 @@
-$body-font: 'EB Garamond', serif;
-$header-font: Helvetica;
+@import "./colors.scss";
+
+$text-font: 'EB Garamond', serif;
+$body-text-size: 20px;
+$header-text-size: 40px;
+$subheader-text-size: 30px;
+
+* {
+  font-family: $text-font !important;
+}
 
 html {
     position: relative;
@@ -23,7 +31,8 @@ main {
 }
 
 .body-text, em, .bullet-text {
-    font-family: $body-font;
+    font-family: $text-font;
+    font-size: $body-text-size;
 }
 
 footer {
@@ -47,4 +56,14 @@ footer {
 
 h1 {
     color: $brown;
+}
+
+.btn {
+    font-size: $body-text-size;
+}
+
+.form-control:focus,
+.form-control:active {
+    border-color: rgba(225,0,0,0.2);
+    box-shadow: 0 0 0 0.2rem rgba(225,0,0,0.2);
 }

@@ -1,13 +1,4 @@
-/*
- * Standardizes all fonts
- */
-* {
-    font-family: $header-font;
-}
-
-.author {
-    font-size: 50%;
-}
+@import "./base.scss";
 
 /*
  * Scrollbar -- show always, and style it
@@ -25,6 +16,18 @@
 
 body {
     background-color: $beige;
+}
+
+h1, h5 {
+    font-family: $text-font;
+}
+.start-btn,
+.form-control {
+    height: 42px;
+}
+
+.author {
+    font-size: 50%;
 }
 
 .title {
@@ -51,24 +54,28 @@ body {
     height: 500px;
     width: 600px;
     overflow: auto;
-    font-family: $body-font;
+    font-family: $text-font;
     font-size: 18pt;
     position: relative;
 }
 
 .segment-num {
     @extend .mb-0;
-    font-family: $body-font;
-    font-size: 2em;
+    font-family: $text-font;
+    font-size: $subheader-text-size;
     color: $brown;
 }
 
 .segment-text {
+    width: 593px; // so words per line is true to text
     text-indent: 1em;
     padding: 0 5% 0 0%;
-    font-family: $body-font;
     position: relative;
-    z-index: 30;
+    z-index: 5;
+}
+
+.segment-selector {
+    background-color: $beige;
 }
 
 .questions-container {
@@ -89,7 +96,7 @@ body {
 .questions-boxes {
     overflow: auto;
     height:500px;
-    font-family: $body-font;
+    font-family: $text-font;
     font-size: 14pt;
     text-decoration-color: dimgrey;
 }
@@ -123,7 +130,7 @@ body {
 
 
 .question-text {
-    font-family: $body-font;
+    font-family: $text-font;
     font-size: 14pt;
 }
 
@@ -151,6 +158,7 @@ $btn-color: $forest_green;
     &:hover{
         color: $white;
     }
+    margin-bottom: 5px;
 }
 
 .start-btn {
@@ -159,3 +167,13 @@ $btn-color: $forest_green;
     @include button-variant($btn-color, $btn-color, lighten($btn-color,5%), $btn-color);
 }
 
+.analysis-table,
+.analysis-table th,
+.analysis-table td,
+.analysis-table tr {
+    border: 1px solid #000;
+}
+
+div .card .mb-4:last-child {
+    margin-bottom: 0px !important;
+}

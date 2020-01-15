@@ -58,9 +58,19 @@ class RereadingAnalysis:
     """
 
     def __init__(self):
-        self.readings = StudentReadingData.objects.all()
-        self.segments = StudentSegmentData.objects.all().prefetch_related('reading_data', )
-        self.responses = SegmentQuestionResponse.objects.all().prefetch_related('question')
+        self.readings = StudentReadingData.objects.all()\
+            .prefetch_related('student',
+                              'document')
+        self.segments = StudentSegmentData.objects.all()\
+            .prefetch_related('reading_data__document',
+                              'segment')
+        self.responses = SegmentQuestionResponse.objects.all()\
+            .prefetch_related('student_segment_data__segment',
+                              'question')
+        self.doc_questions = DocumentQuestion.objects.all()
+        self.doc_questions_response = DocumentQuestionResponse.objects.all()
+        self.segment_questions = SegmentQuestion.objects.all()\
+            .prefetch_related('segment')
 
     def total_and_median_view_time(self):
         """
@@ -150,7 +160,6 @@ class RereadingAnalysis:
                 student_names.append('Anonymous')  # count one per anonymous student
             name = name.lower()
             student_names.append(name)
-
         return len(student_names)
 
     def percent_using_relevant_words_by_question(self):
@@ -160,8 +169,6 @@ class RereadingAnalysis:
         words in that question
         :return the return type explained in the function description
         """
-
-        print('PERCENT USING RELEVANT WORDS IS MAKING QUERIES\n\n\n\n\n\n')
         question_count_map = {}
         for segment in self.responses:
             question = segment.question
@@ -176,7 +183,6 @@ class RereadingAnalysis:
             percent_question_count_map.append(
                 (question.text, question_count_map[question] / total_student_count)
             )
-        print('PERCENT USING RELEVANT WORDS IS DONE MAKING QUERIES\n\n\n\n\n\n')
         return [RELEVANT_WORDS, percent_question_count_map]
 
     def get_all_heat_maps(self):
@@ -226,7 +232,6 @@ class RereadingAnalysis:
         responses = []
         responses_dict = {}
 
-        print('ALL RESPONSES IS MAKING QUERIES')
         for response in (self.responses
                              .order_by('student_segment_data__segment__sequence',
                                        'question__sequence',
@@ -281,12 +286,9 @@ class RereadingAnalysis:
                                        question,
                                        student_evidence, ])
 
-        print('ALL RESPONSES IS DONE MAKING QUERIES')
-
         return collated_responses
 
-    @staticmethod
-    def get_top_words_for_question(question):
+    def get_top_words_for_question(self, question):
         """
         Returns the top 3 most common words used to answer a question
 
@@ -300,9 +302,9 @@ class RereadingAnalysis:
 
         # Get all responses to the given question, based on whether its a doc or segment question
         if isinstance(question, SegmentQuestion):
-            responses = SegmentQuestionResponse.objects.filter(question=question)
+            responses = self.responses.filter(question=question)
         else:
-            responses = DocumentQuestionResponse.objects.filter(question=question)
+            responses = self.doc_questions_response.filter(question=question)
 
         # Iterate through and count all of the words in the responses
         for student_response in responses:
@@ -325,7 +327,6 @@ class RereadingAnalysis:
 
         # Strip the trailing whitespace and comma from the string of words
         words = words[:-2]
-
         return words
 
     def most_common_words_by_question(self):
@@ -336,23 +337,18 @@ class RereadingAnalysis:
         :return: List of lists, where each inner list is a question. Lists are of the form
         [segment_num, question_num, question_text, responses]
         """
-
-        # Find the document and segment questions
-        doc_questions = DocumentQuestion.objects.all()
-        segment_questions = SegmentQuestion.objects.all()
-
         # Initialize a list of lists to keep track of the top responses
         top_words = list()
 
         # Iterate through the questions to find the top response for each, and store it
-        for question in doc_questions:
+        for question in self.doc_questions:
             top_question_words = self.get_top_words_for_question(question)
             question_text = question.text
             question_num = question.sequence
             data_list = ['Global', question_num, question_text, top_question_words]
             top_words.append(data_list)
 
-        for question in segment_questions:
+        for question in self.segment_questions:
             top_question_words = self.get_top_words_for_question(question)
             question_text = question.text
             segment_num = question.segment.sequence

@@ -75,7 +75,7 @@ export class AllResponsesTable extends React.Component {
         this.state = {
             segment_num: 1,
         };
-        // this.handleReadingChange = this.handleReadingChange.bind(this);
+        this.handleSegmentChange = this.handleSegmentChange.bind(this);
     }
 
     handleSegmentChange(event) {
@@ -84,7 +84,9 @@ export class AllResponsesTable extends React.Component {
 
     render() {
         let range = n => Array.from(Array(n).keys());
-        let indices = range(this.props.segments);
+        let indices = range(5);
+        let segments = [];
+        indices.map((k) => (segments.push(k+1)));
         const dataFilteredBySegment = this.props.data.filter(
             (entry) => entry[0] === this.state.segment_num
         );
@@ -98,7 +100,7 @@ export class AllResponsesTable extends React.Component {
                     className={"segment-selector"}
                     onChange={(e) => this.handleSegmentChange(e)}
                 >
-                    {indices.map((k, entry) => {
+                    {segments.map((k, entry) => {
                         return (
                             <option key={k} value={indices[entry]}>
                                 {indices[entry]}
@@ -116,15 +118,15 @@ export class AllResponsesTable extends React.Component {
                         </tr>
                         {dataFilteredBySegment.map( (entry, k) => (
                             <tr key={k}>
-                                <td className={"p-2"} key={k}>
+                                <td className={"p-2"} key={k * 2}>
                                     {entry[1]}
                                 </td>
-                                <td className={"p-2"} key={k}>
+                                <td className={"p-2"} key={k * 2 + 1}>
                                     {entry[2]}
                                 </td>
                                 {entry[3].map((tuple, k) => (
                                     <tr className={"response-tr"} key={k}>
-                                        <td className={"p-2 response-td"} key={k}>
+                                        <td className={"p-2 response-td"} key={k * 2}>
                                             {tuple[0]}
                                         </td>
                                         <td className={"p-2 response-td"} key={k * 2 + 1}>
@@ -145,7 +147,6 @@ AllResponsesTable.propTypes = {
     headers: PropTypes.array,
     data: PropTypes.array,
     title: PropTypes.string,
-    segments: PropTypes.int,
 }
 
 export class CommonResponses extends React.Component {

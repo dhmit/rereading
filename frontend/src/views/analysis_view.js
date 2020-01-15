@@ -427,7 +427,7 @@ export class AnalysisView extends React.Component {
             get_all_heat_maps,
             all_responses,
             most_common_words_by_question,
-            get_number_of_segments,
+            // get_number_of_segments,
         } = this.state.analysis;
 
         return (
@@ -498,7 +498,6 @@ export class AnalysisView extends React.Component {
                                         "Response and Evidence",
                                     ]}
                                     data={all_responses}
-                                    segments={get_number_of_segments}
                                 />
                             </Tab>
                         </Tabs>

@@ -397,7 +397,6 @@ export class AllResponsesTable extends React.Component {
 
     handleSegmentChange(event) {
         this.setState({segment_num: event.target.value});
-        console.log(event.target.value);
     }
 
     render() {
@@ -406,9 +405,6 @@ export class AllResponsesTable extends React.Component {
         const dataFilteredBySegment = this.props.data.filter(
             (entry) => entry[0] === Number(this.state.segment_num)
         );
-        console.log(this.state.segment_num);
-        console.log(this.props.data);
-        console.log(dataFilteredBySegment);
 
         return (
             <div>

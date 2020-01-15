@@ -132,7 +132,6 @@ export class AllResponsesTable extends React.Component {
                                         </td>
                                     </tr>
                                 ))}
-                                </td>
                             </tr>)
                         )}
                     </tbody>

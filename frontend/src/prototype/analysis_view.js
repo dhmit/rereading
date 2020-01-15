@@ -91,7 +91,7 @@ export class AllResponsesTable extends React.Component {
 
         return (
             <div>
-                <h3 className={"mt-4"}> {this.props.title} </h3>
+                <h3 className={"analysis-subheader mt-4"}> {this.props.title} </h3>
                 Segment Number: &nbsp;
                 <select
                     value={this.state.segment_num}

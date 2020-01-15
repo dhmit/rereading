@@ -178,7 +178,6 @@ export class HeatMapAnalysis extends React.Component {
 
     async componentDidMount() {
         try {
-            // Uses Promise to do multiple fetches at once
             const response = await fetch('/api/documents/1/');
             const document = await response.json();
             this.setState({document});
@@ -523,7 +522,7 @@ export class AnalysisView extends React.Component {
                     >Analysis of Student Responses</h1>
                     <div className={"analysis-container"}>
 
-                        <Tabs defaultActiveKey="Time Data" className="tabs" mountOnEnter={true}>
+                        <Tabs defaultActiveKey="Time Data" className="tabs">
                             <Tab eventKey="Time Data" title="Time Data" className="tab">
                                 <TimeAnalysis
                                     header={"Total view time"}

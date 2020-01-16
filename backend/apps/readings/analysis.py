@@ -16,6 +16,7 @@ from .models import (
     SegmentQuestionResponse,
 )
 from .analysis_helpers import string_contains_words
+
 # all relevant words used for two functions
 RELEVANT_WORDS = ["stereotypes", "bias", "assumptions", "assume", "narrator", "memory",
                   "forget", "Twyla", "Maggie", "Roberta", "black", "white", "prejudice",
@@ -49,6 +50,7 @@ STOPWORDS = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you',
              "mustn't", 'needn', "needn't", 'shan', "shan't", 'shouldn', "shouldn't", 'wasn',
              "wasn't", 'weren', "weren't", 'won', "won't", 'wouldn', "wouldn't"]
 
+
 class RereadingAnalysis:
     """
     This class loads all StudentReadingData objects from the db,
@@ -57,8 +59,8 @@ class RereadingAnalysis:
 
     def __init__(self):
         self.readings = StudentReadingData.objects.all()
-        self.segments = StudentSegmentData.objects.all()
-        self.questions = SegmentQuestionResponse.objects.all()
+        self.segments = StudentSegmentData.objects.all().prefetch_related('reading_data', )
+        self.responses = SegmentQuestionResponse.objects.all().prefetch_related('question')
 
     def total_and_median_view_time(self):
         """
@@ -92,8 +94,7 @@ class RereadingAnalysis:
         ret_tuple = (round(total_time), round(median_view_time))
         return ret_tuple
 
-    @staticmethod
-    def relevant_words_by_question():
+    def relevant_words_by_question(self):
         """
             Return a list of tuples of the form (question,count), where count is
             the number of students who used relevant words in response to that question. This list
@@ -102,7 +103,7 @@ class RereadingAnalysis:
         """
 
         question_context_count_map = {}
-        for response in SegmentQuestionResponse.objects.all():
+        for response in self.responses:
             question = response.question.text
             question_context_count_map[question] = question_context_count_map.get(question, 0) + 1
             if string_contains_words(response.response, RELEVANT_WORDS):
@@ -159,8 +160,10 @@ class RereadingAnalysis:
         words in that question
         :return the return type explained in the function description
         """
+
+        print('PERCENT USING RELEVANT WORDS IS MAKING QUERIES\n\n\n\n\n\n')
         question_count_map = {}
-        for segment in self.questions:
+        for segment in self.responses:
             question = segment.question
             if question not in question_count_map:
                 question_count_map[question] = 0
@@ -173,6 +176,7 @@ class RereadingAnalysis:
             percent_question_count_map.append(
                 (question.text, question_count_map[question] / total_student_count)
             )
+        print('PERCENT USING RELEVANT WORDS IS DONE MAKING QUERIES\n\n\n\n\n\n')
         return [RELEVANT_WORDS, percent_question_count_map]
 
     def get_all_heat_maps(self):
@@ -185,7 +189,7 @@ class RereadingAnalysis:
         heat_map = {}
 
         for segment in self.segments:
-            segment_identifier = segment.reading_data.document.title + " " +\
+            segment_identifier = segment.reading_data.document.title + " " + \
                                  str(segment.segment.sequence)
             if segment_identifier not in heat_map:
                 heat_map[segment_identifier] = {"reading": {}, "rereading": {}}
@@ -193,8 +197,8 @@ class RereadingAnalysis:
                 if scroll_position < 0:
                     continue
                 section_number = int(scroll_position) // 500
-                section_identifier = str(section_number * 500) + " — " +\
-                    str((section_number + 1) * 500)
+                section_identifier = str(section_number * 500) + " — " + \
+                                     str((section_number + 1) * 500)
                 is_rereading = "rereading" if segment.is_rereading else "reading"
                 if section_identifier not in heat_map[segment_identifier][is_rereading]:
                     heat_map[segment_identifier][is_rereading][section_identifier] = 1
@@ -213,11 +217,11 @@ class RereadingAnalysis:
         responses = []
         responses_dict = {}
 
-        for response in (SegmentQuestionResponse.objects.all()
-                            .order_by('student_segment_data__segment__sequence',
-                                      'question__sequence',
-                                      )
-                            .prefetch_related('student_segment_data__segment', 'question')
+        print('ALL RESPONSES IS MAKING QUERIES')
+        for response in (self.responses
+                             .order_by('student_segment_data__segment__sequence',
+                                       'question__sequence',
+                                       )
         ):
             segment_num = response.student_segment_data.segment.sequence
             question = response.question
@@ -227,7 +231,7 @@ class RereadingAnalysis:
             student_response = response.response
             evidence_string = str(response.evidence)
             if len(response.evidence) > 2:
-                evidence = evidence_string[1:len(evidence_string)-1]
+                evidence = evidence_string[1:len(evidence_string) - 1]
             else:
                 evidence = ['N/A']
 
@@ -264,12 +268,13 @@ class RereadingAnalysis:
                 student_evidence.append((response[2], response[3]))
 
             collated_responses.append([segment_num,
-                              question_num,
-                              question,
-                              student_evidence,])
+                                       question_num,
+                                       question,
+                                       student_evidence, ])
+
+        print('ALL RESPONSES IS DONE MAKING QUERIES')
 
         return collated_responses
-
 
     @staticmethod
     def get_top_words_for_question(question):

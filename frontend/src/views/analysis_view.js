@@ -427,6 +427,7 @@ export class AnalysisView extends React.Component {
             get_all_heat_maps,
             all_responses,
             most_common_words_by_question,
+            get_number_of_segments,
         } = this.state.analysis;
 
         return (
@@ -474,7 +475,7 @@ export class AnalysisView extends React.Component {
                                     entryData={percent_using_relevant_words_by_question[1]}
                                 />
                                 <RelevantWordsByQuestions
-                                    relevant_words_by_question= {relevant_words_by_question}
+                                    relevant_words_by_question={relevant_words_by_question}
                                 />
                             </Tab>
                             <Tab eventKey="Top Words" title="Top Words">
@@ -493,12 +494,12 @@ export class AnalysisView extends React.Component {
                                 <AllResponsesTable
                                     title="All Student Responses"
                                     headers={[
-                                        "Segment Number",
                                         "Question Number",
                                         "Question Text",
                                         "Response and Evidence",
                                     ]}
                                     data={all_responses}
+                                    segments={get_number_of_segments}
                                 />
                             </Tab>
                         </Tabs>

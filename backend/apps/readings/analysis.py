@@ -14,7 +14,7 @@ from .models import (
     DocumentQuestion,
     DocumentQuestionResponse,
     SegmentQuestionResponse,
-)
+    Segment)
 from .analysis_helpers import string_contains_words
 
 # all relevant words used for two functions
@@ -205,6 +205,15 @@ class RereadingAnalysis:
                 else:
                     heat_map[segment_identifier][is_rereading][section_identifier] += 1
         return heat_map
+
+    @staticmethod
+    def get_number_of_segments():
+        """
+        Returns the number of segments.
+
+        :return: int (number of segments)
+        """
+        return len(Segment.objects.all())
 
     def all_responses(self):
         """

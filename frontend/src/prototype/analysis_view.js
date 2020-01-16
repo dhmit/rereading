@@ -32,7 +32,7 @@ SingleValueAnalysis.propTypes = {
     round_digits: PropTypes.number,
 };
 
-export class TabularAnalysis extends React.Component{
+export class TabularAnalysis extends React.Component {
     render() {
         // Create an array of indices based on the length of the header array
         let range = n => Array.from(Array(n).keys());
@@ -41,10 +41,13 @@ export class TabularAnalysis extends React.Component{
         const display_object = (_obj) => {
             return (
                 <ul>
-                    <span>Display me!</span>
+                    {
+                        Object.keys(_obj).map((word, index) => (
+                            <span key={index}> {word}: {_obj[word]}</span>))
+                    }
                 </ul>
-            );
-        };
+            )
+        }
 
         return(
             <div>

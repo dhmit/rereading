@@ -49,6 +49,9 @@ export class TabularAnalysis extends React.Component{
         return(
             <div>
                 <h3 className={"analysis-subheader mt-4"}> {this.props.title} </h3>
+                {this.props.subtitle &&
+                    <h5>{this.props.subtitle}</h5>
+                }
                 <table className={"table analysis-table"}>
                     <tbody>
                         <tr>
@@ -79,6 +82,7 @@ TabularAnalysis.propTypes = {
     headers: PropTypes.array,
     data: PropTypes.array,
     title: PropTypes.string,
+    subtitle: PropTypes.string,
 
 };
 
@@ -215,6 +219,9 @@ export class RelevantWordPercentages extends React.Component {
                 {this.props.relevantWords}
                 <TabularAnalysis
                     title={"Percentage of Students Using Relevant Words"}
+                    subtitle={"This function calculates the percentage of all students that" +
+                    " responded to the question using relevant words preselected by the the" +
+                    " reading administer."}
                     headers={[
                         "Question",
                         "Percentage",

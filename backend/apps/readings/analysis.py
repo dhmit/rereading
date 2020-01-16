@@ -148,8 +148,7 @@ class RereadingAnalysis:
                                       3)) + "%"
             percent_question_count_map[question.text] = percent
             # (question.text, question_count_map[question] / total_student_count)
-        return_list = [["Question","Percentage of Students Using Relevant Words",
-                        "Count","Relevant Words by Question Frequency Display"]]
+        return_list = []
         for question in question_context_count_map:
             question_row = [
                 question.text,

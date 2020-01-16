@@ -38,6 +38,14 @@ export class TabularAnalysis extends React.Component{
         let range = n => Array.from(Array(n).keys());
         let indices = range(this.props.headers.length);
 
+        const display_object = (_obj) => {
+            return (
+                <ul>
+                    <span>Display me!</span>
+                </ul>
+            );
+        };
+
         return(
             <div>
                 <h3 className={"analysis-subheader mt-4"}> {this.props.title} </h3>
@@ -52,7 +60,12 @@ export class TabularAnalysis extends React.Component{
                         {this.props.data.map( (entry, k) => (
                             <tr key={k}>
                                 {indices.map( (index, k) => (
-                                    <td className={"p-2"} key={k}> {entry[index]} </td>)
+                                    <td className={"p-2"} key={k}>
+                                        {typeof entry[index] === 'object'
+                                            ? display_object(entry[index])
+                                            : entry[index]
+                                        }
+                                    </td>)
                                 )}
                             </tr>)
                         )}

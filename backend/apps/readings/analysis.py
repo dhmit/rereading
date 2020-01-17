@@ -30,7 +30,7 @@ RELEVANT_WORDS = ["stereotypes", "bias", "assumptions", "assume", "narrator", "m
                   "question", "wrong", "right", "incorrect", "false", "claims", "true",
                   "truth", "unknown", "ambiguous", "unclear"]
 
-RELEVANT_WORDS_DICT = {word:1 for word in RELEVANT_WORDS}
+RELEVANT_WORDS_DICT = {word: 1 for word in RELEVANT_WORDS}
 
 STOPWORDS = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', "you're",
              "you've", "you'll", "you'd", 'your', 'yours', 'yourself', 'yourselves', 'he',
@@ -61,7 +61,7 @@ class RereadingAnalysis:
     def __init__(self):
         self.readings = StudentReadingData.objects.all()
         self.segments = StudentSegmentData.objects.all()
-        self.questions = SegmentQuestionResponse.objects.all()
+        self.responses = SegmentQuestionResponse.objects.all()
 
     def total_and_median_view_time(self):
         """
@@ -127,11 +127,13 @@ class RereadingAnalysis:
         question_context_count_map = {} # show the relevant word usage with word frequency per
         # question
         question_count_map = {}
-        for segment in self.questions:
-            question = segment.question
+        for question in SegmentQuestion.objects.all():
             question_context_count_map[question] = {}
+
+        for segment in self.responses:
+            question = segment.question
             single_response = segment.response
-            for word in single_response:
+            for word in single_response.split():
                 if word in RELEVANT_WORDS_DICT:
                     question_context_count_map[question][word] = \
                         question_context_count_map[question].get(word, 0)+1
@@ -144,8 +146,8 @@ class RereadingAnalysis:
         total_student_count = len(self.readings)
         percent_question_count_map = {}
         for question in question_count_map:
-            percent = str(100 * round((question_count_map[question] / total_student_count),
-                                      3)) + "%"
+            percent = str(100*round((question_count_map[question] / total_student_count),
+                                      2)) + "%"
             percent_question_count_map[question.text] = percent
             # (question.text, question_count_map[question] / total_student_count)
         return_list = []
@@ -154,7 +156,7 @@ class RereadingAnalysis:
                 question.text,
                 percent_question_count_map[question.text],
                 question_count_map[question],
-                question_context_count_map[question]
+                question_context_count_map[question],
             ]
             return_list.append(question_row)
         return return_list
@@ -211,7 +213,7 @@ class RereadingAnalysis:
         :return the return type explained in the function description
         """
         question_count_map = {}
-        for segment in self.questions:
+        for segment in self.responses:
             question = segment.question
             if string_contains_words(segment.response, RELEVANT_WORDS):
                 question_count_map[question] = question_count_map.get(question,0) +1

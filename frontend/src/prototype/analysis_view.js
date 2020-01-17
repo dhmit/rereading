@@ -38,12 +38,12 @@ export class TabularAnalysis extends React.Component {
         let range = n => Array.from(Array(n).keys());
         let indices = range(this.props.headers.length);
 
-        const display_object = (_obj) => {
+        const display_object = (obj) => {
             return (
                 <ul>
                     {
-                        Object.keys(_obj).map((word, index) => (
-                            <span key={index}> {word}: {_obj[word]}</span>))
+                        Object.keys(obj).map((word, index) => (
+                            <li key={index}> {word}: {obj[word]}</li>))
                     }
                 </ul>
             )

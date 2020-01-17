@@ -151,7 +151,7 @@ class RereadingAnalysis:
         percent_question_count_map = {}
         for question in question_count_map:
             percent = "{:.2%}".format(round(
-                    (question_count_map[question] / total_student_count), 2))
+                (question_count_map[question] / total_student_count), 2))
             percent_question_count_map[question.text] = percent
         return_list = []
         for question in question_context_count_map:
@@ -219,7 +219,7 @@ class RereadingAnalysis:
         for segment in self.responses:
             question = segment.question
             if string_contains_words(segment.response, RELEVANT_WORDS):
-                question_count_map[question] = question_count_map.get(question,0) +1
+                question_count_map[question] = question_count_map.get(question, 0) + 1
             else:
                 question_count_map[question] = question_count_map.get(question, 0)
 

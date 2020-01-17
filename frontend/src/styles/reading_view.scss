@@ -1,19 +1,4 @@
-$reading-font: 'EB Garamond', serif;
-//$reading-font: Perpetua;
-$header-font: Helvetica;
-
-/*
- * Standardizes all fonts
- */
-* {
-    font-family: $header-font;
-
-}
-
-.author {
-    font-size: 50%;
-}
-
+@import "./base.scss";
 
 /*
  * Scrollbar -- show always, and style it
@@ -33,10 +18,23 @@ body {
     background-color: $beige;
 }
 
+h1, h5 {
+    font-family: $text-font;
+}
+.start-btn,
+.form-control {
+    height: 42px;
+}
+
+.author {
+    font-size: 50%;
+}
+
 .title {
     color: $brown;
 }
 
+.overview-container,
 .instructions,
 .text-and-questions {
     background: white;
@@ -56,21 +54,24 @@ body {
     height: 500px;
     width: 600px;
     overflow: auto;
-    font-family: $reading-font;
+    font-family: $text-font;
     font-size: 18pt;
+    position: relative;
 }
 
 .segment-num {
     @extend .mb-0;
-    font-family: $reading-font;
-    font-size: 2em;
+    font-family: $text-font;
+    font-size: $subheader-text-size;
     color: $brown;
 }
 
 .segment-text {
+    width: 593px; // so words per line is true to text
     text-indent: 1em;
     padding: 0 5% 0 0%;
-    font-family: $reading-font;
+    position: relative;
+    z-index: 5;
 }
 
 .segment-selector {
@@ -95,7 +96,7 @@ body {
 .questions-boxes {
     overflow: auto;
     height:500px;
-    font-family: $reading-font;
+    font-family: $text-font;
     font-size: 14pt;
     text-decoration-color: dimgrey;
 }
@@ -129,7 +130,7 @@ body {
 
 
 .question-text {
-    font-family: $reading-font;
+    font-family: $text-font;
     font-size: 14pt;
 }
 
@@ -157,6 +158,7 @@ $btn-color: $forest_green;
     &:hover{
         color: $white;
     }
+    margin-bottom: 5px;
 }
 
 .start-btn {
@@ -172,3 +174,6 @@ $btn-color: $forest_green;
     border: 1px solid #000;
 }
 
+div .card .mb-4:last-child {
+    margin-bottom: 0px !important;
+}

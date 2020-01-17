@@ -9,8 +9,10 @@ from collections import Counter
 from .analysis_helpers import (
     get_sentiments,
     remove_outliers,
+    string_contains_words,
 )
 from .models import StudentResponsePrototype, ContextPrototype
+
 
 
 def get_responses_for_question(all_responses, question, context):
@@ -196,7 +198,6 @@ class PrototypeRereadingAnalysis:
         prints it in a nice readable format.
         :return: the info wed like to put on js
         """
-
         questions = []
         contexts = []
         student_data = self.responses[:]
@@ -326,9 +327,7 @@ class PrototypeRereadingAnalysis:
             if context not in question_context_count_map[question]:
                 question_context_count_map[question][context] = 0
 
-            if PrototypeRereadingAnalysis.description_has_relevant_words(
-                    row.response,
-                    relevant_words):
+            if string_contains_words(row.response, relevant_words):
                 question_context_count_map[question][context] += 1
 
         flattened_data = \

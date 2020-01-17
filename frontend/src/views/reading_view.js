@@ -13,7 +13,7 @@ const VIEWS = {
 /*
  * Represents the actual Segment window
  */
-class Segment extends React.Component {
+export class Segment extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -194,7 +194,7 @@ class OverviewQuestionDisplay extends React.Component {
 }
 OverviewQuestionDisplay.propTypes = {
     question_and_response: PropTypes.object,
-}
+};
 
 
 class OverviewView extends React.Component {
@@ -226,7 +226,7 @@ class OverviewView extends React.Component {
         }
 
         return (
-            <div className="row">
+            <div className="row overview-container">
                 <div className="col-12"><hr/></div>
                 <div className="segment-container">
                     <div className="scroll-overview">
@@ -633,7 +633,7 @@ export class ReadingView extends React.Component {
 
         const update_dict = {
             evidence: new_evidence_arr,
-        }
+        };
         this.updateResponseObject(is_document_question, question_id, update_dict);
     }
 
@@ -646,7 +646,7 @@ export class ReadingView extends React.Component {
             evidence.slice(0, evidence_index).concat(evidence.slice(evidence_index + 1));
         const update_dict = {
             evidence: updated_evidence_arr,
-        }
+        };
         this.updateResponseObject(is_document_question, question_id, update_dict);
     }
 
@@ -715,8 +715,8 @@ export class ReadingView extends React.Component {
         };
 
         return (
-            <div className="container background py-3">
-                <div className="row mb-4"><div className="col">
+            <div className="container background">
+                <div className="row mb-1"><div className="col">
                     <h1 className="display-4 title">
                         {doc.title} <span className="author">by {doc.author}</span>
                     </h1>

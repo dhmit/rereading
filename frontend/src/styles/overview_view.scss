@@ -3,10 +3,99 @@ p {
 }
 
 p, ul, ol {
-    font-family: "Arial", serif;
-    font-size: 15pt;
+    font-size: $body-text-size;
 }
 
 li:not(:last-child) {
-    margin-bottom: 5px;
+    margin-bottom: 15px;
+}
+
+h2 {
+    font-family: $text-font;
+    font-style: italic;
+    font-size: 40px;
+    margin-top: 5px;
+    color: $brown;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+ul {
+    margin: 10px;
+    padding: 10px 30px;
+}
+
+.container {
+    margin-top: 25px;
+}
+
+.page-heading {
+    color: $brown;
+}
+
+
+.body-text:not(:first-child) {
+    margin-top: 25px;
+}
+
+.body-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 5px;
+    margin-top: 25px;
+}
+
+.body-header {
+    font-size: $header-text-size;
+    color: $brown;
+}
+
+.body-subheader {
+    font-size: $subheader-text-size;
+    color: $brown;
+    margin: 8px 0 8px 0;
+}
+
+.bullet-text {
+    margin-left: 20px;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-around;
+
+    .navbar-title:hover {
+        text-decoration: none;
+    }
+
+    h1 {
+        line-height: 0.9;
+    }
+
+    .navbar-nav {
+        margin-left: 20px;
+        margin-top: 10px;
+    }
+}
+
+.nav-item {
+    font-family: $text-font;
+    font-size: $body-text-size;
+    color: $dark_grey;
+    margin-right: 25px;
+    border-bottom: 1px transparent solid;
+
+    &.current,
+    &:hover {
+        border-bottom: 1px $red solid;
+        color: $scarlet !important;
+    }
+}
+
+.blockquote {
+    margin-top: 10px;
+}
+
+.blockquote-footer {
+    text-align: right;
 }

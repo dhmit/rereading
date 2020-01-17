@@ -4,9 +4,50 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 
 """
 import statistics
+import string
+from collections import Counter
 
-from .models import StudentReadingData, StudentSegmentData, SegmentQuestionResponse
+from .models import (
+    StudentReadingData,
+    StudentSegmentData,
+    SegmentQuestion,
+    DocumentQuestion,
+    DocumentQuestionResponse,
+    SegmentQuestionResponse,
+)
+from .analysis_helpers import string_contains_words
+# all relevant words used for two functions
+RELEVANT_WORDS = ["stereotypes", "bias", "assumptions", "assume", "narrator", "memory",
+                  "forget", "Twyla", "Maggie", "Roberta", "black", "white", "prejudice",
+                  "mothers", "segregation", "hate", "hatred", "love", "love-hate",
+                  "remember", "children", "recall", "kick", "truth", "dance", "sick",
+                  "fade", "old", "Mary", "sandy", "race", "racial", "racism",
+                  "colorblind", "disabled", "marginalized", "poor", "rich", "wealthy",
+                  "middle-class", "working-class", "consumers", "shopping", "read",
+                  "misread", "reread", "reconsider", "confuse", "wrong", "mistaken",
+                  "regret", "mute", "voiceless", "women", "age", "bird", "time", "scene",
+                  "setting", "Hendrix ", "universal", "binary", "deconstruct",
+                  "question", "wrong", "right", "incorrect", "false", "claims", "true",
+                  "truth", "unknown", "ambiguous", "unclear"]
 
+STOPWORDS = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', "you're",
+             "you've", "you'll", "you'd", 'your', 'yours', 'yourself', 'yourselves', 'he',
+             'him', 'his', 'himself', 'she', "she's", 'her', 'hers', 'herself', 'it', "it's",
+             'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which',
+             'who', 'whom', 'this', 'that', "that'll", 'these', 'those', 'am', 'is', 'are',
+             'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does',
+             'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until',
+             'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into',
+             'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down',
+             'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here',
+             'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more',
+             'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so',
+             'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', "don't", 'should',
+             "should've", 'now', 'd', 'll', 'm', 'o', 're', 've', 'y', 'ain', 'aren', "aren't",
+             'couldn', "couldn't", 'didn', "didn't", 'doesn', "doesn't", 'hadn', "hadn't", 'hasn',
+             "hasn't", 'haven', "haven't", 'isn', "isn't", 'ma', 'mightn', "mightn't", 'mustn',
+             "mustn't", 'needn', "needn't", 'shan', "shan't", 'shouldn', "shouldn't", 'wasn',
+             "wasn't", 'weren', "weren't", 'won', "won't", 'wouldn', "wouldn't"]
 
 class RereadingAnalysis:
     """
@@ -51,6 +92,24 @@ class RereadingAnalysis:
         ret_tuple = (round(total_time), round(median_view_time))
         return ret_tuple
 
+    @staticmethod
+    def relevant_words_by_question():
+        """
+            Return a list of tuples of the form (question,count), where count is
+            the number of students who used relevant words in response to that question. This list
+            is sorted by question
+            :return the return type explained in the function description
+        """
+
+        question_context_count_map = {}
+        for response in SegmentQuestionResponse.objects.all():
+            question = response.question.text
+            question_context_count_map[question] = question_context_count_map.get(question, 0) + 1
+            if string_contains_words(response.response, RELEVANT_WORDS):
+                question_context_count_map[question] += 1
+        question_count_tup = list(question_context_count_map.items())
+        return question_count_tup
+
     def mean_reading_vs_rereading_time(self):
         """
         Compares mean view times of reading segments vs rereading segments
@@ -70,6 +129,7 @@ class RereadingAnalysis:
                 reading_time += view_time
 
         num_students = len(self.readings)
+
         # divide by total number of readings
         mean_reading_time = reading_time / num_students
         mean_rereading_time = rereading_time / num_students
@@ -92,30 +152,6 @@ class RereadingAnalysis:
 
         return len(student_names)
 
-
-    @staticmethod
-    def description_has_relevant_words(story_meaning_description, relevant_words):
-        """
-        Determine if the user's description contains a word relevant to the story's meaning
-        :param story_meaning_description: The user's response
-        :param relevant_words: a list of words which show an understanding of the story's meaning
-        :return True if the description contains one of the relevant words or relevant_words is
-        empty. False otherwise
-        """
-        if not relevant_words:
-            return True
-
-        lowercase_relevant_words = []
-        for word in relevant_words:
-            lowercase_relevant_words.append(word.lower())
-
-        words_used_in_description = story_meaning_description.lower().split(" ")
-
-        for word in lowercase_relevant_words:
-            if word.lower() in words_used_in_description:
-                return True
-        return False
-
     def percent_using_relevant_words_by_question(self):
         """
         Return a list of tuples with (question, percent), for each of the questions in the
@@ -123,25 +159,12 @@ class RereadingAnalysis:
         words in that question
         :return the return type explained in the function description
         """
-        relevant_words = ["stereotypes", "bias", "assumptions", "assume", "narrator", "memory",
-                          "forget", "Twyla", "Maggie", "Roberta", "black", "white", "prejudice",
-                          "mothers", "segregation", "hate", "hatred", "love", "love-hate",
-                          "remember", "children", "recall", "kick", "truth", "dance", "sick",
-                          "fade", "old", "Mary", "sandy", "race", "racial", "racism",
-                          "colorblind", "disabled", "marginalized", "poor", "rich", "wealthy",
-                          "middle-class", "working-class", "consumers", "shopping", "read",
-                          "misread", "reread", "reconsider", "confuse", "wrong", "mistaken",
-                          "regret", "mute", "voiceless", "women", "age", "bird", "time", "scene",
-                          "setting", "Hendrix ", "universal", "binary", "deconstruct",
-                          "question", "wrong", "right", "incorrect", "false", "claims", "true",
-                          "truth", "unknown", "ambiguous", "unclear"]
-
         question_count_map = {}
         for segment in self.questions:
             question = segment.question
             if question not in question_count_map:
                 question_count_map[question] = 0
-            if RereadingAnalysis.description_has_relevant_words(segment.response, relevant_words):
+            if string_contains_words(segment.response, RELEVANT_WORDS):
                 question_count_map[question] += 1
 
         total_student_count = len(self.readings)
@@ -150,7 +173,7 @@ class RereadingAnalysis:
             percent_question_count_map.append(
                 (question.text, question_count_map[question] / total_student_count)
             )
-        return [relevant_words, percent_question_count_map]
+        return [RELEVANT_WORDS, percent_question_count_map]
 
     def get_all_heat_maps(self):
         """
@@ -210,3 +233,80 @@ class RereadingAnalysis:
 
         return responses
 
+    @staticmethod
+    def get_top_words_for_question(question):
+        """
+        Returns the top 3 most common words used to answer a question
+
+
+        :param question: Question object
+        :return: List of tuples in the form (response, frequency)
+        """
+
+        # Keep track of frequency of each response
+        responses_frequency = Counter()
+
+        # Get all responses to the given question, based on whether its a doc or segment question
+        if isinstance(question, SegmentQuestion):
+            responses = SegmentQuestionResponse.objects.filter(question=question)
+        else:
+            responses = DocumentQuestionResponse.objects.filter(question=question)
+
+        # Iterate through and count all of the words in the responses
+        for student_response in responses:
+            student_answer_words = student_response.response.lower().split()
+            filtered_words = filter(lambda x: x not in STOPWORDS and x not in string.punctuation,
+                                    student_answer_words)
+            for word in filtered_words:
+                # If you wanted to, you can remove some of the punctuation attached to words here
+                responses_frequency[word] += 1
+
+        # Find the most common words for the question
+        results_to_show = 5
+        most_common_words = responses_frequency.most_common(results_to_show)
+
+        # Turn the words into a string for it to display properly in the frontend
+        words = ''
+        for frequency_pair in most_common_words:
+            word = frequency_pair[0]
+            words += word + ', '
+
+        # Strip the trailing whitespace and comma from the string of words
+        words = words[:-2]
+
+        return words
+
+    def most_common_words_by_question(self):
+        """
+        Returns a dictionary mapping all question texts to their most common responses and
+        frequencies
+
+        :return: List of lists, where each inner list is a question. Lists are of the form
+        [segment_num, question_num, question_text, responses]
+        """
+
+        # Find the document and segment questions
+        doc_questions = DocumentQuestion.objects.all()
+        segment_questions = SegmentQuestion.objects.all()
+
+        # Initialize a list of lists to keep track of the top responses
+        top_words = list()
+
+        # Iterate through the questions to find the top response for each, and store it
+        for question in doc_questions:
+            top_question_words = self.get_top_words_for_question(question)
+            question_text = question.text
+            question_num = question.sequence
+            data_list = ['Global', question_num, question_text, top_question_words]
+            top_words.append(data_list)
+
+        for question in segment_questions:
+            top_question_words = self.get_top_words_for_question(question)
+            question_text = question.text
+            segment_num = question.segment.sequence
+            question_num = question.sequence
+            data_list = [segment_num, question_num, question_text, top_question_words]
+            top_words.append(data_list)
+
+        top_words.sort(key=lambda x: (x[0], x[1]))
+        return top_words

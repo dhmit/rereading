@@ -9,6 +9,29 @@ from pathlib import Path
 from config.settings.base import PROJECT_ROOT
 
 
+def description_has_relevant_words(story_meaning_description, relevant_words):
+    """
+    Determine if the user's description contains a word relevant to the story's meaning
+    :param story_meaning_description: The user's three word description of the story
+    :param relevant_words: a list of words which show an understanding of the story's meaning
+    :return True if the description contains one of the relevant words or relevant_words is
+    empty. False otherwise
+    """
+    if not relevant_words:
+        return True
+
+    lowercase_relevant_words = []
+    for word in relevant_words:
+        lowercase_relevant_words.append(word.lower())
+
+    words_used_in_description = story_meaning_description.lower().split(" ")
+
+    for word in lowercase_relevant_words:
+        if word.lower() in words_used_in_description:
+            return True
+    return False
+
+
 def max_abs(val1, val2):
     """
     Compares the absolute value of the values, returning the larger of the two values
@@ -109,3 +132,16 @@ def remove_outliers(data):
 
     return data_no_outliers
 
+
+def string_contains_words(input_string, target_words):
+    """ Checks if a given input_string contains any of the words in the list of target_words """
+    if not target_words:
+        return True
+
+    input_string_lowercase = input_string.lower()
+
+    for word in target_words:
+        if word.lower() in input_string_lowercase:
+            return True
+
+    return False

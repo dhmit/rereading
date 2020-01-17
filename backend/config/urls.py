@@ -15,7 +15,7 @@ Including another URL configuration
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.shortcuts import redirect
+# from django.shortcuts import redirect
 from django.urls import path
 
 from apps.common import render_react_view
@@ -35,7 +35,8 @@ urlpatterns = [
     path('api/writeups/', readings_views.WriteupListView.as_view()),
 
     # React views
-    path('', lambda request: redirect('reading_view')),  # redirect / to project overview
+    path('', render_react_view, {'component_name': 'LandingPageView'}),
+
     path('project_overview/',
          render_react_view, {'component_name': 'ReadingRedux'},
          name='project_overview'),

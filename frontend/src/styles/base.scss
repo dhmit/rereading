@@ -1,0 +1,69 @@
+@import "./colors.scss";
+
+$text-font: 'EB Garamond', serif;
+$body-text-size: 20px;
+$header-text-size: 40px;
+$subheader-text-size: 30px;
+
+* {
+  font-family: $text-font !important;
+}
+
+html {
+    position: relative;
+    height: 100% !important;
+}
+
+body {
+    height: 100% !important;
+}
+
+#root {
+    height: 100% !important;
+    @extend .d-flex;
+    @extend .flex-column;
+}
+
+main {
+    @extend .container;
+    @extend .flex-shrink-0;
+    @extend .mb-5;
+}
+
+.body-text, em, .bullet-text {
+    font-family: $text-font;
+    font-size: $body-text-size;
+}
+
+footer {
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+.footer-img {
+     height: 80px;
+     max-height: 10vh;
+     max-width: 20vw;
+     object-fit: contain;
+}
+
+.loading-spinner {
+    position: fixed;
+    top: 50%;
+    right: 50%;
+}
+
+h1 {
+    color: $brown;
+}
+
+.btn {
+    font-size: $body-text-size;
+}
+
+.form-control:focus,
+.form-control:active {
+    border-color: rgba(225,0,0,0.2);
+    box-shadow: 0 0 0 0.2rem rgba(225,0,0,0.2);
+}

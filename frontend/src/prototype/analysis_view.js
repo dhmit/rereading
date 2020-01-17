@@ -12,10 +12,10 @@ export class SingleValueAnalysis extends React.Component {
 
         return(
             <div className={"row"}>
-                <strong className={"col-2"}>
+                <strong className={"analysis-label col-3"}>
                     {this.props.header}
                 </strong>
-                <p className={"col-2 mb-1 text-left d-block d-md-inline"}>
+                <p className={"col-9 mb-1 text-left d-block d-md-inline"}>
                     {display_value} {this.props.unit}
                 </p>
             </div>
@@ -40,8 +40,11 @@ export class TabularAnalysis extends React.Component{
 
         return(
             <div>
-                <h3 className={"mt-4"}> {this.props.title} </h3>
-                <table className={"table table-bordered"}>
+                <h3 className={"analysis-subheader mt-4"}> {this.props.title} </h3>
+                {this.props.subtitle &&
+                    <h5>{this.props.subtitle}</h5>
+                }
+                <table className={"table analysis-table"}>
                     <tbody>
                         <tr>
                             {/* Auto generate the headers */}
@@ -66,6 +69,7 @@ TabularAnalysis.propTypes = {
     headers: PropTypes.array,
     data: PropTypes.array,
     title: PropTypes.string,
+    subtitle: PropTypes.string,
 
 };
 
@@ -190,28 +194,34 @@ export class RelevantWordPercentages extends React.Component {
     formatDataWithPercentSign(rawData) {
         //Formats the given data (usually in decimal form) as a percentage
         let formattedData = [];
-        for (let [question, context, decimal] of rawData) {
-            formattedData.push([question, context, `${Math.round(100 * decimal)}%`]);
+        for (let [question, decimal] of rawData) {
+            formattedData.push([question, `${Math.round(100 * decimal)}%`]);
         }
         return formattedData;
     }
 
     render() {
         return (
-            <TabularAnalysis
-                title={"Percentage of Students Using Relevant Words"}
-                headers={[
-                    "Question",
-                    "Context",
-                    "Percentage"
-                ]}
-                data={this.formatDataWithPercentSign(this.props.entryData)}
-            />
+            <div>
+                {this.props.relevantWords}
+                <TabularAnalysis
+                    title={"Percentage of Students Using Relevant Words"}
+                    subtitle={"This function calculates the percentage of all students that" +
+                    " responded to the question using relevant words preselected by the the" +
+                    " reading administer."}
+                    headers={[
+                        "Question",
+                        "Percentage"
+                    ]}
+                    data={this.formatDataWithPercentSign(this.props.entryData)}
+                />
+            </div>
         );
     }
 }
 RelevantWordPercentages.propTypes = {
     entryData: PropTypes.array,
+    relevantWords: PropTypes.array,
 };
 
 export class PrototypeAnalysisView extends React.Component {
@@ -250,7 +260,7 @@ export class PrototypeAnalysisView extends React.Component {
                 compute_median_view_time,
                 run_compute_reread_counts,
                 compute_mean_response_length,
-                percent_using_relevant_words_by_context_and_question
+                percent_using_relevant_words_by_question
             } = this.state.analysis;
             return (
                 <div className={"container"}>
@@ -298,7 +308,7 @@ export class PrototypeAnalysisView extends React.Component {
                     <FrequencyFeelingTable feelings={frequency_feelings}/>
                     <ContextVsViewTime viewTime={context_vs_read_time}/>
                     <RelevantWordPercentages
-                        entryData={percent_using_relevant_words_by_context_and_question}
+                        entryData={percent_using_relevant_words_by_question}
                     />
                 </div>
             );

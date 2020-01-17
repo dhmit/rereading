@@ -231,10 +231,11 @@ class RereadingAnalysis:
         responses = []
         responses_dict = {}
 
-        for response in (self.responses
-                             .order_by('student_segment_data__segment__sequence',
-                                       'question__sequence',
-                                       )
+        for response in (
+                self.responses.order_by(
+                    'student_segment_data__segment__sequence',
+                    'question__sequence',
+                )
         ):
             segment_num = response.student_segment_data.segment.sequence
             question = response.question

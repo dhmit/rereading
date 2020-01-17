@@ -437,11 +437,11 @@ export class AllResponsesTable extends React.Component {
                     <tbody>
                         <tr>
                             {/* Auto generate the headers */}
-                            {this.props.headers.map( (header, k) => (
+                            {this.props.headers.map((header, k) => (
                                 <th className={"p-2"} key={k}>{header}</th>)
                             )}
                         </tr>
-                        {dataFilteredBySegment.map( (entry, k) => (
+                        {dataFilteredBySegment.map((entry, k) => (
                             <tr key={k}>
                                 <td className={"p-2"} key={k * 2}>
                                     {entry[1]}

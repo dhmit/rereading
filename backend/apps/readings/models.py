@@ -2,7 +2,6 @@
 Models for the Rereading app.
 """
 from ast import literal_eval
-import json
 
 from django.db import models
 

@@ -5,7 +5,8 @@ Analysis.py - analyses for dhmit/rereading wired into the webapp
 """
 import statistics
 import string
-from collections import Counter
+from collections import Counter, OrderedDict
+from operator import itemgetter
 
 from .models import (
     StudentReadingData,
@@ -137,6 +138,9 @@ class RereadingAnalysis:
                 if word in RELEVANT_WORDS_DICT:
                     question_context_count_map[question][word] = \
                         question_context_count_map[question].get(word, 0)+1
+                    question_context_count_map[question] = OrderedDict(sorted(
+                        question_context_count_map[question].items(), key=itemgetter(1),
+                        reverse=True))
 
             if string_contains_words(single_response, RELEVANT_WORDS):
                 question_count_map[question] = question_count_map.get(question, 0) + 1
@@ -146,10 +150,9 @@ class RereadingAnalysis:
         total_student_count = len(self.readings)
         percent_question_count_map = {}
         for question in question_count_map:
-            percent = str(100*round((question_count_map[question] / total_student_count),
-                                      2)) + "%"
+            percent = "{:.2%}".format(round(
+                    (question_count_map[question] / total_student_count), 2))
             percent_question_count_map[question.text] = percent
-            # (question.text, question_count_map[question] / total_student_count)
         return_list = []
         for question in question_context_count_map:
             question_row = [

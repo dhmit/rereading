@@ -4,6 +4,7 @@ in ways that can be transported across the backend/frontend divide, or
 allow the frontend to suggest changes to the backend/database.
 """
 from datetime import datetime
+from ast import literal_eval
 import json
 
 from rest_framework import serializers
@@ -92,7 +93,12 @@ class SegmentQuestionResponseSerializer(serializers.ModelSerializer):
     Serializes a response provided to a question from a segment
     """
     id = serializers.ModelField(model_field=SegmentQuestionResponse()._meta.get_field('id'))
-    evidence = serializers.ListField(child=serializers.CharField(), required=False)
+    reading_evidence = serializers.SerializerMethodField(read_only=True)
+    evidence = serializers.ModelField(
+        model_field=SegmentQuestionResponse()._meta.get_field('evidence'),
+        write_only=True,
+        required=False,
+    )
     question = serializers.ModelField(
         model_field=SegmentQuestionResponse()._meta.get_field('question'),
         required=False,
@@ -105,9 +111,13 @@ class SegmentQuestionResponseSerializer(serializers.ModelSerializer):
             'id',
             'response',
             'submission_time',
-            'evidence',
+            'reading_evidence',
             'question',
+            'evidence'
         )
+
+    def get_reading_evidence(self, obj):
+        return literal_eval(obj.evidence)
 
 
 class StudentSegmentDataSerializer(serializers.ModelSerializer):

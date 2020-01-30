@@ -28,6 +28,7 @@ RereadCountTable.propTypes = {
     compute_reread_counts: PropTypes.array,
 };
 
+
 export class RelevantWordsByQuestions extends React.Component {
     render() {
         return (
@@ -52,7 +53,6 @@ export class RelevantWordsByQuestions extends React.Component {
 RelevantWordsByQuestions.propTypes = {
     relevant_words_by_question: PropTypes.array,
 };
-
 
 export function formatTime(timeInSeconds, secondsRoundDigits) {
     /*
@@ -525,6 +525,7 @@ export class AnalysisView extends React.Component {
             get_all_heat_maps,
             all_responses,
             most_common_words_by_question,
+            relevant_words_percent_display_question
             // get_number_of_segments,
         } = this.state.analysis;
 
@@ -567,6 +568,49 @@ export class AnalysisView extends React.Component {
                                 />
                             </Tab>
                             <Tab eventKey="Relevant Words" title="Relevant Words">
+                                <TabularAnalysis
+                                    title = {
+                                        "Percentage and Frequency of Relevant Words per Question"
+                                    }
+                                    subtitle = {
+                                        "The following table displays the percentage of the" +
+                                        " responses that use the relevant words defined by" +
+                                        " Professor Alexandre, the total number of responses" +
+                                        " with at least one relevant word, and the frequencies" +
+                                        " of the relevant words per question by occurrences." +
+                                        "Here are the relevant words:\"stereotypes\", \"bias\", " +
+                                        "\"assumptions\", \"assume\", \"narrator\", \"memory\",\n" +
+                                        "\"forget\", \"Twyla\", \"Maggie\", \"Roberta\", " +
+                                        "\"black\", " + "" + "\"white\", \"prejudice\",\n" +
+                                        "\"mothers\", \"segregation\", \"hate\", \"hatred\", " +
+                                        "\"love\", \"love-hate\",\n" +
+                                        "\"remember\", \"children\", \"recall\", \"kick\", " +
+                                        "\"truth\"," + " \"dance\", \"sick\",\n" +
+                                        "\"fade\", \"old\", \"Mary\", \"sandy\", \"race\", " +
+                                        "\"racial\", \"racism\",\n" +
+                                        "\"colorblind\", \"disabled\", \"marginalized\", " +
+                                        "\"poor\"," + "" + "\"rich\", \"wealthy\",\n" +
+                                        "\"middle-class\", \"working-class\", \"consumers\", " +
+                                        "\"shopping\", \"read\",\n" +
+                                        "\"misread\", \"reread\", \"reconsider\", \"confuse\", " +
+                                        "\"wrong\", \"mistaken\",\n" +
+                                        "\"regret\", \"mute\", \"voiceless\", \"women\", \"age\"," +
+                                        "" + "\"bird\", \"time\", \"scene\",\n" +
+                                        "\"setting\", \"Hendrix \", \"universal\", \"binary\", " +
+                                        "\"deconstruct\",\n" +
+                                        "\"question\", \"wrong\", \"right\", \"incorrect\", " +
+                                        "\"false\", \"claims\", \"true\",\n" +
+                                        "\"truth\", \"unknown\", \"ambiguous\", \"unclear\""
+                                    }
+                                    headers={[
+                                        "Question",
+                                        "Percentage",
+                                        "Total Number of Responses with At Least One Relevant" +
+                                        " Word",
+                                        "Relevant Word Frequency Per Question"
+                                    ]}
+                                    data={relevant_words_percent_display_question}
+                                />
                                 <RelevantWordPercentages
                                     words={percent_using_relevant_words_by_question[0]}
                                     entryData={percent_using_relevant_words_by_question[1]}

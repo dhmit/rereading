@@ -9,6 +9,11 @@
     font-size: $body-text-size;
 }
 
+.response-td {
+    width: 50%;
+    border: none;
+}
+
 .analysis-container{
     padding: 1em 2em 2em 2em;
     margin-bottom: 4em;
@@ -59,5 +64,24 @@ a {
     font-family: $text-font;
     font-size: 18pt;
     position: relative;
+}
+
+.response-td {
+    border-left: 0.5px solid transparent !important;
+    &:last-child {
+        border-right: 0.5px solid transparent !important;
+    }
+}
+
+.response-container {
+    padding: 0 !important;
+}
+
+.response-tr > .response-td {
+    border-top: 1px solid transparent !important;
+}
+
+.response-tr:last-child .response-td{
+    border-bottom: 1px solid transparent !important;
 }
 

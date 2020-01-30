@@ -51,7 +51,7 @@ export class RelevantWordsByQuestions extends React.Component {
 
 RelevantWordsByQuestions.propTypes = {
     relevant_words_by_question: PropTypes.array,
-}
+};
 
 
 export function formatTime(timeInSeconds, secondsRoundDigits) {
@@ -184,7 +184,6 @@ export class HeatMapAnalysis extends React.Component {
 
     async componentDidMount() {
         try {
-            // Uses Promise to do multiple fetches at once
             const response = await fetch('/api/documents/1/');
             const document = await response.json();
             this.setState({document});
@@ -397,6 +396,95 @@ HeatMapSegment.propTypes = {
     segmentNum: PropTypes.number,
 };
 
+export class AllResponsesTable extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            segment_num: 1,
+        };
+        this.handleSegmentChange = this.handleSegmentChange.bind(this);
+    }
+
+    handleSegmentChange(event) {
+        this.setState({segment_num: event.target.value});
+    }
+
+    render() {
+        let range = n => Array.from(Array(n).keys());
+        let segments = range(5);
+        const dataFilteredBySegment = this.props.data.filter(
+            (entry) => entry[0] === Number(this.state.segment_num)
+        );
+
+        return (
+            <div>
+                <h3 className={"analysis-subheader mt-4"}> {this.props.title} </h3>
+                Segment Number: &nbsp;
+                <select
+                    value={this.state.segment_num}
+                    className={"segment-selector"}
+                    onChange={(e) => this.handleSegmentChange(e)}
+                >
+                    {segments.map((k, entry) => {
+                        return (
+                            <option key={k} value={segments[entry] + 1}>
+                                {segments[entry] + 1}
+                            </option>
+                        )
+                    })}
+                </select>
+                <table className={"table analysis-table"}>
+                    <tbody>
+                        <tr>
+                            {/* Auto generate the headers */}
+                            {this.props.headers.map((header, k) => (
+                                <th className={"p-2"} key={k}>{header}</th>)
+                            )}
+                        </tr>
+                        {dataFilteredBySegment.map((entry, k) => (
+                            <tr key={k}>
+                                <td className={"p-2"} key={k * 2}>
+                                    {entry[1]}
+                                </td>
+                                <td className={"p-2"} key={k * 2 + 1}>
+                                    {entry[2]}
+                                </td>
+                                <td>
+                                    <table><tbody>
+                                        {entry[3].map((tuple, k) => (
+                                            <tr className={"response-tr"} key={k}>
+                                                <td className={"p-2 response-td"} key={k * 2}>
+                                                    {tuple[0]}
+                                                </td>
+                                                <td className={"p-2 response-td"} key={k * 2 + 1}>
+                                                    {tuple[1].length > 0
+                                                        ? tuple[1].map((evidence, k) => (
+                                                            <ul key={k}>
+                                                                <li>{evidence}</li>
+                                                            </ul>
+                                                        ))
+                                                        : <p>N/A</p>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody></table>
+                                </td>
+                            </tr>)
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
+        )
+    }
+}
+AllResponsesTable.propTypes = {
+    headers: PropTypes.array,
+    data: PropTypes.array,
+    title: PropTypes.string,
+};
+
 export class AnalysisView extends React.Component {
     constructor(props) {
         super(props);
@@ -437,28 +525,8 @@ export class AnalysisView extends React.Component {
             get_all_heat_maps,
             all_responses,
             most_common_words_by_question,
+            // get_number_of_segments,
         } = this.state.analysis;
-
-        const sort_responses = (a, b) => {
-            const a_sequence = a[0];
-            const a_question_number = a[1];
-            const b_sequence = b[0];
-            const b_question_number = b[1];
-
-            if (a_sequence === b_sequence) {
-                if (a_question_number < b_question_number) {
-                    return -1;
-                } else {
-                    return 1;
-                }
-            } else if (a_sequence < b_sequence) {
-                return -1;
-            }
-
-            return 1;
-        };
-
-        const sorted_all_responses = all_responses.sort(sort_responses);
 
         return (
             <>
@@ -469,7 +537,7 @@ export class AnalysisView extends React.Component {
                     >Analysis of Student Responses</h1>
                     <div className={"analysis-container"}>
 
-                        <Tabs defaultActiveKey="Time Data" className="tabs" mountOnEnter={true}>
+                        <Tabs defaultActiveKey="Time Data" className="tabs">
                             <Tab eventKey="Time Data" title="Time Data" className="tab">
                                 <TimeAnalysis
                                     header={"Total view time"}
@@ -504,7 +572,7 @@ export class AnalysisView extends React.Component {
                                     entryData={percent_using_relevant_words_by_question[1]}
                                 />
                                 <RelevantWordsByQuestions
-                                    relevant_words_by_question= {relevant_words_by_question}
+                                    relevant_words_by_question={relevant_words_by_question}
                                 />
                             </Tab>
                             <Tab eventKey="Top Words" title="Top Words">
@@ -524,16 +592,14 @@ export class AnalysisView extends React.Component {
                                 />
                             </Tab>
                             <Tab eventKey="student responses" title="All Responses">
-                                <TabularAnalysis
+                                <AllResponsesTable
                                     title="All Student Responses"
                                     headers={[
-                                        "Segment Number",
                                         "Question Number",
                                         "Question Text",
-                                        "Response",
-                                        "Evidence",
+                                        "Response and Evidence",
                                     ]}
-                                    data={sorted_all_responses}
+                                    data={all_responses}
                                 />
                             </Tab>
                         </Tabs>

@@ -32,8 +32,6 @@ RELEVANT_WORDS = ["stereotypes", "bias", "assumptions", "assume", "narrator", "m
                   "question", "wrong", "right", "incorrect", "false", "claims", "true",
                   "truth", "unknown", "ambiguous", "unclear"]
 
-RELEVANT_WORDS_DICT = {word: 1 for word in RELEVANT_WORDS}
-
 STOPWORDS = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', "you're",
              "you've", "you'll", "you'd", 'your', 'yours', 'yourself', 'yourselves', 'he',
              'him', 'his', 'himself', 'she', "she's", 'her', 'hers', 'herself', 'it', "it's",
@@ -145,9 +143,9 @@ class RereadingAnalysis:
             question = segment.question
             single_response = segment.response
             for word in single_response.split():
-                if word in RELEVANT_WORDS_DICT:
+                if word in RELEVANT_WORDS:
                     question_context_count_map[question][word] = \
-                        question_context_count_map[question].get(word, 0)+1
+                        question_context_count_map[question].get(word, 0) + 1
                     question_context_count_map[question] = OrderedDict(sorted(
                         question_context_count_map[question].items(), key=itemgetter(1),
                         reverse=True))

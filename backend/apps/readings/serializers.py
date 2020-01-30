@@ -282,6 +282,7 @@ class AnalysisSerializer(serializers.Serializer):
     total_and_median_view_time = serializers.ReadOnlyField()
     mean_reading_vs_rereading_time = serializers.ReadOnlyField()
     get_number_of_unique_students = serializers.ReadOnlyField()
+    compute_reread_counts = serializers.ReadOnlyField()
     relevant_words_by_question = serializers.ReadOnlyField()
     percent_using_relevant_words_by_question = serializers.ReadOnlyField()
     get_all_heat_maps = serializers.ReadOnlyField()

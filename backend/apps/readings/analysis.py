@@ -106,6 +106,34 @@ class RereadingAnalysis:
         ret_tuple = (round(total_time), round(median_view_time))
         return ret_tuple
 
+    def compute_reread_counts(self):
+        """"
+        Given a list of student response dicts,
+        return a dictionary containing the number of times students had to reread the text
+        :return: int, number of times segment with sequence segment_number is reread
+        """
+        segment_dictionary = {}
+        segment_list = []
+
+        # For all segment objects
+        for segments in self.segments:
+            # Increment reread count in dictionary if the entry already in dictionary
+            if (segments.segment.sequence in segment_dictionary and segments.view_time > 1.0 and
+                    segments.is_rereading):
+                segment_dictionary[segments.segment.sequence] += 1
+            # Add entry to dictionary if entry does not already exist
+            elif (segments.segment.sequence not in segment_dictionary and segments.view_time > 1.0
+                  and segments.is_rereading):
+                segment_dictionary[segments.segment.sequence] = 1
+
+        # Turns dictionary data into a list of lists
+        keys_list = list(segment_dictionary.keys())
+        keys_list.sort()
+        for key in keys_list:
+            segment_list.append([key, round(segment_dictionary[key] / len(self.readings), 2)])
+
+        return segment_list
+
     def relevant_words_by_question(self):
         """
             Return a list of tuples of the form (question,count), where count is
@@ -172,8 +200,6 @@ class RereadingAnalysis:
             return_list.append(question_row)
         return return_list
 
-
-
     def mean_reading_vs_rereading_time(self):
         """
         Compares mean view times of reading segments vs rereading segments
@@ -195,8 +221,11 @@ class RereadingAnalysis:
         num_students = len(self.readings)
 
         # divide by total number of readings
-        mean_reading_time = reading_time / num_students
-        mean_rereading_time = rereading_time / num_students
+        if num_students != 0:
+            mean_reading_time = reading_time / num_students
+            mean_rereading_time = rereading_time / num_students
+        else:
+            return 0.0, 0.0
         return round(mean_reading_time), round(mean_rereading_time)
 
     def get_number_of_unique_students(self):

@@ -496,6 +496,7 @@ export class AnalysisView extends React.Component {
         };
     }
 
+
     /**
      * This function is fired once this component has loaded into the DOM.
      * We send a request to the backend for the analysis data.
@@ -520,13 +521,13 @@ export class AnalysisView extends React.Component {
             total_and_median_view_time,
             mean_reading_vs_rereading_time,
             get_number_of_unique_students,
+            compute_reread_counts,
             relevant_words_by_question,
             percent_using_relevant_words_by_question,
             get_all_heat_maps,
             all_responses,
             most_common_words_by_question,
             relevant_words_percent_display_question
-            // get_number_of_segments,
         } = this.state.analysis;
 
         return (
@@ -560,6 +561,9 @@ export class AnalysisView extends React.Component {
                                     header={"Number of Unique Students"}
                                     value={get_number_of_unique_students}
                                     unit={"students"}
+                                />
+                                <RereadCountTable
+                                    compute_reread_counts={compute_reread_counts}
                                 />
                             </Tab>
                             <Tab eventKey="Heat Map" title="Heat Map">

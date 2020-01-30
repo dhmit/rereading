@@ -287,6 +287,7 @@ class AnalysisSerializer(serializers.Serializer):
     get_all_heat_maps = serializers.ReadOnlyField()
     all_responses = serializers.ReadOnlyField()
     most_common_words_by_question = serializers.ReadOnlyField()
+    relevant_words_percent_display_question = serializers.ReadOnlyField()
     get_number_of_segments = serializers.ReadOnlyField()
 
     def create(self, validated_data):

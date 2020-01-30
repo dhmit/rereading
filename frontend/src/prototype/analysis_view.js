@@ -32,11 +32,22 @@ SingleValueAnalysis.propTypes = {
     round_digits: PropTypes.number,
 };
 
-export class TabularAnalysis extends React.Component{
+export class TabularAnalysis extends React.Component {
     render() {
         // Create an array of indices based on the length of the header array
         let range = n => Array.from(Array(n).keys());
         let indices = range(this.props.headers.length);
+
+        const display_object = (obj) => {
+            return (
+                <ul>
+                    {
+                        Object.keys(obj).map((word, index) => (
+                            <li key={index}> {word}: {obj[word]}</li>))
+                    }
+                </ul>
+            )
+        }
 
         return(
             <div>
@@ -55,7 +66,12 @@ export class TabularAnalysis extends React.Component{
                         {this.props.data.map( (entry, k) => (
                             <tr key={k}>
                                 {indices.map( (index, k) => (
-                                    <td className={"p-2"} key={k}> {entry[index]} </td>)
+                                    <td className={"p-2"} key={k}>
+                                        {typeof entry[index] === 'object'
+                                            ? display_object(entry[index])
+                                            : entry[index]
+                                        }
+                                    </td>)
                                 )}
                             </tr>)
                         )}
@@ -211,7 +227,7 @@ export class RelevantWordPercentages extends React.Component {
                     " reading administer."}
                     headers={[
                         "Question",
-                        "Percentage"
+                        "Percentage",
                     ]}
                     data={this.formatDataWithPercentSign(this.props.entryData)}
                 />

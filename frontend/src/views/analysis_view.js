@@ -6,8 +6,9 @@ import {
 } from "../prototype/analysis_view";
 import { Footer, Spinner } from "../common";
 import PropTypes from 'prop-types';
-import Tabs from 'react-bootstrap/Tabs'
-import Tab from 'react-bootstrap/Tab'
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
+import "../index.scss";
 
 export class RereadCountTable extends React.Component {
     render() {
@@ -31,7 +32,13 @@ export class RelevantWordsByQuestions extends React.Component {
     render() {
         return (
             <TabularAnalysis
+                /*
+                Gives a list of the most common words in student responses for a particular
+                 question, ommiting stop words such as 'is' or 'the'.
+                 */
                 title={"Frequency Counts for Student Response with Relevant Words"}
+                subtitle={"This function counts the number of responses that respond with" +
+                " the relevant words."}
                 headers={[
                     "Question",
                     "Count"
@@ -44,7 +51,7 @@ export class RelevantWordsByQuestions extends React.Component {
 
 RelevantWordsByQuestions.propTypes = {
     relevant_words_by_question: PropTypes.array,
-}
+};
 
 
 export function formatTime(timeInSeconds, secondsRoundDigits) {
@@ -177,7 +184,6 @@ export class HeatMapAnalysis extends React.Component {
 
     async componentDidMount() {
         try {
-            // Uses Promise to do multiple fetches at once
             const response = await fetch('/api/documents/1/');
             const document = await response.json();
             this.setState({document});
@@ -219,7 +225,7 @@ export class HeatMapAnalysis extends React.Component {
 
         return (
             <div>
-                <h3 className={"mt-4"}>
+                <h3 className={"mt-4 analysis-subheader"}>
                     Heat Map for &nbsp;
                     <select
                         value={this.state.current_document}
@@ -235,7 +241,11 @@ export class HeatMapAnalysis extends React.Component {
                         })}
                     </select>
                 </h3>
-                Segment Number: &nbsp;
+                <p>This function provides a color coded map of time spent on different sections
+                    of the text. The darker the section, the more total time readers spent on it.
+                    A heat map is available for both the reading and the rereading data for all
+                segments of the text.</p>
+                <span className={"analysis-label"}> Segment Number: &nbsp; </span>
                 <select
                     value={this.state.segment_num}
                     className={"segment-selector"}
@@ -249,7 +259,7 @@ export class HeatMapAnalysis extends React.Component {
                         )
                     })}
                 </select>
-                <table className={"table analysis-table"}>
+                <table className={"table analysis-table mt-2"}>
                     <tbody>
                         <tr>
                             <th>Scroll Position</th>
@@ -309,8 +319,8 @@ class HeatMapSegment extends React.Component {
         const scroll_ranges = Object.keys(heat_data);
         scroll_ranges.sort(scroll_range_sort);
         const max_scroll_range = scroll_ranges[scroll_ranges.length - 1];
-        const height = 500 + segment_height -
-                parseInt(max_scroll_range.split(" — ")[1]);
+        const height = 500 - (parseInt(max_scroll_range.split(" — ")[1]) -
+            segment_height);
         if (this.state.finalHeight !== height) {
             this.setState({finalHeight: height});
         }
@@ -341,7 +351,7 @@ class HeatMapSegment extends React.Component {
 
         return (
             <div>
-                This is the heat map for: &nbsp;
+                <span className={"analysis-label"}> This is the heat map for: &nbsp; </span>
                 <select
                     value={this.state.readType}
                     className={"segment-selector"}
@@ -351,7 +361,7 @@ class HeatMapSegment extends React.Component {
                     <option value={"rereading"}>rereading</option>
                 </select>
                 <div
-                    className="segment"
+                    className="heat-segment mt-2"
                     ref={this.segment_ref}
                 >
                     {segment_lines.map(
@@ -368,7 +378,7 @@ class HeatMapSegment extends React.Component {
                                     width: "593px",
                                     top: heat.start + "px",
                                     backgroundColor: "rgba(255, 0, 0," + heat.percentage + ")",
-                                    zIndex: -1,
+                                    zIndex: 2,
                                 }}
                                 key={i}
                             >
@@ -384,6 +394,95 @@ HeatMapSegment.propTypes = {
     text: PropTypes.string,
     heatMap: PropTypes.object,
     segmentNum: PropTypes.number,
+};
+
+export class AllResponsesTable extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            segment_num: 1,
+        };
+        this.handleSegmentChange = this.handleSegmentChange.bind(this);
+    }
+
+    handleSegmentChange(event) {
+        this.setState({segment_num: event.target.value});
+    }
+
+    render() {
+        let range = n => Array.from(Array(n).keys());
+        let segments = range(5);
+        const dataFilteredBySegment = this.props.data.filter(
+            (entry) => entry[0] === Number(this.state.segment_num)
+        );
+
+        return (
+            <div>
+                <h3 className={"analysis-subheader mt-4"}> {this.props.title} </h3>
+                Segment Number: &nbsp;
+                <select
+                    value={this.state.segment_num}
+                    className={"segment-selector"}
+                    onChange={(e) => this.handleSegmentChange(e)}
+                >
+                    {segments.map((k, entry) => {
+                        return (
+                            <option key={k} value={segments[entry] + 1}>
+                                {segments[entry] + 1}
+                            </option>
+                        )
+                    })}
+                </select>
+                <table className={"table analysis-table"}>
+                    <tbody>
+                        <tr>
+                            {/* Auto generate the headers */}
+                            {this.props.headers.map((header, k) => (
+                                <th className={"p-2"} key={k}>{header}</th>)
+                            )}
+                        </tr>
+                        {dataFilteredBySegment.map((entry, k) => (
+                            <tr key={k}>
+                                <td className={"p-2"} key={k * 2}>
+                                    {entry[1]}
+                                </td>
+                                <td className={"p-2"} key={k * 2 + 1}>
+                                    {entry[2]}
+                                </td>
+                                <td>
+                                    <table><tbody>
+                                        {entry[3].map((tuple, k) => (
+                                            <tr className={"response-tr"} key={k}>
+                                                <td className={"p-2 response-td"} key={k * 2}>
+                                                    {tuple[0]}
+                                                </td>
+                                                <td className={"p-2 response-td"} key={k * 2 + 1}>
+                                                    {tuple[1].length > 0
+                                                        ? tuple[1].map((evidence, k) => (
+                                                            <ul key={k}>
+                                                                <li>{evidence}</li>
+                                                            </ul>
+                                                        ))
+                                                        : <p>N/A</p>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody></table>
+                                </td>
+                            </tr>)
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
+        )
+    }
+}
+AllResponsesTable.propTypes = {
+    headers: PropTypes.array,
+    data: PropTypes.array,
+    title: PropTypes.string,
 };
 
 export class AnalysisView extends React.Component {
@@ -426,102 +525,86 @@ export class AnalysisView extends React.Component {
             get_all_heat_maps,
             all_responses,
             most_common_words_by_question,
+            // get_number_of_segments,
         } = this.state.analysis;
-
-        const sort_responses = (a, b) => {
-            const a_sequence = a[0];
-            const a_question_number = a[1];
-            const b_sequence = b[0];
-            const b_question_number = b[1];
-
-            if (a_sequence === b_sequence) {
-                if (a_question_number < b_question_number) {
-                    return -1;
-                } else {
-                    return 1;
-                }
-            } else if (a_sequence < b_sequence) {
-                return -1;
-            }
-
-            return 1;
-        };
-
-        const sorted_all_responses = all_responses.sort(sort_responses);
 
         return (
             <>
                 <div className={"container"}>
-                    <Tabs defaultActiveKey="Time Data" id="tab">
-                        <Tab eventKey="Time Data" title="Time Data">
-                            <h1
-                                className={"text-center display-4 mb-4"}
-                                id={"page-title"}
-                            >Analysis of Student Responses</h1>
-                            <TimeAnalysis
-                                header={"Total view time"}
-                                time_in_seconds={total_and_median_view_time[0]}
-                            />
-                            <TimeAnalysis
-                                header={"Median view time"}
-                                time_in_seconds={total_and_median_view_time[1]}
-                            />
-                            <TimeAnalysis
-                                header={"Mean reading view time"}
-                                time_in_seconds={mean_reading_vs_rereading_time[0]}
-                            />
-                            <TimeAnalysis
-                                header={"Mean rereading view time"}
-                                time_in_seconds={mean_reading_vs_rereading_time[1]}
-                            />
-                            <SingleValueAnalysis
-                                header={"Number of Unique Students"}
-                                value={get_number_of_unique_students}
-                                unit={"students"}
-                            />
-                        </Tab>
-                        <Tab eventKey="Heat Map" title="Heat Map">
-                            <HeatMapAnalysis
-                                data={get_all_heat_maps}
-                            />
-                        </Tab>
-                        <Tab eventKey="Relevant Words" title="Relevant Words">
-                            <RelevantWordPercentages
-                                words={percent_using_relevant_words_by_question[0]}
-                                entryData={percent_using_relevant_words_by_question[1]}
-                            />
-                            <RelevantWordsByQuestions
-                                relevant_words_by_question= {relevant_words_by_question}
-                            />
-                        </Tab>
-                        <Tab eventKey="Top Words" title="Top Words">
-                            <TabularAnalysis
-                                title="Top Words by Question"
-                                headers={[
-                                    "Segment Number",
-                                    "Question Number",
-                                    "Question Text",
-                                    "Top Words"
-                                ]}
-                                data={most_common_words_by_question}
-                            />
-                        </Tab>
-                        <Tab eventKey="student responses" title="All Responses">
-                            <TabularAnalysis
-                                title="All Student Responses"
-                                headers={[
-                                    "Segment Number",
-                                    "Question Number",
-                                    "Question Text",
-                                    "Response",
-                                    "Evidence",
-                                ]}
-                                data={sorted_all_responses}
-                            />
-                        </Tab>
-                    </Tabs>
-                </div>
+                    <h1
+                        className={"text-center display-4 mb-4"}
+                        id={"page-title"}
+                    >Analysis of Student Responses</h1>
+                    <div className={"analysis-container"}>
 
+                        <Tabs defaultActiveKey="Time Data" className="tabs">
+                            <Tab eventKey="Time Data" title="Time Data" className="tab">
+                                <TimeAnalysis
+                                    header={"Total view time"}
+                                    time_in_seconds={total_and_median_view_time[0]}
+                                />
+                                <TimeAnalysis
+                                    header={"Median view time"}
+                                    time_in_seconds={total_and_median_view_time[1]}
+                                />
+                                <TimeAnalysis
+                                    header={"Mean reading view time"}
+                                    time_in_seconds={mean_reading_vs_rereading_time[0]}
+                                />
+                                <TimeAnalysis
+                                    header={"Mean rereading view time"}
+                                    time_in_seconds={mean_reading_vs_rereading_time[1]}
+                                />
+                                <SingleValueAnalysis
+                                    header={"Number of Unique Students"}
+                                    value={get_number_of_unique_students}
+                                    unit={"students"}
+                                />
+                            </Tab>
+                            <Tab eventKey="Heat Map" title="Heat Map">
+                                <HeatMapAnalysis
+                                    data={get_all_heat_maps}
+                                />
+                            </Tab>
+                            <Tab eventKey="Relevant Words" title="Relevant Words">
+                                <RelevantWordPercentages
+                                    words={percent_using_relevant_words_by_question[0]}
+                                    entryData={percent_using_relevant_words_by_question[1]}
+                                />
+                                <RelevantWordsByQuestions
+                                    relevant_words_by_question={relevant_words_by_question}
+                                />
+                            </Tab>
+                            <Tab eventKey="Top Words" title="Top Words">
+                                <TabularAnalysis
+                                    title="Top Words by Question"
+                                    subtitle={
+                                        "This function finds the most common words used in "
+                                        + "student responses to a specific question."
+                                    }
+                                    headers={[
+                                        "Segment Number",
+                                        "Question Number",
+                                        "Question Text",
+                                        "Top Words"
+                                    ]}
+                                    data={most_common_words_by_question}
+                                />
+                            </Tab>
+                            <Tab eventKey="student responses" title="All Responses">
+                                <AllResponsesTable
+                                    title="All Student Responses"
+                                    headers={[
+                                        "Question Number",
+                                        "Question Text",
+                                        "Response and Evidence",
+                                    ]}
+                                    data={all_responses}
+                                />
+                            </Tab>
+                        </Tabs>
+                    </div>
+                </div>
 
                 <Footer />
             </>

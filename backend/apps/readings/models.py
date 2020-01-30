@@ -2,7 +2,6 @@
 Models for the Rereading app.
 """
 from ast import literal_eval
-import json
 
 from django.db import models
 
@@ -149,8 +148,21 @@ class StudentReadingData(models.Model):
     start_time = models.DateTimeField(auto_now_add=True)
     last_updated_time = models.DateTimeField(auto_now=True)
 
+    def get_total_view_time(self):
+        """
+        Returns sum of view_times for all associated StudentSegmentData instances,
+        rounding to the nearest second
+        """
+        total_view_time = 0
+        for seg in self.segment_data.all():
+            total_view_time += seg.view_time
+        return round(total_view_time)
+
     def __str__(self):
-        return f'{self.student} - {self.segment_data.count()} segments completed'
+        return (
+            f'{self.student} - {self.segment_data.count()} segments completed - '
+            + f'{self.get_total_view_time()} seconds'
+        )
 
 
 class StudentSegmentData(models.Model):
@@ -180,9 +192,7 @@ class StudentSegmentData(models.Model):
         Scroll data is stored as a string representing JSON data, so it needs to be converted
         into a Python object before much can be done with it.
         """
-
         return literal_eval(self.scroll_data)
-
 
 
 class SegmentQuestionResponse(models.Model):
@@ -210,8 +220,7 @@ class SegmentQuestionResponse(models.Model):
 
         :return: List object
         """
-
-        return json.loads(self.evidence)
+        return literal_eval(self.evidence)
 
 
 class DocumentQuestionResponse(models.Model):
@@ -244,7 +253,7 @@ class DocumentQuestionResponse(models.Model):
         :return: List object
         """
 
-        return json.dumps(self.evidence)
+        return literal_eval(self.evidence)
 
 
 class Writeup(models.Model):

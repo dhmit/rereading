@@ -1,0 +1,20 @@
+﻿Ning-Er Lei Writeup
+
+<p>
+Studies have long demonstrated that the practice of professional rereading provides compelling benefits, ranging from enhancing readers’ comprehensive understandings of texts to aiding readers to understand themselves better. Despite this, however, professional rereading is oftentimes not addressed enough in language and literature courses. This does not have to be the case. Educators today can ensure that their students benefit from this practice as much as they themselves do.
+</p>
+<p>
+In order to guarantee that students take full advantage of the profound benefits offered by professional rereading, educators should cater professional rereading as a helpful tool in the classroom and continue to provide guidance on how to fully employ this practice in daily life.
+</p>
+<p>
+ A key factor as to why students do not gain the full benefits of professional rereading is the way in which professional rereading is introduced to students in the classroom. Frequently, students perceive rereading as a tedious chore as it is something instructors order them to do. Oftentimes, instructors assign “rereading” as part of various assignments. Instead, instructors should present professional rereading as a useful tool that offers profound benefits that extend beyond the classroom setting. For instance, instructors could explain how rereading can help readers move from merely comprehending a text superficially to understanding it on a deeper level. Indeed, students would utilize professional rereading better if instructors offer professional rereading as a tool students can use for academic and personal purposes.
+</p>
+<p>
+Additionally, students often do not understand how to reread well due to the lack of guidance they receive when learning to reread professionally. Many students, for instance, are unaware of what to look for when they reread. Therefore, an effective way in which educators can help students employ professional rereading better is to give them a guide on what to look for when rereading.
+</p>
+<p>
+Our web platform does this by dedicating half the screen for the passage of a text, and the other half for a page of questions that students should be looking to answer as they read the passage. By having these features on our web platform, we help students identify what they should be doing when they reread professionally. In doing so, we guide students to utilize rereading in a way that is meaningful for them.
+</p>
+<p>
+In all, instructors can work to help students engage in professional rereading by introducing this practice as a helpful tool and providing them enough guidance as they master this technique.
+</p>

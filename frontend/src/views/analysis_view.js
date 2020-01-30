@@ -485,24 +485,6 @@ AllResponsesTable.propTypes = {
     title: PropTypes.string,
 };
 
-export class RereadCountTable extends React.Component {
-    render() {
-        return (
-            <TabularAnalysis
-                title ={"Reread Counts per Segment"}
-                headers={[
-                    "Segment Number",
-                    "Mean Reread Count",
-                ]}
-                data={this.props.compute_reread_counts}
-            />
-        );
-    }
-}
-RereadCountTable.propTypes = {
-    compute_reread_counts: PropTypes.array,
-};
-
 export class AnalysisView extends React.Component {
     constructor(props) {
         super(props);

@@ -110,7 +110,7 @@ class DocumentQuestion(Question):
     )
 
     def __str__(self):
-        return self.text
+        return str(self.text)  # unnecessary cast makes Pylint happy.
 
 
 class SegmentQuestion(Question):
@@ -252,7 +252,6 @@ class DocumentQuestionResponse(models.Model):
 
         :return: List object
         """
-
         return literal_eval(self.evidence)
 
 
@@ -300,7 +299,7 @@ class StoryPrototype(models.Model):
     story_text = models.TextField()
 
     def __str___(self):
-        return self.story_text
+        return str(self.story_text)  # unnecessary cast makes Pylint happy.
 
 
 class ContextPrototype(models.Model):
@@ -315,7 +314,7 @@ class ContextPrototype(models.Model):
     )
 
     def __str__(self):
-        return self.text
+        return str(self.text)  # unnecessary cast makes Pylint happy.
 
 
 class QuestionPrototype(models.Model):
@@ -331,7 +330,7 @@ class QuestionPrototype(models.Model):
     )
 
     def __str__(self):
-        return self.text
+        return str(self.text)  # unnecessary cast makes Pylint happy.
 
 
 class StudentResponsePrototype(models.Model):

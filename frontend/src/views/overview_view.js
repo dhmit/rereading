@@ -101,6 +101,10 @@ export class ReadingRedux extends React.Component {
         const content = (
             <React.Fragment>
                 <p className="body-text">
+                The Reading Redux was a project by the <a href = "https://digitalhumanities.mit.edu/">MIT Programs in Digital Humanities</a> in collaboration with our Fall 2019 Faculty Fellow, <a href = "https://lit.mit.edu/people/salexandre/">Sandy Alexandre</a>, Associate Professor of Literature at MIT. All code created for this project is available on <a href = "https://github.com/dhmit/rereading">GitHub</a>.
+                </p>
+                <h1>The Values of Rereading</h1>
+                <p className="body-text">
                     In literary studies we have a word to describe a novel that
                     traces the psychological and moral growth of its protagonist.
                     The word is <em>bildungsroman</em>. But I think it is at once
@@ -198,14 +202,20 @@ export class ReadingRedux extends React.Component {
                     understand both the qualitative and quantitative uses of our
                     encounters with literature.
                 </p>
+                <h1>Citation</h1>
+                <p className="body-text">
+                    Sandy Alexandre, Kidist Adamu, Ife Ademolu-Odeneye, Melissa Calvert, Angelica Castillejos, Stephan Ducrepin, Crista Falk, Benjamin Gao, Raquel Garcia, Montserrat Garza, Michelle He, Meesue Kim, Amy Lei, Felix Li, Jason Lin, Ivy Mao, Sage Maxwell, Catherine Mei, Sergio Perez, Parul Singh, Mayowa Songonuga, Justice Vidal, Christina Wang, Dylan Weber, Jordan Wilke, Jessica Wu, Angel Yang, Funing Yang, Samantha York, Sirena Yu, Katherine Zeng, Ophelia Zhu, Ning-Er Lei, Peter Choza, Ankita Devasia, Jawad Yousef, “The Reading Redux,” Web resource. 2019. https://rereading.dhlab.mit.edu/ 
+                </p>
             </React.Fragment>
         );
 
         return (
-            <OverviewContent
-                content={content}
-                subtitle="The Values of Rereading"
-            />
+            <>
+                <OverviewContent
+                    content={content}
+                    subtitle="About"
+                />
+            </>
         );
     }
 }

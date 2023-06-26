@@ -5,6 +5,7 @@ import { getCookie } from '../common'
 import './student_view.css';
 import {TimeIt, handleStoryScroll} from '../common'
 
+/* eslint-disable react/prop-types */ 
 
 /**
  * That big fancy blue button at the bottom of the screen, progresses the user to the next page

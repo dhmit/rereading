@@ -1,11 +1,40 @@
 import React from "react";
 import { Footer } from "../common";
-
+import {Modal, Button} from "react-bootstrap";
 
 export class LandingPageView extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            show: true
+        };
+    }
+    
     render() {
+        const handleClose = () => this.setState({show: false});
+
         return (
             <>
+                <Modal show={this.state.show} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Archived Copy</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        The Reading Redux was a project by the <a href = "https://digitalhumanities.mit.edu/">
+                        MIT Programs in Digital Humanities</a> in 
+                        collaboration with our Fall 2019 Faculty Fellow, <a href = "https://lit.mit.edu/people/salexandre/">Sandy Alexandre</a>,
+                        Associate Professor of Literature at MIT. The project 
+                        has been archived, and is no longer being actively maintained.
+                        <br/><br/>
+                        The project contains student work, and there may be features which 
+                        are incomplete or inaccurate.
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
                 <main className="text-center">
                     <h5 className='body-text'><em>
                         <a
